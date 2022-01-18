@@ -18,13 +18,8 @@ from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from rest_framework import routers
 
-from api.viewsets.rushing_stats import RushingStatsViewset
-
 ROUTER = routers.SimpleRouter(trailing_slash=False)
 
-ROUTER.register(
-    r'rushing-stats/?$', RushingStatsViewset, basename='rushing-stats'
-)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
