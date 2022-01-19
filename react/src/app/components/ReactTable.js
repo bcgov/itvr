@@ -9,28 +9,28 @@ import {
 } from 'react-table';
 
 // material-ui core components
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Popover from '@material-ui/core/Popover';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import CircularProgress from '@mui/material/CircularProgress';
+import {
+  IconButton,
+  InputAdornment,
+  Popover,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  TextField,
+  Tooltip,
+} from '@mui/material';
+
+import { makeStyles } from '@mui/styles';
 
 // material-ui icons
-import FilterListIcon from '@material-ui/icons/FilterList';
-import MoreVert from '@material-ui/icons/MoreVert';
-
-// components
-import ReactTablePagination from './ReactTablePagination';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import MoreVert from '@mui/icons-material/MoreVert';
 
 const useStyles = makeStyles(() => ({
   moreOptions: {
@@ -102,13 +102,21 @@ const ReactTable = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [filterColumn, setFilterColumn] = useState(null);
   const [filters, setFilters] = useState([]);
-
+  const [pageNum, setPageNum] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPageNum(0);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPageNum(newPage);
+  };
   const {
     getTableBodyProps,
     getTableProps,
     gotoPage,
-    headerGroups,
     page,
+    headerGroups,
     prepareRow,
     setPageSize,
     state: {
@@ -127,7 +135,7 @@ const ReactTable = (props) => {
       sortBy: defaultSortBy,
     },
     manualFilters: true,
-    manualPagination: true,
+    manualPagination: false,
     manualSortBy: true,
     pageCount: controlledPageCount,
   }, useFilters, useSortBy, usePagination);
@@ -160,7 +168,6 @@ const ReactTable = (props) => {
 
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     anchorEl.parentNode.classList.remove('active');
 
@@ -178,7 +185,12 @@ const ReactTable = (props) => {
   return (
     <>
       <TableContainer>
-        <Table className={classes.reactTable} {...getTableProps()} stickyHeader size={size}>
+        <Table
+          className={classes.reactTable}
+          {...getTableProps()}
+          stickyHeader
+          size={size}
+        >
           {loading && (
             <caption>
               <div>
@@ -226,40 +238,35 @@ const ReactTable = (props) => {
           </TableHead>
 
           <TableBody {...getTableBodyProps()}>
-            {page && page.map((row) => {
-              prepareRow(row);
-
-              return (
-                <TableRow {...row.getRowProps()}>
-                  {row.cells.map((cell) => (
-                    <TableCell
-                      {...cell.getCellProps()}
-                      align={cell.column.align ? cell.column.align : 'left'}
-                      width={cell.column.width}
-                    >
-                      {cell.render('Cell')}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+            {page && page
+              .slice(pageNum * rowsPerPage, pageNum * rowsPerPage + rowsPerPage)
+              .map((row) => {
+                prepareRow(row);
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map((cell) => (
+                      <TableCell
+                        {...cell.getCellProps()}
+                        align={cell.column.align ? cell.column.align : 'left'}
+                        width={cell.column.width}
+                      >
+                        {cell.render('Cell')}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
-
       <TablePagination
-        ActionsComponent={ReactTablePagination}
+        rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={totalRowsCount}
-        page={pageIndex}
-        onChangePage={(e, pageNumber) => {
-          gotoPage(pageNumber);
-        }}
-        onChangeRowsPerPage={(event) => {
-          setPageSize(Number(event.target.value));
-          gotoPage(0);
-        }}
-        rowsPerPage={pageSize}
+        rowsPerPage={rowsPerPage}
+        page={pageNum}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
       <Popover
