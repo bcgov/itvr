@@ -54,7 +54,7 @@ def url_retrieve(filename):
     file.
     This serves as a work-around for local development using docker.
     minio:9000 or host.docker.internal:9000 are both inaccessible via browser
-    which means our front-end wouldn't be able to access it. 
+    which means our front-end wouldn't be able to access it.
     The alternative solution is to modify the system's hosts file. But that
     requires some manual process.
     Copied from:
