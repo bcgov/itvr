@@ -19,6 +19,10 @@ module.exports = {
   ],
   rules: {
     'no-use-before-define': 'off',
+    'react/function-component-definition': [1, {
+      namedComponents: 'arrow-function',
+      unnamedComponents: 'arrow-function',
+    }],
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/jsx-props-no-spreading': [0, {
       custom: 'ignore',
