@@ -2,23 +2,13 @@ from django.db import models
 
 
 class IncomeVerification():
-    create_timestamp = models.DateTimeField(
-        auto_now_add=True,
-        blank=True,
-        null=True
-    )
-    update_timestamp = models.DateTimeField(
-        auto_now=True,
-        blank=True,
-        null=True
-    )
     sin = models.CharField(
         blank=True,
         null=True,
         max_length=250,
         unique=False
     )
-    surname = models.CharField(
+    last_name = models.CharField(
         blank=True,
         null=True,
         max_length=250,
