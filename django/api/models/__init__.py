@@ -1,3 +1,4 @@
-from . import player
-from . import rushing_stats
-from . import team
+"""
+Model Initializer
+"""
+from . import income_verification
