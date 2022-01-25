@@ -4,9 +4,9 @@
 * metabase-dc.yaml deploy metabase image on Openshift
 
 ## Metabase to TFRS and ZEVA database access
-The network policy allow-patroni-accepts-cthub-metabase-test in both TFRS and ZEVA open the access from the Metabase in CTHUB.
+The network policy allow-patroni-accepts-itvr-metabase-test in both TFRS and ZEVA open the access from the Metabase in itvr.
 
-## Create read only user metabaseuser in both TFRS and ZEVA for Metabase connection from CTHUB
+## Create read only user metabaseuser in both TFRS and ZEVA for Metabase connection from itvr
 ```//login zeva database as postgres user, psql zeva
 CREATE USER metabaseuser WITH PASSWORD 'xxxxxx';
 GRANT CONNECT ON DATABASE zeva TO metabaseuser;

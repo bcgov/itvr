@@ -31,7 +31,7 @@ parameters:
     description: Ouput version
     value: "12.4"
   - name: GIT_URI
-    value: "https://github.com/bcgov/cthub.git"
+    value: "https://github.com/bcgov/itvr.git"
   - name: GIT_REF
     value: "metabase-0.1.0"
   - name: PG_VERSION

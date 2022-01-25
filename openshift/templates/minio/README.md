@@ -13,15 +13,15 @@ oc tag minio:latest minio:20211020 -n ac294c-tools
 ### One minio instance serve all PRs on Dev
 
 oc process -f ./minio-dc.yaml \
-NAME=cthub ENV_NAME=dev SUFFIX=-dev \
+NAME=itvr ENV_NAME=dev SUFFIX=-dev \
 | oc create -f - -n ac294c-dev
 
 #### Test and Prod Minio setup
 
 oc process -f ./minio-dc.yaml \
-NAME=cthub ENV_NAME=test SUFFIX=-test \
+NAME=itvr ENV_NAME=test SUFFIX=-test \
 | oc create -f - -n ac294c-test
 
 oc process -f ./minio-dc.yaml \
-NAME=cthub ENV_NAME=prod SUFFIX=-prod \
+NAME=itvr ENV_NAME=prod SUFFIX=-prod \
 | oc create -f - -n ac294c-prod

@@ -4,11 +4,11 @@ const { OpenShiftClientX } = require("@bcgov/pipeline-cli");
 // The clean tasks should be based on the following five labels added by BCDK pipeline
 // namespace: 'ac294c-tools',
 // transient: true,
-// name: 'cthub',
+// name: 'itvr',
 // phase: 'build',
 // changeId: '46',
 // suffix: '-build-46',
-// instance: 'cthub-build-46',
+// instance: 'itvr-build-46',
 // version: '1.0.0-46',
 // tag: 'build-1.0.0-46',
 // ocpName: 'apps.silver.devops'

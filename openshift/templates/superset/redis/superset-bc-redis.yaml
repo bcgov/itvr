@@ -40,7 +40,7 @@ objects:
         contextDir: openshift/templates/superset/redis
         git:
           ref: superset-0.1.0
-          uri: https://github.com/bcgov/cthub.git
+          uri: https://github.com/bcgov/itvr.git
         type: Git
       strategy:
         dockerStrategy:

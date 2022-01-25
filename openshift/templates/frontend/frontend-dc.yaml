@@ -166,17 +166,17 @@ objects:
                 - name: KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
-                      name: cthub-keycloak
+                      name: itvr-keycloak
                       key: KEYCLOAK_CLIENT_ID
                 - name: KEYCLOAK_REALM
                   valueFrom:
                     secretKeyRef:
-                      name: cthub-keycloak
+                      name: itvr-keycloak
                       key: KEYCLOAK_REALM
                 - name: KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
-                      name: cthub-keycloak
+                      name: itvr-keycloak
                       key: KEYCLOAK_URL
               image:
               imagePullPolicy: IfNotPresent

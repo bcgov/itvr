@@ -12,7 +12,7 @@ oc -n ac294c-tools process -f ./backup/backup-build.yaml \
 2. Create the configmap in env project
 
 3. add to ./config/backup.conf, 9pm run backup, 10pm run verification
-postgres=patroni-master-test:5432/cthub
+postgres=patroni-master-test:5432/itvr
 postgres=patroni-master-test-metabase:5432/metabase
 0 1 * * * default ./backup.sh -s
 0 7 * * * default ./backup.sh -s

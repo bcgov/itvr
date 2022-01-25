@@ -6,10 +6,10 @@ metadata:
   name: minio
 parameters:
   - name: GIT_URL
-    displayName: cthub Git Repo URL
+    displayName: itvr Git Repo URL
     description: The URL to your GIT repo
     required: true
-    value: https://github.com/bcgov/cthub.git
+    value: https://github.com/bcgov/itvr.git
   - name: GIT_REF
     displayName: Git Reference
     description: The git reference or branch.

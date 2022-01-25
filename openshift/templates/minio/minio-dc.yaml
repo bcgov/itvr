@@ -7,7 +7,7 @@ metadata:
     openshift.io/display-name: BC Gov Minio
 parameters:
   - name: NAME
-    value: cthub
+    value: itvr
     required: true
   - name: SUFFIX
     displayName:
@@ -79,7 +79,7 @@ objects:
       creationTimestamp:
       labels:
         name: minio
-        app: cthub
+        app: itvr
         role: minio
         env: ${ENV_NAME}
     spec:
@@ -103,7 +103,7 @@ objects:
     metadata:
       creationTimestamp: null
       labels:
-        app: cthub
+        app: itvr
         role: minio
         env: ${ENV_NAME}
       name: ${NAME}-minio${SUFFIX}
@@ -199,7 +199,7 @@ objects:
                   command:
                     - /bin/sh
                     - '-c'
-                    - mkdir -p /data/cthub
+                    - mkdir -p /data/itvr
                 failureThreshold: 3
                 initialDelaySeconds: 25
                 periodSeconds: 10

@@ -18,11 +18,11 @@ parameters:
     required: true
   - name: GIT_URL
     displayName:
-    description: cthub repo
+    description: itvr repo
     required: true
   - name: GIT_REF
     displayName:
-    description: cthub branch name of the pr
+    description: itvr branch name of the pr
     required: true
 objects:
 - apiVersion: image.openshift.io/v1

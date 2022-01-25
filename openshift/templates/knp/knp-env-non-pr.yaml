@@ -2,9 +2,9 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: cthub-network-policy
+  template: itvr-network-policy
 metadata:
-  name: cthub-network-policy
+  name: itvr-network-policy
 parameters:
   - name: ENVIRONMENT
     displayName: null
@@ -19,7 +19,7 @@ objects:
       ## Allow minio to accept communication from nagios
       podSelector:
         matchLabels:
-          app: cthub-minio-${ENVIRONMENT}
+          app: itvr-minio-${ENVIRONMENT}
       ingress:
         - from:
             - podSelector:

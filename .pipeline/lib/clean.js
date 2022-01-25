@@ -2,16 +2,16 @@
 const { OpenShiftClientX } = require("@bcgov/pipeline-cli");
 
 // The clean tasks should be based on the following five labels added by BCDK pipeline
-// app: cthub-dev-45
+// app: itvr-dev-45
 // template-hash: 5ee0ba9e32efa8ac4d0ed2b9923ea2be3ddda2f4
 // github-owner: bcgov
 // env-name: dev
 // app.kubernetes.io/component: database
 // app.kubernetes.io/managed-by: template
-// app-name: cthub
+// app-name: itvr
 // app.kubernetes.io/name: patroni
 // env-id: '45'
-// github-repo: cthub
+// github-repo: itvr
 
 const getTargetPhases = (env, phases) => {
   let target_phase = [];

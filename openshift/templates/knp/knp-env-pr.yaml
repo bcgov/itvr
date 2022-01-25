@@ -2,9 +2,9 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: cthub-network-policy
+  template: itvr-network-policy
 metadata:
-  name: cthub-network-policy
+  name: itvr-network-policy
 parameters:
   - name: SUFFIX
     displayName: null
@@ -23,12 +23,12 @@ objects:
       ## Allow backend to accept communication from frontend
       podSelector:
         matchLabels:
-          name: cthub-backend${SUFFIX}
+          name: itvr-backend${SUFFIX}
       ingress:
         - from:
             - podSelector:
                 matchLabels:
-                  name: cthub-frontend${SUFFIX}
+                  name: itvr-frontend${SUFFIX}
           ports:
             - protocol: TCP
               port: 8080
@@ -45,7 +45,7 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  name: cthub-backend${SUFFIX}
+                  name: itvr-backend${SUFFIX}
           ports:
             - protocol: TCP
               port: 5432
@@ -57,12 +57,12 @@ objects:
       ## Allow minio to accept communication from backend
       podSelector:
         matchLabels:
-          app: cthub-minio-${ENVIRONMENT}
+          app: itvr-minio-${ENVIRONMENT}
       ingress:
         - from:
             - podSelector:
                 matchLabels:
-                  name: cthub-backend${SUFFIX}
+                  name: itvr-backend${SUFFIX}
           ports:
             - protocol: TCP
               port: 9000                  
@@ -181,7 +181,7 @@ objects:
       ## Allow backend to accept communication from schemaspy
       podSelector:
         matchLabels:
-          name: cthub-backend${SUFFIX}
+          name: itvr-backend${SUFFIX}
       ingress:
         - from:
             - podSelector:

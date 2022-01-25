@@ -36,10 +36,10 @@ objects:
 # - apiVersion: v1
 #   kind: ServiceAccount
 #   metadata:
-#     name: cthub-superset
+#     name: itvr-superset
 #     labels:
-#       app: cthub-superset
-#       service: cthub-superset
+#       app: itvr-superset
+#       service: itvr-superset
 # - apiVersion: v1
 #   kind: Service
 #   metadata:
@@ -47,8 +47,8 @@ objects:
 #       openshift.io/generated-by: OpenShiftWebConsole
 #     creationTimestamp: null
 #     labels:
-#       app: cthub-superset
-#     name: cthub-superset
+#       app: itvr-superset
+#     name: itvr-superset
 #   spec:
 #     ports:
 #     - name: superset-web
@@ -56,7 +56,7 @@ objects:
 #       protocol: TCP
 #       targetPort: 8080
 #     selector:
-#       deploymentconfig: cthub-superset
+#       deploymentconfig: itvr-superset
 #     sessionAffinity: None
 #     type: ClusterIP
 #   status:
@@ -68,8 +68,8 @@ objects:
 #       openshift.io/host.generated: "true"
 #     creationTimestamp: null
 #     labels:
-#       app: cthub-superset
-#     name: cthub-superset
+#       app: itvr-superset
+#     name: itvr-superset
 #   spec:
 #     host: superset-${ENV_NAME}.apps.silver.devops.gov.bc.ca
 #     path: /
@@ -80,7 +80,7 @@ objects:
 #       termination: edge
 #     to:
 #       kind: Service
-#       name: cthub-superset
+#       name: itvr-superset
 #       weight: 100
 #     wildcardPolicy: None
 - kind: PersistentVolumeClaim

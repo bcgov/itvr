@@ -34,7 +34,7 @@ objects:
       contextDir: openshift/templates/metabase
       git:
         ref: metabase-docker-0.1.0
-        uri: https://github.com/bcgov/cthub.git
+        uri: https://github.com/bcgov/itvr.git
       type: Git
     strategy:
       dockerStrategy:

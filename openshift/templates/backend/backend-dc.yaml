@@ -2,11 +2,11 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: cthub-backend-dc
+  name: itvr-backend-dc
 parameters:
   - name: NAME
     displayName: null
-    description: 'the module name entered when run yo bcdk:pipeline, which is cthub'
+    description: 'the module name entered when run yo bcdk:pipeline, which is itvr'
     required: true
   - name: SUFFIX
     displayName: null
@@ -81,7 +81,7 @@ objects:
       name: '${NAME}-backend${SUFFIX}'
       labels:
         name: backend
-        app: cthub
+        app: itvr
         role: backend
         env: '${ENV_NAME}'
     spec:
@@ -104,7 +104,7 @@ objects:
         haproxy.router.openshift.io/timeout: 1200s      
       labels:
         name: backend
-        app: cthub
+        app: itvr
         role: backend
         env: '${ENV_NAME}'
       name: ${NAME}-backend${SUFFIX}
@@ -127,7 +127,7 @@ objects:
 #      creationTimestamp: null
 #      labels:
 #        name: backend
-#        app: cthub
+#        app: itvr
 #        role: backend
 #        env: '${ENV_NAME}'
 #      name: '${NAME}-backend-health${SUFFIX}'
@@ -193,7 +193,7 @@ objects:
                 - name: DB_HOST
                   value: patroni-master${SUFFIX}
                 - name: DB_NAME
-                  value: cthub
+                  value: itvr
                 - name: DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -211,17 +211,17 @@ objects:
                 - name: KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
-                      name: cthub-keycloak
+                      name: itvr-keycloak
                       key: KEYCLOAK_CLIENT_ID
                 - name: KEYCLOAK_REALM
                   valueFrom:
                     secretKeyRef:
-                      name: cthub-keycloak
+                      name: itvr-keycloak
                       key: KEYCLOAK_REALM
                 - name: KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
-                      name: cthub-keycloak
+                      name: itvr-keycloak
                       key: KEYCLOAK_URL                                  
                 - name: LOCAL_DEV
                   value: "false"

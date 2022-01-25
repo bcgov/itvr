@@ -2,11 +2,11 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: cthub-backend-bc
+  name: itvr-backend-bc
 parameters:
   - name: NAME
     displayName:
-    description: the module name entered when run yo bcdk:pipeline, which is cthub
+    description: the module name entered when run yo bcdk:pipeline, which is itvr
     required: true
   - name: SUFFIX
     displayName:
@@ -18,11 +18,11 @@ parameters:
     required: true
   - name: GIT_URL
     displayName:
-    description: cthub repo
+    description: itvr repo
     required: true
   - name: GIT_REF
     displayName:
-    description: cthub branch name of the pr
+    description: itvr branch name of the pr
     required: true
 objects:
   - apiVersion: image.openshift.io/v1
