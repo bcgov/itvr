@@ -2,7 +2,6 @@ from ftplib import FTP
 from io import StringIO
 
 import sys
-from tkinter import W
 
 ftp = FTP(host='localhost', user='user',passwd='1234')
 
