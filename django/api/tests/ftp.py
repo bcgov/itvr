@@ -1,5 +1,6 @@
 from ftplib import FTP
 from io import StringIO
+import re
 
 import sys
 
@@ -21,8 +22,10 @@ sys.stdout = old_stdout
 # Grab the string and create array of files
 listing = result.getvalue().splitlines()
 
-# Print output
-print(listing)
+
+for line in listing:
+  file = re.findall('.* (.*)',line)[0]
+  print(file)
 
 # Close connection
 ftp.close()
