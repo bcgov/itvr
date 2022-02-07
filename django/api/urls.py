@@ -1,5 +1,4 @@
 """api URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
 Examples:
@@ -13,13 +12,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from rest_framework import routers
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
+from django.views.generic import TemplateView
+from rest_framework import routers
+
+from api.viewsets.rushing_stats import RushingStatsViewset
+from api.viewsets.application_form import ApplicationFormViewset
 
 ROUTER = routers.SimpleRouter(trailing_slash=False)
 
+ROUTER.register(
+    r'rushing-stats/?$', RushingStatsViewset, basename='rushing-stats'
+)
+ROUTER.register(
+    r'application-form/?$', ApplicationFormViewset, basename='application-form'
+)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(ROUTER.urls)),
+    re_path(".*", TemplateView.as_view(template_name="index.html")),
 ]

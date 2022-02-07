@@ -30,11 +30,12 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL', False) == 'True'
 CORS_ORIGIN_WHITELIST = [
-    os.getenv('CORS_ORIGIN_WHITELIST', 'https://localhost:3000')
+    os.getenv('CORS_ORIGIN_WHITELIST', 'https://localhost:3000'),
 ]
 
 # Application definition
-
+CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
+CSRF_COOKIE_SECURE = True
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'corsheaders',
