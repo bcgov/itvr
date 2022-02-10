@@ -1,0 +1,1 @@
+@hourly /usr/local/bin/python3 /api/manage.py runjobs hourly
