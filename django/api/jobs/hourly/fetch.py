@@ -8,4 +8,5 @@ class Job(HourlyJob):
         # executing empty sample job
         file = open('cron.log','a')
         file.write('Cron has run')
+        file.close()
         pass
