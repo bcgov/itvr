@@ -6,5 +6,6 @@ class Job(HourlyJob):
 
     def execute(self):
         # executing empty sample job
-        print('yo')
+        file = open('cron.log','a')
+        file.write('Cron has run')
         pass
