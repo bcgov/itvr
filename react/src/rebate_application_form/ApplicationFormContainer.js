@@ -23,10 +23,10 @@ const ApplicationFormContainer = () => {
   useEffect(() => {
     setLoading(true);
     // do an axios get for whatever informaion we need to retrieve for the form to be filled
-    axios.get(ROUTES_APPLICATION.LIST)
-      .then((response)=>{
-        console.log(response.data)
-        setDetails(response.data)})
+    // axios.get(ROUTES_APPLICATION.LIST)
+    //   .then((response)=>{
+    //     console.log(response.data)
+    //     setDetails(response.data)})
     setLoading(false);
   }, []);
   return (
