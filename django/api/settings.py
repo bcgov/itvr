@@ -29,13 +29,15 @@ TESTING = 'test' in sys.argv
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL', False) == 'True'
+CORS_ALLOW_CREDENTIALS = False
 CORS_ORIGIN_WHITELIST = [
     os.getenv('CORS_ORIGIN_WHITELIST', 'https://localhost:3000'),
 ]
 
-# Application definition
 CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
+
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'corsheaders',
@@ -53,10 +55,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
@@ -128,6 +130,7 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, "../", "frontend", "public", "root")
 
 # Django Rest Framework Settings
 REST_FRAMEWORK = {
+    
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'api.keycloak_authentication.KeycloakAuthentication',
     ],

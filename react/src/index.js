@@ -14,16 +14,19 @@ if (settings.ENABLE_KEYCLOAK) {
   ReactDOM.render(
     <>
       <ReactKeycloakProvider
+      
         authClient={keycloak}
         LoadingComponent={(<div>Loading...</div>)}
         isLoadingCheck={(kc) => (!kc || !axios.defaults.headers.common.Authorization)}
         onTokens={(keycloakTokens) => {
+
           const { token } = keycloakTokens;
 
           if (!token || !keycloak.authenticated) {
             return keycloak.login({ idpHint: 'bceid' });
           }
-
+          axios.defaults.xsrfCookieName = 'csrftoken';
+          axios.defaults.xsrfHeaderName = 'X-CSRFToken';
           axios.defaults.headers.common.Authorization = `Bearer ${token}`;
           return true;
         }}

@@ -9,7 +9,7 @@ import settings from './app/settings';
 import ApplicationFormContainer from './rebate_application_form/ApplicationFormContainer';
 
 const { API_BASE } = settings;
-
+axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_BASE;
 
 const App = () => (

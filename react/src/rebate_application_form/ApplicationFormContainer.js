@@ -2,8 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import ApplicationFormPage from './components/ApplicationFormPage';
 import ROUTES_APPLICATION from './routes';
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
 
 const ApplicationFormContainer = () => {
   const [data, setData] = useState([]);
@@ -27,8 +26,9 @@ const ApplicationFormContainer = () => {
     // do an axios get for whatever informaion we need to retrieve for the form to be filled
     axios.get(ROUTES_APPLICATION.LIST)
       .then((response)=>{
-        console.log(response.data)
-        setDetails(response.data)})
+        console.log(response.data);
+        setDetails(response.data);
+      })
     setLoading(false);
   }, []);
   return (
