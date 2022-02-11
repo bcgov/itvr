@@ -6,7 +6,7 @@ import { Switch } from 'react-router';
 import { Route, BrowserRouter } from 'react-router-dom';
 
 import settings from './app/settings';
-import RusingStatsContainer from './rushing_stats/RusingStatsContainer';
+import ApplicationFormContainer from './rebate_application_form/ApplicationFormContainer';
 
 const { API_BASE } = settings;
 
@@ -27,7 +27,7 @@ const App = () => (
         <Switch>
           <Route
             path="/"
-            component={RusingStatsContainer}
+            component={ApplicationFormContainer}
           />
         </Switch>
       </BrowserRouter>
