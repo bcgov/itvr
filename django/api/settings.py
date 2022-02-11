@@ -38,6 +38,7 @@ CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_NAME = "XSRF-TOKEN"
 
+# Application definition
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'corsheaders',
