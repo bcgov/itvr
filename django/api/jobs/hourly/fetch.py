@@ -6,7 +6,7 @@ class Job(HourlyJob):
 
     def execute(self):
         # executing empty sample job
-        file = open('cron.log','a')
+        file = open('/api/cron.log','a')
         file.write('Cron has run')
         file.close()
         pass
