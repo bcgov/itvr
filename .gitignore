@@ -23,3 +23,4 @@ coverage/
 minio/minio_files/
 decoder.env
 *.swp
+cron.log
