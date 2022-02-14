@@ -1,8 +1,10 @@
-FROM node
+FROM node:14
 
 WORKDIR /web
-COPY . /web/
 
-RUN npm install --legacy-peer-deps
+COPY package*.json /web/
+RUN npm install
+
+COPY . .
 
 EXPOSE 3000

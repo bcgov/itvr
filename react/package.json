@@ -44,7 +44,7 @@
       "webpack-cli": "^4.7.0"
     },
     "scripts": {
-      "start": "export NODE_OPTIONS=--openssl-legacy-provider; node start",
+      "start": "node start",
       "build": "webpack"
     }
   }
