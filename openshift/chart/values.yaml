@@ -1,0 +1,57 @@
+defaultImageTag: latest # set to the GIT SHA1 in the Makefile
+defaultImagePullPolicy: IfNotPresent
+
+replicaCount: 2
+
+image:
+  psql:
+    repository: gcr.io/ggl-cas-storage/cas-postgres
+    tag: "0.3.0"
+
+cas-postgres:
+  patroni:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 50m
+        memory: 600Mi
+    persistentVolume:
+      size: 5Gi
+      storageClass: netapp-block-standard
+    replicaCount: 3
+    env:
+      ALLOW_NOSSL: true
+      USE_WALG_BACKUP: "true"
+      USE_WALG_RESTORE: "true"
+    walE:
+      enable: true
+      gcsBucket: ~
+      # kubernetesSecret should be gcp-{{ namespace }}-{{ gcs.bucketSuffix }}-service-account-key
+      kubernetesSecret: ~
+    # options below are required if walE.enable is true
+  namespace: ~
+  gcs:
+    bucketSuffix: ~
+
+db:
+  name: cif
+  appUser: cif_app
+  ownerUser: cif
+  preInitCommand: ""
+
+resources:
+  limits:
+    cpu: 800m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
