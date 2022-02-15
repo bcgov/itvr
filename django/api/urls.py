@@ -26,7 +26,7 @@ ROUTER.register(
     r'rushing-stats/?$', RushingStatsViewset, basename='rushing-stats'
 )
 ROUTER.register(
-    r'application-form/?$', ApplicationFormViewset, basename='application-form'
+    r'application-form?$', ApplicationFormViewset, basename='application-form'
 )
 urlpatterns = [
     path('admin/', admin.site.urls),

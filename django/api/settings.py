@@ -28,15 +28,18 @@ TESTING = 'test' in sys.argv
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
-CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL', False) == 'True'
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = False
-CORS_ORIGIN_WHITELIST = [
-    os.getenv('CORS_ORIGIN_WHITELIST', 'https://localhost:3000'),
-]
+# CORS_ORIGIN_WHITELIST = [
+#     os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000'),
+# ]
 
-CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_NAME = "XSRF-TOKEN"
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_NAME = 'XSRF-TOKEN'
+
+# SESSION_COOKIE_SECURE = False
+# SESSION_COOKIE_SAMESITE = 'None'
 
 # Application definition
 INSTALLED_APPS = [
@@ -50,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +164,5 @@ MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', None)
 MINIO_USE_SSL = bool(
     os.getenv('MINIO_USE_SSL', 'False').lower() in ['true', 1]
 )
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
