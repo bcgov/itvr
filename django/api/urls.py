@@ -16,21 +16,16 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from rest_framework import routers
-# from django.views.decorators.csrf import ensure_csrf_cookie
 
-from api.viewsets.rushing_stats import RushingStatsViewset
 from api.viewsets.application_form import ApplicationFormViewset
 
 ROUTER = routers.SimpleRouter(trailing_slash=False)
 
-ROUTER.register(
-    r'rushing-stats/?$', RushingStatsViewset, basename='rushing-stats'
-)
 ROUTER.register(
     r'application-form?$', ApplicationFormViewset, basename='application-form'
 )
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(ROUTER.urls)),
-    re_path(".*", TemplateView.as_view(template_name="index.html")),
+    re_path('/', TemplateView.as_view(template_name='index.html')),
 ]
