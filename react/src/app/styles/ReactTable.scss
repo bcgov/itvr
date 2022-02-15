@@ -39,7 +39,7 @@ Base styling for any React Table
     }
 
     .rt-th {
-      background-color: $bg-alt-black;
+
       padding: 0.5rem;
 
       &.-sort-asc {
@@ -58,7 +58,7 @@ Base styling for any React Table
     &:hover {
       .rt-td {
         background-color: $default-table-color;
-        color: $bg-alt-black;
+
       }
     }
 
