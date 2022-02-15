@@ -26,7 +26,7 @@ if (settings.ENABLE_KEYCLOAK) {
             return keycloak.login({ idpHint: 'bceid' });
           }
           axios.defaults.xsrfCookieName = 'csrftoken';
-          axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+          axios.defaults.xsrfHeaderName = 'x-csrftoken';
           axios.defaults.headers.common.Authorization = `Bearer ${token}`;
           return true;
         }}

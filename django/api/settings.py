@@ -26,20 +26,17 @@ SECRET_KEY = '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
 DEBUG = True
 TESTING = 'test' in sys.argv
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = False
-# CORS_ORIGIN_WHITELIST = [
-#     os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000'),
-# ]
-
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-# CSRF_COOKIE_SECURE = True
-# CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 
 # SESSION_COOKIE_SECURE = False
 # SESSION_COOKIE_SAMESITE = 'None'
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+CORS_PREFLIGHT_MAX_AGE = 0
 
 # Application definition
 INSTALLED_APPS = [
@@ -60,10 +57,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]

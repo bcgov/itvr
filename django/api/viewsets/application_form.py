@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 # from django.views.decorators.csrf import csrf_exempt
 # from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
