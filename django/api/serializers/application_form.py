@@ -1,7 +1,10 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.income_verification import IncomeVerification
 
-class ApplicationFormSaveSerializer(ModelSerializer):
+class ApplicationFormCreateSerializer(ModelSerializer):
+    class Meta:
+        model = IncomeVerification
+        fields = '__all__'
 
     def create(self, validated_data):
         request = self.context.get('request')
