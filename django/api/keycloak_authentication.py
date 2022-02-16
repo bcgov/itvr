@@ -32,10 +32,6 @@ class KeycloakAuthentication(authentication.BaseAuthentication):
             realm_name=settings.KEYCLOAK_REALM
         )
 
-        print(settings.KEYCLOAK_URL)
-        print(settings.KEYCLOAK_CLIENT_ID)
-        print(settings.KEYCLOAK_REALM)
-
         # Decode the token from the front-end
         KEYCLOAK_PUBLIC_KEY = \
             "-----BEGIN PUBLIC KEY-----\n" + \
@@ -54,14 +50,8 @@ class KeycloakAuthentication(authentication.BaseAuthentication):
             options=options
         )
 
-        print("TOKEN INFO")
-        print(token_info)
-
         # Get the user from the keycloak server based on the token
         user_info = keycloak_openid.userinfo(token)
-
-        print("USER INFO")
-        print(user_info)
 
         if user_info.get('preferred_username') != \
                 token_info.get('preferred_username'):

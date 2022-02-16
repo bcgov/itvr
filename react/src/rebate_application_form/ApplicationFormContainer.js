@@ -17,7 +17,6 @@ const ApplicationFormContainer = () => {
     });
   };
   const handleSubmit = () => {
-    console.log(details);
     axios.post(ROUTES_APPLICATION.SAVE, { details })
       .then((response) => { console.log(response); });
   };
