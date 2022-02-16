@@ -8,16 +8,14 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        print(request)
+        details = request.data.get('details')
         obj = IncomeVerification.objects.create(
-            sin=request.data.get('sin'),
-            last_name=request.data.get('last_name'),
-            first_name=request.data.get('first_name'),
-            date_of_birth=request.data.get('dob'),
-            tax_year=request.data.get('tax_year'),
-
+            sin=details.get('sin'),
+            last_name=details.get('last_name'),
+            first_name=details.get('first_name'),
+            date_of_birth=details.get('dob'),
+            tax_year=details.get('tax_year'),            
         )
-
         return obj
 
 

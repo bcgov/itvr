@@ -21,8 +21,8 @@ const ApplicationFormPage = (props) => {
         <div>
           <TextField
             required
-            name="SIN"
-            id="SIN"
+            name="sin"
+            id="sin"
             label="Social Insurance Number"
             onInput={(event) => { handleInputChange(event); }}
           />
@@ -30,7 +30,7 @@ const ApplicationFormPage = (props) => {
         <div>
           <TextField
             required
-            name="surname"
+            name="last_name"
             id="outlined-helperText"
             label="Surname"
             inputProps={
@@ -42,7 +42,7 @@ const ApplicationFormPage = (props) => {
         <div>
           <TextField
             required
-            name="firstname"
+            name="first_name"
             id="outlined-helperText"
             label="First Name"
             inputProps={
@@ -67,7 +67,7 @@ const ApplicationFormPage = (props) => {
         <div>
           <TextField
             required
-            name="taxyear"
+            name="tax_year"
             id="outlined-helperText"
             label="Tax Year"
             helperText=""
