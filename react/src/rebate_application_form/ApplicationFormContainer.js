@@ -1,11 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import ApplicationFormPage from './components/ApplicationFormPage';
 import ROUTES_APPLICATION from './routes';
 
-
 const ApplicationFormContainer = () => {
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({});
 
@@ -20,12 +18,7 @@ const ApplicationFormContainer = () => {
     axios.post(ROUTES_APPLICATION.SAVE, { details })
       .then((response) => { console.log(response); });
   };
-  useEffect(() => {
-    setLoading(true);
-    // do an axios get for whatever informaion we need to retrieve for the form to be filled
 
-    setLoading(false);
-  }, []);
   return (
     <div>
       <ApplicationFormPage

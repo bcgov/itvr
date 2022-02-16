@@ -1,12 +1,11 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 
 const ApplicationFormPage = (props) => {
   const {
-    loading, handleInputChange, details, handleSubmit,
+     handleInputChange, handleSubmit,
   } = props;
   return (
     <div>
