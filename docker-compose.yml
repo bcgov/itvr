@@ -1,4 +1,4 @@
-version: "3.9"
+version: "2.4"
 
 services:
   db:
@@ -7,11 +7,18 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   keycloak:
     build:
       context: ./keycloak
       args:
-        - KEYCLOAK_FRONTEND_URL=http://localhost:8080/auth
+        - KEYCLOAK_FRONTEND_URL=http://keycloak:8080/auth
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=admin
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -35,9 +42,6 @@ services:
     env_file:
       - keycloak.env
     environment: 
-      - ALLOWED_HOSTS=localhost
-      - CORS_ORIGIN_ALLOW_ALL=False
-      - CORS_ORIGIN_WHITELIST=http://localhost:3000
       - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST=db
       - DB_NAME=postgres
@@ -50,7 +54,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   web:
     build: ./react
     command: npm start
