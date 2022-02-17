@@ -52,6 +52,7 @@ class KeycloakAuthentication(authentication.BaseAuthentication):
 
         # Get the user from the keycloak server based on the token
         user_info = keycloak_openid.userinfo(token)
+
         if user_info.get('preferred_username') != \
                 token_info.get('preferred_username'):
             raise exceptions.AuthenticationFailed(

@@ -26,15 +26,21 @@ SECRET_KEY = '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
 DEBUG = True
 TESTING = 'test' in sys.argv
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
-CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL', False) == 'True'
-CORS_ORIGIN_WHITELIST = [
-    os.getenv('CORS_ORIGIN_WHITELIST', 'https://localhost:3000')
-]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_PREFLIGHT_MAX_AGE = 0
+
+SESSION_COOKIE_SECURE = not DEBUG
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_DOMAIN = 'localhost'
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False         
+#CSRF_COOKIE_SAMESITE = 'Strict'
 
 # Application definition
-
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'corsheaders',
@@ -46,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -127,6 +134,7 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, "../", "frontend", "public", "root")
 
 # Django Rest Framework Settings
 REST_FRAMEWORK = {
+    
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'api.keycloak_authentication.KeycloakAuthentication',
     ],
@@ -155,3 +163,5 @@ MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', None)
 MINIO_USE_SSL = bool(
     os.getenv('MINIO_USE_SSL', 'False').lower() in ['true', 1]
 )
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
