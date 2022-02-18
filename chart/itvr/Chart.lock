@@ -1,0 +1,6 @@
+dependencies:
+- name: patroni
+  repository: https://bcgov.github.io/cas-postgres/
+  version: 0.21.3
+digest: sha256:bd6d63914b21e996e1487a07b287e16bcb06b1124ae9786ba76bbf07f94aa204
+generated: "2022-02-15T14:29:31.377087-08:00"
