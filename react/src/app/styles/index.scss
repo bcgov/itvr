@@ -1,11 +1,12 @@
 /*
 Base Style
-Everything else will generally be controlled via bootstrap
 */
 
-
+@import 'variables.scss';
 @import 'App.scss';
 @import 'ReactTable.scss';
+
+
 /* BC Sans Regular */
 @font-face {
   font-family: "BCSans";
@@ -34,30 +35,7 @@ Everything else will generally be controlled via bootstrap
   src: url('./fonts/BCSans-Italic.woff') format('woff');
 }
 
-// Variables for colors //
-$text-blue-paragraph: #002a4e;
 
-$text-heading-blue: #0090b5;
-
-$text-link-blue: #1A5A96;
-$text-link-orange: #FCBC19;
-
-$white: #FFFFFF;
-
-$background-grey-light: #EDEBEB;
-$background-grey-dark: #8c847c;
-
-$button-blue: #003155;
-
-//*************
-// this is used on react table and came in with the scaffolding
-$bg-alt-black: #1E1F21;
-$bg-black: #000;
-$bg-white: #FFF;
-$default-table-border-color: rgba(249, 249, 249, 0.2);
-$default-table-color: #F9F9F9;
-$highlight: #0078FD; 
-// **************
 
 h1 {
   font-size: 2rem;
