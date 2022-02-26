@@ -24,6 +24,7 @@ module.exports = settings => {
   // The deployment of your cool app goes here ▼▼▼
 
   //create network security policies for internal pod to pod communications
+  /*
   if(phase === 'dev') {
 
     objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/knp/knp-env-pr.yaml`, {
@@ -52,7 +53,8 @@ module.exports = settings => {
       }
     }))
   }
-
+  */
+/*
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc.yaml`, {
     'param': {
       'NAME': phases[phase].name,
@@ -66,7 +68,7 @@ module.exports = settings => {
       'MEMORY_LIMIT': phases[phase].frontendMemoryLimit,
       'REPLICAS':  phases[phase].frontendReplicas
     }
-  }))
+  }))*/
   
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/backend/backend-dc.yaml`, {
     'param': {
