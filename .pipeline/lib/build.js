@@ -11,7 +11,7 @@ module.exports = settings => {
   const templatesLocalBaseUrl = oc.toFileUrl(path.resolve(__dirname, "../../openshift"));
 
   // The building of your cool app goes here ▼▼▼
-/*
+
   // build frontend
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-bc.yaml`, {
     'param':{
@@ -22,7 +22,7 @@ module.exports = settings => {
       'GIT_REF': oc.git.ref
     }
   }))
-*/
+
   //build backend
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/backend/backend-bc.yaml`, {
     'param':{

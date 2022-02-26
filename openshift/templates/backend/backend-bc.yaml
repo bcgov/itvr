@@ -56,10 +56,10 @@ objects:
       resources:
         limits:
           cpu: 300m
-          memory: 2G
+          memory: 2Gi
         requests:
           cpu: 100m
-          memory: 200M
+          memory: 200Mi
       runPolicy: SerialLatestOnly
       source:
         contextDir: django

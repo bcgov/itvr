@@ -12,6 +12,10 @@
 
 2. Create template secret template.django-secret
 
+3. create user for itvr database, create user [username] with password '[password]';
+
+4. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'; 
+
 #### After pipeline completes
 
 1. After pipeline completes, create autoscaler for backend
