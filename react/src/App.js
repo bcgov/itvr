@@ -19,9 +19,9 @@ const App = () => (
         <a href="http://www.gov.bc.ca">
           <div className="brand-logo" />
         </a>
-          <h1>
-            Income Tested Verified Rebates
-          </h1>
+        <h1>
+          Income Tested Verified Rebates
+        </h1>
       </div>
     </header>
 
