@@ -1,10 +1,13 @@
-FROM node:14
+FROM node:16
+
+RUN mkdir /web && chown node:node /web
 
 WORKDIR /web
 
-COPY package*.json /web/
-RUN npm install
+COPY --chown=node:node package.json package-lock.json* ./
+USER node
+RUN npm install --legacy-peer-deps && npm cache clean --force
 
-COPY . .
+COPY --chown=node:node . .
 
 EXPOSE 3000
