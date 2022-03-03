@@ -6,7 +6,6 @@ __pycache__/
 .minio.sys/
 .pyc
 .sql.gz
-.vscode/
 *.py[cod]
 build/
 db.sqlite3

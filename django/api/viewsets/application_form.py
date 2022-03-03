@@ -16,7 +16,6 @@ class ApplicationFormViewset(ModelViewSet):
     serializer_classes = {
         'default': ApplicationFormSerializer,
         'create': ApplicationFormCreateSerializer,
-
     }
 
     def get_serializer_class(self):
