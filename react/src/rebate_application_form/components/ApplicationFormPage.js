@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import React, { useState } from 'react';
+import React from 'react';
 import TextField from '@mui/material/TextField';
 
 const ApplicationFormPage = (props) => {

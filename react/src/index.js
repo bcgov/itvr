@@ -14,12 +14,10 @@ if (settings.ENABLE_KEYCLOAK) {
   ReactDOM.render(
     <>
       <ReactKeycloakProvider
-      
         authClient={keycloak}
         LoadingComponent={(<div>Loading...</div>)}
         isLoadingCheck={(kc) => (!kc || !axios.defaults.headers.common.Authorization)}
         onTokens={(keycloakTokens) => {
-
           const { token } = keycloakTokens;
 
           if (!token || !keycloak.authenticated) {
