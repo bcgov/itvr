@@ -5,22 +5,17 @@ metadata:
   name: itvr-dotnet-core-bc
 parameters:
   - name: NAME
+    value: itvr
     displayName:
     description: the module name entered when run yo bcdk:pipeline, which is itvr
     required: true
-  - name: SUFFIX
-    displayName:
-    description: sample is -pr-0
-    required: true
-  - name: VERSION
-    displayName:
-    description:  image tag name for output
-    required: true
   - name: GIT_URL
+    value: https://github.com/bcgov/itvr.git
     displayName:
     description: itvr repo
     required: true
   - name: GIT_REF
+    value: dotnet-0.1.0
     displayName:
     description: itvr branch name of the pr
     required: true
@@ -45,13 +40,13 @@ objects:
       annotations:
         description: Defines how to build the application
       creationTimestamp: null
-      name: ${NAME}-dotnet-core${SUFFIX}
+      name: ${NAME}-dotnet-core
     spec:
       nodeSelector: null
       output:
         to:
           kind: ImageStreamTag
-          name: ${NAME}-dotnet-core:${VERSION}
+          name: ${NAME}-dotnet-core:0.1.0
       postCommit: {}
       resources:
         limits:
