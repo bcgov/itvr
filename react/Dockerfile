@@ -1,8 +1,8 @@
 FROM node:16
 
-RUN mkdir /web && chown node:node /web
+RUN mkdir /usr/src/app && chown node:node /usr/src/app
 
-WORKDIR /web
+WORKDIR /usr/src/app
 
 COPY --chown=node:node package.json package-lock.json* ./
 USER node

@@ -7,6 +7,7 @@ import { Route, BrowserRouter } from 'react-router-dom';
 
 import settings from './app/settings';
 import ApplicationFormContainer from './rebate_application_form/ApplicationFormContainer';
+import Main from './Main';
 
 const { API_BASE } = settings;
 axios.defaults.withCredentials = true;
@@ -30,6 +31,10 @@ const App = () => (
         <Switch>
           <Route
             path="/"
+            component={Main}
+          />
+          <Route
+            path="/form"
             component={ApplicationFormContainer}
           />
         </Switch>
