@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 
 export default () => {
@@ -16,7 +16,7 @@ export default () => {
         BCeID
       </button>
 
-      <button type="button" onClick={() => keycloak.login({ idpHint: 'idir' })}>
+      <button type="button" onClick={() => keycloak.login({ idpHint: 'idir', redirectUri: 'http://localhost:3000/admin' })}>
         IDIR
       </button>
     </div>

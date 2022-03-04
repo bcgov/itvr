@@ -1,12 +1,14 @@
-import * as React from 'react';
-import { useKeycloak } from '@react-keycloak/web';
+import React from 'react';
 
-export default () => {
-  const { keycloak } = useKeycloak();
+const Admin = () => (
+  <div>
+    Hello IDIR
 
-  return (
-    <div>
-      Hello IDIR
-    </div>
-  );
-};
+    {/* <Routes>
+      <Route path=":id" element={<UserProfile />} />
+      <Route path="me" element={<OwnUserProfile />} />
+    </Routes> */}
+  </div>
+);
+
+export default Admin;

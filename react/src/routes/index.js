@@ -1,29 +1,33 @@
-import * as React from 'react';
-import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
-
+import React from 'react';
+import {
+  BrowserRouter, Routes, Route, Navigate,
+} from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
 
-import HomePage from '../pages';
+import Home from '../pages';
 import FormPage from '../pages/Form';
-import AdminPage from '../pages/admin';
+import Admin from '../pages/admin';
 
-import PrivateRoute from './private';
-
-const AppRouter = () => {
-  const { initialized } = useKeycloak();
-
-  if (!initialized) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <Router>
-      {/* <Redirect from="/" to="/home" /> */}
-      <Route path="/" component={HomePage} />
-      <PrivateRoute path="/form" component={FormPage} />
-      <PrivateRoute path="/admin" component={AdminPage} />
-    </Router>
-  );
+const RequireAuth = ({ children, redirectTo }) => {
+  const { keycloak } = useKeycloak();
+  console.log('checking keycloak');
+  return keycloak.authenticated ? children : <Navigate to={redirectTo} />;
 };
+
+const AppRouter = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route
+        path="/admin"
+        element={(
+          <RequireAuth redirectTo="/">
+            <Admin />
+          </RequireAuth>
+        )}
+      />
+    </Routes>
+  </BrowserRouter>
+);
 
 export default AppRouter;

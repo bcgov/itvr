@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 
 import keycloak from './keycloak';
-import settings from './settings';
 
 import './styles/index.scss';
 
@@ -24,18 +23,15 @@ const initOptions = {
   redirectUri: `${window.location.origin}/`,
 };
 
-if (settings.ENABLE_KEYCLOAK) {
-  ReactDOM.render(
-    <ReactKeycloakProvider
-      authClient={keycloak}
-      onEvent={eventLogger}
-      onTokens={tokenLogger}
-      initOptions={initOptions}
-    >
-      <AppRouter />
-    </ReactKeycloakProvider>,
-    document.getElementById('root'),
-  );
-} else {
-  ReactDOM.render(<AppRouter />, document.getElementById('root'));
-}
+ReactDOM.render(
+  <ReactKeycloakProvider
+    authClient={keycloak}
+    onEvent={eventLogger}
+    onTokens={tokenLogger}
+    initOptions={initOptions}
+    LoadingComponent={<div>Loading</div>}
+  >
+    <AppRouter />
+  </ReactKeycloakProvider>,
+  document.getElementById('root'),
+);
