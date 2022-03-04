@@ -12,7 +12,7 @@ export default () => {
         </button>
       )}
 
-      <button type="button" onClick={() => keycloak.login({ idpHint: 'bceid-basic' })}>
+      <button type="button" onClick={() => keycloak.login({ idpHint: 'bceid-basic', redirectUri: 'http://localhost:3000/admin' })}>
         BCeID
       </button>
 

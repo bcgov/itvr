@@ -12,16 +12,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  # keycloak:
-  #   build:
-  #     context: ./keycloak
-  #     args:
-  #       - KEYCLOAK_FRONTEND_URL=http://keycloak:8080/auth
-  #       - KEYCLOAK_USER=admin
-  #       - KEYCLOAK_PASSWORD=admin
-  #   ports:
-  #     - "8080:8080"
-  #     - "8443:8443"
   minio:
     image: minio/minio
     hostname: "minio"
@@ -56,17 +46,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  web:
-    build: ./react
-    command: npm start
-    env_file:
-      - keycloak.env
-    environment: 
-      - API_BASE=http://localhost:8000
-      - ENABLE_KEYCLOAK=true
-    user: 'node:node'
-    volumes:
-      - ./react:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - "3000:3000"
+  # web:
+  #   build: ./frontend
+  #   command: npm start
+  #   env_file:
+  #     - keycloak.env
+  #   volumes:
+  #     - ./frontend:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - "3000:3000"
