@@ -4,6 +4,7 @@ Base Style
 
 @import 'variables.scss';
 @import 'App.scss';
+@import 'EligibilityPage.scss';
 
 
 /* BC Sans Regular */
@@ -35,20 +36,29 @@ Base Style
 }
 
 
-
+p, table, li {
+  font-size: 1.2rem;
+}
 h1 {
   font-size: 2rem;
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 h3 {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
+}
+h4 {
+  font-size: 1.5rem;
+
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
+  color: #000000;
+}
+h3, h4, h5, h6 {
   color: $text-heading-blue;
   font-weight: bold;
   margin: 0;
