@@ -6,7 +6,7 @@ import { Switch } from 'react-router';
 import { Route, BrowserRouter } from 'react-router-dom';
 
 import settings from './app/settings';
-import ApplicationFormContainer from './rebate_application_form/ApplicationFormContainer';
+import EligibilityPageContainer from './eligibility_page/EligibilityPageContainer';
 
 const { API_BASE } = settings;
 axios.defaults.withCredentials = true;
@@ -14,23 +14,12 @@ axios.defaults.baseURL = API_BASE;
 
 const App = () => (
   <div className="App">
-    <header className="App-header">
-      <div className="container">
-        <a href="http://www.gov.bc.ca">
-          <div className="brand-logo" />
-        </a>
-        <h1>
-          Income Tested Verified Rebates
-        </h1>
-      </div>
-    </header>
-
     <div className="App-body">
       <BrowserRouter>
         <Switch>
           <Route
             path="/"
-            component={ApplicationFormContainer}
+            component={EligibilityPageContainer}
           />
         </Switch>
       </BrowserRouter>
