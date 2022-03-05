@@ -1,11 +1,11 @@
-import axios from 'axios';
 import React, { useState } from 'react';
-import ApplicationFormPage from './components/ApplicationFormPage';
-import ROUTES_APPLICATION from './routes';
+import ApplicationFormPage from './ApplicationFormPage';
+import useAxios from '../../utils/axiosHook';
 
 const ApplicationFormContainer = () => {
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState({});
+  const axiosInstance = useAxios();
 
   const handleInputChange = (event) => {
     const { value, name } = event.target;
@@ -15,7 +15,7 @@ const ApplicationFormContainer = () => {
     });
   };
   const handleSubmit = () => {
-    axios.post(ROUTES_APPLICATION.SAVE, { details })
+    axiosInstance.current.post('/application-form', { details })
       .then((response) => { console.log(response); });
   };
 

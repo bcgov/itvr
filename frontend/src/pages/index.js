@@ -1,7 +1,7 @@
 import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 
-export default () => {
+function Index() {
   const { keycloak } = useKeycloak();
 
   return (
@@ -12,7 +12,7 @@ export default () => {
         </button>
       )}
 
-      <button type="button" onClick={() => keycloak.login({ idpHint: 'bceid-basic', redirectUri: 'http://localhost:3000/admin' })}>
+      <button type="button" onClick={() => keycloak.login({ idpHint: 'bceid-basic', redirectUri: 'http://localhost:3000/form' })}>
         BCeID
       </button>
 
@@ -22,3 +22,5 @@ export default () => {
     </div>
   );
 };
+
+export default Index;

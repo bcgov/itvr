@@ -1,12 +1,13 @@
-import * as React from 'react';
-import { useKeycloak } from '@react-keycloak/web';
+import React from 'react';
+import ApplicationFormContainer from '../components/RebateApplicationForm/ApplicationFormContainer';
 
-export default () => {
-  const { keycloak } = useKeycloak();
-
+const Form = () => {
   return (
     <div>
       Hello BCeID
+      <ApplicationFormContainer/>
     </div>
   );
 };
+
+export default Form;

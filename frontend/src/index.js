@@ -19,7 +19,6 @@ const tokenLogger = (tokens) => {
 const initOptions = {
   onLoad: 'check-sso',
   pkceMethod: 'S256',
-  redirectUri: `${window.location.origin}/`,
 };
 
 ReactDOM.render(
