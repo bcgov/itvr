@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# [ -d "/opt/app-root/src/cra" ] && exit 0
+
+set -e
+
+shopt -s dotglob
+
+echo "---> check  /tmp/src ..."
+ls -l /tmp/src
+echo "---> check  /tmp/src ..."
+ls -l /opt/app-root/src/cra
+
+# Fix source directory permissions
+fix-permissions ./
+
