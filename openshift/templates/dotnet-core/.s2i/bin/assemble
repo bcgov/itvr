@@ -6,10 +6,10 @@ set -e
 
 shopt -s dotglob
 
+fix-permissions ./
+
 echo "---> check  /tmp/src ..."
 ls -l /tmp/src
-echo "---> check  /tmp/src ..."
-ls -l /opt/app-root/src/cra
 
 # Fix source directory permissions
 fix-permissions ./
