@@ -56,7 +56,7 @@ objects:
           ref: ${GIT_REF}
           uri: ${GIT_URL}
         type: Git
-        contextDir: openshift/templates/dotnet-core
+        contextDir: dotnet
       strategy:
         sourceStrategy:
           from:
