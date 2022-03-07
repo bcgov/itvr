@@ -5,7 +5,7 @@ import { useKeycloak } from '@react-keycloak/web';
 
 const Form = () => {
   const { keycloak } = useKeycloak();
-  // we can validate the token server side when they submit the form.
+  // we can validate the token server side
   const decoded = jwt_decode(keycloak.token);
 
   return (
