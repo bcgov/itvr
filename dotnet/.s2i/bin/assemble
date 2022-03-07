@@ -8,6 +8,7 @@ shopt -s dotglob
 
 fix-permissions ./
 
+echo "---> doetnet/.s2i/bin/assemble script is started"
 echo "---> list files under  /tmp/src "
 ls -l /tmp/src
 
@@ -17,10 +18,10 @@ mv /tmp/src/* /opt/app-root/src
 echo "---> list files under  /opt/app-root/src "
 ls -l /opt/app-root/src
 
-# publish the app
 cd /opt/app-root/src/cra/pscoretest
+echo "---> Run command: dotnet publish -c release --no-self-contained -o publish" 
 dotnet publish -c release --no-self-contained -o publish
 
 # Fix source directory permissions
 fix-permissions /opt/app-root/src
-
+echo "---> doetnet/.s2i/bin/assemble script is done"

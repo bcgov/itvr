@@ -76,7 +76,9 @@ objects:
           - name: itvr-dotnet-core
             image: null
             imagePullPolicy: IfNotPresent
-            env:      
+            env:
+              - name:
+                value:     
             resources:
               limits:
                 cpu: ${CPU_LIMIT}

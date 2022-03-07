@@ -42,6 +42,13 @@ objects:
         to:
           kind: ImageStreamTag
           name: itvr-dotnet-core:0.1.0
+      resources:
+        limits:
+          cpu: 400m
+          memory: 500Mi
+        requests:
+          cpu: 200m
+          memory: 250Mi          
       postCommit: {}
       resources:
         limits:
