@@ -5,7 +5,8 @@ import useAxios from '../../utils/axiosHook';
 const ApplicationFormContainer = () => {
   const [loading] = useState(false);
   const [details, setDetails] = useState({});
-  const axiosInstance = useAxios({withCredentials: true});
+  // const axiosInstance = useAxios({withCredentials: true});
+  const axiosInstance = useAxios();
 
   const handleInputChange = (event) => {
     const { value, name } = event.target;
@@ -15,7 +16,7 @@ const ApplicationFormContainer = () => {
     });
   };
   const handleSubmit = () => {
-    axiosInstance.current.post('/application-form/', { details })
+    axiosInstance.current.post('/api/application-form', { details })
       .then((response) => { console.log(response); });
   };
 
