@@ -3,7 +3,7 @@ import ApplicationFormPage from './ApplicationFormPage';
 import useAxios from '../../utils/axiosHook';
 
 const ApplicationFormContainer = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [details, setDetails] = useState({});
   const axiosInstance = useAxios();
 
