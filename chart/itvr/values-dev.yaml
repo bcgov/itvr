@@ -1,6 +1,6 @@
 patroni:
 
-  replicaCount: 2
+  replicaCount: 1
 
   resources:
     # If you do want to specify resources, uncomment the following
