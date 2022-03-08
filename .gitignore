@@ -1,7 +1,6 @@
 __pycache__/
 .coverage
 .DS_Store
-.env
 .idea/
 .minio.sys/
 .pyc
@@ -13,7 +12,6 @@ django/.coverage
 django/staticfiles/
 django/venv/
 node_modules/
-package-lock.json
 public/static/
 react/node_modules/
 TEST-*xml

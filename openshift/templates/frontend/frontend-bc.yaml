@@ -66,7 +66,7 @@ objects:
         ref: ${GIT_REF}
         uri: ${GIT_URL}
       type: Git
-      contextDir: react
+      contextDir: frontend
     strategy:
       sourceStrategy:
         from:
