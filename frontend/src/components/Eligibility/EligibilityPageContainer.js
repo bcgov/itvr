@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import EligibilityPage from './EligibilityPage';
+import EligibilityPage from './components/EligibilityPage';
 
 const ApplicationFormContainer = () => {
   const [loading, setLoading] = useState(false);

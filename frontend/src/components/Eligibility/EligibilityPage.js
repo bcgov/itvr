@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import React from 'react';
-import EligibilityQuestions from './components/EligibilityQuestions';
+import EligibilityQuestions from './EligibilityQuestions';
 
 const EligibilityPage = (props) => {
   const {
