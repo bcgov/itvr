@@ -27,5 +27,4 @@ ROUTER.register(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(ROUTER.urls)),
-    re_path('/', TemplateView.as_view(template_name='index.html')),
 ]
