@@ -39,7 +39,7 @@ const phases = {
         instance: `${name}-dev-${changeId}`  , version:`${version}-${changeId}`, tag:`dev-${version}-${changeId}`, 
         host: `itvr-dev-${changeId}.${ocpName}.gov.bc.ca`, djangoDebug: 'True', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        frontendCpuRequest: '400m', frontendCpuLimit: '800m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 1,
+        frontendCpuRequest: '320m', frontendCpuLimit: '640m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 1,
         backendCpuRequest: '50m', backendCpuLimit: '100m', backendMemoryRequest: '520Mi', backendMemoryLimit: '1Gi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1,
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3Gi',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
