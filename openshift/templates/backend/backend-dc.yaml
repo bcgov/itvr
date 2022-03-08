@@ -186,10 +186,14 @@ objects:
                   value: "false"
                 - name: CORS_ORIGIN_WHITELIST
                   value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
+                - name: CSRF_TRUSTED_ORIGINS
+                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
                 - name: DB_ENGINE
                   value: django.db.backends.postgresql
                 - name: DB_HOST
                   value: itvrdb-patroni
+                - name: DB_HOST_READONLY
+                  value: itvrdb-patroni-readonly
                 - name: DB_NAME
                   value: itvr
                 - name: DB_PASSWORD
@@ -221,8 +225,13 @@ objects:
                     secretKeyRef:
                       name: itvr-keycloak
                       key: KEYCLOAK_URL                                  
+                - name: DJANGO_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-django${SUFFIX}
+                      key: DJANGO_SECRET_KEY                      
                 - name: LOCAL_DEV
-                  value: "false"
+                  value: "false"            
 #                - name: MINIO_ENDPOINT
 #                 value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
 #                - name: MINIO_USE_SSL
