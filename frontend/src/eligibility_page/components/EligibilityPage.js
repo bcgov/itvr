@@ -1,12 +1,13 @@
-/* eslint-disable react/jsx-indent */
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import React from 'react';
+import EligibilityQuestions from './EligibilityQuestions';
 
 const EligibilityPage = (props) => {
   const {
-    handleInputChange, handleSubmit,
+    handleInputChange, handleSubmit, year, questions, setQuestions, handleCheckboxChange,
   } = props;
+
   return (
     <div>
       <div>
@@ -74,12 +75,40 @@ const EligibilityPage = (props) => {
         </sub>
         <p>
           Your income will be verified with the Canada Revenue Agency based on your
-          2020*
+          {' '}
+          {year}
+          {' '}
           notice of assessment (line 15000).
         </p>
         <h3>
-        Determine your eligibility for a rebate
+          Determine your eligibility for a rebate
         </h3>
+        {questions.map((question, index) => (
+          <EligibilityQuestions
+            question={question}
+            index={index}
+            setQuestions={setQuestions}
+            handleCheckboxChange={handleCheckboxChange}
+          />
+        ))}
+        <div className="grey-background">
+          <h3>What you will need to complete this application</h3>
+          <ul>
+            <li>
+              Your Driver's Licence number to be associated with the rebate code.
+            </li>
+            <li>
+              A Basic BCeID, an image of your B.C. Driver's Licence and a secondary piece of
+              ID to upload.
+            </li>
+            <li>
+              Your Social Insurance Number and CRA income disclosure consent to confirm your income.
+            </li>
+          </ul>
+          For a household application your spouse or common law partner will also need to
+          confirm their identity and provide CRA income disclosure consent, they do not
+          require a driver's licence.
+        </div>
       </div>
     </div>
   );
