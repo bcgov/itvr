@@ -20,13 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 TESTING = 'test' in sys.argv
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 CORS_ORIGIN_WHITELIST = [
     os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
@@ -36,6 +37,7 @@ CSRF_TRUSTED_ORIGINS = [
     os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
 ]
 
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 # Application definition
 INSTALLED_APPS = [

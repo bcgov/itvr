@@ -184,8 +184,6 @@ objects:
                   value: ${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca
                 - name: CORS_ORIGIN_WHITELIST
                   value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
-                - name: CSRF_TRUSTED_ORIGINS
-                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
                 - name: DB_ENGINE
                   value: django.db.backends.postgresql
                 - name: DB_HOST
