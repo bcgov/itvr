@@ -1,5 +1,18 @@
-table, th, td {
-    padding: 4px;
-    border: 1px solid black;
-    border-collapse: collapse;
-  }
+table,
+th,
+td {
+  padding: 4px;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+#bceid-login {
+  background-color: $background-grey-dark;
+  width: 30rem;
+  padding: 1rem 2rem 1rem 2rem;
+}
+#start-application {
+  background-image: url('../../public/body-graphic.svg');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100%;
+}

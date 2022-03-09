@@ -9,20 +9,20 @@ Base Style
 
 /* BC Sans Regular */
 @font-face {
-  font-family: "BCSans";
+  font-family: 'BCSans';
   src: url('./fonts/BCSans-Regular.woff') format('woff');
 }
 
 /* BC Sans Bold */
 @font-face {
-  font-family: "BCSans";
+  font-family: 'BCSans';
   font-weight: bold;
   src: url('./fonts/BCSans-Bold.woff') format('woff');
 }
 
 /* BC Sans Bold + Italic */
 @font-face {
-  font-family: "BCSans";
+  font-family: 'BCSans';
   font-style: italic;
   font-weight: bold;
   src: url('./fonts/BCSans-BoldItalic.woff') format('woff');
@@ -30,36 +30,40 @@ Base Style
 
 /* BC Sans Italic */
 @font-face {
-  font-family: "BCSans";
+  font-family: 'BCSans';
   font-style: italic;
   src: url('./fonts/BCSans-Italic.woff') format('woff');
 }
 
-
-p, table, li, div, .label {
+p,
+table,
+li,
+div,
+.label {
   font-size: 1.2rem !important;
 }
 h1 {
   font-size: 2rem;
 }
 
-h2 {
-  font-size: 1.75rem;
-}
-
+h2,
 h3 {
   font-size: 1.75rem;
 }
-h4 {
+h4,
+.button {
   font-size: 1.5rem;
   font-weight: normal;
-
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #000000;
 }
-h3, h4, h5, h6 {
+h3,
+h4,
+h5,
+h6 {
   color: $text-heading-blue;
   font-weight: bold;
   margin: 0;
@@ -74,17 +78,28 @@ h3, h4, h5, h6 {
   text-align: left;
   text-decoration: underline;
 }
-#button {
+a {
+  color: #fdb414;
+}
+.button {
   background-color: $button-blue;
-  background-image: -webkit-linear-gradient(left, $button-blue, $text-heading-blue);
+  background-image: -webkit-linear-gradient(
+    left,
+    $button-blue,
+    $text-heading-blue
+  );
+  height: 3.5rem;
   color: $white;
   border: 0 solid $button-blue;
-  border-radius: 0.2rem;
   padding: 0.5rem 1rem;
 
   &:hover {
-  background-image: -webkit-linear-gradient(right, $button-blue, $text-heading-blue);
-  background-color: $button-blue;
+    background-image: -webkit-linear-gradient(
+      right,
+      $button-blue,
+      $text-heading-blue
+    );
+    background-color: $button-blue;
   }
   &:disabled {
     background-color: $background-grey-light;
@@ -92,14 +107,18 @@ h3, h4, h5, h6 {
   }
 }
 
-body, html {
+body,
+html {
   background-color: $white;
   height: 100%;
 }
 
 body {
   color: $text-blue-paragraph;
-  font-family: "BCSans", sans-serif;
+  font-family: 'BCSans', sans-serif;
   margin: 0;
   padding: 0;
+}
+.grey-background {
+  background-color: $background-grey-light;
 }
