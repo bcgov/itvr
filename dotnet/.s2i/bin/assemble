@@ -19,12 +19,16 @@ echo "---> list files under  /opt/app-root/src "
 ls -l /opt/app-root/src
 
 cd /opt/app-root/src/cra/pscoretest
+echo "---> dotnet add package Microsoft.PowerShell.SDK -v 7.2.1 "
 dotnet add package Microsoft.PowerShell.SDK -v 7.2.1
+echo "---> dotnet add package Microsoft.PowerShell.Commands.Diagnostics -v 7.2.1 "
 dotnet add package Microsoft.PowerShell.Commands.Diagnostics -v 7.2.1
+echo "---> dotnet add package Microsoft.WSMan.Management -v 7.2.1 "
 dotnet add package Microsoft.WSMan.Management -v 7.2.1
+echo "---> dotnet build"
 dotnet build
 
-echo "---> Run command: dotnet publish -c release --no-self-contained -o publish" 
+echo "---> Run command: dotnet publish -c release --no-self-contained -o /opt/app-root/app" 
 dotnet publish -c release --no-self-contained -o /opt/app-root/app
 
 # Fix source directory permissions
