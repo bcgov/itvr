@@ -50,13 +50,6 @@ objects:
           cpu: 200m
           memory: 250Mi          
       postCommit: {}
-      resources:
-        limits:
-          cpu: 200m
-          memory: 300Mi
-        requests:
-          cpu: 100m
-          memory: 100Mi
       runPolicy: SerialLatestOnly
       source:
         git:
