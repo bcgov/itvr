@@ -65,9 +65,6 @@ objects:
             namespace: ac294c-tools
           forcePull: true
           noCache: true      
-          env:
-            - name: DOTNET_ASSEMBLY_NAME
-              value: pscoretest      
       type: Source
       triggers:
       - imageChange: {}

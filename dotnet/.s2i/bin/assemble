@@ -30,6 +30,8 @@ dotnet build
 
 echo "---> Run command: dotnet publish -c release --no-self-contained -o /opt/app-root/app" 
 dotnet publish -c release --no-self-contained -o /opt/app-root/app
+echo "---> ls -l /opt/app-root/app" 
+ls -l /opt/app-root/app
 
 # Fix source directory permissions
 fix-permissions /opt/app-root
