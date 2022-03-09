@@ -23,13 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 TESTING = 'test' in sys.argv
 
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'http://localhost:8000']
-CORS_PREFLIGHT_MAX_AGE = 0
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CORS_ORIGIN_WHITELIST = [
+    os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
+]
 
 
 # Application definition
@@ -139,9 +144,6 @@ REST_FRAMEWORK = {
         'api.filters.order_by.RelatedOrderingFilter',
     ],
 }
-
-
-LOCAL_DEV = os.getenv('LOCAL_DEV', False) in ['True', 'true', True]
 
 KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
 KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM')
