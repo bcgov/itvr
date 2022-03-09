@@ -9,13 +9,13 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 const EligibilityQuestions = (props) => {
-  const {
-    question, index, setQuestions, handleCheckboxChange,
-  } = props;
+  const { question, index, setQuestions, handleCheckboxChange } = props;
   return (
     <div key={index}>
       <FormControl>
-        <FormLabel className="label" id="demo-radio-buttons-group-label">{Object.keys(question)[0]}</FormLabel>
+        <FormLabel className="label" id="demo-radio-buttons-group-label">
+          {question}
+        </FormLabel>
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
           name="radio-buttons-group"

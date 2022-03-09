@@ -1,5 +1,6 @@
 import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
+import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
 
 function Index() {
   const { keycloak } = useKeycloak();
@@ -11,16 +12,20 @@ function Index() {
           Logout
         </button>
       )}
-
-      <button type="button" onClick={() => keycloak.login({ idpHint: 'bceid-basic', redirectUri: `${window.location.origin}/form` })}>
-        BCeID
-      </button>
-
-      <button type="button" onClick={() => keycloak.login({ idpHint: 'idir', redirectUri: `${window.location.origin}/admin` })}>
+      <EligibilityPageContainer />
+      <button
+        type="button"
+        onClick={() =>
+          keycloak.login({
+            idpHint: 'idir',
+            redirectUri: `${window.location.origin}/admin`
+          })
+        }
+      >
         IDIR
       </button>
     </div>
   );
-};
+}
 
 export default Index;
