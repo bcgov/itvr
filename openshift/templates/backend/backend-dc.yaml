@@ -182,11 +182,7 @@ objects:
               env:
                 - name: ALLOWED_HOSTS
                   value: ${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca
-                - name: CORS_ORIGIN_ALLOW_ALL
-                  value: "false"
                 - name: CORS_ORIGIN_WHITELIST
-                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
-                - name: CSRF_TRUSTED_ORIGINS
                   value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
                 - name: DB_ENGINE
                   value: django.db.backends.postgresql
@@ -230,8 +226,6 @@ objects:
                     secretKeyRef:
                       name: itvr-django${SUFFIX}
                       key: DJANGO_SECRET_KEY                      
-                - name: LOCAL_DEV
-                  value: "false"            
 #                - name: MINIO_ENDPOINT
 #                 value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
 #                - name: MINIO_USE_SSL
