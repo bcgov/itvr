@@ -35,6 +35,7 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 # Application definition
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
+    'rest_framework',
     'corsheaders',
     'django_filters',
     'django_extensions',
@@ -44,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'rest_framework',
 ]
 
 MIDDLEWARE = [
