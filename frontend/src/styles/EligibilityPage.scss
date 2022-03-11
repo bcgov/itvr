@@ -5,11 +5,12 @@ td {
   border: 1px solid black;
   border-collapse: collapse;
 }
-#bceid-login {
+#bceid-login-square {
   background-color: $background-grey-dark;
   padding: 2.5rem;
   width: 400px;
   height: 300px;
+  margin-bottom: 2rem;
   button {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -25,7 +26,7 @@ td {
   margin-bottom: 2rem;
 }
 #start-application {
-  margin: 0;
+  margin: -2rem;
   background-image: url('../../public/body-graphic.svg');
   background-color: $background-grey-light;
   background-repeat: no-repeat;
@@ -33,13 +34,18 @@ td {
   background-size: 100%;
   padding-left: 6rem;
   padding-top: 6rem;
-  min-height: 100vh;
+  min-height: 80vh;
 }
 @media (max-width: 600px) {
+  #bceid-login-square {
+    width: 15rem;
+    height: 15rem;
+  }
   #whats-needed {
     padding: 0;
   }
   #start-application {
+    margin: 0;
     padding-top: 2rem;
     padding-left: 1.5rem;
     min-height: 30vh;
