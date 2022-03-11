@@ -64,9 +64,7 @@ const EligibilityPage = (props) => {
           consent, they do not require a driver's licence.
         </div>
       </div>
-      <BottomBanner eligible={eligible} />* UP Until June 30 your ${taxYear}{' '}
-      notice of assessment (NOA) will be used to determine your rebate amount.
-      On July 1 it will change to use your {taxYear} NOA.
+      <BottomBanner eligible={eligible} taxYear={taxYear} />
     </div>
   );
 };
