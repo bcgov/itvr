@@ -38,6 +38,7 @@ const EligibilityPage = (props) => {
         <h3>Determine your eligibility for a rebate</h3>
         {questions.map((question, index) => (
           <EligibilityQuestions
+            key={index}
             question={question}
             index={index}
             setQuestions={setQuestions}
