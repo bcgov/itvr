@@ -1,20 +1,16 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import React from 'react';
 import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
-import { useKeycloak } from '@react-keycloak/web';
+
+import BottomBanner from '../BottomBanner';
 
 const EligibilityPage = (props) => {
-  const { year, questions, setQuestions, handleCheckboxChange, eligible } =
+  const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
     props;
-  const { keycloak } = useKeycloak();
+
   return (
     <div>
-      <div>
-        <h1>Electric Vehicle Rebates</h1>
-        <h2>for Individuals and Households</h2>
-      </div>
       <div>
         <p>
           Rebates of up to $4,000 are available from the B.C. Government towards
@@ -28,18 +24,16 @@ const EligibilityPage = (props) => {
               Complete the following eligibility questions and online
               application process.
             </li>
+            <li>You will be notified by email your rebate amount.</li>
             <li>
-              If you are eligible, a rebate code will be emailed to you that
-              indicates your rebate amount.
-            </li>
-            <li>
-              The rebate code is associated with your B.C. Driver&apos;s Licence
-              number. They are both needed at the car dealership to receive the
-              rebate discount at the time of vehicle purchase.
+              The rebate is associated with your B.C. Driver's Licence number.
+              You will need to present your driver's licence at the car
+              dealership to receive the rebate discount at the time of vehicle
+              purchase.
             </li>
           </ol>
         </div>
-        <RebateTable year={year} />
+        <RebateTable taxYear={taxYear} />
 
         <h3>Determine your eligibility for a rebate</h3>
         {questions.map((question, index) => (
@@ -50,12 +44,11 @@ const EligibilityPage = (props) => {
             handleCheckboxChange={handleCheckboxChange}
           />
         ))}
-        <div className="grey-background">
+        <div id="whats-needed">
           <h3>What you will need to complete this application</h3>
           <ul>
             <li>
-              Your Driver's Licence number to be associated with the rebate
-              code.
+              Your Driver's Licence number to be associated with the rebate.
             </li>
             <li>
               A Basic BCeID, an image of your B.C. Driver's Licence and a
@@ -71,32 +64,9 @@ const EligibilityPage = (props) => {
           consent, they do not require a driver's licence.
         </div>
       </div>
-      <div id="start-application">
-        <h2>Start your rebate application</h2>
-        <div id="bceid-login">
-          <h2>BCeID</h2>
-          <button
-            type="button"
-            className="button"
-            disabled={!eligible}
-            onClick={() =>
-              keycloak.login({
-                idpHint: 'bceid-basic',
-                redirectUri: `${window.location.origin}/form`
-              })
-            }
-          >
-            Login with BCeID
-          </button>
-          <div>
-            <a href="">Get a Basic BCeID account</a>
-            <p>
-              The name associated with your BCeID account must match your legal
-              first and last name on your identification documents
-            </p>
-          </div>
-        </div>
-      </div>
+      <BottomBanner eligible={eligible} />* UP Until June 30 your ${taxYear}{' '}
+      notice of assessment (NOA) will be used to determine your rebate amount.
+      On July 1 it will change to use your {taxYear} NOA.
     </div>
   );
 };

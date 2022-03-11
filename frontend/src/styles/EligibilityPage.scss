@@ -7,12 +7,45 @@ td {
 }
 #bceid-login {
   background-color: $background-grey-dark;
-  width: 30rem;
-  padding: 1rem 2rem 1rem 2rem;
+  padding: 2.5rem;
+  width: 400px;
+  height: 300px;
+  button {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+#whats-needed {
+  padding: 2rem 8rem 2rem 8rem;
+  margin-top: 2rem;
+  background: $background-grey-light;
+}
+#start-text {
+  margin-top: 4rem;
+  margin-bottom: 2rem;
 }
 #start-application {
+  margin: 0;
   background-image: url('../../public/body-graphic.svg');
+  background-color: $background-grey-light;
   background-repeat: no-repeat;
   background-position: top center;
   background-size: 100%;
+  padding-left: 6rem;
+  padding-top: 6rem;
+  min-height: 100vh;
+}
+@media (max-width: 600px) {
+  #whats-needed {
+    padding: 0;
+  }
+  #start-application {
+    padding-top: 2rem;
+    padding-left: 1.5rem;
+    min-height: 30vh;
+    #start-text {
+      font-size: 1.25rem;
+      margin-top: 0;
+    }
+  }
 }
