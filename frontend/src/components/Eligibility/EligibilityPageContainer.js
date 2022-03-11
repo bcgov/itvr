@@ -7,14 +7,14 @@ const ApplicationFormContainer = () => {
   const date = new Date();
   // get the date as a string
   const month = date.getMonth();
-  let year = date.getFullYear();
+  let taxYear = date.getFullYear();
   if (month < 6) {
     // if its earlier than July 1
     // jan = 0, feb = 1, mar = 2, apr = 3, may = 4, june = 5, july = 6
-    year -= 2;
+    taxYear -= 2;
   } else {
     // if its july or later
-    year -= 1;
+    taxYear -= 1;
   }
   const [questions, setQuestions] = useState([
     {
@@ -37,7 +37,7 @@ const ApplicationFormContainer = () => {
     },
     {
       question: `Was your individual total income $100,000 or less, or your household total 
-    income $165,000 or less based on your ${year} notice of assessment(s) line 15000?`,
+    income $165,000 or less based on your ${taxYear} notice of assessment(s) line 15000?`,
       answer: '',
       expectedAnswer: 'yes'
     }
@@ -67,7 +67,7 @@ const ApplicationFormContainer = () => {
   return (
     <div>
       <EligibilityPage
-        year={year}
+        taxYear={taxYear}
         questions={questions}
         setQuestions={setQuestions}
         handleCheckboxChange={handleCheckboxChange}

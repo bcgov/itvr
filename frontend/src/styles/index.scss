@@ -57,7 +57,7 @@ h4,
 
 h1,
 h2 {
-  color: #000000;
+  color: $white;
 }
 h3,
 h4,
@@ -91,6 +91,7 @@ a {
   color: $white;
   border: 0 solid $button-blue;
   padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
 
   &:hover {
     background-image: -webkit-linear-gradient(
