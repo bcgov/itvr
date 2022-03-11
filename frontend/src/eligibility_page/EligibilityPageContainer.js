@@ -21,37 +21,50 @@ const ApplicationFormContainer = () => {
       question:
         'Have you previously received an electric vehicle rebate from the Government of British Columbia?',
       answer: '',
-      expectedAnswer: 'no'
+      expectedAnswer: 'no',
+      errorMessage: 'Sorry you are not eligible to claim a second rebate.',
+      showError: false
     },
     {
       question:
         'Do you reside in British Columbia and have a valid B.C. Drivers Licence?',
       answer: '',
-      expectedAnswer: 'yes'
+      expectedAnswer: 'yes',
+      errorMessage: `Sorry you are not eligible to claim a rebate without a B.C. address and driver's licence.`,
+      showError: false
     },
     {
       question:
         'Did you file a year tax return with the Canada Revenue Agency (CRA)?',
       answer: '',
-      expectedAnswer: 'yes'
+      expectedAnswer: 'yes',
+      errorMessage: `Sorry you are not eligible to claim a rebate without having filed a ${taxYear} tax return with the CRA.`,
+      showError: false
     },
     {
       question: `Was your individual total income $100,000 or less, or your household total 
     income $165,000 or less based on your ${taxYear} notice of assessment(s) line 15000?`,
       answer: '',
-      expectedAnswer: 'yes'
+      expectedAnswer: 'yes',
+      errorMessage: 'Sorry you are not eligible to claim a rebate.',
+      showError: false
     }
   ]);
   const [eligible, setEligible] = useState(false);
 
-  const handleCheckboxChange = (event, question, index) => {
+  const handleCheckboxChange = (event, index) => {
     const { value } = event.target;
     let answers = [...questions];
     answers[index].answer = value;
+    if (questions[index].answer !== questions[index].expectedAnswer) {
+      answers[index].showError = true;
+    } else {
+      answers[index].showError = false;
+    }
     setQuestions(answers);
     let correctAnswers = 0;
-    questions.forEach((question) => {
-      if (question.answer === question.expectedAnswer) {
+    questions.forEach((q) => {
+      if (q.answer === q.expectedAnswer) {
         correctAnswers += 1;
       } else {
         correctAnswers -= 1;

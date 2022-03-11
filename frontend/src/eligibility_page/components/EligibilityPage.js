@@ -1,13 +1,13 @@
-import Box from '@mui/material/Box';
 import React from 'react';
 import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
-
+import { useKeycloak } from '@react-keycloak/web';
 import BottomBanner from '../BottomBanner';
 
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
     props;
+  const { keycloak } = useKeycloak();
 
   return (
     <div>
@@ -38,7 +38,7 @@ const EligibilityPage = (props) => {
         <h3>Determine your eligibility for a rebate</h3>
         {questions.map((question, index) => (
           <EligibilityQuestions
-            question={question.question}
+            question={question}
             index={index}
             setQuestions={setQuestions}
             handleCheckboxChange={handleCheckboxChange}
@@ -65,6 +65,27 @@ const EligibilityPage = (props) => {
         </div>
       </div>
       <BottomBanner eligible={eligible} taxYear={taxYear} />
+      <div className="asterisk-text">
+        <p>
+          * UP Until June 30 your ${taxYear} notice of assessment (NOA) will be
+          used to determine your rebate amount. On July 1 it will change to use
+          your {taxYear} NOA.
+        </p>
+      </div>
+      <div>
+        <button
+          type="button"
+          className="button"
+          onClick={() =>
+            keycloak.login({
+              idpHint: 'idir',
+              redirectUri: `${window.location.origin}/admin`
+            })
+          }
+        >
+          Login with IDIR
+        </button>
+      </div>
     </div>
   );
 };

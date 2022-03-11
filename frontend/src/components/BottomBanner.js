@@ -9,7 +9,7 @@ const BottomBanner = (props) => {
       <div id="start-application">
         <h1 id="start-text">Start your rebate application</h1>
         <Box id="bceid-login-square">
-          <h1>BCeID</h1>
+          <h1 id="BceidLoginTitle">BCeID</h1>
           <button
             type="button"
             className="button"
@@ -24,14 +24,15 @@ const BottomBanner = (props) => {
             Login with BCeID
           </button>
           <div>
-            <a href="https://www.bceid.ca/register/basic/account_details.aspx?type=regular&eServiceType=basic">
+            <a
+              href="https://www.bceid.ca/register/basic/account_details.aspx?type=regular&eServiceType=basic"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Get a Basic BCeID account
             </a>
           </div>
         </Box>
-        * UP Until June 30 your ${taxYear} notice of assessment (NOA) will be
-        used to determine your rebate amount. On July 1 it will change to use
-        your {taxYear} NOA.
       </div>
     </>
   );

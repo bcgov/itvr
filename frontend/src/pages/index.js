@@ -13,17 +13,6 @@ function Index() {
         </button>
       )}
       <EligibilityPageContainer />
-      <button
-        type="button"
-        onClick={() =>
-          keycloak.login({
-            idpHint: 'idir',
-            redirectUri: `${window.location.origin}/admin`
-          })
-        }
-      >
-        IDIR
-      </button>
     </div>
   );
 }
