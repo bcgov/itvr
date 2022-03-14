@@ -23,3 +23,6 @@ coverage/
 minio/minio_files/
 decoder.env
 *.swp
+chart/itvr/charts/minio/charts/
+chart/itvr/charts/database/charts/
+Chart.lock
