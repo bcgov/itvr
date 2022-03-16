@@ -9,5 +9,6 @@
   },
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "eslint.format.enable": true
+  "eslint.format.enable": true,
+  "diffEditor.codeLens": true
 }
