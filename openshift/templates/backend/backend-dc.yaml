@@ -226,8 +226,6 @@ objects:
                     secretKeyRef:
                       name: itvr-django${SUFFIX}
                       key: DJANGO_SECRET_KEY      
-                - name: APP_CONFIG
-                  value: ./gunicorn.cfg                                      
 #                - name: MINIO_ENDPOINT
 #                 value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
 #                - name: MINIO_USE_SSL
