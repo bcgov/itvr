@@ -187,9 +187,9 @@ objects:
                 - name: DB_ENGINE
                   value: django.db.backends.postgresql
                 - name: DB_HOST
-                  value: itvrdb-patroni
+                  value: itvr-spilo
                 - name: DB_HOST_READONLY
-                  value: itvrdb-patroni-readonly
+                  value: itvr-spilo-readonly
                 - name: DB_NAME
                   value: itvr
                 - name: DB_PASSWORD
