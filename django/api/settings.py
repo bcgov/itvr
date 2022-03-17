@@ -20,45 +20,44 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 TESTING = 'test' in sys.argv
 
+CORS_ORIGIN_WHITELIST = [
+    os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
+]
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
-CORS_PREFLIGHT_MAX_AGE = 0
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
+]
 
-SESSION_COOKIE_SECURE = not DEBUG
-
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-CSRF_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_DOMAIN = 'localhost'
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = False         
-#CSRF_COOKIE_SAMESITE = 'Strict'
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 # Application definition
 INSTALLED_APPS = [
-    'api.apps.ApiConfig',
-    'corsheaders',
-    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'api.apps.ApiConfig',
+    'django_filters',
     'django_extensions',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -134,12 +133,12 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, "../", "frontend", "public", "root")
 
 # Django Rest Framework Settings
 REST_FRAMEWORK = {
-    
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'api.keycloak_authentication.KeycloakAuthentication',
     ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'COERCE_DECIMAL_TO_STRING': False,
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.StandardResultsSetPagination',
     'DEFAULT_FILTER_BACKENDS': [
@@ -147,9 +146,6 @@ REST_FRAMEWORK = {
         'api.filters.order_by.RelatedOrderingFilter',
     ],
 }
-
-
-LOCAL_DEV = os.getenv('LOCAL_DEV', False) in ['True', 'true', True]
 
 KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
 KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM')
@@ -164,4 +160,4 @@ MINIO_USE_SSL = bool(
     os.getenv('MINIO_USE_SSL', 'False').lower() in ['true', 1]
 )
 
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

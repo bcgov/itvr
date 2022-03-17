@@ -1,8 +1,14 @@
 from keycloak import KeycloakOpenID
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from rest_framework import authentication, exceptions
+
+import logging
+
+
+log = logging.getLogger('KeycloakAuthentication')
 
 
 class KeycloakAuthentication(authentication.BaseAuthentication):
@@ -52,15 +58,24 @@ class KeycloakAuthentication(authentication.BaseAuthentication):
 
         # Get the user from the keycloak server based on the token
         user_info = keycloak_openid.userinfo(token)
+        username = user_info.get('preferred_username')
 
-        if user_info.get('preferred_username') != \
+        if username != \
                 token_info.get('preferred_username'):
             raise exceptions.AuthenticationFailed(
                 'Invalid Token'
             )
 
-        user = User.objects.filter(
-            username=user_info.get('preferred_username')
-        ).first()
+        # TODO make a ticket to improve this
+        user = None
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            log.warn(
+                'KeycloakAuthentication user does not exist'
+            )
+
+        if user is None:
+            user = User.objects.create_user(username=username)
 
         return user, None

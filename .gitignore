@@ -1,7 +1,6 @@
 __pycache__/
 .coverage
 .DS_Store
-.env
 .idea/
 .minio.sys/
 .pyc
@@ -14,7 +13,6 @@ django/.coverage
 django/staticfiles/
 django/venv/
 node_modules/
-package-lock.json
 public/static/
 react/node_modules/
 TEST-*xml
@@ -27,3 +25,4 @@ chart/itvr/charts/itvr-minio/charts/
 chart/itvr/charts/database/charts/
 Chart.lock
 chart/itvr/charts/itvr-minio/charts/
+cron.log

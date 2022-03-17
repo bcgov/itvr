@@ -18,6 +18,8 @@
 
 5. create secret itvr-patroni-app
 
+6. create template.django-secret
+
 #### After pipeline completes
 
 1. After pipeline completes, create autoscaler for backend
