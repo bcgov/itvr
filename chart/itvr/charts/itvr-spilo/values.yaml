@@ -1,0 +1,21 @@
+spilo:
+
+  replicaCount: 2
+
+  continuousArchive:
+    scheduleCronJob: "*/10 * * * *"
+    pvc:
+      storageClass: netapp-file-backup
+      size: 300Mi  
+
+  persistentVolume:
+    size: 150Mi
+    storageClass: netapp-block-standard
+
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1000Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi  
