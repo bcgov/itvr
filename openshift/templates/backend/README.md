@@ -16,7 +16,9 @@
 
 4. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'; 
 
-5. create template.django-secret
+5. create secret itvr-patroni-app
+
+6. create template.django-secret
 
 #### After pipeline completes
 

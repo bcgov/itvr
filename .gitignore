@@ -5,6 +5,7 @@ __pycache__/
 .minio.sys/
 .pyc
 .sql.gz
+.vscode
 *.py[cod]
 build/
 db.sqlite3
@@ -20,4 +21,8 @@ coverage/
 minio/minio_files/
 decoder.env
 *.swp
+chart/itvr/charts/itvr-minio/charts/
+chart/itvr/charts/database/charts/
+Chart.lock
+chart/itvr/charts/itvr-minio/charts/
 cron.log
