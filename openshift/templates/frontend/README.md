@@ -6,7 +6,8 @@
 
 ### Before triggering pipeline
 
-1. Create base image for frontend nodejs-14:1-46.1634035772 in tools projects
+1. import nodejs base image from RedHat
+oc import-image ubi8/nodejs-16:1-18 --from=registry.access.redhat.com/ubi8/nodejs-16:1-18 --confirm
 
 ### After pipeline completes
 
