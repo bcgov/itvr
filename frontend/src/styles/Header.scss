@@ -1,7 +1,6 @@
 .cleanbc-banner {
   background-color: $banner-blue;
   font-size: 1.25rem;
-  font-weight: bold;
   color: $white;
   border-bottom: 3px solid $text-link-orange;
   height: 4.5rem;
@@ -35,11 +34,75 @@
       font-weight: normal;
     }
     h1 {
-      font-weight: bold;
       font-size: 3rem;
     }
     h2 {
       padding-left: 5rem;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .cleanbc-banner {
+    font-size: 1rem;
+    font-weight: normal;
+    height: 3rem;
+    img {
+      margin-left: 1rem;
+      height: 3rem;
+    }
+  }
+  .page-header {
+    width: 100%;
+    position: relative;
+    margin: 0;
+    min-height: 25vh;
+    .title {
+      margin: 5px 0 0 1rem;
+      h1 {
+        // font-size: 2.5rem;
+      }
+      h2 {
+        // font-size: 2rem;
+        padding-left: 1rem;
+      }
+    }
+  }
+}
+@media (max-width: 688px) {
+  .page-header {
+    .title {
+      h1 {
+        font-size: 1.75rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+        padding-left: 0.5rem;
+      }
+    }
+  }
+}
+@media (max-width: 375px) {
+  .page-header {
+    .title {
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+@media (max-width: 280px) {
+  .page-header {
+    .title {
+      h1 {
+        font-size: 1.2rem;
+      }
+      h2 {
+        font-size: 1rem;
+      }
     }
   }
 }
