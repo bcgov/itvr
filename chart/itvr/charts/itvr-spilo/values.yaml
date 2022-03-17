@@ -3,13 +3,13 @@ spilo:
   replicaCount: 2
 
   continuousArchive:
-    scheduleCronJob: "*/10 * * * *"
+    scheduleCronJob: "0 24 * * *"
     pvc:
       storageClass: netapp-file-backup
-      size: 300Mi  
+      size: 200Mi  
 
   persistentVolume:
-    size: 150Mi
+    size: 200Mi
     storageClass: netapp-block-standard
 
   resources:
