@@ -14,8 +14,8 @@ spilo:
 
   resources:
     limits:
-      cpu: 300m
-      memory: 1000Mi
+      cpu: 60m
+      memory: 200Mi
     requests:
-      cpu: 100m
-      memory: 500Mi  
+      cpu: 30m
+      memory: 100Mi  
