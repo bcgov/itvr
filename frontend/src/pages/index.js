@@ -8,12 +8,14 @@ function Index() {
   return (
     <div className="app">
       <Header />
-      {keycloak.authenticated && (
-        <button type="button" onClick={() => keycloak.logout()}>
-          Logout
-        </button>
-      )}
-      <EligibilityPageContainer />
+      <div className="page-content">
+        {keycloak.authenticated && (
+          <button type="button" onClick={() => keycloak.logout()}>
+            Logout
+          </button>
+        )}
+        <EligibilityPageContainer />
+      </div>
     </div>
   );
 }
