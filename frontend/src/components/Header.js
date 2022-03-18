@@ -2,7 +2,6 @@ import React from 'react';
 import logo from '../styles/images/BCID_H_rgb_rev.png';
 
 const Header = (props) => {
-  const { pageTitle } = props;
   return (
     <div className="page-header">
       <div className="cleanbc-banner">

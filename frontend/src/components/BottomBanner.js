@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 const BottomBanner = (props) => {
-  const { eligible, taxYear } = props;
+  const { eligible } = props;
   const { keycloak } = useKeycloak();
   return (
     <>

@@ -1,6 +1,4 @@
 /* eslint-disable react/jsx-indent */
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import React from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';

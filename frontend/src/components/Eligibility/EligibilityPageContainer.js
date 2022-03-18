@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import EligibilityPage from './EligibilityPage';
 
 const ApplicationFormContainer = () => {
-  const [loading, setLoading] = useState(false);
-  const [details, setDetails] = useState({});
   const date = new Date();
   // get the date as a string
   const month = date.getMonth();
