@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+import logo from '../styles/images/BCID_H_rgb_rev.png';
 
 const Header = (props) => {
   const { pageTitle } = props;
@@ -10,7 +11,7 @@ const Header = (props) => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <img src="../../BCID_H_rgb_rev.png" alt="Government of B.C." />
+          <img src={logo} alt="Government of B.C." />
         </a>
         <span>CleanBC | Go Electric BC</span>
       </div>
