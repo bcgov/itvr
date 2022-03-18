@@ -68,7 +68,7 @@ const EligibilityPage = (props) => {
       <BottomBanner eligible={eligible} taxYear={taxYear} />
       <div className="asterisk-text">
         <p>
-          * UP Until June 30 your ${taxYear} notice of assessment (NOA) will be
+          * UP Until June 30 your {taxYear} notice of assessment (NOA) will be
           used to determine your rebate amount. On July 1 it will change to use
           your {taxYear} NOA.
         </p>
