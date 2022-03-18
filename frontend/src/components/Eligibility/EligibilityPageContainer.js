@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import EligibilityPage from './EligibilityPage';
 
-const ApplicationFormContainer = () => {
+const EligibilityPageContainer = () => {
   const date = new Date();
   // get the date as a string
   const month = date.getMonth();
@@ -88,4 +88,4 @@ const ApplicationFormContainer = () => {
   );
 };
 
-export default ApplicationFormContainer;
+export default EligibilityPageContainer;
