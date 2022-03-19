@@ -64,19 +64,21 @@ const FileDropArea = () => {
             <table aria-label="Uploaded Files List" className="document-table">
               <thead>
                 <tr>
-                  <th>Filename</th>
-                  <th>Size</th>
-                  <th>Virus Scan</th>
+                  <th style={{ textAlign: 'left' }}>Filename</th>
+                  <th style={{ textAlign: 'left' }}>Size</th>
+                  <th style={{ textAlign: 'left' }}>Virus Scan</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {files.map((file) => (
                   <tr key={file.name} className="upload-row">
-                    <td align="left">{file.name}</td>
-                    <td align="right">{getFileSize(file.size)}</td>
-                    <td align="left"></td>
-                    <td align="right">
+                    <td>{file.name}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      {getFileSize(file.size)}
+                    </td>
+                    <td></td>
+                    <td style={{ textAlign: 'right' }}>
                       <Button
                         className="delete"
                         onClick={() => {
