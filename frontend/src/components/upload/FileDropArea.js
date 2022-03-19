@@ -11,10 +11,9 @@ const getFileSize = (bytes) => {
     return '0 bytes';
   }
 
-  const k = 1024;
   const sizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
-  let i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), 4);
-  const filesize = parseFloat((bytes / k ** i).toFixed(1));
+  let i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), 4);
+  const filesize = parseFloat((bytes / 1000 ** i).toFixed(1));
 
   return `${filesize} ${sizes[i]}`;
 };
