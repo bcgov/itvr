@@ -36,6 +36,19 @@ Base Style
   src: url('./fonts/BCSans-Italic.woff') format('woff');
 }
 
+body,
+html {
+  background-color: $white;
+  height: 100%;
+}
+
+body {
+  color: $text-blue-paragraph;
+  font-family: 'BCSans', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 p,
 table,
 li,
@@ -108,19 +121,6 @@ a {
     background-image: none;
     opacity: 0.6;
   }
-}
-
-body,
-html {
-  background-color: $white;
-  height: 100%;
-}
-
-body {
-  color: $text-blue-paragraph;
-  font-family: 'BCSans', sans-serif;
-  margin: 0;
-  padding: 0;
 }
 
 .page-content {

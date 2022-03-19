@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';
 
@@ -16,32 +15,6 @@ const getFileSize = (bytes) => {
   const filesize = parseFloat((bytes / 1000 ** i).toFixed(1));
 
   return `${filesize} ${sizes[i]}`;
-};
-
-const FormRow = ({ file, removeFile }) => {
-  const { name, size } = file;
-  return (
-    <React.Fragment key={name}>
-      <Grid item xs={7}>
-        {name}
-      </Grid>
-      <Grid item xs={3} className="upload-row">
-        {getFileSize(size)}
-      </Grid>
-      <Grid item xs={2} className="upload-row">
-        <Button
-          className="delete"
-          onClick={() => {
-            removeFile(file);
-          }}
-          type="button"
-          id="trash-button"
-        >
-          <DeleteIcon />
-        </Button>
-      </Grid>
-    </React.Fragment>
-  );
 };
 
 const FileDropArea = () => {
@@ -60,6 +33,7 @@ const FileDropArea = () => {
   const removeFile = (removedFile) => {
     const found = files.findIndex((file) => file === removedFile);
     files.splice(found, 1);
+    setFiles([...files]);
   };
 
   return (
@@ -68,11 +42,13 @@ const FileDropArea = () => {
         <div className="content">
           <Box p={3}>
             <div {...getRootProps()}>
-              <input {...getInputProps()} />
+              <input {...getInputProps()} id="documents" />
               <div className="file-upload">
                 <UploadIcon />
                 <br />
-                Drag and Drop files here or <br />
+                <label htmlFor="documents">
+                  Drag and Drop files here
+                </label> or <br />
                 <Box p={2}>
                   <Button variant="outlined">
                     browse to select a file from your machine to upload.
@@ -85,18 +61,36 @@ const FileDropArea = () => {
         </div>
         {files.length > 0 && (
           <Box className="upload-list" pt={3} rb={2}>
-            <Grid container direction="row">
-              <Grid item xs={7}>
-                Filename
-              </Grid>
-              <Grid item xs={3}>
-                Size
-              </Grid>
-              <Grid item xs={2} />
-              {files.map((file) => (
-                <FormRow file={file} removeFile={removeFile}></FormRow>
-              ))}
-            </Grid>
+            <table aria-label="Uploaded Files List" className="document-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Size</th>
+                  <th>Virus Scan</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {files.map((file) => (
+                  <tr key={file.name} className="upload-row">
+                    <td align="left">{file.name}</td>
+                    <td align="right">{getFileSize(file.size)}</td>
+                    <td align="left"></td>
+                    <td align="right">
+                      <Button
+                        className="delete"
+                        onClick={() => {
+                          removeFile(file);
+                        }}
+                        type="button"
+                      >
+                        <DeleteIcon sx={{ color: 'red' }} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </Box>
         )}
       </div>
