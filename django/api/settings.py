@@ -41,17 +41,17 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 # Application definition
 INSTALLED_APPS = [
+    'api.apps.ApiConfig',
+    'rest_framework',
+    'corsheaders',
+    'django_filters',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig',
-    'django_filters',
-    'django_extensions',
-    'rest_framework',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [

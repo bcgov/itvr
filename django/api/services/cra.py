@@ -7,7 +7,7 @@ def read(file):
   results = [] # Array to return
   for line in file: 
     subCode = line[17:21] # Grab the sub-code, defining type of record.
-    if subCode != '0236': continue # If not a income entry.... pass.
+    if subCode != '0236': continue # If not an income entry.... pass.
 
     # All rows have a set number of spaces for each value
     sin = line[4:13]
