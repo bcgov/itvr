@@ -7,6 +7,7 @@ Base Style
 @import 'EligibilityPage.scss';
 @import 'Header.scss';
 @import 'FileUpload.scss';
+@import 'Consent.scss';
 
 /* BC Sans Regular */
 @font-face {
@@ -53,7 +54,8 @@ p,
 table,
 li,
 div,
-.label {
+.label,
+.MuiFormControlLabel-label {
   font-size: 1.2rem !important;
 }
 h1 {
@@ -130,4 +132,9 @@ a {
   .page-content {
     margin: 0 1rem 0 1rem;
   }
+}
+
+.MuiFormControlLabel-label {
+  font-weight: bold !important;
+  font-family: 'BCSans', sans-serif !important;
 }
