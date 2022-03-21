@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:14
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=itvr
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
@@ -46,10 +46,11 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     env_file:
       - keycloak.env
+      - minio.env
     environment:
       - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST=db
-      - DB_NAME=postgres
+      - DB_NAME=itvr
       - DB_PASSWORD=postgres
       - DB_PORT=5432
       - DB_USER=postgres

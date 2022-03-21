@@ -1,4 +1,4 @@
-from django.db.models import CharField, IntegerField
+from django.db.models import CharField, IntegerField, ImageField, ForeignKey, CASCADE
 from auditable.models import Auditable
 
 
@@ -32,3 +32,8 @@ class IncomeVerification(Auditable):
 
     class Meta:
         db_table = 'income_verification'
+
+
+class IncomeVerificationImage(Auditable):
+    img = ImageField()
+    application = ForeignKey(IncomeVerification, on_delete=CASCADE)
