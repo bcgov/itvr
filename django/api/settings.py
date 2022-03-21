@@ -154,10 +154,23 @@ KEYCLOAK_URL = os.getenv('KEYCLOAK_URL', 'http://localhost:8080')
 
 MINIO_ACCESS_KEY = os.getenv('MINIO_ROOT_USER')
 MINIO_SECRET_KEY = os.getenv('MINIO_ROOT_PASSWORD')
-MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'app')
-MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', None)
+MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'itvr')
+MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', 'http://minio:9000')
 MINIO_USE_SSL = bool(
     os.getenv('MINIO_USE_SSL', 'False').lower() in ['true', 1]
 )
 
+if DEBUG:
+    MINIO_USE_SSL = False
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
+# S3 configuration (for media)
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+AWS_ACCESS_KEY_ID = MINIO_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY = MINIO_SECRET_KEY
+AWS_STORAGE_BUCKET_NAME = MINIO_BUCKET_NAME
+AWS_S3_ENDPOINT_URL = MINIO_ENDPOINT

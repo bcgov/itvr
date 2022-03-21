@@ -18,7 +18,6 @@ react/node_modules/
 TEST-*xml
 venv/
 coverage/
-minio/minio_files/
 decoder.env
 *.swp
 chart/itvr/charts/itvr-minio/charts/
