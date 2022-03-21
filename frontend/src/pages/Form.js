@@ -1,9 +1,9 @@
 import React from 'react';
-import jwt_decode from "jwt-decode";
-import ApplicationFormContainer from '../components/RebateApplicationForm/ApplicationFormContainer';
+import jwt_decode from 'jwt-decode';
+import Form from '../components/Form';
 import { useKeycloak } from '@react-keycloak/web';
 
-const Form = () => {
+const FormPage = () => {
   const { keycloak } = useKeycloak();
   // we can validate the token server side
   const decoded = jwt_decode(keycloak.token);
@@ -11,9 +11,9 @@ const Form = () => {
   return (
     <div>
       Hello BCeID {decoded.preferred_username}
-      <ApplicationFormContainer/>
+      <Form />
     </div>
   );
 };
 
-export default Form;
+export default FormPage;
