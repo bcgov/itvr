@@ -6,6 +6,7 @@ Base Style
 @import 'App.scss';
 @import 'EligibilityPage.scss';
 @import 'Header.scss';
+@import 'FileUpload.scss';
 
 /* BC Sans Regular */
 @font-face {
@@ -33,6 +34,19 @@ Base Style
   font-family: 'BCSans';
   font-style: italic;
   src: url('./fonts/BCSans-Italic.woff') format('woff');
+}
+
+body,
+html {
+  background-color: $white;
+  height: 100%;
+}
+
+body {
+  color: $text-blue-paragraph;
+  font-family: 'BCSans', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 p,
@@ -107,19 +121,6 @@ a {
     background-image: none;
     opacity: 0.6;
   }
-}
-
-body,
-html {
-  background-color: $white;
-  height: 100%;
-}
-
-body {
-  color: $text-blue-paragraph;
-  font-family: 'BCSans', sans-serif;
-  margin: 0;
-  padding: 0;
 }
 
 .page-content {
