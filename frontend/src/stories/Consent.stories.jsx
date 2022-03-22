@@ -1,15 +1,22 @@
 import React from 'react';
 
-import ApplicationConsent from '../components/ApplicationConsent';
+import ConsentPersonal from '../components/ConsentPersonal';
+import ConsentTax from '../components/ConsentTax';
 
 export default {
   title: 'Consent',
-  component: ApplicationConsent,
+  component: ConsentPersonal,
   parameters: {
     layout: 'fullscreen'
   }
 };
 
-const Template = (args) => <ApplicationConsent {...args} />;
+const TemplatePersonal = (args) => <ConsentPersonal {...args} />;
 
-export const Consent = Template.bind({});
+export const PersonalConsentBox = TemplatePersonal.bind({});
+PersonalConsentBox.args = {};
+
+const TemplateTax = (args) => <ConsentTax {...args} />;
+
+export const TaxConsentBox = TemplateTax.bind({});
+TaxConsentBox.args = {};
