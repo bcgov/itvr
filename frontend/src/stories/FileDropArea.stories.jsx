@@ -5,7 +5,7 @@ import FileDropArea from '../components/upload/FileDropArea';
 export default {
   title: 'ITVR/FileDropArea',
   component: FileDropArea,
-  decorators: [withRHF()],
+  decorators: [withRHF(true)],
   parameters: {
     layout: 'fullscreen'
   }

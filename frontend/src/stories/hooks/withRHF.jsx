@@ -15,9 +15,10 @@ const StorybookFormProvider = ({ children }) => {
   );
 };
 
-export const withRHF = () => (Story) =>
+export const withRHF = (showSubmitButton) => (Story) =>
   (
     <StorybookFormProvider>
       <Story />
+      {showSubmitButton && <button type="submit">Submit</button>}
     </StorybookFormProvider>
   );
