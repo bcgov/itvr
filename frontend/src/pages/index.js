@@ -2,20 +2,21 @@ import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
 import Header from '../components/Header';
+import Layout from '../components/Layout';
+
 function Index() {
   const { keycloak } = useKeycloak();
 
   return (
     <div className="app">
-      <Header />
-      <div className="page-content">
-        {keycloak.authenticated && (
-          <button type="button" onClick={() => keycloak.logout()}>
-            Logout
-          </button>
-        )}
+      <Layout>
         <EligibilityPageContainer />
-      </div>
+      </Layout>
+      {keycloak.authenticated && (
+        <button type="button" onClick={() => keycloak.logout()}>
+          Logout
+        </button>
+      )}
     </div>
   );
 }

@@ -4,6 +4,9 @@ import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
+import ConsentPersonal from './ConsentPersonal';
+import ConsentTax from './ConsentTax';
+import FileDropArea from './upload/FileDropArea';
 
 const Form = () => {
   const { control, handleSubmit } = useForm({
@@ -78,6 +81,15 @@ const Form = () => {
             <TextField id="tax_year" inputProps={{ maxLength: 4 }} {...field} />
           )}
         />
+        <FormGroup>
+          <FileDropArea />
+        </FormGroup>
+        <FormGroup>
+          <ConsentPersonal />
+        </FormGroup>
+        <FormGroup>
+          <ConsentTax />
+        </FormGroup>
         <Button variant="contained" type="submit">
           Submit
         </Button>

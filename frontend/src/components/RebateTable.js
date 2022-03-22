@@ -39,13 +39,20 @@ const RebateTable = (props) => {
       </table>
       <sup>1</sup>
       <sub>
-        BEV (Battery Electric Vehicle) and long-range PHEV (Plug-in Hybrid
-        Electric Vehicle) receive the higher rebate amount.
+        <b>Rebate Amount Range:</b> BEV (Battery Electric Vehicle) and
+        long-range PHEV (Plug-in Hybrid Electric Vehicle) receive the higher
+        rebate amount.
       </sub>
       <p>
         Your income will be verified with the Canada Revenue Agency based on
         your {year} notice of assessment (line 15000).
       </p>
+      <sup>2</sup>
+      <sub>
+        <b>Tax year:</b> up until June 30 your {year} notice of assessment (NOA)
+        will be used to determine your rebate amount. On July 1 it will change
+        to use your {year} NOA.
+      </sub>
     </div>
   );
 };
