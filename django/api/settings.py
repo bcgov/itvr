@@ -25,6 +25,11 @@ SECRET_KEY = os.getenv(
     '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
 )
 
+SALT_KEY = os.getenv(
+    'DJANGO_SALT_KEY',
+    '0123456789abcdefghijklmnopqrstuvwxyz'
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 TESTING = 'test' in sys.argv
