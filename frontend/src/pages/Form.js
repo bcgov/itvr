@@ -2,6 +2,8 @@ import React from 'react';
 import jwt_decode from 'jwt-decode';
 import Form from '../components/Form';
 import { useKeycloak } from '@react-keycloak/web';
+import Layout from '../components/Layout';
+import RebateTable from '../components/RebateTable';
 
 const FormPage = () => {
   const { keycloak } = useKeycloak();
@@ -10,8 +12,11 @@ const FormPage = () => {
 
   return (
     <div>
-      Hello BCeID {decoded.preferred_username}
-      <Form />
+      Hello BCeID {decoded.preferred_username}{' '}
+      <Layout>
+        <RebateTable />
+        <Form />
+      </Layout>
     </div>
   );
 };
