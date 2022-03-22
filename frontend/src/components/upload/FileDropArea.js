@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useFormContext } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -17,23 +18,32 @@ const getFileSize = (bytes) => {
   return `${filesize} ${sizes[i]}`;
 };
 
-const FileDropArea = () => {
-  const [files, setFiles] = useState([]);
-  const [dropMessage, setDropMessage] = useState('');
+const FileDropArea = ({ name = 'documents' }) => {
+  const { register, unregister, setValue, watch } = useFormContext();
+  const files = watch(name);
   const onDrop = useCallback(
-    (acceptedFiles) => {
-      setDropMessage('');
-      setFiles([...files, ...acceptedFiles]);
+    (droppedFiles) => {
+      const newFiles =
+        (!!files?.length && [...files].concat(droppedFiles)) || droppedFiles;
+      setValue(name, newFiles, { shouldValidate: true });
     },
-    [files]
+    [setValue, name, files]
   );
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop
+    // accept: props.accept
+  });
+  useEffect(() => {
+    register(name);
+    return () => {
+      unregister(name);
+    };
+  }, [register, unregister, name]);
 
   const removeFile = (removedFile) => {
     const found = files.findIndex((file) => file === removedFile);
     files.splice(found, 1);
-    setFiles([...files]);
+    setValue(name, files, { shouldValidate: true });
   };
 
   return (
@@ -41,20 +51,17 @@ const FileDropArea = () => {
       <div>
         <div className="content">
           <Box p={3}>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} id="documents" />
+            <div {...getRootProps()} aria-label="File Upload" id={name}>
+              <input name={name} {...getInputProps()} />
               <div className="file-upload">
                 <UploadIcon />
                 <br />
-                <label htmlFor="documents">
-                  Drag and Drop files here
-                </label> or <br />
+                <label htmlFor={name}>Drag and Drop files here</label> or <br />
                 <Box p={2}>
                   <Button variant="outlined">
                     browse to select a file from your machine to upload.
                   </Button>
                 </Box>
-                {dropMessage && <div>{dropMessage}</div>}
               </div>
             </div>
           </Box>

@@ -8,17 +8,15 @@ export default {
   component: FileDropArea,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
-    layout: 'fullscreen',
-  },
+    layout: 'fullscreen'
+  }
 };
 
 const Template = (args) => <FileDropArea {...args} />;
 
 // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing
 export const NoFiles = Template.bind({});
-NoFiles.args = {
-  uploadFiles: []
-};
+NoFiles.args = {};
 
 // export const LoggedIn = Template.bind({});
 // LoggedIn.play = async ({ canvasElement }) => {
