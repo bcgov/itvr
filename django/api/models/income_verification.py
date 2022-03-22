@@ -1,5 +1,5 @@
 from email.policy import default
-from django.db.models import CharField, IntegerField, FileField, DateField, EmailField
+from django.db.models import CharField, IntegerField, FileField, DateField, EmailField, BooleanField
 from encrypted_fields.fields import EncryptedCharField
 from auditable.models import Auditable
 
@@ -20,7 +20,8 @@ class IncomeVerification(Auditable):
     middle_names = CharField(
         max_length=250,
         unique=False,
-        default=None
+        blank=True,
+        null=True
     )
     email = EmailField(
         max_length=250,
@@ -48,7 +49,7 @@ class IncomeVerification(Auditable):
     doc2 = FileField(upload_to='docs')
 
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        return self.last_name + ', ' + self.first_name
 
     class Meta:
         db_table = 'income_verification'
