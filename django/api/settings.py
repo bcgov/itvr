@@ -41,9 +41,7 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 # Application definition
 INSTALLED_APPS = [
-    'api.apps.ApiConfig',
-    'rest_framework',
-    'corsheaders',
+    'jazzmin',
     'django_filters',
     'django_extensions',
     'django.contrib.admin',
@@ -52,6 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'api.apps.ApiConfig',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -149,13 +150,13 @@ REST_FRAMEWORK = {
 
 KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
 KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM')
-KEYCLOAK_URL = os.getenv('KEYCLOAK_URL', 'http://localhost:8080')
+KEYCLOAK_URL = os.getenv('KEYCLOAK_URL')
 
 
 MINIO_ACCESS_KEY = os.getenv('MINIO_ROOT_USER')
 MINIO_SECRET_KEY = os.getenv('MINIO_ROOT_PASSWORD')
-MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'itvr')
-MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', 'http://minio:9000')
+MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME')
+MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
 MINIO_USE_SSL = bool(
     os.getenv('MINIO_USE_SSL', 'False').lower() in ['true', 1]
 )

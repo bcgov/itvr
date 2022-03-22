@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 from api.models.income_verification import IncomeVerification
 
 class ApplicationFormCreateSerializer(ModelSerializer):
