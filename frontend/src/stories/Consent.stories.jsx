@@ -4,7 +4,7 @@ import ConsentPersonal from '../components/ConsentPersonal';
 import ConsentTax from '../components/ConsentTax';
 
 export default {
-  title: 'Consent',
+  title: 'ITVR/Consent',
   component: ConsentPersonal,
   parameters: {
     layout: 'fullscreen'

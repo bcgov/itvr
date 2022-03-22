@@ -8,16 +8,18 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import FileDropArea from './upload/FileDropArea';
 
+export const defaultValues = {
+  sin: '',
+  first_name: '',
+  last_name: '',
+  dob: '',
+  tax_year: '',
+  documents: []
+};
+
 const Form = () => {
   const methods = useForm({
-    defaultValues: {
-      sin: '',
-      first_name: '',
-      last_name: '',
-      dob: '',
-      tax_year: '',
-      documents: []
-    }
+    defaultValues
   });
 
   const { control, handleSubmit } = methods;

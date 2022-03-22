@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useFormContext } from 'react-hook-form';
 import Box from '@mui/material/Box';
@@ -18,7 +18,10 @@ const getFileSize = (bytes) => {
   return `${filesize} ${sizes[i]}`;
 };
 
-const FileDropArea = ({ name = 'documents' }) => {
+const FileDropArea = ({
+  name = 'documents',
+  accept = 'image/png, image/jpg, image/jpeg'
+}) => {
   const { register, unregister, setValue, watch } = useFormContext();
   const files = watch(name);
   const onDrop = useCallback(
@@ -30,8 +33,8 @@ const FileDropArea = ({ name = 'documents' }) => {
     [setValue, name, files]
   );
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop
-    // accept: props.accept
+    onDrop,
+    accept
   });
   useEffect(() => {
     register(name);
