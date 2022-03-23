@@ -8,7 +8,7 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import FileDropArea from './upload/FileDropArea';
 
-export const defaultValues = {
+const defaultValues = {
   sin: '',
   first_name: '',
   last_name: '',

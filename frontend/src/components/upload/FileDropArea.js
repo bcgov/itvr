@@ -27,7 +27,7 @@ const FileDropArea = ({
   const onDrop = useCallback(
     (droppedFiles) => {
       const newFiles =
-        (!!files?.length && [...files].concat(droppedFiles)) || droppedFiles;
+        (files && [...files].concat(droppedFiles)) || droppedFiles;
       setValue(name, newFiles, { shouldValidate: true });
     },
     [setValue, name, files]
@@ -69,7 +69,7 @@ const FileDropArea = ({
             </div>
           </Box>
         </div>
-        {files.length > 0 && (
+        {files && (
           <Box className="upload-list" pt={3} rb={2}>
             <table aria-label="Uploaded Files List" className="document-table">
               <thead>

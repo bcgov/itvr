@@ -1,6 +1,5 @@
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import Form, { defaultValues } from '../components/Form';
+import Form from '../components/Form';
 
 export default {
   title: 'ITVR/Rebate Form',
@@ -10,16 +9,6 @@ export default {
   }
 };
 
-const Template = (args) => {
-  const methods = useForm({
-    defaultValues
-  });
-  return (
-    <FormProvider {...methods}>
-      <Form {...args} />
-    </FormProvider>
-  );
-};
-
+const Template = (args) => <Form {...args} />;
 export const RebateForm = Template.bind({});
 RebateForm.args = {};
