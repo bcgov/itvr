@@ -3,6 +3,10 @@ from django.db.models import CharField, IntegerField, ImageField, \
     DateField, EmailField, BooleanField, UUIDField
 from encrypted_fields.fields import EncryptedCharField
 from auditable.models import Auditable
+from django.utils.html import mark_safe
+from django.core.files.storage import get_storage_class
+
+media_storage = get_storage_class()()
 
 
 class IncomeVerification(Auditable):
@@ -52,7 +56,24 @@ class IncomeVerification(Auditable):
     date_of_birth = DateField()
     tax_year = IntegerField()
     doc1 = ImageField(upload_to='docs')
+
+    def doc1_tag(self):
+        return mark_safe(
+            '<img src="%s" width="800" />'
+            % (media_storage.url(name=self.doc1.file.name))
+        )
+
+    doc1_tag.short_description = 'First Uploaded Document'
+
     doc2 = ImageField(upload_to='docs')
+
+    def doc2_tag(self):
+        return mark_safe(
+            '<img src="%s" width="800" />'
+            % (media_storage.url(name=self.doc2.file.name))
+        )
+
+    doc2_tag.short_description = 'Second Uploaded Document'
 
     verified = BooleanField()
 
