@@ -3,6 +3,7 @@ __pycache__/
 .DS_Store
 .idea/
 .minio.sys/
+minio/itvr/
 .pyc
 .sql.gz
 .vscode
@@ -18,7 +19,6 @@ react/node_modules/
 TEST-*xml
 venv/
 coverage/
-minio/minio_files/
 decoder.env
 *.swp
 chart/itvr/charts/itvr-minio/charts/

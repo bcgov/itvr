@@ -25,6 +25,11 @@ SECRET_KEY = os.getenv(
     '#8+m(ba_(ra1=lo+-7jyp#x49l27guk*i4)w@xp7j9b9umkwh^'
 )
 
+SALT_KEY = os.getenv(
+    'DJANGO_SALT_KEY',
+    '0123456789abcdefghijklmnopqrstuvwxyz'
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 TESTING = 'test' in sys.argv
@@ -41,9 +46,7 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 # Application definition
 INSTALLED_APPS = [
-    'api.apps.ApiConfig',
-    'rest_framework',
-    'corsheaders',
+    'jazzmin',
     'django_filters',
     'django_extensions',
     'django.contrib.admin',
@@ -52,6 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'api.apps.ApiConfig',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -149,15 +155,31 @@ REST_FRAMEWORK = {
 
 KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
 KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM')
-KEYCLOAK_URL = os.getenv('KEYCLOAK_URL', 'http://localhost:8080')
+KEYCLOAK_URL = os.getenv('KEYCLOAK_URL')
 
 
 MINIO_ACCESS_KEY = os.getenv('MINIO_ROOT_USER')
 MINIO_SECRET_KEY = os.getenv('MINIO_ROOT_PASSWORD')
-MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'app')
-MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', None)
+MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME')
+MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
 MINIO_USE_SSL = bool(
     os.getenv('MINIO_USE_SSL', 'False').lower() in ['true', 1]
 )
 
+if DEBUG:
+    MINIO_USE_SSL = False
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
+# S3 configuration (for media)
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+AWS_ACCESS_KEY_ID = MINIO_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY = MINIO_SECRET_KEY
+AWS_STORAGE_BUCKET_NAME = MINIO_BUCKET_NAME
+AWS_S3_ENDPOINT_URL = MINIO_ENDPOINT
+AWS_DEFAULT_ACL = None
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False

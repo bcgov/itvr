@@ -1,7 +1,6 @@
 import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
-import Header from '../components/Header';
 import Layout from '../components/Layout';
 
 function Index() {

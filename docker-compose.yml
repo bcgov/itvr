@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:14
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=itvr
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
@@ -18,13 +18,26 @@ services:
     image: minio/minio
     hostname: "minio"
     volumes:
-      - ./minio/minio_files:/minio_files
+      - ./minio:/minio_files
     env_file:
       - minio.env
-    command: "minio server /minio_files --console-address \":9001\""
+    command: 'minio server /minio_files --console-address ":9001"'
     ports:
       - 9000:9000
       - 9001:9001
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    env_file:
+      - minio.env
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc rb --force myminio/itvr;
+      /usr/bin/mc mb --quiet myminio/itvr;
+      /usr/bin/mc policy set public myminio/itvr;
+      "
   api:
     build: ./django
     command: >
@@ -33,10 +46,11 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     env_file:
       - keycloak.env
-    environment: 
+      - minio.env
+    environment:
       - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST=db
-      - DB_NAME=postgres
+      - DB_NAME=itvr
       - DB_PASSWORD=postgres
       - DB_PORT=5432
       - DB_USER=postgres

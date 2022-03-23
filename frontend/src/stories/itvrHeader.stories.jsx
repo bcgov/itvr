@@ -1,13 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import Header from "../components/Header";
+import Header from '../components/Header';
 
 export default {
-  title: "Header",
-  component: Header,
+  title: 'ITVR/Header',
+  component: Header
 };
 
-// export const EligibilityHeader = () => <Header pageTitle="Test" />;
-
 const Template = (args) => <Header {...args} />;
-export const test = Template.bind({});
+export const Default = Template.bind({});

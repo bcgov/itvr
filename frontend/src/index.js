@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
-
+import { QueryClient, QueryClientProvider } from 'react-query';
 import keycloak from './keycloak';
 import AppRouter from './routes';
 
 import './styles/index.scss';
+
+const queryClient = new QueryClient();
 
 const eventLogger = (event, error) => {
   console.log('onKeycloakEvent', event, error);
@@ -28,7 +30,9 @@ ReactDOM.render(
     initOptions={initOptions}
     LoadingComponent={<div>Loading</div>}
   >
-    <AppRouter />
+    <QueryClientProvider client={queryClient}>
+      <AppRouter />
+    </QueryClientProvider>
   </ReactKeycloakProvider>,
   document.getElementById('root')
 );
