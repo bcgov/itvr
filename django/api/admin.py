@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models.income_verification import IncomeVerification
+from .models.go_electric_rebate_application import GoElectricRebateApplication
 from django.contrib.admin.templatetags import admin_modify
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -19,8 +19,8 @@ def submit_row_custom(context):
 admin_modify.submit_row = submit_row_custom
 
 
-@admin.register(IncomeVerification)
-class IncomeVerificationAdmin(admin.ModelAdmin):
+@admin.register(GoElectricRebateApplication)
+class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     readonly_fields = (
         "id",
         "sin",

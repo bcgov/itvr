@@ -1,11 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
 from api.serializers.application_form import ApplicationFormSerializer, \
     ApplicationFormCreateSerializer
-from api.models.income_verification import IncomeVerification
+from api.models.go_electric_rebate_application import GoElectricRebateApplication
 
 
 class ApplicationFormViewset(ModelViewSet):
-    queryset = IncomeVerification.objects.all()
+    queryset = GoElectricRebateApplication.objects.all()
     serializer_classes = {
         'default': ApplicationFormSerializer,
         'create': ApplicationFormCreateSerializer,
