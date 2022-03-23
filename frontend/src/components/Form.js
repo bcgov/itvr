@@ -8,13 +8,15 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import FileDropArea from './upload/FileDropArea';
 
-const defaultValues = {
+export const defaultValues = {
   sin: '',
   first_name: '',
   last_name: '',
   dob: '',
   tax_year: '',
-  documents: []
+  documents: [],
+  consent_personal: false,
+  consent_tax: false
 };
 
 const Form = () => {
@@ -74,7 +76,7 @@ const Form = () => {
             name="dob"
             control={control}
             render={({ field }) => (
-              <TextField id="dob" inputProps={{ maxLength: 4 }} {...field} />
+              <TextField id="dob" type="date" {...field} />
             )}
           />
         </FormGroup>
@@ -92,13 +94,13 @@ const Form = () => {
             )}
           />
           <FormGroup>
-            <FileDropArea />
+            <FileDropArea name="documents" />
           </FormGroup>
           <FormGroup>
-            <ConsentPersonal />
+            <ConsentPersonal name="consent_personal" />
           </FormGroup>
           <FormGroup>
-            <ConsentTax />
+            <ConsentTax name="consent_tax" />
           </FormGroup>
           <Button variant="contained" type="submit">
             Submit

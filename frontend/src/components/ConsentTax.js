@@ -1,6 +1,6 @@
 import ConsentGeneral from './ConsentGeneral';
 
-const ConsentTax = () => {
+const ConsentTax = ({ name }) => {
   const subtitle = `You and your spouse (if applicable) are required to provide consent that
         allows the Ministry of Energy, Mines and Low Carbon Innovation to access
         and review tax information related to line 15000 ‘gross income’ of your
@@ -12,6 +12,7 @@ const ConsentTax = () => {
     <ConsentGeneral
       title="Consent to Disclosure of Information from Income Tax Records"
       subtitle={subtitle}
+      name={name}
     >
       <div className="consent-list">
         <ol>

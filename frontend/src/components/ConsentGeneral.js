@@ -1,17 +1,27 @@
 /* eslint-disable react/jsx-indent */
-import React from 'react';
+import React, { useEffect } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useFormContext } from 'react-hook-form';
 
 const ConsentGeneral = ({
   children,
   description = 'I understand that by submitting this application form it means:',
   title = '',
-  subtitle = ''
+  subtitle = '',
+  name
 }) => {
+  const { register, unregister, setValue, watch } = useFormContext();
+  useEffect(() => {
+    register(name);
+    return () => {
+      unregister(name);
+    };
+  }, [register, unregister, name]);
+  const consent = watch(name);
   const commonStyles = {
     bgcolor: 'background.paper',
     width: '100%',
@@ -43,7 +53,15 @@ const ConsentGeneral = ({
         <p>{subtitle}</p>
         <FormGroup>
           <FormControlLabel
-            control={<Checkbox />}
+            control={
+              <Checkbox
+                checked={consent}
+                onChange={() =>
+                  setValue(name, !consent, { shouldValidate: true })
+                }
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            }
             className="label"
             label={
               <Typography variant="body2" color="textPrimary" fontWeight="bold">

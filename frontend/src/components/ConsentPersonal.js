@@ -1,8 +1,11 @@
 import ConsentGeneral from './ConsentGeneral';
 
-const ConsentPersonal = () => {
+const ConsentPersonal = ({ name }) => {
   return (
-    <ConsentGeneral title="Consent to Disclosure and Storage of, and Access to, Personal Information">
+    <ConsentGeneral
+      title="Consent to Disclosure and Storage of, and Access to, Personal Information"
+      name={name}
+    >
       <div className="consent-list">
         <ol>
           <li>
