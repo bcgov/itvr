@@ -13,5 +13,5 @@ export default {
 
 const Template = (args) => <FileDropArea {...args} />;
 
-export const NoFiles = Template.bind({});
-NoFiles.args = {};
+export const Default = Template.bind({});
+Default.args = {};

@@ -69,7 +69,7 @@ const FileDropArea = ({
             </div>
           </Box>
         </div>
-        {files > 0 && (
+        {files && files.length > 0 && (
           <Box className="upload-list" pt={3} rb={2}>
             <table aria-label="Uploaded Files List" className="document-table">
               <thead>
