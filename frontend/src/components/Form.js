@@ -9,6 +9,7 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import FileDropArea from './upload/FileDropArea';
 import useAxios from '../utils/axiosHook';
+import ApplicationType from './ApplicationType';
 
 export const defaultValues = {
   sin: '',
@@ -53,6 +54,9 @@ const Form = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <FormGroup>
+          <ApplicationType control={control} />
+        </FormGroup>
         <FormGroup>
           <InputLabel htmlFor="last_name">Last Name (Surname):</InputLabel>
           <Controller
