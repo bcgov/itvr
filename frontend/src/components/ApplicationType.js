@@ -15,7 +15,7 @@ const ApplicationType = ({ control }) => {
   return (
     <Box my={5}>
       <FormControl>
-        <FormLabel className="label" id="application-type">
+        <FormLabel className="label" id="application-type" sx={{ mb: 1 }}>
           If you can receive a larger rebate applying as a household your spouse
           or common law partner will need to complete a portion of this
           application to confirm their identity and provide their CRA income
@@ -66,18 +66,23 @@ const ApplicationType = ({ control }) => {
           )}
         />
       </FormGroup>
-      <sup>1</sup>
-      <sub>
-        Household: a person or group of persons who occupy the same dwelling and
-        do not have a usual place of residence elsewhere in Canada or abroad.
-        The dwelling may be either a collective dwelling or a private dwelling.
-      </sub>
-      <sup>2</sup>
-      <sub>
-        spouse: someone of the same or opposite gender who has one of the
-        following types of relationship to you (1) they are married to you (2)
-        they are living in a marriage-like relationship with you.
-      </sub>
+      <Box mt={2}>
+        <sup>3</sup>
+        <sub>
+          <b>Household:</b> a person or group of persons who occupy the same
+          dwelling and do not have a usual place of residence elsewhere in
+          Canada or abroad. The dwelling may be either a collective dwelling or
+          a private dwelling.
+        </sub>
+      </Box>
+      <Box mt={2}>
+        <sup>4</sup>
+        <sub>
+          <b>Spouse:</b> someone of the same or opposite gender who has one of
+          the following types of relationship to you (1) they are married to you
+          (2) they are living in a marriage-like relationship with you.
+        </sub>
+      </Box>
     </Box>
   );
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-// import { withRHF } from './hooks/withRHF';
+import { withRHF } from './hooks/withRHF';
 import ApplicationType from '../components/ApplicationType';
 
 export default {
   title: 'ITVR/ApplicationType',
   component: ApplicationType,
-  //   decorators: [withRHF(true)],
+  decorators: [withRHF(true)],
   parameters: {
     layout: 'fullscreen'
   }
@@ -14,3 +14,4 @@ export default {
 const Template = (args) => <ApplicationType {...args} />;
 
 export const Default = Template.bind({});
+Default.args = {};
