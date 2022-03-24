@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from api.models.income_verification import IncomeVerification
+from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
 
 import logging
@@ -12,13 +12,13 @@ class ApplicationFormCreateSerializer(ModelSerializer):
     parser_classes = (MultiPartParser, FormParser, )
 
     class Meta:
-        model = IncomeVerification
+        model = GoElectricRebateApplication
         fields = '__all__'
 
     def create(self, validated_data):
         log.warn('creating obj')
         log.warn(validated_data)
-        obj = IncomeVerification.objects.create(
+        obj = GoElectricRebateApplication.objects.create(
             sin=validated_data['sin'],
             email=validated_data['email'],
             drivers_licence=validated_data['drivers_licence'],
@@ -39,5 +39,5 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
 class ApplicationFormSerializer(ModelSerializer):
     class Meta:
-        model = IncomeVerification
+        model = GoElectricRebateApplication
         fields = '__all__'

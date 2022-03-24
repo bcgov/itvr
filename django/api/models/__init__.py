@@ -1,4 +1,4 @@
 """
 Model Initializer
 """
-from . import income_verification
+from . import go_electric_rebate_application

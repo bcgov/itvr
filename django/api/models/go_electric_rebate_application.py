@@ -9,7 +9,7 @@ from django.core.files.storage import get_storage_class
 media_storage = get_storage_class()()
 
 
-class IncomeVerification(Auditable):
+class GoElectricRebateApplication(Auditable):
     id = UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -81,4 +81,4 @@ class IncomeVerification(Auditable):
         return self.last_name + ', ' + self.first_name
 
     class Meta:
-        db_table = 'income_verification'
+        db_table = 'go_electric_rebate_application'
