@@ -2,7 +2,7 @@ import React from 'react';
 import Form from '../components/Form';
 
 export default {
-  title: 'ITVR/Rebate Form',
+  title: 'ITVR/RebateForm',
   component: Form,
   parameters: {
     layout: 'fullscreen'
@@ -10,5 +10,5 @@ export default {
 };
 
 const Template = (args) => <Form {...args} />;
-export const RebateForm = Template.bind({});
-RebateForm.args = {};
+export const Default = Template.bind({});
+Default.args = {};
