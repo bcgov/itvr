@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -10,8 +10,32 @@ import InputLabel from '@mui/material/InputLabel';
 import { Controller } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import { FormGroup } from '@mui/material';
+import { useFormContext } from 'react-hook-form';
+
+// we want to save the radio selection for if its individual or household, and if its household also save the spouse email address
+//if submitted with individual type, CLEAR spouse email
+const SpouseEmail = ({ control, applicationType }) => {
+  return (
+    <FormGroup>
+      <InputLabel htmlFor="spouse_email">Spouse email address:</InputLabel>
+      <Controller
+        name="spouse_email"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            disabled={applicationType === 'individual'}
+            id="spouse_email"
+            inputProps={{ maxLength: 250 }}
+            {...field}
+          />
+        )}
+      />
+    </FormGroup>
+  );
+};
 
 const ApplicationType = ({ control }) => {
+  const [applicationType, setApplicationType] = useState(false);
   return (
     <Box my={5}>
       <FormControl>
@@ -23,8 +47,8 @@ const ApplicationType = ({ control }) => {
         </FormLabel>
         <RadioGroup
           aria-labelledby="application-type"
-          name="radio-buttons-group"
-          // onChange={(e) => handleCheckboxChange(e, index)}
+          name="application-type"
+          onChange={(e) => setApplicationType(e.target.value)}
         >
           <FormControlLabel
             value="individual"
@@ -52,20 +76,9 @@ const ApplicationType = ({ control }) => {
           />
         </RadioGroup>
       </FormControl>
-      <FormGroup>
-        <InputLabel htmlFor="spouse-email">Spouse email address:</InputLabel>
-        <Controller
-          name="spouse-email"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              id="spouse-email"
-              inputProps={{ maxLength: 250 }}
-              {...field}
-            />
-          )}
-        />
-      </FormGroup>
+
+      <SpouseEmail applicationType={applicationType} />
+
       <Box mt={2}>
         <sup>3</sup>
         <sub>
