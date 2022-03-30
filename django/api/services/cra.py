@@ -15,3 +15,13 @@ def read(file):
     income = line[21:30].lstrip("0")
     results.append({'sin':sin,'year':year,'income':income}) # Add to array
   return results # Return results
+
+##
+# Write a CRA request file
+# INPUT: A dictionary of values to write to the file
+# OUTPUT: A string representing a text file
+#
+def write(data):
+  file = "" # String to return
+  print(data)
+  return file
