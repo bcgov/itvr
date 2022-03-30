@@ -7,12 +7,19 @@
 # ```
 from cra import write
 
-data = {
+data = [{
   'sin': '123456789',
   'year': '2020',
   'given_name': 'John',
-  'family_name': 'Smith'
-}
+  'family_name': 'Smith',
+  'birth_date': '1955-01-01'
+},{
+  'sin': '987654321',
+  'year': '2020',
+  'given_name': 'Amanda',
+  'family_name': 'Williams',
+  'birth_date': '1965-02-21'
+}]
 
 file = write(data)
 print(file)
