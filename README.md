@@ -11,7 +11,7 @@ The backend and all services are setup to run via docker. To start everything up
 docker-compose up --build
 ```
 
-This will start up a [postgres](https://www.postgresql.org/) database, a [Django](https://www.djangoproject.com/) web app, and a [minio](https://docs.min.io/docs/minio-quickstart-guide.html) service with a bucket `itvr`
+This will start up a [postgres](https://www.postgresql.org/) database, a [Django](https://www.djangoproject.com/) web app, and a [MinIO](https://docs.min.io/docs/minio-quickstart-guide.html) service with a bucket `itvr`
 
 You can view the contents of the bucket in MinIO by visiting `http://minio:9001/login`. Use env variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` to login to the console. Default values are found in `minio.env`
 
@@ -21,6 +21,9 @@ We take advantage that MinIO is S3 compatible and use [django-storages](https://
 We are using a shared realm [Keycloak](https://www.keycloak.org/) client. Shared realm clients can be accessed and configured via [Common Hosted Single Sign-on (CSS)](https://bcgov.github.io/sso-requests)
 
 Once added as a team member to existing projects, you can configure the redirect urls for each environment (dev, test, prod). Installation json is available here as well as some helpful documentation about integrating the client.
+
+### Email
+We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-email-service) to send email. Documentation is [available here](https://getok.nrs.gov.bc.ca/app/documentation)
 
 ### Frontend
 The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
