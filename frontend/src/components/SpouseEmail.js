@@ -5,11 +5,8 @@ import { FormGroup } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 
 const SpouseEmail = ({ name }) => {
-  const { setValue, register, unregister, watch } = useFormContext();
-  const isIndividual = watch('application_type') === 'individual';
-  if (isIndividual) {
-    setValue(name, '');
-  }
+  const { setValue, register, unregister } = useFormContext();
+
   useEffect(() => {
     register(name, { required: true });
     return () => {
@@ -22,7 +19,7 @@ const SpouseEmail = ({ name }) => {
       <FormGroup>
         <InputLabel htmlFor={name}>Spouse email address:</InputLabel>
         <TextField
-          disabled={isIndividual}
+          defaultValue=""
           type="text"
           name={name}
           onChange={(e) =>
