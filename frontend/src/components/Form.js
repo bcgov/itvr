@@ -9,6 +9,14 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import FileDropArea from './upload/FileDropArea';
 import useAxios from '../utils/axiosHook';
+import SpouseEmail from './SpouseEmail';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Typography from '@mui/material/Typography';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import Box from '@mui/material/Box';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 export const defaultValues = {
   sin: '',
@@ -23,14 +31,16 @@ export const defaultValues = {
   drivers_licence: '',
   documents: [],
   consent_personal: false,
-  consent_tax: false
+  consent_tax: false,
+  application_type: 'individual',
+  spouse_email: ''
 };
 
 const Form = () => {
   const methods = useForm({
     defaultValues
   });
-  const { control, handleSubmit } = methods;
+  const { control, handleSubmit, register, watch } = methods;
   const axiosInstance = useAxios();
   const mutation = useMutation((data) => {
     console.log(data);
@@ -53,6 +63,82 @@ const Form = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <FormGroup>
+          <Box my={5}>
+            <FormControl>
+              <FormLabel className="label" id="application_type" sx={{ mb: 1 }}>
+                If you can receive a larger rebate applying as a household your
+                spouse or common law partner will need to complete a portion of
+                this application to confirm their identity and provide their CRA
+                income disclosure consent. Instructions will be sent to them by
+                email.
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="application_type"
+                name="application_type"
+                defaultValue={defaultValues.application_type}
+              >
+                <FormControlLabel
+                  value="individual"
+                  control={
+                    <Radio
+                      name="application_type"
+                      {...register('application_type')}
+                    />
+                  }
+                  label={
+                    <Typography color="textPrimary" fontWeight="bold">
+                      {'Apply as an individual'}
+                    </Typography>
+                  }
+                />
+                <FormControlLabel
+                  value="household"
+                  control={
+                    <Radio
+                      name="application_type"
+                      {...register('application_type')}
+                    />
+                  }
+                  label={
+                    <Typography color="textPrimary">
+                      {
+                        <>
+                          {' '}
+                          <b>Apply as a household,</b> enter your spouse or
+                          common law partner's email address below.
+                        </>
+                      }
+                    </Typography>
+                  }
+                />
+              </RadioGroup>
+            </FormControl>
+
+            {watch('application_type') === 'household' && (
+              <SpouseEmail name="spouse_email" />
+            )}
+
+            <Box mt={2}>
+              <sup>3</sup>
+              <sub>
+                <b>Household:</b> a person or group of persons who occupy the
+                same dwelling and do not have a usual place of residence
+                elsewhere in Canada or abroad. The dwelling may be either a
+                collective dwelling or a private dwelling.
+              </sub>
+            </Box>
+            <Box mt={2}>
+              <sup>4</sup>
+              <sub>
+                <b>Spouse:</b> someone of the same or opposite gender who has
+                one of the following types of relationship to you (1) they are
+                married to you (2) they are living in a marriage-like
+                relationship with you.
+              </sub>
+            </Box>
+          </Box>
+        </FormGroup>
         <FormGroup>
           <InputLabel htmlFor="last_name">Last Name (Surname):</InputLabel>
           <Controller
