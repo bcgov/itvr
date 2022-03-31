@@ -25,7 +25,7 @@ Once added as a team member to existing projects (this project is called `itvr`)
 ### Email
 We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-email-service) to send email. Documentation is [available here](https://getok.nrs.gov.bc.ca/app/documentation)
 
-To get access to the created client if needed, go [Request Account](https://getok.nrs.gov.bc.ca/app/requestAccount) with Application Acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
+To get access to the created client if needed, go [request account](https://getok.nrs.gov.bc.ca/app/requestAccount) with application acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
 
 ### Frontend
 The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
@@ -42,6 +42,7 @@ The app is available by default at `http://localhost:3000/`
 To use [Storybook](https://storybook.js.org/) for developing a component:
 
 ```sh
+cd frontend
 npm run storybook
 ```
 
