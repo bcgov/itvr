@@ -18,6 +18,8 @@ You can view the contents of the bucket in minio by visiting `http://minio:9001/
 ### Auth
 We are using a shared realm [Keycloak](https://www.keycloak.org/) client. Shared realm clients can be accessed and configured via [Common Hosted Single Sign-on (CSS)](https://bcgov.github.io/sso-requests)
 
+Once added as a team member to existing projects, you can configure the redirect urls for each environment (dev, test, prod). Installation json is available here as well as some helpful documentation about integrating the client.
+
 ### Frontend
 The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
 
