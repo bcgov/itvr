@@ -11,12 +11,12 @@ The backend and all services are setup to run via docker. To start everything up
 docker-compose up --build
 ```
 
-This will start up a postgres database, a Django web app, and a minio service with a bucket `itvr`
+This will start up a [postgres](https://www.postgresql.org/) database, a [Django](https://www.djangoproject.com/) web app, and a [minio](https://docs.min.io/docs/minio-quickstart-guide.html) service with a bucket `itvr`
 
 You can view the contents of the bucket in minio by visiting `http://minio:9001/login`. Use env variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` to login to the console. Default values are found in `minio.env`
 
 ### Frontend
-The frontend is built using Create React App. To run the frontend:
+The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
 
 ```sh
 cd frontend
@@ -24,7 +24,7 @@ npm i
 npm start
 ```
 
-To use Storybook for developing a component:
+To use [Storybook](https://storybook.js.org/) for developing a component:
 
 ```sh
 npm run storybook
