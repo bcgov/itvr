@@ -13,6 +13,8 @@ docker-compose up --build
 
 This will start up a postgres database, a Django web app, and a minio service with a bucket `itvr`
 
+You can view the contents of the bucket in minio by visiting `http://minio:9001/login`. Use env variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` to login to the console. Default values are found in `minio.env`
+
 ### Frontend
 The frontend is built using Create React App. To run the frontend:
 
