@@ -29,8 +29,13 @@ npm i
 npm start
 ```
 
+The app is available by default at `http://localhost:3000/`
+
+### Storybook
 To use [Storybook](https://storybook.js.org/) for developing a component:
 
 ```sh
 npm run storybook
 ```
+
+The storybook is available by default at `http://localhost:6006/`
