@@ -75,4 +75,4 @@ npm run storybook
 The storybook is available by default at `http://localhost:6006/`
 
 ## Deployment
-We use Openshift to deploy our applications. [Access the console here](https://console.apps.silver.devops.gov.bc.ca/k8s/cluster/projects)
+We use [Openshift](https://www.redhat.com/en/technologies/cloud-computing/openshift) to deploy our applications. [Access the console here](https://console.apps.silver.devops.gov.bc.ca/k8s/cluster/projects)
