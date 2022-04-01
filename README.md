@@ -44,6 +44,16 @@ We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-em
 To get access to the created client, go [request account](https://getok.nrs.gov.bc.ca/app/requestAccount) with application acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
 
 ### Frontend
+We've decided to run the frontend outside of docker at this time mostly because of mounted Lima volumes causing issues with npm permissions. [Track the open issue](https://github.com/lima-vm/lima/issues/693) 
+
+
+To run the frontend you will need [node.js](https://nodejs.org/en/) installed. A good way to manage node these days is with [asdf](https://asdf-vm.com/guide/getting-started.html#_1-install-dependencies). File `.tool-versions` contains current versions of tools used in this application. After setting up asdf run this at the project root:
+
+```sh
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf install
+```
+
 The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
 
 ```sh
