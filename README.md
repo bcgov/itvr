@@ -76,3 +76,6 @@ The storybook is available by default at `http://localhost:6006/`
 
 ## Deployment
 We use [Openshift](https://www.redhat.com/en/technologies/cloud-computing/openshift) to deploy our applications. [Access the console here](https://console.apps.silver.devops.gov.bc.ca/k8s/cluster/projects)
+
+There's training on Openshift offered by BCDevExchange. Check the [schedule here](https://bcdevexchange.org/learning)
+
