@@ -13,7 +13,23 @@ docker-compose up --build
 
 This will start up a [postgres](https://www.postgresql.org/) database, a [Django](https://www.djangoproject.com/) web app, and a [MinIO](https://docs.min.io/docs/minio-quickstart-guide.html) service with a bucket `itvr`
 
-You can view the contents of the bucket in MinIO by visiting `http://minio:9001/login`. Use env variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` to login to the console. Default values are found in `minio.env`
+#### Django
+Django offers many helpful [mangement commands](https://docs.djangoproject.com/en/4.0/ref/django-admin/) out of the box. To be able to use these with docker you can access the python environment with bash:
+
+```sh
+docker-compose exec api bash
+```
+
+To create a Django admin user try running this command in the shell:
+
+```sh
+python manage.py createsuperuser
+```
+
+The admin panel is available here: `http://localhost:8000/admin/`
+
+#### MinIO
+You can view the contents of the bucket in MinIO by visiting `http://localhost:9001/login`. Use env variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` to login to the console. Default values are found in `minio.env`
 
 We take advantage that MinIO is S3 compatible and use [django-storages](https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html) S3 backend for media files.
 
@@ -25,7 +41,7 @@ Once added as a team member to existing projects (this project is called `itvr`)
 ### Email
 We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-email-service) to send email. Documentation is [available here](https://getok.nrs.gov.bc.ca/app/documentation)
 
-To get access to the created client if needed, go [request account](https://getok.nrs.gov.bc.ca/app/requestAccount) with application acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
+To get access to the created client, go [request account](https://getok.nrs.gov.bc.ca/app/requestAccount) with application acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
 
 ### Frontend
 The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
