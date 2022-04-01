@@ -2,7 +2,7 @@ from keycloak import KeycloakOpenID
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from rest_framework.authentication import BaseAuthentication, get_authorization_header
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 import logging
@@ -11,29 +11,8 @@ import logging
 log = logging.getLogger('KeycloakAuthentication')
 
 
-class KeycloakAuthentication(BaseAuthentication):
+class KeycloakAuthentication(TokenAuthentication):
     keyword = 'Bearer'
-
-    def authenticate(self, request):
-        auth = get_authorization_header(request).split()
-
-        if not auth or auth[0].lower() != self.keyword.lower().encode():
-            return None
-
-        if len(auth) == 1:
-            msg = 'Invalid token header. No credentials provided.'
-            raise AuthenticationFailed(msg)
-        elif len(auth) > 2:
-            msg = 'Invalid token header. Token string should not contain spaces.'
-            raise AuthenticationFailed(msg)
-
-        try:
-            token = auth[1].decode()
-        except UnicodeError:
-            msg = 'Invalid token header. Token string should not contain invalid characters.'
-            raise AuthenticationFailed(msg)
-
-        return self.authenticate_credentials(token)
 
     def authenticate_credentials(self, token):
         keycloak_openid = KeycloakOpenID(
