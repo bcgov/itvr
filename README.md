@@ -36,7 +36,7 @@ We take advantage that MinIO is S3 compatible and use [django-storages](https://
 ### Auth
 We are using a shared realm [Keycloak](https://www.keycloak.org/) client. Shared realm clients can be accessed and configured via [Common Hosted Single Sign-on (CSS)](https://bcgov.github.io/sso-requests)
 
-Once added as a team member to existing projects (this project is called `itvr`), you can configure the redirect urls for each environment (dev, test, prod). Installation json is available here as well as some helpful documentation about integrating the client.
+Once added as a team member to existing projects (this project is called `itvr`), you can configure the redirect urls for each environment (dev, test, prod). Installation json is available as well as some helpful documentation about integrating the client.
 
 ### Email
 We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-email-service) to send email. Documentation is [available here](https://getok.nrs.gov.bc.ca/app/documentation)
@@ -63,3 +63,6 @@ npm run storybook
 ```
 
 The storybook is available by default at `http://localhost:6006/`
+
+## Deployment
+We use Openshift to deploy our applications. [Access the console here](https://console.apps.silver.devops.gov.bc.ca/k8s/cluster/projects)
