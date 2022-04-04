@@ -141,6 +141,8 @@ WHITENOISE_ROOT = os.path.join(BASE_DIR, "../", "frontend", "public", "root")
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'api.keycloak_authentication.KeycloakAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

@@ -1,9 +1,9 @@
 from keycloak import KeycloakOpenID
-
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from rest_framework import authentication, exceptions
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 
 import logging
 
@@ -11,27 +11,10 @@ import logging
 log = logging.getLogger('KeycloakAuthentication')
 
 
-class KeycloakAuthentication(authentication.BaseAuthentication):
-    def authenticate(self, request):
-        auth = request.headers.get('Authorization', None)
+class KeycloakAuthentication(TokenAuthentication):
+    keyword = 'Bearer'
 
-        if not auth:
-            raise exceptions.AuthenticationFailed(
-                'Authorization token required'
-            )
-
-        try:
-            scheme, token = auth.split()
-        except ValueError:
-            raise exceptions.AuthenticationFailed(
-                'Authorization token required'
-            )
-
-        if not token:
-            raise exceptions.AuthenticationFailed(
-                'Authorization token required'
-            )
-
+    def authenticate_credentials(self, token):
         keycloak_openid = KeycloakOpenID(
             server_url=settings.KEYCLOAK_URL,
             client_id=settings.KEYCLOAK_CLIENT_ID,
@@ -50,21 +33,18 @@ class KeycloakAuthentication(authentication.BaseAuthentication):
             'verify_exp': True
         }
 
-        token_info = keycloak_openid.decode_token(
-            token,
-            key=KEYCLOAK_PUBLIC_KEY,
-            options=options
-        )
-
-        # Get the user from the keycloak server based on the token
-        user_info = keycloak_openid.userinfo(token)
-        username = user_info.get('preferred_username')
-
-        if username != \
-                token_info.get('preferred_username'):
-            raise exceptions.AuthenticationFailed(
+        try:
+            token_info = keycloak_openid.decode_token(
+                token,
+                key=KEYCLOAK_PUBLIC_KEY,
+                options=options
+            )
+        except Exception:
+            raise AuthenticationFailed(
                 'Invalid Token'
             )
+
+        username = token_info.get('preferred_username')
 
         # TODO make a ticket to improve this
         user = None
@@ -78,4 +58,4 @@ class KeycloakAuthentication(authentication.BaseAuthentication):
         if user is None:
             user = User.objects.create_user(username=username)
 
-        return user, None
+        return user, token
