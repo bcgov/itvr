@@ -58,7 +58,4 @@ class KeycloakAuthentication(TokenAuthentication):
         if user is None:
             user = User.objects.create_user(username=username)
 
-        return user, None
-
-    def authenticate_header(self):
-        return self.keyword
+        return user, token
