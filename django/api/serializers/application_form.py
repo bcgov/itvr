@@ -2,11 +2,6 @@ from rest_framework.serializers import ModelSerializer
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
 
-import logging
-
-
-log = logging.getLogger('Serializer')
-
 
 class ApplicationFormCreateSerializer(ModelSerializer):
     parser_classes = (MultiPartParser, FormParser, )
@@ -16,8 +11,6 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        log.warn('creating obj')
-        log.warn(validated_data)
         obj = GoElectricRebateApplication.objects.create(
             sin=validated_data['sin'],
             email=validated_data['email'],
@@ -32,7 +25,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             doc1=validated_data['doc1'],
             doc2=validated_data['doc2'],
             tax_year=2021,
-            verified=False,           
+            verified=False,
         )
         return obj
 
