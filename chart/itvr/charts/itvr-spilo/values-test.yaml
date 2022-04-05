@@ -1,6 +1,6 @@
 spilo:
 
-  replicaCount: 2
+  replicaCount: 3
 
   continuousArchive:
     scheduleCronJob: "0 24 * * *"
@@ -19,6 +19,10 @@ spilo:
     requests:
       cpu: 30m
       memory: 100Mi  
+# the readinessProbe settings do not work
+#  readinessProbe:
+#    initialDelaySeconds: 30
+#    failureThreshold: 10
 
   podDisruptionBudget:
     enabled: false
