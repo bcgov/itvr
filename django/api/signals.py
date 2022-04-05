@@ -90,7 +90,9 @@ Please feel free to contact us at ZEVPrograms@gov.bc.ca
         return
 
 
+# TODO have this schedule an email task that's retried in the future incase
+# CHES has issues when we setup celery.
 @receiver(post_save, sender=GoElectricRebateApplication)
 def create_application(sender, instance, created, **kwargs):
-    if created:
+    if created and settings.EMAIL['SEND_EMAIL']:
         send_email(instance.email, instance.id)
