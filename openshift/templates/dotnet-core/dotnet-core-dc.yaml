@@ -76,9 +76,7 @@ objects:
           - name: itvr-dotnet-core
             image: null
             imagePullPolicy: IfNotPresent
-            env:
-              - name:
-                value:     
+            env: null
             resources:
               limits:
                 cpu: ${CPU_LIMIT}
@@ -91,9 +89,9 @@ objects:
                 command:
                   - /bin/sh
                   - '-c'
-                  - ls -l
+                  - pwd
               failureThreshold: 3
-              initialDelaySeconds: 15
+              initialDelaySeconds: 30
               periodSeconds: 5
               successThreshold: 1
               timeoutSeconds: 3                

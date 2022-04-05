@@ -23,7 +23,9 @@ version: 0.2.0
 # It is recommended to use it with quotes.
 appVersion: "0.1.0"
 
+#repository: "https://bcgov.github.io/spilo-chart"
+
 dependencies:
   - name: spilo
     version: "0.2.0"
-    repository: "https://bcgov.github.io/spilo-chart"
+    repository: "file://../spilo"

@@ -1,0 +1,41 @@
+spilo:
+
+  replicaCount: 2
+
+  continuousArchive:
+    enabled: true
+    scheduleCronJob: "0 */6 * * *"
+    retainBackups: 2
+    storage: s3
+    s3:
+      bucket: itvrdv
+      secretName: itvr-db-backup-s3
+      awsAccessKeyIdName: awsAccessKeyId
+      awsSecretAccessKeyName: awsSecretAccessKey
+      awsEndpointName: awsEndpoint
+    #pvc:
+      #storageClass: netapp-file-backup
+      #size: 200Mi  
+
+  persistentVolume:
+    size: 700Mi
+    storageClass: netapp-block-standard
+
+  resources:
+    limits:
+      cpu: 120m
+      memory: 400Mi
+    requests:
+      cpu: 60m
+      memory: 200Mi  
+
+  podDisruptionBudget:
+    enabled: false
+
+  probes:
+    liveness:
+      enabled: false
+    readiness:
+      enabled: true 
+      initialDelaySeconds: 90
+      failureThreshold: 20         
