@@ -58,7 +58,13 @@ const Form = () => {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
   });
-  const onSubmit = (data) => mutation.mutate(data);
+  const onSubmit = (data) =>
+    mutation.mutate(data, {
+      onSuccess: (data, variables, context) => {
+        console.log('success!');
+        console.log(data.data);
+      }
+    });
 
   return (
     <FormProvider {...methods}>
