@@ -20,6 +20,8 @@
 
 6. create template.django-secret
 
+7. create itvr-email-service secret
+
 #### After pipeline completes
 
 1. After pipeline completes, create autoscaler for backend

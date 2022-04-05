@@ -251,6 +251,11 @@ objects:
                     secretKeyRef:
                       name: itvr-email-service
                       key: SENDER_EMAIL      
+                - name: SENDER_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: SENDER_NAME
                 - name: SEND_EMAIL
                   value: 'True'
                 - name: MINIO_ENDPOINT
