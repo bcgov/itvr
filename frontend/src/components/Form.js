@@ -27,7 +27,7 @@ export const defaultValues = {
   address: '',
   city: '',
   postal_code: '',
-  dob: '',
+  date_of_birth: '',
   drivers_licence: '',
   documents: [],
   consent_personal: false,
