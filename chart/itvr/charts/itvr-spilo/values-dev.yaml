@@ -4,18 +4,12 @@ spilo:
 
   continuousArchive:
     enabled: true
-    scheduleCronJob: "0 */6 * * *"
-    retainBackups: 2
+    scheduleCronJob: "0 2 * * *"
+    retainBackups: 3
     storage: s3
     s3:
       bucket: itvrdv
       secretName: itvr-db-backup-s3
-      awsAccessKeyIdName: awsAccessKeyId
-      awsSecretAccessKeyName: awsSecretAccessKey
-      awsEndpointName: awsEndpoint
-    #pvc:
-      #storageClass: netapp-file-backup
-      #size: 200Mi  
 
   persistentVolume:
     size: 700Mi
