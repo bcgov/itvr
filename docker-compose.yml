@@ -58,6 +58,7 @@ services:
       - EMAIL_SERVICE_CLIENT_SECRET
       - CHES_AUTH_URL
       - CHES_EMAIL_URL
+      - SEND_EMAIL
     volumes:
       - ./django:/api
     ports:
