@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import ApplicationFormDetails from '../components/ApplicationFormDetails';
 import { useParams } from 'react-router-dom';
 
-const ApplicationDetails = () => {
+const ApplicationDetailsPage = () => {
   const { id } = useParams();
   return (
     <div>
@@ -14,4 +14,4 @@ const ApplicationDetails = () => {
   );
 };
 
-export default ApplicationDetails;
+export default ApplicationDetailsPage;
