@@ -226,20 +226,49 @@ objects:
                     secretKeyRef:
                       name: itvr-django${SUFFIX}
                       key: DJANGO_SECRET_KEY      
-#                - name: MINIO_ENDPOINT
-#                 value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
+                - name: EMAIL_SERVICE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: EMAIL_SERVICE_CLIENT_ID                      
+                - name: EMAIL_SERVICE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: EMAIL_SERVICE_CLIENT_SECRET
+                - name: CHES_AUTH_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: CHES_AUTH_URL                      
+                - name: CHES_EMAIL_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: CHES_EMAIL_URL
+                - name: SENDER_EMAIL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: SENDER_EMAIL      
+                - name: SEND_EMAIL
+                  value: 'True'
+                - name: MINIO_ENDPOINT
+                 value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
 #                - name: MINIO_USE_SSL
 #                  value: "true"
-#                - name: MINIO_ROOT_USER
-#                  valueFrom:
-#                    secretKeyRef:
-#                      name: ${NAME}-minio-${ENV_NAME}
-#                      key: MINIO_ROOT_USER
-#                - name: MINIO_ROOT_PASSWORD
-#                  valueFrom:
-#                    secretKeyRef:
-#                      name: ${NAME}-minio-${ENV_NAME}
-#                      key: MINIO_ROOT_PASSWORD                  
+                - name: MINIO_ROOT_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-minio
+                      key: root-user
+                - name: MINIO_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-minio
+                      key: root-password    
+                - name: MINIO_BUCKET_NAME
+                 value: itvr         
               livenessProbe:
                 failureThreshold: 30
                 tcpSocket:
