@@ -1,12 +1,12 @@
 import React from 'react';
-import {
-  BrowserRouter, Routes, Route, Navigate,
-} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
 
 import HomePage from '../pages';
 import FormPage from '../pages/Form';
 import AdminPage from '../pages/admin';
+import ApplicationDetails from '../pages/ApplicationDetails';
+
 const RequireAuth = ({ children, redirectTo }) => {
   const { keycloak } = useKeycloak();
   return keycloak.authenticated ? children : <Navigate to={redirectTo} />;
@@ -18,27 +18,35 @@ const AppRouter = () => (
       <Route path="/" element={<HomePage />} />
       <Route
         path="/form"
-        element={(
+        element={
           <RequireAuth redirectTo="/">
             <FormPage />
           </RequireAuth>
-        )}
+        }
       />
       <Route
         path="/eligibility"
-        element={(
+        element={
           <RequireAuth redirectTo="/">
             <FormPage />
           </RequireAuth>
-        )}
+        }
+      />
+      <Route
+        path="/details/:id"
+        element={
+          <RequireAuth redirectTo="/">
+            <ApplicationDetails />
+          </RequireAuth>
+        }
       />
       <Route
         path="/admin"
-        element={(
+        element={
           <RequireAuth redirectTo="/">
             <AdminPage />
           </RequireAuth>
-        )}
+        }
       />
     </Routes>
   </BrowserRouter>

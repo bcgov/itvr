@@ -8,6 +8,7 @@ Base Style
 @import 'Header.scss';
 @import 'FileUpload.scss';
 @import 'Consent.scss';
+@import 'ApplicationDetails.scss';
 
 /* BC Sans Regular */
 @font-face {
@@ -50,11 +51,16 @@ body {
   padding: 0;
 }
 
+p {
+  color: $text-grey-paragraph;
+}
+
 p,
 table,
 li,
 div,
-.label {
+.label,
+.MuiTableCell-root {
   font-size: 1.2rem !important;
 }
 h1 {
