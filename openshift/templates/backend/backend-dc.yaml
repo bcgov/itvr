@@ -53,11 +53,15 @@ objects:
   - apiVersion: v1
     kind: Secret
     metadata:
-#      labels:
-#        app: ${NAME}${SUFFIX}
       annotations:
         as-copy-of: "template.django-secret"
-      name: ${NAME}-django${SUFFIX}
+      name: ${NAME}-django-secret${SUFFIX}
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      annotations:
+        as-copy-of: "template.django-salt"
+      name: ${NAME}-django-salt${SUFFIX}
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     metadata:
@@ -224,8 +228,13 @@ objects:
                 - name: DJANGO_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: itvr-django${SUFFIX}
+                      name: itvr-django-secret${SUFFIX}
                       key: DJANGO_SECRET_KEY      
+                - name: DJANGO_SALT_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-django-salt${SUFFIX}
+                      key: DJANGO_SALT_KEY
                 - name: EMAIL_SERVICE_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
@@ -259,9 +268,9 @@ objects:
                 - name: SEND_EMAIL
                   value: 'True'
                 - name: MINIO_ENDPOINT
-                 value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
-#                - name: MINIO_USE_SSL
-#                  value: "true"
+                  value: ${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
+#               - name: MINIO_USE_SSL
+#                 value: "true"
                 - name: MINIO_ROOT_USER
                   valueFrom:
                     secretKeyRef:
@@ -273,7 +282,7 @@ objects:
                       name: ${NAME}-minio
                       key: root-password    
                 - name: MINIO_BUCKET_NAME
-                 value: itvr         
+                  value: itvr         
               livenessProbe:
                 failureThreshold: 30
                 tcpSocket:

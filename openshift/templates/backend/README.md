@@ -10,7 +10,7 @@
 
 1. import python base image python-39:1-18.1634036280 to tools project
 
-2. Create template secret template.django-secret
+2. Create template secret template.django-secret, template.django-salt
 
 3. create user for itvr database, create user [username] with password '[password]';
 

@@ -3,26 +3,33 @@ spilo:
   replicaCount: 3
 
   continuousArchive:
-    scheduleCronJob: "0 24 * * *"
-    pvc:
-      storageClass: netapp-file-backup
-      size: 200Mi  
+    enabled: true
+    scheduleCronJob: "0 2 * * *"
+    retainBackups: 3
+    storage: s3
+    s3:
+      bucket: itvrts
+      secretName: itvr-db-backup-s3
 
   persistentVolume:
-    size: 200Mi
+    size: 500Mi
     storageClass: netapp-block-standard
 
   resources:
     limits:
-      cpu: 60m
-      memory: 200Mi
+      cpu: 120m
+      memory: 400Mi
     requests:
-      cpu: 30m
-      memory: 100Mi  
-# the readinessProbe settings do not work
-#  readinessProbe:
-#    initialDelaySeconds: 30
-#    failureThreshold: 10
+      cpu: 60m
+      memory: 200Mi  
 
   podDisruptionBudget:
     enabled: false
+
+  probes:
+    liveness:
+      enabled: false
+    readiness:
+      enabled: true 
+      initialDelaySeconds: 90
+      failureThreshold: 20         
