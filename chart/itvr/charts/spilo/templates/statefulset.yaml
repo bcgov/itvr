@@ -69,17 +69,17 @@ spec:
           valueFrom: 
             secretKeyRef: 
               name: {{ .Values.continuousArchive.s3.secretName }}
-              key: {{ .Values.continuousArchive.s3.awsAccessKeyIdName }}
+              key: AWS_ACCESS_KEY_ID
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom: 
             secretKeyRef: 
               name: {{ .Values.continuousArchive.s3.secretName }}
-              key: {{ .Values.continuousArchive.s3.awsSecretAccessKeyName }}
+              key: AWS_SECRET_ACCESS_KEY
         - name: AWS_ENDPOINT
           valueFrom: 
             secretKeyRef: 
               name: {{ .Values.continuousArchive.s3.secretName }}
-              key: {{ .Values.continuousArchive.s3.awsEndpointName }}
+              key: AWS_ENDPOINT
         {{- end }}
         {{- if eq .Values.continuousArchive.storage "gcs"}}
         - name: WAL_GS_BUCKET

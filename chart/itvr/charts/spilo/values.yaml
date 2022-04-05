@@ -50,15 +50,12 @@ continuousArchive:
 
   # If choose s3 as the storage type, the secret has to be created first. 
   # It contains three key/value pairs:
-  #   awsAccessKeyIdName/awsAccessKeyIdVakue
-  #   awsSecretAccessKeyName/awsSecretAccessKeyValue
-  #   awsEndpointName/awsEndpointValue
+  #   AWS_ACCESS_KEY_ID
+  #   AWS_SECRET_ACCESS_KEY
+  #   AWS_ENDPOINT
   s3:
     bucket: ~
     secretName: ~
-    awsAccessKeyIdName: ~
-    awsSecretAccessKeyName: ~
-    awsEndpointName: ~
 
   gcs:
     bucket: ~
