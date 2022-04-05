@@ -2,6 +2,8 @@ import os
 import sys
 from pathlib import Path
 
+from . import email
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 APPEND_SLASH = False
@@ -175,3 +177,7 @@ AWS_S3_ENDPOINT_URL = MINIO_ENDPOINT
 AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = False
+
+# Email configuration
+
+EMAIL = email.config()

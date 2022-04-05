@@ -9,14 +9,6 @@ import './styles/index.scss';
 
 const queryClient = new QueryClient();
 
-const eventLogger = (event, error) => {
-  console.log('onKeycloakEvent', event, error);
-};
-
-const tokenLogger = (tokens) => {
-  console.log('onKeycloakTokens', tokens);
-};
-
 const initOptions = {
   onLoad: 'check-sso',
   pkceMethod: 'S256'
@@ -25,8 +17,6 @@ const initOptions = {
 ReactDOM.render(
   <ReactKeycloakProvider
     authClient={keycloak}
-    onEvent={eventLogger}
-    onTokens={tokenLogger}
     initOptions={initOptions}
     LoadingComponent={<div>Loading</div>}
   >
