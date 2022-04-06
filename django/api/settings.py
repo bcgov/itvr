@@ -6,7 +6,6 @@ from . import email
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-APPEND_SLASH = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -34,7 +33,7 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
 
 CSRF_TRUSTED_ORIGINS = [
     os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000'),
-    os.getenv('ALLOWED_HOSTS')
+    os.getenv('BACKEND_ORIGIN', 'http://localhost:8000')
 ]
 
 # Application definition
