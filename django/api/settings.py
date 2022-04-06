@@ -30,11 +30,12 @@ CORS_ORIGIN_WHITELIST = [
     os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000')
-]
-
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
+
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv('CORS_ORIGIN_WHITELIST', 'http://localhost:3000'),
+    os.getenv('ALLOWED_HOSTS')
+]
 
 # Application definition
 INSTALLED_APPS = [
