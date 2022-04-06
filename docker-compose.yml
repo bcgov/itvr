@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=itvr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  minio:
+    image: minio/minio
+    hostname: "minio"
+    volumes:
+      - ./minio:/minio_files
+    env_file:
+      - minio.env
+    command: 'minio server /minio_files --console-address ":9001"'
+    ports:
+      - 9000:9000
+      - 9001:9001
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    env_file:
+      - minio.env
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc mb --quiet myminio/itvr;
+      /usr/bin/mc policy set public myminio/itvr;
+      "
+  api:
+    build: ./django
+    command: >
+      sh -c "service cron start &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - keycloak.env
+      - minio.env
+    environment:
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_HOST=db
+      - DB_NAME=itvr
+      - DB_PASSWORD=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DJANGO_DEBUG=True
+      - EMAIL_SERVICE_CLIENT_ID
+      - EMAIL_SERVICE_CLIENT_SECRET
+      - CHES_AUTH_URL
+      - CHES_EMAIL_URL
+      - SEND_EMAIL
+    volumes:
+      - ./django:/api
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+  # web:
+  #   build: ./frontend
+  #   command: npm start
+  #   env_file:
+  #     - keycloak.env
+  #   volumes:
+  #     - ./frontend:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - "3000:3000"

@@ -1,0 +1,32 @@
+/*
+Base styling for "App"
+ie General Container
+*/
+
+.App {
+  .App-header {
+    -ms-flex-align: center;
+    -ms-flex-direction: row;
+    -ms-flex-pack: center;
+    align-items: center;
+    background-color: $white;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+    height: 60px;
+    width: 100%;
+
+    .container {
+      margin: 0 auto;
+      // max-width: 1280px;
+      padding: 0 1rem;
+      width: 100%;
+    }
+  }
+
+  .App-body {
+    margin: 1rem auto 0;
+    // max-width: 1280px;
+    padding: 0 1rem;
+  }
+}

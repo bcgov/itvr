@@ -1,0 +1,207 @@
+Templates (oc new-app --template=<template>)
+-----
+fuse76-console
+  Project: openshift
+  The Red Hat Fuse Console eases the discovery and management of Fuse applications deployed on OpenShift.
+redis-ephemeral
+  Project: openshift
+  Redis in-memory data structure store, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/redis-container/blob/master/5.
+
+WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+postgresql-persistent
+  Project: openshift
+  PostgreSQL database service, with persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/.
+
+NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
+postgresql-ephemeral
+  Project: openshift
+  PostgreSQL database service, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/.
+
+WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+openjdk-web-basic-s2i
+  Project: openshift
+  An example Java application using OpenJDK. For more information about using this template, see https://github.com/jboss-openshift/application-templates.
+mysql-persistent
+  Project: openshift
+  MySQL database service, with persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/8.0/root/usr/share/container-scripts/mysql/README.md.
+
+NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
+mysql-ephemeral
+  Project: openshift
+  MySQL database service, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/8.0/root/usr/share/container-scripts/mysql/README.md.
+
+WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+mongodb-persistent
+  Project: openshift
+  MongoDB database service, with persistent storage. For more information about using this template, including OpenShift considerations, see documentation in the upstream repository: https://github.com/sclorg/mongodb-container.
+
+NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
+mongodb-ephemeral
+  Project: openshift
+  MongoDB database service, without persistent storage. For more information about using this template, including OpenShift considerations, see documentation in the upstream repository: https://github.com/sclorg/mongodb-container.
+
+WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+jenkins-persistent-monitored
+  Project: openshift
+  Jenkins service, with persistent storage. 
+
+ To run this template extra RBAC permissions need to be provideed to the use to be able to create the ServiceMonitor Custom Resource managed by the prometheus-operator. 
+
+NOTE: You must have persistent volumes available in your cluster to use this template.
+jenkins-persistent
+  Project: openshift
+  Jenkins service, with persistent storage.
+
+NOTE: You must have persistent volumes available in your cluster to use this template.
+jenkins-ephemeral-monitored
+  Project: openshift
+  Jenkins service, without persistent storage. 
+
+ To run this template extra RBAC permissions need to be provideed to the use to be able to create the ServiceMonitor Custom Resource managed by the prometheus-operator. 
+
+WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing.
+jenkins-ephemeral
+  Project: openshift
+  Jenkins service, without persistent storage.
+
+WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing.
+fuse78-console
+  Project: openshift
+  The Red Hat Fuse Console eases the discovery and management of Fuse applications deployed on OpenShift.
+apicurito
+  Project: openshift
+  Design beautiful, functional APIs with zero coding, using a visual designer for OpenAPI documents.
+eap-cd-basic-s2i
+  Project: openshift
+  An example JBoss Enterprise Application Platform continuous delivery application. For more information about using this template, see https://github.com/jboss-container-images/jboss-eap-7-openshift-image/blob/eap-cd/README.adoc
+eap-cd-starter-s2i
+  Project: openshift
+  An example JBoss Enterprise Application Platform continuous delivery application. For more information about using this template, see https://github.com/jboss-container-images/jboss-eap-7-openshift-image/blob/eap-cd/README.adoc
+fuse75-console
+  Project: openshift
+  The Red Hat Fuse Console eases the discovery and management of Fuse applications deployed on OpenShift.
+redis-persistent
+  Project: openshift
+  Redis in-memory data structure store, with persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/redis-container/blob/master/5.
+
+NOTE: You must have persistent volumes available in your cluster to use this template.
+
+Image streams (oc new-app --image-stream=<image-stream> [--code=<source>])
+-----
+tools
+  Project: openshift
+  Tags:    latest
+cli-artifacts
+  Project: openshift
+  Tags:    latest
+driver-toolkit
+  Project: openshift
+  Tags:    48.84.202201102304-0, latest
+golang
+  Project: openshift
+  Tags:    1.11.5, 1.13.4-ubi7, 1.13.4-ubi8, 1.14.7-ubi8, latest
+hello-openshift
+  Project: openshift
+  Tags:    latest
+httpd
+  Project: openshift
+  Tags:    2.4-el7, 2.4-el8, latest
+installer
+  Project: openshift
+  Tags:    latest
+installer-artifacts
+  Project: openshift
+  Tags:    latest
+java
+  Project: openshift
+  Tags:    latest, openjdk-11-el7, openjdk-11-ubi8, openjdk-8-el7, openjdk-8-ubi8
+jenkins
+  Project: openshift
+  Tags:    2, latest
+jenkins-agent-base
+  Project: openshift
+  Tags:    latest
+jenkins-agent-maven
+  Project: openshift
+  Tags:    latest, v4.0
+jenkins-agent-nodejs
+  Project: openshift
+  Tags:    latest, v4.0
+must-gather
+  Project: openshift
+  Tags:    latest
+mysql
+  Project: openshift
+  Tags:    5.7, 8.0-el7, 8.0-el8, latest
+nginx
+  Project: openshift
+  Tags:    1.10, 1.14, 1.14-el8, 1.16-el7, 1.16-el8, 1.18-ubi7, 1.18-ubi8, latest
+nodejs
+  Project: openshift
+  Tags:    10-ubi7, 10-ubi8, 12-ubi7, 12-ubi8, 14-ubi7, 14-ubi8, latest
+perl
+  Project: openshift
+  Tags:    5.26-el7, 5.26-ubi8, 5.30-el7, 5.30-ubi8, latest
+postgresql
+  Project: openshift
+  Tags:    10-el7, 10-el8, 12-el7, 12-el8, 9.6, 9.6-el8, latest
+python
+  Project: openshift
+  Tags:    2.7-ubi7, 2.7-ubi8, 3.6, 3.6-ubi8, 3.8-ubi7, 3.8-ubi8, latest
+redis
+  Project: openshift
+  Tags:    5-el7, 5-el8, latest
+ruby
+  Project: openshift
+  Tags:    2.4, 2.5-ubi7, 2.5-ubi8, 2.6-ubi7, 2.6-ubi8, 2.7-ubi7, 2.7-ubi8, latest
+tests
+  Project: openshift
+  Tags:    latest
+cli
+  Project: openshift
+  Tags:    latest
+oauth-proxy
+  Project: openshift
+  Tags:    v4.4
+mongodb
+  Project: openshift
+  Tags:    3.4
+itvr-backend
+  Project: ac294c-dev
+  Tags:    dev-1.0.0-11
+  Keeps track of changes in the backend image
+dotnet-runtime
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet-runtime
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet-runtime
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet-runtime
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet-runtime
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+dotnet
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+itvr-frontend
+  Project: ac294c-dev
+  Tags:    dev-1.0.0-11
+  Keeps track of changes in the client / front end image
+dotnet
+  Project: openshift
+  Tags:    2.1-el7, 2.1-ubi8, 3.1-el7, 3.1-ubi8, 5.0-ubi8
+

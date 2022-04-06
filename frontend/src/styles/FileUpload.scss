@@ -1,0 +1,35 @@
+.content {
+  background-color: $default-background-grey;
+}
+.bordered {
+  border: 1px solid #e0e0e0;
+  padding: 0.5rem;
+}
+#dataset-select {
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+}
+.upload-list {
+  font-weight: normal;
+}
+.document-table {
+  width: 100%;
+
+  .upload-row {
+    th {
+      font-weight: bold;
+    }
+
+    &:nth-child(odd) td {
+      background: $background-grey-light;
+    }
+  }
+}
+
+.file-upload {
+  border: 2px dashed $default-link-blue;
+  background: $white;
+  padding: 1rem;
+  text-align: center;
+  flex-direction: column;
+}

@@ -1,0 +1,141 @@
+/*
+Base Style
+*/
+
+@import 'variables.scss';
+@import 'App.scss';
+@import 'EligibilityPage.scss';
+@import 'Header.scss';
+@import 'FileUpload.scss';
+@import 'Consent.scss';
+@import 'ApplicationDetails.scss';
+
+/* BC Sans Regular */
+@font-face {
+  font-family: 'BCSans';
+  src: url('./fonts/BCSans-Regular.woff') format('woff');
+}
+
+/* BC Sans Bold */
+@font-face {
+  font-family: 'BCSans';
+  font-weight: bold;
+  src: url('./fonts/BCSans-Bold.woff') format('woff');
+}
+
+/* BC Sans Bold + Italic */
+@font-face {
+  font-family: 'BCSans';
+  font-style: italic;
+  font-weight: bold;
+  src: url('./fonts/BCSans-BoldItalic.woff') format('woff');
+}
+
+/* BC Sans Italic */
+@font-face {
+  font-family: 'BCSans';
+  font-style: italic;
+  src: url('./fonts/BCSans-Italic.woff') format('woff');
+}
+
+body,
+html {
+  background-color: $white;
+  height: 100%;
+}
+
+body {
+  color: $text-blue-paragraph;
+  font-family: 'BCSans', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  color: $text-grey-paragraph;
+}
+
+p,
+table,
+li,
+div,
+.label,
+.MuiTableCell-root {
+  font-size: 1.2rem !important;
+}
+h1 {
+  font-size: 2.5rem;
+}
+
+h2,
+h3 {
+  font-size: 2rem;
+}
+h4,
+.button {
+  font-size: 1.75rem;
+  font-weight: normal;
+}
+
+h1,
+h2 {
+  color: $white;
+}
+h3,
+h4,
+h5,
+h6 {
+  color: $text-heading-blue;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+.link {
+  background-color: transparent;
+  border: none;
+  color: $text-link-blue;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  text-decoration: underline;
+}
+a {
+  color: #fdb414;
+}
+.button {
+  background-color: $button-blue;
+  background-image: -webkit-linear-gradient(
+    left,
+    $button-blue,
+    $text-heading-blue
+  );
+  height: 3.5rem;
+  color: $white;
+  border: 0 solid $button-blue;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background-image: -webkit-linear-gradient(
+      right,
+      $button-blue,
+      $text-heading-blue
+    );
+    background-color: $button-blue;
+  }
+  &:disabled {
+    color: $background-grey-dark;
+    background-image: none;
+    opacity: 0.6;
+  }
+}
+
+.page-content {
+  margin: 0 6rem 0 6rem;
+  padding-bottom: 2rem;
+}
+@media (max-width: 992px) {
+  .page-content {
+    margin: 0 1rem 0 1rem;
+  }
+}

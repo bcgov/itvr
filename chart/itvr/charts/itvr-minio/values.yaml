@@ -1,0 +1,23 @@
+minio: 
+  global:
+    storageClass: netapp-block-standard
+  resources:
+    limits:
+      cpu: 180m
+      memory: 140Mi
+    requests:
+      cpu: 90m
+      memory: 70Mi
+  persistence:
+    size: 100Mi
+  podSecurityContext:
+    fsGroup: 1008250000
+  containerSecurityContext:
+    runAsUser: 1008250000
+  readinessProbe: 
+    initialDelaySeconds: 20
+    timeoutSeconds: 3
+  livenessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 3
+  defaultBuckets: itvr
