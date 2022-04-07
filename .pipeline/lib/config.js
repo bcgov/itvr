@@ -62,7 +62,7 @@ const phases = {
         ssoName:'oidc.gov.bc.ca', phase: 'prod'  , changeId:`${changeId}`, suffix: `-prod`, 
         instance: `${name}-prod`, version:`${version}`, tag:`prod-${version}`, 
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        host: `itvr-prod.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
+        host: 'electric-vehicle-rebates.gov.bc.ca', djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
         frontendCpuRequest: '400m', frontendCpuLimit: '800m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 1, frontendMinReplicas: 1, frontendMaxReplicas: 3,
         backendCpuRequest: '50m', backendCpuLimit: '100m', backendMemoryRequest: '520Mi', backendMemoryLimit: '1Gi', backendHealthCheckDelay: 30, backendReplicas: 1, backendMinReplicas: 1, backendMaxReplicas: 3, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False',
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
