@@ -9,11 +9,11 @@ minio:
       cpu: 90m
       memory: 70Mi
   persistence:
-    size: 100Mi
+    size: 50Mi
   podSecurityContext:
-    fsGroup: 1008260000
+    fsGroup: 1008280000
   containerSecurityContext:
-    runAsUser: 1008260000
+    runAsUser: 1008280000
   readinessProbe: 
     initialDelaySeconds: 20
     timeoutSeconds: 3
@@ -21,8 +21,8 @@ minio:
     initialDelaySeconds: 30
     timeoutSeconds: 3
   defaultBuckets: itvr
-  hostName: itvr-minio-test.apps.silver.devops.gov.bc.ca
-  routeName: itvr-minio-test
+  hostName: itvr-minio-prod.apps.silver.devops.gov.bc.ca
+  routeName: itvr-minio-prod
 # distributed mode, but encountered issues about disk not found when pod is initialized
 #  mode: distributed
 #  statefulset:
