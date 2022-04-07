@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from 'react-query';
 import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -37,13 +38,14 @@ export const defaultValues = {
 };
 
 const Form = () => {
+  const queryClient = useQueryClient();
   const methods = useForm({
     defaultValues
   });
   const { control, handleSubmit, register, watch } = methods;
   const axiosInstance = useAxios();
+  const navigate = useNavigate();
   const mutation = useMutation((data) => {
-    console.log(data);
     const formData = new FormData();
     for (const [key, value] of Object.entries(data)) {
       if (key === 'documents') {
@@ -61,8 +63,9 @@ const Form = () => {
   const onSubmit = (data) =>
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
-        console.log('success!');
-        console.log(data.data);
+        const id = data.data.id;
+        queryClient.setQueryData(['applications', { id: id }], data);
+        navigate(`/details/${id}`);
       }
     });
 

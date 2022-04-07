@@ -1,17 +1,17 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import ApplicationFormDetails from '../components/ApplicationFormDetails';
+import ApplicationSummaryTable from '../components/ApplicationSummaryTable';
 import { useParams } from 'react-router-dom';
 
-const ApplicationDetailsPage = () => {
+const ApplicationSummaryPage = () => {
   const { id } = useParams();
   return (
     <div>
       <Layout>
-        <ApplicationFormDetails id={id} />
+        <ApplicationSummaryTable id={id} />
       </Layout>
     </div>
   );
 };
 
-export default ApplicationDetailsPage;
+export default ApplicationSummaryPage;
