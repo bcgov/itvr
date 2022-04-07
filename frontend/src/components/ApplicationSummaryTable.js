@@ -54,7 +54,6 @@ const ApplicationFormDetails = (props) => {
 
   return (
     <Box>
-      {data && console.log(data.data)}
       <h3>Individual Application Confirmation</h3>
       <p>
         Print this page for your records. You will also receive an email
