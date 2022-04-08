@@ -2,12 +2,18 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 const BottomBanner = (props) => {
-  const { eligible } = props;
+  const { eligible, text = '', type = '' } = props;
   const { keycloak } = useKeycloak();
   return (
     <>
-      <div id="start-application">
-        <h1 id="start-text">Start your rebate application</h1>
+      <div
+        className={
+          type === 'individual'
+            ? 'start-application-individual'
+            : 'start-application-spouse'
+        }
+      >
+        <h1 id="start-text">{text}</h1>
         <Box id="bceid-login-square">
           <h1 id="BceidLoginTitle">BCeID</h1>
           <button

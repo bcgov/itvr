@@ -3,12 +3,30 @@ import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
 import { useKeycloak } from '@react-keycloak/web';
 import BottomBanner from '../BottomBanner';
-
+import WhatsNeededToApply from '../WhatsNeededToApply';
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
     props;
   const { keycloak } = useKeycloak();
-
+  const title = <h3>What you will need to complete this application</h3>;
+  const applicationText = (
+    <div>
+      <ul>
+        <li>Your Driver's Licence number to be associated with the rebate.</li>
+        <li>
+          A Basic BCeID, an image of your B.C. Driver's Licence and a secondary
+          piece of ID to upload.
+        </li>
+        <li>
+          Your Social Insurance Number and CRA income disclosure consent to
+          confirm your income.
+        </li>
+      </ul>
+      For a household application your spouse or common law partner will also
+      need to confirm their identity and provide CRA income disclosure consent,
+      they do not require a driver's licence.
+    </div>
+  );
   return (
     <div>
       <div>
@@ -45,27 +63,18 @@ const EligibilityPage = (props) => {
             handleCheckboxChange={handleCheckboxChange}
           />
         ))}
-        <div id="whats-needed">
-          <h3>What you will need to complete this application</h3>
-          <ul>
-            <li>
-              Your Driver's Licence number to be associated with the rebate.
-            </li>
-            <li>
-              A Basic BCeID, an image of your B.C. Driver's Licence and a
-              secondary piece of ID to upload.
-            </li>
-            <li>
-              Your Social Insurance Number and CRA income disclosure consent to
-              confirm your income.
-            </li>
-          </ul>
-          For a household application your spouse or common law partner will
-          also need to confirm their identity and provide CRA income disclosure
-          consent, they do not require a driver's licence.
-        </div>
+        <WhatsNeededToApply
+          applicationText={applicationText}
+          title={title}
+          type="individual"
+        />
       </div>
-      <BottomBanner eligible={eligible} taxYear={taxYear} />
+      <BottomBanner
+        eligible={eligible}
+        taxYear={taxYear}
+        text="Start your rebate application"
+        type="individual"
+      />
       <div className="asterisk-text">
         <p>
           * UP Until June 30 your {taxYear} notice of assessment (NOA) will be
