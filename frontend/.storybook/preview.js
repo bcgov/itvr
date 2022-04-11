@@ -2,6 +2,7 @@ import { ReactKeycloakProvider } from '@react-keycloak/web';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import keycloak from '../src/keycloak';
 import '../src/styles/index.scss';
+import { BrowserRouter } from 'react-router-dom';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -25,5 +26,10 @@ export const decorators = [
     <QueryClientProvider client={queryClient}>
       <Story />
     </QueryClientProvider>
+  ),
+  (Story) => (
+    <BrowserRouter>
+      <Story />
+    </BrowserRouter>
   )
 ];

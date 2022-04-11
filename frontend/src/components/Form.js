@@ -64,7 +64,7 @@ const Form = () => {
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
-        queryClient.setQueryData(['applications', { id: id }], data);
+        queryClient.setQueryData(['application', id], data.data);
         navigate(`/details/${id}`);
       }
     });
