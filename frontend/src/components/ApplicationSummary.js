@@ -4,7 +4,7 @@ import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
 import DetailsTable from './DetailsTable';
 
-const ApplicationFormDetails = (props) => {
+const ApplicationSummary = (props) => {
   const { id } = props;
   const axiosInstance = useAxios();
   const queryFn = () =>
@@ -35,4 +35,4 @@ const ApplicationFormDetails = (props) => {
     </Box>
   );
 };
-export default ApplicationFormDetails;
+export default ApplicationSummary;

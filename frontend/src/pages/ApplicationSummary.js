@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import ApplicationSummaryTable from '../components/ApplicationSummaryTable';
+import ApplicationSummary from '../components/ApplicationSummary';
 import { useParams } from 'react-router-dom';
 
 const ApplicationSummaryPage = () => {
@@ -8,7 +8,7 @@ const ApplicationSummaryPage = () => {
   return (
     <div>
       <Layout>
-        <ApplicationSummaryTable id={id} />
+        <ApplicationSummary id={id} />
       </Layout>
     </div>
   );
