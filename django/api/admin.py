@@ -4,7 +4,7 @@ from django.contrib.admin.templatetags import admin_modify
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
-admin.site.unregister(User)
+# admin.site.unregister(User)
 admin.site.unregister(Group)
 submit_row = admin_modify.submit_row
 
