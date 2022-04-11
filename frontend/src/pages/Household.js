@@ -1,7 +1,8 @@
 import React from 'react';
-import WhatsNeededToApply from './WhatsNeededToApply';
-import BottomBanner from './BottomBanner';
-const SpouseLogin = () => {
+import BottomBanner from '../components/BottomBanner';
+import Layout from '../components/Layout';
+
+const Household = () => {
   const title = (
     <>
       <h3>Complete your rebate application for your household</h3>
@@ -23,19 +24,20 @@ const SpouseLogin = () => {
   );
 
   return (
-    <div>
-      <WhatsNeededToApply
-        type="spouse"
-        applicationText={applicationText}
-        title={title}
-      />
-      <BottomBanner
-        eligible={true}
-        text="Complete your rebate application"
-        type="spouse"
-      />
-    </div>
+    <Layout>
+      <div>
+        <div className="whats-needed-spouse">
+          {title}
+          {applicationText}
+        </div>
+        <BottomBanner
+          eligible={true}
+          text="Complete your rebate application"
+          type="spouse"
+        />
+      </div>
+    </Layout>
   );
 };
 
-export default SpouseLogin;
+export default Household;

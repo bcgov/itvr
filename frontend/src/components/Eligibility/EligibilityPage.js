@@ -3,7 +3,8 @@ import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
 import { useKeycloak } from '@react-keycloak/web';
 import BottomBanner from '../BottomBanner';
-import WhatsNeededToApply from '../WhatsNeededToApply';
+import Box from '@mui/material/Box';
+
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
     props;
@@ -28,7 +29,7 @@ const EligibilityPage = (props) => {
     </div>
   );
   return (
-    <div>
+    <Box>
       <div>
         <p>
           Rebates of up to $4,000 are available from the B.C. Government towards
@@ -52,22 +53,23 @@ const EligibilityPage = (props) => {
           </ol>
         </div>
         <RebateTable taxYear={taxYear} />
+        <Box sx={{ mt: 5, mb: 0 }}>
+          <h3>Determine your eligibility for a rebate</h3>
+          {questions.map((question, index) => (
+            <EligibilityQuestions
+              key={index}
+              question={question}
+              index={index}
+              setQuestions={setQuestions}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          ))}
+        </Box>
 
-        <h3>Determine your eligibility for a rebate</h3>
-        {questions.map((question, index) => (
-          <EligibilityQuestions
-            key={index}
-            question={question}
-            index={index}
-            setQuestions={setQuestions}
-            handleCheckboxChange={handleCheckboxChange}
-          />
-        ))}
-        <WhatsNeededToApply
-          applicationText={applicationText}
-          title={title}
-          type="individual"
-        />
+        <Box sx={{ mt: 5, mb: 0 }} className="whats-needed-individual">
+          {title}
+          {applicationText}
+        </Box>
       </div>
       <BottomBanner
         eligible={eligible}
@@ -96,7 +98,7 @@ const EligibilityPage = (props) => {
           Login with IDIR
         </button>
       </div>
-    </div>
+    </Box>
   );
 };
 
