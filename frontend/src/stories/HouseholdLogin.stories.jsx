@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Household from '../pages/Household';
+import HouseholdPage from '../pages/Household';
 
 export default {
   title: 'ITVR/Household',
-  component: Household
+  component: HouseholdPage
 };
 
-const Template = (args) => <Household {...args} />;
+const Template = (args) => <HouseholdPage {...args} />;
 export const Default = Template.bind({});

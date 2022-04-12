@@ -1,8 +1,12 @@
 import React from 'react';
 import BottomBanner from '../components/BottomBanner';
 import Layout from '../components/Layout';
+import { useSearchParams } from 'react-router-dom';
 
-const Household = () => {
+const HouseholdPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const householdApplicationId = searchParams.get('householdApplication');
+
   const title = (
     <>
       <h3>Complete your rebate application for your household</h3>
@@ -34,10 +38,11 @@ const Household = () => {
           eligible={true}
           text="Complete your rebate application"
           type="spouse"
+          householdApplicationId={householdApplicationId}
         />
       </div>
     </Layout>
   );
 };
 
-export default Household;
+export default HouseholdPage;

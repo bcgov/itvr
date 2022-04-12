@@ -2,8 +2,11 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 const BottomBanner = (props) => {
-  const { eligible, text = '', type = '' } = props;
+  const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
+  const redirectUri = householdApplicationId
+    ? `${window.location.origin}/householdForm/${householdApplicationId}`
+    : `${window.location.origin}/form`;
   return (
     <>
       <div
@@ -23,7 +26,7 @@ const BottomBanner = (props) => {
             onClick={() =>
               keycloak.login({
                 idpHint: 'bceid-basic',
-                redirectUri: `${window.location.origin}/form`
+                redirectUri: redirectUri
               })
             }
           >
