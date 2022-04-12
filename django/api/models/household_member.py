@@ -1,6 +1,6 @@
 import uuid
 from django.db.models import CharField, IntegerField, ImageField, \
-    DateField, EmailField, BooleanField, UUIDField
+    DateField, EmailField, BooleanField, UUIDField, PROTECT, ForeignKey
 from encrypted_fields.fields import EncryptedCharField
 from auditable.models import Auditable
 from django.utils.html import mark_safe
@@ -9,11 +9,10 @@ from django.core.files.storage import get_storage_class
 media_storage = get_storage_class()()
 
 
-class GoElectricRebateApplication(Auditable):
-    id = UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False
+class HouseholdMember(Auditable):
+    application = ForeignKey(
+        'GoElectricRebateApplication',
+        on_delete=PROTECT,
     )
     sin = EncryptedCharField(
         max_length=9,
@@ -37,24 +36,7 @@ class GoElectricRebateApplication(Auditable):
         max_length=250,
         unique=False
     )
-    address = CharField(
-        max_length=250,
-        unique=False
-    )
-    city = CharField(
-        max_length=250,
-        unique=False
-    )
-    postal_code = CharField(
-        max_length=6,
-        unique=False
-    )
-    drivers_licence = CharField(
-        max_length=10,
-        unique=False
-    )
     date_of_birth = DateField()
-    tax_year = IntegerField()
     doc1 = ImageField(upload_to='docs')
 
     def doc1_tag(self):
@@ -77,20 +59,8 @@ class GoElectricRebateApplication(Auditable):
 
     verified = BooleanField()
 
-    spouse_email = EmailField(
-        max_length=250,
-        unique=False,
-        null=True,
-        blank=True
-    )
-
-    application_type = CharField(
-        max_length=25,
-        unique=False,
-    )
-
     def __str__(self):
         return self.last_name + ', ' + self.first_name
 
     class Meta:
-        db_table = 'go_electric_rebate_application'
+        db_table = 'household_member'

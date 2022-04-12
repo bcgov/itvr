@@ -26,6 +26,8 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             doc2=validated_data['doc2'],
             tax_year=2021,
             verified=False,
+            application_type=validated_data['application_type'],
+            spouse_email=validated_data['spouse_email']
         )
         return obj
 
