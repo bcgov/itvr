@@ -4,7 +4,7 @@ from pathlib import Path
 
 from . import email
 
-AUTH_USER_MODEL = "users.CustomUser"
+AUTH_USER_MODEL = "users.ITVRUser"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
