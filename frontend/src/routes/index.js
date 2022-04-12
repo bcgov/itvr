@@ -6,6 +6,8 @@ import HomePage from '../pages';
 import FormPage from '../pages/Form';
 import AdminPage from '../pages/admin';
 import ApplicationSummaryPage from '../pages/ApplicationSummary';
+import HouseholdPage from '../pages/Household';
+import HouseholdFormPage from '../pages/ HouseholdForm';
 
 const RequireAuth = ({ children, redirectTo }) => {
   const { keycloak } = useKeycloak();
@@ -37,6 +39,15 @@ const AppRouter = () => (
         element={
           <RequireAuth redirectTo="/">
             <ApplicationSummaryPage />
+          </RequireAuth>
+        }
+      />
+      <Route path="/household" element={<HouseholdPage />} />
+      <Route
+        path="/householdForm"
+        element={
+          <RequireAuth redirectTo="/">
+            <HouseholdFormPage />
           </RequireAuth>
         }
       />
