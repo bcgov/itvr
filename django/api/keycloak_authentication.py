@@ -58,7 +58,10 @@ class KeycloakAuthentication(TokenAuthentication):
         user, created = ITVRUser.objects.get_or_create(
             username=token_info.get("sub"),
             identity_provider=token_info.get("identity_provider"),
-            defaults={"display_name": token_info.get("display_name")},
+            defaults={
+                "display_name": token_info.get("display_name"),
+                "email": token_info.get("email"),
+            },
         )
 
         if created:

@@ -16,7 +16,7 @@ class ITVRUser(AbstractUser):
 
     # bceid-basic or for BC Services Card it is “IAS” at this time.
     identity_provider = CharField(
-        _("keycloak identity provider"),
+        _("identity provider"),
         max_length=11,
         help_text=_("Name of the identity provider through keycloak."),
     )
@@ -36,6 +36,9 @@ class ITVRUser(AbstractUser):
     )
 
     display_name = TextField(
-        _("human readable name of the token holder"),
+        _("display name"),
         help_text=_("Taken from the keycloak JWT."),
     )
+
+    def __str__(self):
+        return self.identity_provider + " " + self.display_name

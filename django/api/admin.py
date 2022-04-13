@@ -21,6 +21,7 @@ admin_modify.submit_row = submit_row_custom
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     readonly_fields = (
         "id",
+        "application_type",
         "sin",
         "last_name",
         "first_name",
@@ -36,8 +37,8 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc1_tag",
         "doc2",
         "doc2_tag",
-        "create_user",
-        "update_user",
+        "user",
+        "spouse_email",
     )
 
     def has_delete_permission(self, request, obj=None):

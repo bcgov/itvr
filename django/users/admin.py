@@ -14,7 +14,6 @@ class CustomUserAdmin(UserAdmin):
     model = ITVRUser
     list_display = [
         "identity_provider",
-        "sub",
         "display_name",
         "email",
         "username",
