@@ -70,7 +70,7 @@ class GoElectricRebateApplication(Model):
     updated_at = DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.last_name + ", " + self.first_name
+        return self.last_name + ", " + self.first_name + ": " + str(self.id)
 
     class Meta:
         db_table = "go_electric_rebate_application"

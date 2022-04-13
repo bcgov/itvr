@@ -2,11 +2,6 @@ from rest_framework.serializers import ModelSerializer
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
 
-import logging
-
-
-log = logging.getLogger("Serializer")
-
 
 class ApplicationFormCreateSerializer(ModelSerializer):
     parser_classes = (
