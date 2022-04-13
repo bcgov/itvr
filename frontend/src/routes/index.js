@@ -5,7 +5,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import HomePage from '../pages';
 import FormPage from '../pages/Form';
 import AdminPage from '../pages/admin';
-import ApplicationSummaryPage from '../pages/ApplicationSummary';
+import DetailsPage from '../pages/Details';
 import HouseholdPage from '../pages/Household';
 import HouseholdFormPage from '../pages/ HouseholdForm';
 
@@ -38,7 +38,7 @@ const AppRouter = () => (
         path="/details/:id"
         element={
           <RequireAuth redirectTo="/">
-            <ApplicationSummaryPage />
+            <DetailsPage />
           </RequireAuth>
         }
       />

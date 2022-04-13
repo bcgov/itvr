@@ -9,15 +9,13 @@ const FormPage = () => {
   const { keycloak } = useKeycloak();
   // we can validate the token server side
   const decoded = jwt_decode(keycloak.token);
+  console.log(decoded);
 
   return (
-    <div>
-      Hello BCeID {decoded.preferred_username}{' '}
-      <Layout>
-        <RebateTable />
-        <Form />
-      </Layout>
-    </div>
+    <Layout>
+      <RebateTable />
+      <Form />
+    </Layout>
   );
 };
 

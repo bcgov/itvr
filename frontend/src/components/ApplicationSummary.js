@@ -18,10 +18,10 @@ const ApplicationSummary = (props) => {
   );
 
   if (isLoading) {
-    <p>Loading...</p>;
+    return <p>Loading...</p>;
   }
   if (isError) {
-    <p>{error.message}</p>;
+    return <p>{error.message}</p>;
   }
 
   return (
