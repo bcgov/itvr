@@ -1,3 +1,4 @@
+import base64
 from keycloak import KeycloakOpenID
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,7 +11,22 @@ import logging
 
 log = logging.getLogger("KeycloakAuthentication")
 
-User = get_user_model()
+ITVRUser = get_user_model()
+
+
+def base64_decode(data: str) -> str:
+    """
+    We can check the identity provider of the token and then
+    verify or pass on the request.
+    """
+
+    data = data.encode("ascii")
+
+    rem = len(data) % 4
+
+    if rem > 0:
+        data += b"=" * (4 - rem)
+    return base64.urlsafe_b64decode(data).decode("utf-8")
 
 
 class KeycloakAuthentication(TokenAuthentication):
@@ -39,16 +55,14 @@ class KeycloakAuthentication(TokenAuthentication):
         except Exception:
             raise AuthenticationFailed("Invalid Token")
 
-        username = token_info.get("preferred_username")
+        user, created = ITVRUser.objects.get_or_create(
+            username=token_info.get("sub"),
+            identity_provider=token_info.get("identity_provider"),
+            defaults={"display_name": token_info.get("display_name")},
+        )
 
-        # TODO make a ticket to improve this
-        user = None
-        try:
-            user = User.objects.get(username=username)
-        except ObjectDoesNotExist:
-            log.warn("KeycloakAuthentication user does not exist")
-
-        if user is None:
-            user = User.objects.create_user(username=username)
+        if created:
+            log.debug("Created user")
+            log.debug(user)
 
         return user, token
