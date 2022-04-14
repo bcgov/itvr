@@ -7,7 +7,7 @@ import FormPage from '../pages/Form';
 import AdminPage from '../pages/admin';
 import DetailsPage from '../pages/Details';
 import HouseholdPage from '../pages/Household';
-import HouseholdFormPage from '../pages/ HouseholdForm';
+import HouseholdFormPage from '../pages/HouseholdForm';
 
 const RequireAuth = ({ children, redirectTo }) => {
   const { keycloak } = useKeycloak();
