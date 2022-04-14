@@ -16,6 +16,7 @@ from django.db.models import (
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
 from django.core.files.storage import get_storage_class
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 media_storage = get_storage_class()()
 
@@ -34,7 +35,9 @@ class GoElectricRebateApplication(Model):
     address = CharField(max_length=250, unique=False)
     city = CharField(max_length=250, unique=False)
     postal_code = CharField(max_length=6, unique=False)
-    drivers_licence = CharField(max_length=10, unique=False)
+    drivers_licence = CharField(
+        max_length=8, unique=False, validators=[MinLengthValidator(7)]
+    )
     date_of_birth = DateField()
     tax_year = IntegerField()
     doc1 = ImageField(upload_to="docs")
