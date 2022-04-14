@@ -13,11 +13,12 @@ from django.db.models import (
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
 from django.core.files.storage import get_storage_class
+from django_extensions.db.models import TimeStampedModel
 
 media_storage = get_storage_class()()
 
 
-class HouseholdMember(Model):
+class HouseholdMember(TimeStampedModel):
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=PROTECT,
@@ -53,9 +54,6 @@ class HouseholdMember(Model):
     doc2_tag.short_description = "Second Uploaded Document"
 
     verified = BooleanField()
-
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.last_name + ", " + self.first_name

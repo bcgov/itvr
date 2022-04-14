@@ -10,7 +10,7 @@ def validate_driving_age(dob):
     if difference_in_years < 16:
         raise ValidationError(
             "You must be 16 years or older to request a rebate, please check \
-            the date of birth entered."
+the date of birth entered."
         )
 
 
@@ -47,3 +47,10 @@ def validate_sin(sin):
     summed = sum(int(x) for x in multiplied_sin)
     if summed % 10 != 0:
         raise ValidationError("Please enter a valid SIN.")
+
+
+def validate_consent(has_consented):
+    if not has_consented:
+        raise ValidationError(
+            "You must confirm both consent check boxes to submit your application."
+        )

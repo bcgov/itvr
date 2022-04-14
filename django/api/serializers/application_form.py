@@ -39,6 +39,8 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             application_type=validated_data["application_type"],
             spouse_email=validated_data["spouse_email"],
             user=user,
+            consent_personal=validated_data["consent_personal"],
+            consent_tax=validated_data["consent_tax"],
         )
         return obj
 
