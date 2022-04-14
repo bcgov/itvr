@@ -24,7 +24,7 @@ def validate_sin(sin):
     121 212 121
     -----------
     160 394 584
-    
+
     If you get a 2 digit # add the digits together.
     Notice here that 6*2=12, add 1 and 2 together and get 3.
     Then add all of these digits together: 1+6+0+3+9+4+5+8+4=40
@@ -33,12 +33,10 @@ def validate_sin(sin):
     """
 
     if len(sin) != 9:
-        raise ValidationError(
-            "Please ensure your SIN is 9 characters long."
-        )
+        raise ValidationError("Please ensure your SIN is 9 characters long.")
 
-    multiplication_number = '121212121'
-    multiplied_sin = ''
+    multiplication_number = "121212121"
+    multiplied_sin = ""
     for i in range(0, 9):
         multiplied = int(sin[i]) * int(multiplication_number[i])
         if multiplied > 9:
@@ -48,6 +46,4 @@ def validate_sin(sin):
             multiplied_sin += str(multiplied)
     summed = sum(int(x) for x in multiplied_sin)
     if summed % 10 != 0:
-        raise ValidationError(
-            "Please enter a valid SIN."
-        )
+        raise ValidationError("Please enter a valid SIN.")

@@ -28,11 +28,7 @@ class GoElectricRebateApplication(Model):
         on_delete=PROTECT,
     )
     id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    sin = EncryptedCharField(
-        max_length=9,
-        unique=False,
-        validators=[MinLengthValidator(9), validate_sin]
-        )
+    sin = EncryptedCharField(max_length=9, unique=False, validators=[validate_sin])
     last_name = CharField(max_length=250, unique=False)
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
