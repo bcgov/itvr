@@ -17,18 +17,19 @@ from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
 from django.core.files.storage import get_storage_class
 from django.core.validators import MinLengthValidator
-from api.validators import validate_driving_age
+from api.validators import validate_driving_age, validate_sin, validate_consent
+from django_extensions.db.models import TimeStampedModel
 
 media_storage = get_storage_class()()
 
 
-class GoElectricRebateApplication(Model):
+class GoElectricRebateApplication(TimeStampedModel):
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=PROTECT,
     )
     id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    sin = EncryptedCharField(max_length=9, unique=False)
+    sin = EncryptedCharField(max_length=9, unique=False, validators=[validate_sin])
     last_name = CharField(max_length=250, unique=False)
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
@@ -69,9 +70,8 @@ class GoElectricRebateApplication(Model):
         max_length=25,
         unique=False,
     )
-
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
+    consent_personal = BooleanField(validators=[validate_consent])
+    consent_tax = BooleanField(validators=[validate_consent])
 
     def __str__(self):
         return self.last_name + ", " + self.first_name + ": " + str(self.id)

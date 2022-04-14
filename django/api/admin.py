@@ -39,6 +39,8 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "user",
         "spouse_email",
+        "consent_personal",
+        "consent_tax",
     )
 
     def has_delete_permission(self, request, obj=None):
