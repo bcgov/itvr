@@ -1,0 +1,19 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: backup-conf
+objects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      creationTimestamp: null
+      name: backup-conf
+    data:
+      backup.conf: |
+        postgres=itvr-spilo-readonly:5432/itvr
+        0 1 * * * default ./backup.sh -s
+        0 7 * * * default ./backup.sh -s
+        0 13 * * * default ./backup.sh -s
+        0 19 * * * default ./backup.sh -s
+        0 22 * * * default ./backup.sh -s -v all

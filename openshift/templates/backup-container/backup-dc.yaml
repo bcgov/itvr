@@ -1,0 +1,175 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: ${NAME}-deployment-template
+objects:
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: backup
+      annotations:
+        volume.beta.kubernetes.io/storage-class: netapp-file-backup
+        template.openshift.io.bcgov/create: 'true'
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: ${BACKUP_PVC_SIZE}
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: backup-verification
+      annotations:
+        volume.beta.kubernetes.io/storage-class: netapp-file-standard
+        template.openshift.io.bcgov/create: 'true'
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: ${BACKUP_VERIFICATION_PVC_SIZE}          
+    status: {}
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: ${NAME}
+      labels:
+        name: ${NAME}
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}
+            from:
+              kind: ImageStreamTag
+              namespace: ac294c-tools
+              name: backup-container:2.4.0
+      replicas: 1
+      selector:
+        name: ${NAME}
+      template:
+        metadata:
+          name: ${NAME}
+          labels:
+            name: ${NAME}
+        spec:
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backup
+            - name: backup-verification
+              persistentVolumeClaim:
+                claimName: backup-verification
+            - name: backup-config-volume
+              configMap:
+                name: backup-conf
+                items:
+                  - key: backup.conf
+                    path: backup.conf
+          containers:
+            - name: ${NAME}
+              image: ""
+              ports: []
+              env:
+                - name: BACKUP_STRATEGY
+                  value: ${BACKUP_STRATEGY}
+                - name: BACKUP_DIR
+                  value: ${BACKUP_DIR}
+                - name: DAILY_BACKUPS
+                  value: ${DAILY_BACKUPS}
+                - name: WEEKLY_BACKUPS
+                  value: ${WEEKLY_BACKUPS}
+                - name: MONTHLY_BACKUPS
+                  value: ${MONTHLY_BACKUPS}
+                - name: ITVR_SPILO_READONLY_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-patroni-app
+                      key: app-db-username
+                - name: ITVR_SPILO_READONLY_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-patroni-app
+                      key: app-db-password                     
+              resources:
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+              volumeMounts:
+                - name: backup
+                  mountPath: /backups
+                - name: backup-verification
+                  mountPath: /var/lib/pgsql/data
+                - name: backup-config-volume
+                  mountPath: /backup.conf
+                  subPath: backup.conf
+parameters:
+  - name: NAME
+    displayName: Name
+    description: The name assigned to all of the resources.  Use 'backup-{database name}' depending on your database provider
+    required: true
+    value: backup-postgres
+  - name: BACKUP_STRATEGY
+    displayName: Backup Strategy
+    description: The strategy to use for backups; for example daily, or rolling.
+    required: true
+    value: rolling
+  - name: BACKUP_DIR
+    displayName: The root backup directory
+    description: The name of the root backup directory.  The backup volume will be mounted to this directory.
+    required: true
+    value: /backups/patroni-backup/
+  - name: DAILY_BACKUPS
+    displayName: Number of Daily Backups to Retain
+    description: The number of daily backup files to be retained.  Used for the `rolling` backup strategy.
+    required: false
+    value: ""
+  - name: WEEKLY_BACKUPS
+    displayName: Number of Weekly Backups to Retain
+    description: The number of weekly backup files to be retained.  Used for the `rolling` backup strategy.
+    required: false
+    value: ""
+  - name: MONTHLY_BACKUPS
+    displayName: Number of Monthly Backups to Retain
+    description: The number of monthly backup files to be retained.  Used for the `rolling` backup strategy.
+    required: false
+    value: ""
+  - name: CPU_REQUEST
+    displayName: Resources CPU Request
+    description: The resources CPU request (in cores) for this build.
+    required: true
+    value: 350m
+  - name: CPU_LIMIT
+    displayName: Resources CPU Limit
+    description: The resources CPU limit (in cores) for this build.
+    required: true
+    value: 70m
+  - name: MEMORY_REQUEST
+    displayName: Resources Memory Request
+    description: The resources Memory request (in Mi, Gi, etc) for this build.
+    required: true
+    value: 50Mi
+  - name: MEMORY_LIMIT
+    displayName: Resources Memory Limit
+    description: The resources Memory limit (in Mi, Gi, etc) for this build.
+    required: true
+    value: 100Mi
+  - name: BACKUP_PVC_SIZE
+    displayName: backup size
+    description: backup size
+    required: true
+    value: 5G    
+  - name: BACKUP_VERIFICATION_PVC_SIZE
+    displayName: backup verification size
+    description: backup verification size
+    required: true
+    value: 1G
