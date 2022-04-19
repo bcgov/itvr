@@ -236,8 +236,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          {errors?.date_of_birth?.type === "required" && (
-            <p className='error'>Date of Birth cannot be blank</p>
+          {errors?.date_of_birth?.type === "validate" && (
+            <p className='error'>You must be 16 years or older to request a rebate, please check the date of birth entered.</p>
           )}
           <InputLabel htmlFor="date_of_birth">Date of Birth:</InputLabel>
           <Controller
@@ -248,7 +248,24 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   setValue("date_of_birth", e.target.value)
                 } />
             )}
-            rules={{required: true}}
+            rules={{validate: (inputtedDOB) => {
+              if(!inputtedDOB) {
+                return false;
+              }
+              const dobSplit = inputtedDOB.split("-");
+              const dobYear = parseInt(dobSplit[0]);
+              const dobMonthIndex = parseInt(dobSplit[1]) - 1;
+              const dobDay = parseInt(dobSplit[2]);
+              const today = new Date();
+              let age = today.getFullYear() - dobYear;
+              if (today.getMonth() < dobMonthIndex || (today.getMonth() == dobMonthIndex && today.getDate() < dobDay)) {
+                age = age - 1;
+              }
+              if(age < 16) {
+                return false;
+              }
+              return true;
+            }}}
           />
         </FormGroup>
         <FormGroup>
