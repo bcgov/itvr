@@ -28,7 +28,7 @@ const FileDropArea = ({
     (droppedFiles) => {
       const newFiles =
         (files && [...files].concat(droppedFiles)) || droppedFiles;
-      setValue(name, newFiles, { shouldValidate: true });
+      setValue(name, newFiles);
     },
     [setValue, name, files]
   );
@@ -37,7 +37,12 @@ const FileDropArea = ({
     accept
   });
   useEffect(() => {
-    register(name);
+    register(name, {validate: (inputtedFiles) => {
+      if(!inputtedFiles || inputtedFiles.length < 2) {
+        return false;
+      }
+      return true;
+    }});
     return () => {
       unregister(name);
     };
@@ -46,7 +51,7 @@ const FileDropArea = ({
   const removeFile = (removedFile) => {
     const found = files.findIndex((file) => file === removedFile);
     files.splice(found, 1);
-    setValue(name, files, { shouldValidate: true });
+    setValue(name, files);
   };
 
   return (
