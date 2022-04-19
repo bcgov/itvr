@@ -1,6 +1,6 @@
 ---
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
   name: backup-container
 parameters:
@@ -39,7 +39,7 @@ objects:
         type: Git
         contextDir: "openshift/templates/backup-container"
         git:
-          uri: https://github.com/bcgov/zeva.git
+          uri: https://github.com/bcgov/itvr.git
           ref: backup-container-1.0.0
       strategy:
         dockerStrategy:
