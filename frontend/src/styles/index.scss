@@ -142,3 +142,15 @@ a {
     margin: 0 1rem 0 1rem;
   }
 }
+
+p.error {
+  color: rgb(200, 35, 51);
+}
+
+span.error {
+  display: block;
+  font-size: 32px;
+  font-weight: bold;
+  color: rgb(200, 35, 51);
+  padding-bottom: 25px;
+}
