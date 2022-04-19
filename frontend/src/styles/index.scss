@@ -154,3 +154,13 @@ span.error {
   color: rgb(200, 35, 51);
   padding-bottom: 25px;
 }
+
+span.validated {
+  display: block;
+  background-color: rgb(126, 189, 66);
+  color: white;
+  font-size: 32px;
+  text-align: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
