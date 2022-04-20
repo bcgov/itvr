@@ -8,6 +8,9 @@ import Box from '@mui/material/Box';
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
     props;
+  const date = new Date();
+  const twoYearsAgo = date.getFullYear() - 2;
+  const lastYear = date.getFullYear() - 1;
   const { keycloak } = useKeycloak();
   const title = <h3>What you will need to complete this application</h3>;
   const applicationText = (
@@ -79,9 +82,9 @@ const EligibilityPage = (props) => {
       />
       <div className="asterisk-text">
         <p>
-          * UP Until June 30 your {taxYear} notice of assessment (NOA) will be
-          used to determine your rebate amount. On July 1 it will change to use
-          your {taxYear} NOA.
+          * UP Until June 30 your {twoYearsAgo} notice of assessment (NOA) will
+          be used to determine your rebate amount. On July 1 it will change to
+          use your {lastYear} NOA.
         </p>
       </div>
       <div>
