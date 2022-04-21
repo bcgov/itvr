@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
+from datetime import date
 
 
 class ApplicationFormCreateSerializer(ModelSerializer):
@@ -34,7 +35,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             postal_code=validated_data["postal_code"],
             doc1=validated_data["doc1"],
             doc2=validated_data["doc2"],
-            tax_year=2021,
+            tax_year=self._getTaxYear(),
             verified=False,
             application_type=validated_data["application_type"],
             spouse_email=validated_data["spouse_email"],
@@ -44,6 +45,13 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         )
         return obj
 
+    def _getTaxYear(self):
+        today = date.today()
+        month = today.month
+        year = today.year
+        if month < 7:
+            return year - 2
+        return year - 1
 
 class ApplicationFormSerializer(ModelSerializer):
     class Meta:
