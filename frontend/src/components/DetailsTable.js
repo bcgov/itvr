@@ -20,7 +20,6 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
 }
 
 const DetailsTable = ({ data }) => {
-  console.log(data);
   const rows = [
     createData('Application ID:', data.id),
     createData('Last name / surname:', data.last_name),
