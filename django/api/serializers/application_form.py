@@ -35,7 +35,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             postal_code=validated_data["postal_code"],
             doc1=validated_data["doc1"],
             doc2=validated_data["doc2"],
-            tax_year=self._getTaxYear(),
+            tax_year=self._get_tax_year(),
             verified=False,
             application_type=validated_data["application_type"],
             spouse_email=validated_data["spouse_email"],
@@ -45,7 +45,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         )
         return obj
 
-    def _getTaxYear(self):
+    def _get_tax_year(self):
         today = date.today()
         month = today.month
         year = today.year
