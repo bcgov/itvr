@@ -35,7 +35,7 @@ def write(data):
   file += today # 
   file += ' ' # Blank space
 
-  file += 'BCGSP00521' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00001' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 99 # Blank space
 
@@ -59,7 +59,7 @@ def write(data):
     file += row['year'] # Year
     file += ' ' * 14 # Blank space
 
-    file += 'BCGS' # Program area code
+    file += 'BCVR' # Program area code
     file += '1234' # Record identification number (optional)
 
     file += ' ' * 31 # Blank space
@@ -73,7 +73,7 @@ def write(data):
   file += today # Request date
   file += ' ' # Blank space
 
-  file += 'BCGSP00521' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00001' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 6 # Blank space
 
