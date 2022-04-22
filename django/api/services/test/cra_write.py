@@ -46,4 +46,4 @@ data = [{
 }]
 
 file = write(data)
-print(file)
+print(file, end='')

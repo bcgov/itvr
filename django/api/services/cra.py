@@ -28,6 +28,10 @@ def write(data):
 
   today = date.today().strftime("%Y%m%d") # Get today's date
 
+  # Number of records to write.
+  l = str(len(data) + 2) # Includes header and footer.
+  records = '0' * (8 - len(l))+l
+
   ####################### Write the header ##############################
   file += '7100' # Request transaction code
   file += ' ' * 24 # Blank space
@@ -77,11 +81,11 @@ def write(data):
 
   file += ' ' * 6 # Blank space
 
-  file += '0' * 8 # Number of records in file TODO: make this dynamic
+  file += records # Number of records in file
 
   file += ' ' * 85 # Blank space
 
-  file += '0\n' # terminating character 
+  file += '0' # terminating character 
 
   
   ####################### Return the file ##############################
