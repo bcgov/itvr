@@ -5,7 +5,7 @@ const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
   const redirectUri = householdApplicationId
-    ? `${window.location.origin}/householdForm/${householdApplicationId}`
+    ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
     : `${window.location.origin}/form`;
   const buttonText = "Please answer the questions above to confirm you are eligible to apply for a rebate.";
   return (

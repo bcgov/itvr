@@ -1,16 +1,17 @@
 from rest_framework.viewsets import ModelViewSet
-from api.serializers.application_form import (
-    ApplicationFormSerializer,
-    ApplicationFormCreateSerializer,
+from api.serializers.spouse_application import (
+    SpouseApplicationSerializer,
+    SpouseApplicationCreateSerializer,
 )
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
+from api.models.household_member import HouseholdMember
 
 
-class ApplicationFormViewset(ModelViewSet):
+class SpouseApplicationViewset(ModelViewSet):
     queryset = GoElectricRebateApplication.objects.all()
     serializer_classes = {
-        "default": ApplicationFormSerializer,
-        "create": ApplicationFormCreateSerializer,
+        "default": SpouseApplicationSerializer,
+        "create": SpouseApplicationCreateSerializer,
     }
 
     def get_serializer_class(self):
