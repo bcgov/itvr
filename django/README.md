@@ -5,7 +5,7 @@
 Log into Docker database.
 
 ```bash
-docker-compose exec db psql -U postgres itvr
+docker-compose exec db psql itvr postgres
 ```
 
 Convert models into migration files. The run migrations.
