@@ -34,22 +34,12 @@ def get_email_service_token() -> {}:
         return
 
 
-def send_email(recipient_email: str, application_id: str) -> {}:
+def send_email(recipient_email: str, application_id: str, message: str, cc_list: list) -> {}:
     sender_email = settings.EMAIL['SENDER_EMAIL']
     sender_name = settings.EMAIL['SENDER_NAME']
     url = settings.EMAIL['CHES_EMAIL_URL']
-
-    body = """
-We have received your application for a rebate under the CleanBC Go Electric Passenger Vehicle Rebate program.
-
-Please keep this e-mail for your records.
-
-Questions?
-
-Please feel free to contact us at ZEVPrograms@gov.bc.ca
-"""
-
-    subject = "Application {}".format(application_id)
+    
+    subject = "CleanBC Go Electric - Application #{}".format(application_id)
     bodyType = "html"
 
     token = get_email_service_token()
@@ -63,8 +53,8 @@ Please feel free to contact us at ZEVPrograms@gov.bc.ca
     data = {
             "bcc": [recipient_email],
             "bodyType": bodyType,
-            "body": body,
-            "cc": [],
+            "body": message,
+            "cc": cc_list,
             "delayTS": 0,
             "encoding": "utf-8",
             "from": sender_info,
@@ -90,9 +80,48 @@ Please feel free to contact us at ZEVPrograms@gov.bc.ca
         return
 
 
+def send_individual_confirm(recipient, id):
+    message = """
+        We have received your application for a rebate under the CleanBC Go Electric Passenger Vehicle Rebate program.
+
+        Please keep this e-mail for your records.
+
+        Questions?
+
+        Please feel free to contact us at ZEVPrograms@gov.bc.ca
+        """
+    send_email(recipient, id, message, cc_list=[])
+
+
+def send_spouse_initial_message(recipient, id, initiator_email):
+    message = """
+        Dear Applicant,
+
+        You are receiving this e-mail as you have been identified as a spouse under a household rebate application for the CleanBC Go Electric Light-Duty Vehicle program.
+
+        To finish the rebate application please click on the following link:
+
+        http://localhost:3000/household?q={}
+
+        Questions?
+
+        Please feel free to contact us at ZEVPrograms@gov.bc.ca
+        """.format(id)
+    send_email(recipient, id, message, cc_list=[initiator_email])
+
+
 # TODO have this schedule an email task that's retried in the future incase
 # CHES has issues when we setup celery.
 @receiver(post_save, sender=GoElectricRebateApplication)
 def create_application(sender, instance, created, **kwargs):
     if created and settings.EMAIL['SEND_EMAIL']:
-        send_email(instance.email, instance.id)
+        send_individual_confirm(
+            recipient=instance.email,
+            id=instance.id
+            )
+        if instance.application_type == 'household':
+            send_spouse_initial_message(
+                recipient=instance.spouse_email,
+                id=instance.id,
+                initiator_email=instance.email
+                )

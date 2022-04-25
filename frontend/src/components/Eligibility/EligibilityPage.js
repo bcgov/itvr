@@ -3,14 +3,33 @@ import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
 import { useKeycloak } from '@react-keycloak/web';
 import BottomBanner from '../BottomBanner';
+import Box from '@mui/material/Box';
 
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
     props;
   const { keycloak } = useKeycloak();
-
-  return (
+  const title = <h3>What you will need to complete this application</h3>;
+  const applicationText = (
     <div>
+      <ul>
+        <li>Your Driver's Licence number to be associated with the rebate.</li>
+        <li>
+          A Basic BCeID, an image of your B.C. Driver's Licence and a secondary
+          piece of ID to upload.
+        </li>
+        <li>
+          Your Social Insurance Number and CRA income disclosure consent to
+          confirm your income.
+        </li>
+      </ul>
+      For a household application your spouse or common law partner will also
+      need to confirm their identity and provide CRA income disclosure consent,
+      they do not require a driver's licence.
+    </div>
+  );
+  return (
+    <Box>
       <div>
         <p>
           Rebates of up to $4,000 are available from the B.C. Government towards
@@ -34,38 +53,30 @@ const EligibilityPage = (props) => {
           </ol>
         </div>
         <RebateTable taxYear={taxYear} />
+        <Box sx={{ mt: 5, mb: 0 }}>
+          <h3>Determine your eligibility for a rebate</h3>
+          {questions.map((question, index) => (
+            <EligibilityQuestions
+              key={index}
+              question={question}
+              index={index}
+              setQuestions={setQuestions}
+              handleCheckboxChange={handleCheckboxChange}
+            />
+          ))}
+        </Box>
 
-        <h3>Determine your eligibility for a rebate</h3>
-        {questions.map((question, index) => (
-          <EligibilityQuestions
-            key={index}
-            question={question}
-            index={index}
-            setQuestions={setQuestions}
-            handleCheckboxChange={handleCheckboxChange}
-          />
-        ))}
-        <div id="whats-needed">
-          <h3>What you will need to complete this application</h3>
-          <ul>
-            <li>
-              Your Driver's Licence number to be associated with the rebate.
-            </li>
-            <li>
-              A Basic BCeID, an image of your B.C. Driver's Licence and a
-              secondary piece of ID to upload.
-            </li>
-            <li>
-              Your Social Insurance Number and CRA income disclosure consent to
-              confirm your income.
-            </li>
-          </ul>
-          For a household application your spouse or common law partner will
-          also need to confirm their identity and provide CRA income disclosure
-          consent, they do not require a driver's licence.
-        </div>
+        <Box sx={{ mt: 5, mb: 0 }} className="whats-needed-individual">
+          {title}
+          {applicationText}
+        </Box>
       </div>
-      <BottomBanner eligible={eligible} taxYear={taxYear} />
+      <BottomBanner
+        eligible={eligible}
+        taxYear={taxYear}
+        text="Start your rebate application"
+        type="individual"
+      />
       <div className="asterisk-text">
         <p>
           * UP Until June 30 your {taxYear} notice of assessment (NOA) will be
@@ -87,7 +98,7 @@ const EligibilityPage = (props) => {
           Login with IDIR
         </button>
       </div>
-    </div>
+    </Box>
   );
 };
 

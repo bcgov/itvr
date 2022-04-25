@@ -2,6 +2,7 @@
   "python.linting.pycodestyleEnabled": true,
   "python.linting.pylintEnabled": false,
   "python.linting.enabled": true,
+  "python.formatting.provider": "black",
 
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
@@ -10,5 +11,8 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "eslint.format.enable": true,
-  "diffEditor.codeLens": true
+  "diffEditor.codeLens": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  }
 }
