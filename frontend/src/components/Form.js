@@ -42,7 +42,14 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const methods = useForm({
     defaultValues
   });
-  const { control, handleSubmit, register, watch, formState: { errors }, setValue } = methods;
+  const {
+    control,
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+    setValue
+  } = methods;
   const axiosInstance = useAxios();
   const navigate = useNavigate();
   const mutation = useMutation((data) => {
@@ -69,17 +76,17 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         navigate(`/details/${id}`);
       }
     });
-  }
-  
+  };
+
   const onError = (errors) => {
     const numberOfErrors = Object.keys(errors).length;
     setNumberOfErrors(numberOfErrors);
-    if(numberOfErrors > 0) {
+    if (numberOfErrors > 0) {
       setErrorsExistCounter((prev) => {
-        return (prev + 1);
+        return prev + 1;
       });
     }
-  }
+  };
 
   return (
     <FormProvider {...methods}>
@@ -161,8 +168,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           </Box>
         </FormGroup>
         <FormGroup>
-          {errors?.last_name?.type === "required" && (
-            <p className='error'>Last Name cannot be blank</p>
+          {errors?.last_name?.type === 'required' && (
+            <p className="error">Last Name cannot be blank</p>
           )}
           <InputLabel htmlFor="last_name">Last Name (Surname):</InputLabel>
           <Controller
@@ -172,17 +179,15 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               <TextField
                 id="last_name"
                 inputProps={{ maxLength: 250 }}
-                onChange={(e) =>
-                  setValue("last_name", e.target.value)
-                }
+                onChange={(e) => setValue('last_name', e.target.value)}
               />
             )}
-            rules={{required: true}}
+            rules={{ required: true }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.first_name?.type === "required" && (
-            <p className='error'>First Name cannot be blank</p>
+          {errors?.first_name?.type === 'required' && (
+            <p className="error">First Name cannot be blank</p>
           )}
           <InputLabel htmlFor="first_name">First Name (Given Name):</InputLabel>
           <Controller
@@ -192,12 +197,10 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               <TextField
                 id="first_name"
                 inputProps={{ maxLength: 250 }}
-                onChange={(e) =>
-                  setValue("first_name", e.target.value)
-                }
+                onChange={(e) => setValue('first_name', e.target.value)}
               />
             )}
-            rules={{required: true}}
+            rules={{ required: true }}
           />
         </FormGroup>
         <FormGroup>
@@ -215,8 +218,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          {errors?.email?.type === "required" && (
-            <p className='error'>Email Address cannot be blank</p>
+          {errors?.email?.type === 'required' && (
+            <p className="error">Email Address cannot be blank</p>
           )}
           <InputLabel htmlFor="email">Email Address:</InputLabel>
           <Controller
@@ -227,50 +230,59 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               <TextField
                 id="email"
                 inputProps={{ maxLength: 250 }}
-                onChange={(e) =>
-                  setValue("email", e.target.value)
-                }
+                onChange={(e) => setValue('email', e.target.value)}
               />
             )}
-            rules={{required: true}}
+            rules={{ required: true }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.date_of_birth?.type === "validate" && (
-            <p className='error'>You must be 16 years or older to request a rebate, please check the date of birth entered.</p>
+          {errors?.date_of_birth?.type === 'validate' && (
+            <p className="error">
+              You must be 16 years or older to request a rebate, please check
+              the date of birth entered.
+            </p>
           )}
           <InputLabel htmlFor="date_of_birth">Date of Birth:</InputLabel>
           <Controller
             name="date_of_birth"
             control={control}
             render={({ field }) => (
-              <TextField id="date_of_birth" type="date" onChange={(e) =>
-                  setValue("date_of_birth", e.target.value)
-                } />
+              <TextField
+                id="date_of_birth"
+                type="date"
+                onChange={(e) => setValue('date_of_birth', e.target.value)}
+              />
             )}
-            rules={{validate: (inputtedDOB) => {
-              if(!inputtedDOB) {
-                return false;
+            rules={{
+              validate: (inputtedDOB) => {
+                if (!inputtedDOB) {
+                  return false;
+                }
+                const dobSplit = inputtedDOB.split('-');
+                const dobYear = parseInt(dobSplit[0]);
+                const dobMonthIndex = parseInt(dobSplit[1]) - 1;
+                const dobDay = parseInt(dobSplit[2]);
+                const today = new Date();
+                let age = today.getFullYear() - dobYear;
+                if (
+                  today.getMonth() < dobMonthIndex ||
+                  (today.getMonth() == dobMonthIndex &&
+                    today.getDate() < dobDay)
+                ) {
+                  age = age - 1;
+                }
+                if (age < 16) {
+                  return false;
+                }
+                return true;
               }
-              const dobSplit = inputtedDOB.split("-");
-              const dobYear = parseInt(dobSplit[0]);
-              const dobMonthIndex = parseInt(dobSplit[1]) - 1;
-              const dobDay = parseInt(dobSplit[2]);
-              const today = new Date();
-              let age = today.getFullYear() - dobYear;
-              if (today.getMonth() < dobMonthIndex || (today.getMonth() == dobMonthIndex && today.getDate() < dobDay)) {
-                age = age - 1;
-              }
-              if(age < 16) {
-                return false;
-              }
-              return true;
-            }}}
+            }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.address?.type === "required" && (
-            <p className='error'>Street Address cannot be blank</p>
+          {errors?.address?.type === 'required' && (
+            <p className="error">Street Address cannot be blank</p>
           )}
           <InputLabel htmlFor="address">Street Address:</InputLabel>
           <Controller
@@ -280,33 +292,33 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               <TextField
                 id="address"
                 inputProps={{ maxLength: 250 }}
-                onChange={(e) =>
-                  setValue("address", e.target.value)
-                }
+                onChange={(e) => setValue('address', e.target.value)}
               />
             )}
-            rules={{required: true}}
+            rules={{ required: true }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.city?.type === "required" && (
-            <p className='error'>City cannot be blank</p>
+          {errors?.city?.type === 'required' && (
+            <p className="error">City cannot be blank</p>
           )}
           <InputLabel htmlFor="city">City:</InputLabel>
           <Controller
             name="city"
             control={control}
             render={({ field }) => (
-              <TextField id="city" inputProps={{ maxLength: 250 }} onChange={(e) =>
-                  setValue("city", e.target.value)
-                } />
+              <TextField
+                id="city"
+                inputProps={{ maxLength: 250 }}
+                onChange={(e) => setValue('city', e.target.value)}
+              />
             )}
-            rules={{required: true}}
+            rules={{ required: true }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.postal_code?.type === "validate" && (
-            <p className='error'>Not a valid Postal Code</p>
+          {errors?.postal_code?.type === 'validate' && (
+            <p className="error">Not a valid Postal Code</p>
           )}
           <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
           <Controller
@@ -316,67 +328,75 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               <TextField
                 id="postal_code"
                 inputProps={{ maxLength: 6 }}
-                onChange={(e) =>
-                  setValue("postal_code", e.target.value)
-                }
+                onChange={(e) => setValue('postal_code', e.target.value)}
               />
             )}
-            rules={{validate: (inputtedPostalCode) => {
-              if(!inputtedPostalCode || inputtedPostalCode.length !== 6) {
-                return false;
+            rules={{
+              validate: (inputtedPostalCode) => {
+                if (!inputtedPostalCode || inputtedPostalCode.length !== 6) {
+                  return false;
+                }
+                const regex = /[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d/;
+                if (!regex.test(inputtedPostalCode)) {
+                  return false;
+                }
+                return true;
               }
-              const regex = /[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d/;
-              if(!regex.test(inputtedPostalCode)) {
-                return false;
-              }
-              return true;
-            }}}
+            }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.sin?.type === "validate" && (
-            <p className='error'>Not a valid SIN</p>
+          {errors?.sin?.type === 'validate' && (
+            <p className="error">Not a valid SIN</p>
           )}
           <InputLabel htmlFor="sin">Social Insurance Number (SIN):</InputLabel>
           <Controller
             name="sin"
             control={control}
             render={({ field }) => (
-              <TextField id="sin" inputProps={{ maxLength: 9 }} onChange={(e) => setValue("sin", e.target.value)} />
+              <TextField
+                id="sin"
+                inputProps={{ maxLength: 9 }}
+                onChange={(e) => setValue('sin', e.target.value)}
+              />
             )}
-            rules={{validate: (inputtedSin) => {
-              if(!inputtedSin || inputtedSin.length !== 9) {
-                return false;
-              }
-              const regex = /^\d+$/;
-              if(!regex.test(inputtedSin)) {
-                return false;
-              }
-              const products = [];
-              const fixedNumbers = [1,2,1,2,1,2,1,2,1];
-              for(let i = 0; i < 9; i++) {
-                const sinChar = inputtedSin.charAt(i);
-                const product = fixedNumbers[i] * parseInt(sinChar);
-                if(product >= 10) {
-                  const productString = product.toString();
-                  products[i] = parseInt(productString.charAt(0)) + parseInt(productString.charAt(1));
-                } else {
-                  products[i] = product;
+            rules={{
+              validate: (inputtedSin) => {
+                if (!inputtedSin || inputtedSin.length !== 9) {
+                  return false;
                 }
+                const regex = /^\d+$/;
+                if (!regex.test(inputtedSin)) {
+                  return false;
+                }
+                const products = [];
+                const fixedNumbers = [1, 2, 1, 2, 1, 2, 1, 2, 1];
+                for (let i = 0; i < 9; i++) {
+                  const sinChar = inputtedSin.charAt(i);
+                  const product = fixedNumbers[i] * parseInt(sinChar);
+                  if (product >= 10) {
+                    const productString = product.toString();
+                    products[i] =
+                      parseInt(productString.charAt(0)) +
+                      parseInt(productString.charAt(1));
+                  } else {
+                    products[i] = product;
+                  }
+                }
+                const result = products.reduce((prev, current) => {
+                  return prev + current;
+                });
+                if (result % 10 !== 0) {
+                  return false;
+                }
+                return true;
               }
-              const result = products.reduce((prev, current) => {
-                return (prev + current);
-              });
-              if(result % 10 !== 0) {
-                return false;
-              }
-              return true;
-            }}}
+            }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.drivers_licence?.type === "validate" && (
-            <p className='error'>Not a valid B.C. Driver's Licence Number</p>
+          {errors?.drivers_licence?.type === 'validate' && (
+            <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
           <InputLabel htmlFor="drivers_licence">
             B.C. Driver's Licence Number:
@@ -387,27 +407,30 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             render={({ field }) => (
               <TextField
                 id="drivers_licence"
-                inputProps={{ maxLength: 9 }}
-                onChange={(e) =>
-                  setValue("drivers_licence", e.target.value)
-                }
+                inputProps={{ maxLength: 8 }}
+                onChange={(e) => setValue('drivers_licence', e.target.value)}
               />
             )}
-            rules={{validate: (inputtedLicence) => {
-              if(!inputtedLicence || (inputtedLicence.length !== 7 && inputtedLicence.length !== 8)) {
-                return false;
+            rules={{
+              validate: (inputtedLicence) => {
+                if (
+                  !inputtedLicence ||
+                  (inputtedLicence.length !== 7 && inputtedLicence.length !== 8)
+                ) {
+                  return false;
+                }
+                const regex = /^\d+$/;
+                if (!regex.test(inputtedLicence)) {
+                  return false;
+                }
+                return true;
               }
-              const regex = /^\d+$/;
-              if(!regex.test(inputtedLicence)) {
-                return false;
-              }
-              return true;
-            }}}
+            }}
           />
         </FormGroup>
         <FormGroup>
-          {errors?.documents?.type === "validate" && (
-            <p className='error'>Need at least 2 files</p>
+          {errors?.documents?.type === 'validate' && (
+            <p className="error">Need at least 2 files</p>
           )}
           <FileDropArea name="documents" />
         </FormGroup>
