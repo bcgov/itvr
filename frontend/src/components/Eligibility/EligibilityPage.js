@@ -68,7 +68,11 @@ const EligibilityPage = (props) => {
             />
           ))}
         </Box>
-
+        {eligible && 
+        <span className="validated">
+          Congratulations! You are eligible to apply for a rebate, proceed by logging in below.
+        </span>
+        }
         <Box sx={{ mt: 5, mb: 0 }} className="whats-needed-individual">
           {title}
           {applicationText}

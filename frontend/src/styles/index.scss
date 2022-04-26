@@ -142,3 +142,13 @@ a {
     margin: 0 1rem 0 1rem;
   }
 }
+
+span.validated {
+  display: block;
+  background-color: rgb(126, 189, 66);
+  color: white;
+  font-size: 32px;
+  text-align: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
