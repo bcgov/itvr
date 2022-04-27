@@ -9,6 +9,7 @@ from django.db.models import (
     ForeignKey,
     Model,
     DateTimeField,
+    OneToOneField,
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -24,7 +25,7 @@ class HouseholdMember(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=PROTECT,
     )
-    application = ForeignKey(
+    application = OneToOneField(
         "GoElectricRebateApplication",
         on_delete=PROTECT,
     )

@@ -41,11 +41,36 @@ class SpouseApplicationCreateSerializer(ModelSerializer):
         return obj
 
 
-class SpouseApplicationSerializer(ModelSerializer):
-    address = SerializerMethodField()
+class BaseSerializer:
+    def get_original_application(self, obj):
+        request = self.context.get("request")
+        try:
+            application = GoElectricRebateApplication.objects.filter(
+                id=obj.application_id
+            )
+        except AttributeError as error:
+            application = GoElectricRebateApplication.objects.filter(id=obj.id)
+        serializer = SpouseApplicationAddressSerializer(
+            application.first(), read_only=True
+        )
+        return serializer.data
 
-    def get_address(self, obj):
-        application = GoElectricRebateApplication.objects.filter(id=obj.id)
+
+class SpouseApplicationDetailsSerializer(ModelSerializer, BaseSerializer):
+    original_application = SerializerMethodField()
+    sin = SerializerMethodField()
+
+    def get_sin(self, obj):
+        return "******" + str(obj.sin)[-3:]
+
+    def get_original_application(self, obj):
+        request = self.context.get("request")
+        try:
+            application = GoElectricRebateApplication.objects.filter(
+                id=obj.application_id
+            )
+        except AttributeError as error:
+            application = GoElectricRebateApplication.objects.filter(id=obj.id)
         serializer = SpouseApplicationAddressSerializer(
             application.first(), read_only=True
         )
@@ -53,10 +78,33 @@ class SpouseApplicationSerializer(ModelSerializer):
 
     class Meta:
         model = HouseholdMember
-        fields = ("address",)
+        fields = (
+            "original_application",
+            "first_name",
+            "middle_names",
+            "last_name",
+            "sin",
+            "email",
+            "date_of_birth",
+            "doc1",
+            "doc2",
+            "consent_personal",
+            "consent_tax",
+        )
+
+
+class SpouseApplicationSerializer(ModelSerializer, BaseSerializer):
+    original_application = SerializerMethodField()
+
+    class Meta:
+        model = HouseholdMember
+        fields = ("original_application",)
 
 
 class SpouseApplicationAddressSerializer(ModelSerializer):
     class Meta:
         model = GoElectricRebateApplication
-        fields = ("address", "city", "postal_code")
+        fields = ("address", "city", "postal_code", "id", "tax_year")
+
+
+# class HouseholdApplicationSerializer(ModelSerializer):

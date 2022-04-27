@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
 from datetime import date
@@ -54,6 +54,11 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         return year - 1
 
 class ApplicationFormSerializer(ModelSerializer):
+    sin = SerializerMethodField()
+
+    def get_sin(self, obj):
+        return "******" + str(obj.sin)[-3:]
+
     class Meta:
         model = GoElectricRebateApplication
         fields = "__all__"

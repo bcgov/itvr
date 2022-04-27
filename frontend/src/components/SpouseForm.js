@@ -34,6 +34,7 @@ const SpouseForm = ({ id }) => {
   const methods = useForm({
     defaultValues
   });
+  const applicationId = id;
   const { control, handleSubmit, register, watch } = methods;
   const axiosInstance = useAxios();
 
@@ -66,9 +67,8 @@ const SpouseForm = ({ id }) => {
   const onSubmit = (data) =>
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
-        const id = data.data.id;
-        queryClient.setQueryData(['application', id], data.data);
-        navigate(`/details/${id}`);
+        queryClient.setQueryData(['application', applicationId], data.data);
+        navigate(`/details/${applicationId}/household`);
       }
     });
 
@@ -78,7 +78,7 @@ const SpouseForm = ({ id }) => {
   if (isError) {
     return <p>{error.message}</p>;
   }
-  const { address, city, postal_code: postalCode } = data.address;
+  const { address, city, postal_code: postalCode } = data.original_application;
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
