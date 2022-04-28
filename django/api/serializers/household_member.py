@@ -89,18 +89,6 @@ class HouseholdMemberApplicationGetSerializer(ModelSerializer):
         )
 
 
-# class HouseholdMemberApplicationFormSerializer(ModelSerializer):
-#     original_application = SerializerMethodField()
-
-#     def get_original_application(self, obj):
-#         serializer = HouseholdMemberApplicationAddressSerializer(obj.id, read_only=True)
-#         return serializer.data
-
-#     class Meta:
-#         model = HouseholdMember
-#         fields = ("original_application",)
-
-
 class HouseholdMemberApplicationAddressSerializer(ModelSerializer):
     class Meta:
         model = GoElectricRebateApplication
