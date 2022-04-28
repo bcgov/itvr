@@ -3,15 +3,16 @@ import Layout from '../components/Layout';
 import ApplicationSummary from '../components/ApplicationSummary';
 import { useParams } from 'react-router-dom';
 
-const ApplicationSummaryPage = () => {
+const HouseholdSummary = () => {
   const { id } = useParams();
+
   return (
     <div>
       <Layout>
-        <ApplicationSummary id={id} />
+        <ApplicationSummary id={id} applicationType="household" />
       </Layout>
     </div>
   );
 };
 
-export default ApplicationSummaryPage;
+export default HouseholdSummary;
