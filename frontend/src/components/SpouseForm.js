@@ -44,7 +44,7 @@ const SpouseForm = ({ id }) => {
       .then((response) => response.data);
 
   const { data, isLoading, isError, error } = useQuery(
-    ['application', id],
+    ['spouse-application', id],
     queryFn
   );
 
@@ -67,7 +67,10 @@ const SpouseForm = ({ id }) => {
   const onSubmit = (data) =>
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
-        queryClient.setQueryData(['application', applicationId], data.data);
+        queryClient.setQueryData(
+          ['spouse-application', applicationId],
+          data.data
+        );
         navigate(`/details/${applicationId}/household`);
       }
     });
