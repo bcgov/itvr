@@ -7,6 +7,7 @@ const BottomBanner = (props) => {
   const redirectUri = householdApplicationId
     ? `${window.location.origin}/householdForm/${householdApplicationId}`
     : `${window.location.origin}/form`;
+  const buttonText = "Please answer the questions above to confirm you are eligible to apply for a rebate.";
   return (
     <>
       <div
@@ -23,6 +24,7 @@ const BottomBanner = (props) => {
             type="button"
             className="button"
             disabled={!eligible}
+            title={!eligible && buttonText}
             onClick={() =>
               keycloak.login({
                 idpHint: 'bceid-basic',
