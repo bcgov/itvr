@@ -87,9 +87,3 @@ class HouseholdMemberApplicationGetSerializer(ModelSerializer):
             "consent_tax",
             "created",
         )
-
-
-class HouseholdMemberApplicationAddressSerializer(ModelSerializer):
-    class Meta:
-        model = GoElectricRebateApplication
-        fields = ("address", "city", "postal_code", "id", "tax_year")
