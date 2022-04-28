@@ -40,7 +40,7 @@ const SpouseForm = ({ id }) => {
 
   const queryFn = () =>
     axiosInstance.current
-      .get(`/api/spouse-application/${id}`)
+      .get(`/api/spouse-application/${id}/initiate`)
       .then((response) => response.data);
 
   const { data, isLoading, isError, error } = useQuery(
@@ -78,7 +78,7 @@ const SpouseForm = ({ id }) => {
   if (isError) {
     return <p>{error.message}</p>;
   }
-  const { address, city, postal_code: postalCode } = data.original_application;
+  const { address, city, postal_code: postalCode } = data;
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>

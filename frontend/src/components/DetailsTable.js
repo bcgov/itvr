@@ -30,7 +30,7 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
 
 const DetailsTable = ({ data }) => {
   const rows = [
-    createData('Application ID:', data.id),
+    createData('Application ID:', data.application_id || data.id),
     createData('Last name / surname:', data.last_name),
     createData('First name / given name:', data.first_name),
     createData('Middle name(s):', data.middle_names),

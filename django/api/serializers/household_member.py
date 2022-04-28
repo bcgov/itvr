@@ -4,7 +4,7 @@ from api.models.go_electric_rebate_application import GoElectricRebateApplicatio
 from rest_framework.parsers import FormParser, MultiPartParser
 
 
-class SpouseApplicationCreateSerializer(ModelSerializer):
+class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
     parser_classes = (
         MultiPartParser,
         FormParser,
@@ -41,44 +41,40 @@ class SpouseApplicationCreateSerializer(ModelSerializer):
         return obj
 
 
-class BaseSerializer:
-    def get_original_application(self, obj):
-        request = self.context.get("request")
-        try:
-            application = GoElectricRebateApplication.objects.filter(
-                id=obj.application_id
-            )
-        except AttributeError as error:
-            application = GoElectricRebateApplication.objects.filter(id=obj.id)
-        serializer = SpouseApplicationAddressSerializer(
-            application.first(), read_only=True
-        )
-        return serializer.data
-
-
-class SpouseApplicationDetailsSerializer(ModelSerializer, BaseSerializer):
-    original_application = SerializerMethodField()
+class HouseholdMemberApplicationGetSerializer(ModelSerializer):
+    application_id = SerializerMethodField()
     sin = SerializerMethodField()
+    address = SerializerMethodField()
+    city = SerializerMethodField()
+    postal_code = SerializerMethodField()
+    tax_year = SerializerMethodField()
+
+    def get_address(self, obj):
+        return obj.application.address
+
+    def get_city(self, obj):
+        return obj.application.city
+
+    def get_postal_code(self, obj):
+        return obj.application.postal_code
+
+    def get_tax_year(self, obj):
+        return obj.application.tax_year
+
+    def get_application_id(self, obj):
+        return obj.application.id
 
     def get_sin(self, obj):
         return "******" + str(obj.sin)[-3:]
 
-    def get_original_application(self, obj):
-        try:
-            application = GoElectricRebateApplication.objects.filter(
-                id=obj.application_id
-            )
-        except AttributeError as error:
-            application = GoElectricRebateApplication.objects.filter(id=obj.id)
-        serializer = SpouseApplicationAddressSerializer(
-            application.first(), read_only=True
-        )
-        return serializer.data
-
     class Meta:
         model = HouseholdMember
         fields = (
-            "original_application",
+            "application_id",
+            "address",
+            "city",
+            "postal_code",
+            "tax_year",
             "first_name",
             "middle_names",
             "last_name",
@@ -93,18 +89,19 @@ class SpouseApplicationDetailsSerializer(ModelSerializer, BaseSerializer):
         )
 
 
-class SpouseApplicationSerializer(ModelSerializer, BaseSerializer):
-    original_application = SerializerMethodField()
+# class HouseholdMemberApplicationFormSerializer(ModelSerializer):
+#     original_application = SerializerMethodField()
 
-    class Meta:
-        model = HouseholdMember
-        fields = ("original_application",)
+#     def get_original_application(self, obj):
+#         serializer = HouseholdMemberApplicationAddressSerializer(obj.id, read_only=True)
+#         return serializer.data
+
+#     class Meta:
+#         model = HouseholdMember
+#         fields = ("original_application",)
 
 
-class SpouseApplicationAddressSerializer(ModelSerializer):
+class HouseholdMemberApplicationAddressSerializer(ModelSerializer):
     class Meta:
         model = GoElectricRebateApplication
         fields = ("address", "city", "postal_code", "id", "tax_year")
-
-
-# class HouseholdApplicationSerializer(ModelSerializer):

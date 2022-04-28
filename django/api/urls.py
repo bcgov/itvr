@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from api.viewsets.application_form import ApplicationFormViewset
-from api.viewsets.spouse_application import SpouseApplicationViewset
+from api.viewsets.household_member import HouseholdMemberApplicationViewset
 
 
 class OptionalSlashRouter(routers.DefaultRouter):
@@ -14,7 +14,7 @@ class OptionalSlashRouter(routers.DefaultRouter):
 
 ROUTER = OptionalSlashRouter()
 ROUTER.register(r"application-form", ApplicationFormViewset)
-ROUTER.register(r"spouse-application", SpouseApplicationViewset)
+ROUTER.register(r"spouse-application", HouseholdMemberApplicationViewset)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
