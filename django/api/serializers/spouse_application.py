@@ -64,7 +64,6 @@ class SpouseApplicationDetailsSerializer(ModelSerializer, BaseSerializer):
         return "******" + str(obj.sin)[-3:]
 
     def get_original_application(self, obj):
-        request = self.context.get("request")
         try:
             application = GoElectricRebateApplication.objects.filter(
                 id=obj.application_id
