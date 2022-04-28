@@ -37,7 +37,6 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
   if (isError) {
     return <p>{error.message}</p>;
   }
-  console.log(data);
   return (
     <Box>
       <h3>

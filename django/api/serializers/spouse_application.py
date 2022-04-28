@@ -90,6 +90,7 @@ class SpouseApplicationDetailsSerializer(ModelSerializer, BaseSerializer):
             "doc2",
             "consent_personal",
             "consent_tax",
+            "created",
         )
 
 

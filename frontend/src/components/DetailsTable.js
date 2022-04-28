@@ -11,11 +11,20 @@ function createData(name, answer) {
 }
 
 function createConsentValue(consent, firstName, lastName, timestamp) {
-  const timestampSplit = timestamp.split("T");
+  const timestampSplit = timestamp.split('T');
   const date = timestampSplit[0];
-  const time = timestampSplit[1].split(".")[0];
-  if(consent) {
-    return ("BCEID\\" + firstName.charAt(0).toUpperCase() + lastName.toUpperCase() + " " + date + " " + time + " PST");
+  const time = timestampSplit[1].split('.')[0];
+  if (consent) {
+    return (
+      'BCEID\\' +
+      firstName.charAt(0).toUpperCase() +
+      lastName.toUpperCase() +
+      ' ' +
+      date +
+      ' ' +
+      time +
+      ' PST'
+    );
   }
 }
 
@@ -35,11 +44,21 @@ const DetailsTable = ({ data }) => {
     createData('Tax Year:', data.tax_year),
     createData(
       'Consent to Disclosure and Storage of, and Access to, Personal Information:',
-      createConsentValue(data.consent_personal, data.first_name, data.last_name, data.created)
+      createConsentValue(
+        data.consent_personal,
+        data.first_name,
+        data.last_name,
+        data.created
+      )
     ),
     createData(
       'Consent to Disclosure of Information from Income Tax Records:',
-      createConsentValue(data.consent_tax, data.first_name, data.last_name, data.created)
+      createConsentValue(
+        data.consent_tax,
+        data.first_name,
+        data.last_name,
+        data.created
+      )
     )
   ];
   return (

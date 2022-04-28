@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 
 const ApplicationSummaryPage = () => {
   const { id } = useParams();
-  console.log(id);
   return (
     <div>
       <Layout>
