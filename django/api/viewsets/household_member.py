@@ -13,7 +13,7 @@ from api.models.go_electric_rebate_application import GoElectricRebateApplicatio
 
 
 class HouseholdMemberApplicationViewset(ModelViewSet):
-    queryset = GoElectricRebateApplication.objects.all()
+    queryset = HouseholdMember.objects.all()
     serializer_classes = {
         "default": HouseholdMemberApplicationGetSerializer,
         "create": HouseholdMemberApplicationCreateSerializer,
