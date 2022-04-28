@@ -29,7 +29,7 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
 }
 
 const DetailsTable = ({ data }) => {
-  const rows = [
+  let rows = [
     createData('Application ID:', data.application_id || data.id),
     createData('Last name / surname:', data.last_name),
     createData('First name / given name:', data.first_name),
@@ -40,7 +40,8 @@ const DetailsTable = ({ data }) => {
     createData('City:', data.city),
     createData('Postal Code:', data.postal_code),
     createData('Social Insurance Number (SIN):', data.sin),
-    createData("B.C. Driver's Licence number:", data.drivers_licence),
+    data.drivers_licence &&
+      createData("B.C. Driver's Licence number:", data.drivers_licence),
     createData('Tax Year:', data.tax_year),
     createData(
       'Consent to Disclosure and Storage of, and Access to, Personal Information:',
@@ -61,16 +62,7 @@ const DetailsTable = ({ data }) => {
       )
     )
   ];
-  const dlIndex = rows.findIndex((object) => {
-    return (
-      object.name === "B.C. Driver's Licence number:" &&
-      object.answer === undefined
-    );
-  });
-  if (dlIndex > -1) {
-    rows.splice(dlIndex, 1);
-  }
-
+  rows = rows.filter((r) => r);
   return (
     <TableContainer component={Paper} sx={{ boxShadow: 0 }}>
       <Table sx={{ minWidth: 650, border: 0 }} aria-label="simple table">
