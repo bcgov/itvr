@@ -61,6 +61,16 @@ const DetailsTable = ({ data }) => {
       )
     )
   ];
+  const dlIndex = rows.findIndex((object) => {
+    return (
+      object.name === "B.C. Driver's Licence number:" &&
+      object.answer === undefined
+    );
+  });
+  if (dlIndex > -1) {
+    rows.splice(dlIndex, 1);
+  }
+
   return (
     <TableContainer component={Paper} sx={{ boxShadow: 0 }}>
       <Table sx={{ minWidth: 650, border: 0 }} aria-label="simple table">
