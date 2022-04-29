@@ -4,6 +4,7 @@ import json
 
 from django.db.models.signals import post_save
 from .models.go_electric_rebate_application import GoElectricRebateApplication
+from .models.household_member import HouseholdMember
 from django.dispatch import receiver
 from django.conf import settings
 from email.header import Header
@@ -122,6 +123,21 @@ def send_spouse_initial_message(recipient, id, initiator_email):
     send_email(recipient, id, message, cc_list=[initiator_email])
 
 
+def send_household_confirm(recipient, id, initiator_email):
+    message = """
+        Thank you.
+
+        We have now received all documentation for your application for a household rebate under the CleanBC Go Electric Passenger Vehicle Rebate program.
+
+        Please keep this e-mail for your records.
+
+        Questions?
+
+        Please feel free to contact us at ZEVPrograms@gov.bc.ca
+        """
+    send_email(recipient, id, message, [initiator_email])
+
+
 # TODO have this schedule an email task that's retried in the future incase
 # CHES has issues when we setup celery.
 @receiver(post_save, sender=GoElectricRebateApplication)
@@ -134,3 +150,13 @@ def create_application(sender, instance, created, **kwargs):
                 id=instance.id,
                 initiator_email=instance.email,
             )
+
+
+@receiver(post_save, sender=HouseholdMember)
+def after_household_member_save(sender, instance, created, **kwargs):
+    if created and settings.EMAIL["SEND_EMAIL"]:
+        send_household_confirm(
+            recipient=instance.email,
+            id=instance.application.id,
+            initiator_email=instance.application.email,
+        )
