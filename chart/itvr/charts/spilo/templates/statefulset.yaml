@@ -23,18 +23,33 @@ spec:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
             secretKeyRef:
+              {{- if .Values.credentials.useExistingSecret }}
+              name: {{ .Values.credentials.existingSecret.name }}
+              key: {{ .Values.credentials.existingSecret.superuserKey }}
+              {{- else }}
               name: {{ template "spilo.fullname" . }}
               key: password-superuser
+              {{- end }}
         - name: PGPASSWORD_ADMIN
           valueFrom:
             secretKeyRef:
+              {{- if .Values.credentials.useExistingSecret }}
+              name: {{ .Values.credentials.existingSecret.name }}
+              key: {{ .Values.credentials.existingSecret.adminKey }}              
+              {{- else }}
               name: {{ template "spilo.fullname" . }}
               key: password-admin
+              {{- end }}              
         - name: PGPASSWORD_STANDBY
           valueFrom:
             secretKeyRef:
+              {{- if .Values.credentials.useExistingSecret }}
+              name: {{ .Values.credentials.existingSecret.name }}
+              key: {{ .Values.credentials.existingSecret.standbyKey }}   
+              {{- else }}
               name: {{ template "spilo.fullname" . }}
-              key: password-standby
+              key: password-standby                 
+              {{- end }}     
         - name: DCS_ENABLE_KUBERNETES_API
           value: "true"
         - name: KUBERNETES_LABELS
@@ -184,7 +199,11 @@ spec:
       volumes:
       - name: spilo-config
         secret:
+          {{- if .Values.credentials.useExistingSecret }}
+          secretName: {{ .Values.credentials.existingSecret.name }}        
+          {{- else }}
           secretName: {{ template "spilo.fullname" . }}
+          {{- end }}
       {{- if .Values.continuousArchive.enabled }}
       {{- if .Values.continuousArchive.gcs.kubernetesSecret }}
       - name: archive-gcs-credentials

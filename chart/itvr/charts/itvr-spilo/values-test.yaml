@@ -1,6 +1,14 @@
 spilo:
 
-  replicaCount: 3
+  replicaCount: 2
+
+  credentials:
+    useExistingSecret: true
+    existingSecret:
+      name: itvr-patroni-admin
+      superuserKey: password-superuser
+      adminKey: password-admin
+      standbyKey: password-standby
 
   continuousArchive:
     enabled: true
@@ -33,3 +41,4 @@ spilo:
       enabled: true 
       initialDelaySeconds: 90
       failureThreshold: 20         
+
