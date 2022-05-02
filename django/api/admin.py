@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models.go_electric_rebate_application import GoElectricRebateApplication
+from .models.household_member import HouseholdMember
 from django.contrib.admin.templatetags import admin_modify
 from django.contrib.auth.models import Group
 
@@ -17,12 +18,39 @@ def submit_row_custom(context):
 admin_modify.submit_row = submit_row_custom
 
 
+class HouseholdApplicationInline(admin.StackedInline):
+    model = HouseholdMember
+    exclude = ("sin",)
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "email",
+        "address",
+        "city",
+        "postal_code",
+        "date_of_birth",
+        "doc1",
+        "doc1_tag",
+        "doc2",
+        "doc2_tag",
+        "user",
+        "consent_personal",
+        "consent_tax",
+    )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    inlines = [HouseholdApplicationInline]
+    exclude = ("sin",)
     readonly_fields = (
         "id",
         "application_type",
-        "sin",
         "last_name",
         "first_name",
         "middle_names",
