@@ -60,6 +60,15 @@ class HouseholdMember(TimeStampedModel):
     consent_personal = BooleanField(validators=[validate_consent])
     consent_tax = BooleanField(validators=[validate_consent])
 
+    def address(self):
+        return self.application.address
+
+    def city(self):
+        return self.application.city
+
+    def postal_code(self):
+        return self.application.postal_code
+
     def __str__(self):
         return self.last_name + ", " + self.first_name
 
