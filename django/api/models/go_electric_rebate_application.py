@@ -12,6 +12,7 @@ from django.db.models import (
     ForeignKey,
     Model,
     DateTimeField,
+    TextChoices,
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -19,17 +20,25 @@ from django.core.files.storage import get_storage_class
 from django.core.validators import MinLengthValidator
 from api.validators import validate_driving_age, validate_sin, validate_consent
 from django_extensions.db.models import TimeStampedModel
+from django.utils.translation import gettext_lazy as _
 
 media_storage = get_storage_class()()
 
 
 class GoElectricRebateApplication(TimeStampedModel):
+    class Status(TextChoices):
+        HOUSEHOLD_INITIATED = ("household_initiated", _("Household Initiated"))
+        SUBMITTED = ("submitted", _("Submitted"))
+        VERIFIED = ("verified", _("Verified"))
+        DECLINED = ("declined", _("Declined"))
+
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=PROTECT,
     )
     id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sin = EncryptedCharField(max_length=9, unique=False, validators=[validate_sin])
+    status = CharField(max_length=250, choices=Status.choices, unique=False)
     last_name = CharField(max_length=250, unique=False)
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
