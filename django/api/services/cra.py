@@ -39,7 +39,7 @@ def write(data):
   file += today # 
   file += ' ' # Blank space
 
-  file += 'BCVRA00002' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00004' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 99 # Blank space
 
@@ -61,12 +61,12 @@ def write(data):
     file += row['birth_date'].replace('-','') # Birth date
 
     file += row['year'] # Year
-    file += ' ' * 14 # Blank space
+    file += ' ' * 16 # Blank space
 
     file += 'BCVR' # Program area code
     file += '1234' # Record identification number (optional)
 
-    file += ' ' * 31 # Blank space
+    file += ' ' * 29 # Blank space
     file += '0\n' # Delimiter
 
 
@@ -77,7 +77,7 @@ def write(data):
   file += today # Request date
   file += ' ' # Blank space
 
-  file += 'BCVRA00002' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00004' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 6 # Blank space
 
