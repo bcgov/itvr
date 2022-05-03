@@ -35,7 +35,41 @@ parameters:
   - name: REPLICAS
     value: '1'
     required: true
+  - name: DJANGO_DEBUG
+    value: 'False'
+    required: true
 objects:
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        description: Keeps track of changes in the task-queue image
+      labels:
+        shared: "true"        
+      creationTimestamp: null
+      name: '${NAME}-task-queue'
+    spec:
+      lookupPolicy:
+        local: false
+    status:
+      dockerImageRepository: ''
+- apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      name: '${NAME}-task-queue${SUFFIX}'
+    spec:
+      ports:
+        - name: task-queue
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        name: '${NAME}-task-queue${SUFFIX}'
+      sessionAffinity: None
+      type: ClusterIP
+    status:
+      loadBalancer: {}
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
@@ -50,6 +84,19 @@ objects:
         name: ${NAME}-task-queue${SUFFIX}
       strategy:
         activeDeadlineSeconds: 800
+        recreateParams:
+          mid:
+            execNewPod:
+              command:
+                - /bin/sh
+                - '-c'
+                - |-
+                  sleep 45
+                  python ./manage.py migrate
+              containerName: task-queue
+            failurePolicy: Retry
+          timeoutSeconds: 600
+        resources: {}
         resources: {}
         type: Recreate
       template:
@@ -63,6 +110,70 @@ objects:
               image: null
               imagePullPolicy: IfNotPresent
               env:
+                - name: DB_ENGINE
+                  value: django.db.backends.postgresql
+                - name: DB_HOST
+                  value: itvr-spilo
+                - name: DB_HOST_READONLY
+                  value: itvr-spilo-readonly
+                - name: DB_NAME
+                  value: itvr
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-patroni-app
+                      key: app-db-password
+                - name: DB_PORT
+                  value: "5432"
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-patroni-app
+                      key: app-db-username
+                - name: DJANGO_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-django-secret${SUFFIX}
+                      key: DJANGO_SECRET_KEY      
+                - name: DJANGO_SALT_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-django-salt${SUFFIX}
+                      key: DJANGO_SALT_KEY
+                - name: EMAIL_SERVICE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: EMAIL_SERVICE_CLIENT_ID                      
+                - name: EMAIL_SERVICE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: EMAIL_SERVICE_CLIENT_SECRET
+                - name: CHES_AUTH_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: CHES_AUTH_URL                      
+                - name: CHES_EMAIL_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: CHES_EMAIL_URL
+                - name: SENDER_EMAIL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: SENDER_EMAIL      
+                - name: SENDER_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: SENDER_NAME
+                - name: SEND_EMAIL
+                  value: 'True'
+                - name: DJANGO_DEBUG
+                  value: ${DJANGO_DEBUG}
                 - name: DJANGO_TASKS
                   value: true
               readinessProbe:
@@ -92,7 +203,7 @@ objects:
         - imageChangeParams:
             automatic: true
             containerNames:
-              - backend
+              - task-queue
             from:
               kind: ImageStreamTag
               name: ${NAME}-task-queue:${VERSION}

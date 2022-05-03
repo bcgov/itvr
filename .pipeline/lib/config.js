@@ -45,7 +45,7 @@ const phases = {
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '30m', patroniCpuLimit: '60m', patroniMemoryRequest: '80Mi', patroniMemoryLimit: '160Mi', patroniPvcSize: '2G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '20m', taskQueueCpuLimit: '60m', taskQueueMemoryRequest: '60Mi', taskQueueMemoryLimit: '120Mi', taskQueueReplicas: 1},
+        taskQueueCpuRequest: '20m', taskQueueCpuLimit: '60m', taskQueueMemoryRequest: '60Mi', taskQueueMemoryLimit: '120Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True',},
 
   test: {namespace:'ac294c-test', name: `${name}`, ssoSuffix:'-test', 
         ssoName:'test.oidc.gov.bc.ca', phase: 'test'  ,  changeId:`${changeId}`, suffix: `-test`, 
