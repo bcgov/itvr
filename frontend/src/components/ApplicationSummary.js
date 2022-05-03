@@ -34,7 +34,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
       </h3>
       <p>
         Print this page for your records. You will also receive an email
-        confirmation at {data.email}
+        confirmation at {data.email}.
       </p>
       {data.status === 'household_initiated' && (
         <p>
