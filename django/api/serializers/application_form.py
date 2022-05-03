@@ -12,12 +12,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     class Meta:
         model = GoElectricRebateApplication
-        exclude = ["user"]
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["request"] = self.request
-        return context
+        exclude = ["user", "status", "tax_year"]
 
     def create(self, validated_data):
         user = self.context["request"].user

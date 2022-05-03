@@ -62,8 +62,6 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         formData.append(key, value);
       }
     }
-    formData.append('tax_year', 2021);
-    formData.append('status', 'submitted');
     return axiosInstance.current.post('/api/application-form', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
