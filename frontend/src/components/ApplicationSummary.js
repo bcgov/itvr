@@ -28,14 +28,20 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
   return (
     <Box>
       <h3>
-        {applicationType === 'household'
+        {data.application_type === 'household'
           ? 'Household Application'
           : 'Individual Application Confirmation'}
       </h3>
       <p>
         Print this page for your records. You will also receive an email
-        confirmation at {data.email}
+        confirmation at {data.email}.
       </p>
+      {data.status === 'household_initiated' && (
+        <p>
+          Your spouse will receive an email at {data.spouse_email} to complete
+          this application.
+        </p>
+      )}
       <DetailsTable data={data} />
     </Box>
   );
