@@ -54,7 +54,7 @@ module.exports = settings => {
     }))
   }
   */
-
+/*
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc.yaml`, {
     'param': {
       'NAME': phases[phase].name,
@@ -86,7 +86,20 @@ module.exports = settings => {
       'DJANGO_DEBUG': phases[phase].backendDjangoDebug
     }
   })) 
+*/
 
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/task-queue/task-queue-dc.yaml`, {
+    'param': {
+      'NAME': phases[phase].name,
+      'SUFFIX': phases[phase].suffix,
+      'VERSION': phases[phase].tag,
+      'CPU_REQUEST': phases[phase].taskQueueCpuRequest,
+      'CPU_LIMIT': phases[phase].taskQueueCpuLimit,
+      'MEMORY_REQUEST': phases[phase].taskQueueMemoryRequest,
+      'MEMORY_LIMIT': phases[phase].taskQueueMemoryLimit,
+      'REPLICAS':  phases[phase].taskQueueReplicas
+    }
+  })) 
   oc.applyRecommendedLabels(
       objects,
       phases[phase].name,
