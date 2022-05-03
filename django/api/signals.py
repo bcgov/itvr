@@ -10,10 +10,10 @@ from django_q.tasks import async_task
 @receiver(post_save, sender=GoElectricRebateApplication)
 def create_application(sender, instance, created, **kwargs):
     if created and settings.EMAIL["SEND_EMAIL"]:
-        async_task("tasks.send_individual_confirm", instance.email, instance.id)
+        async_task("api.tasks.send_individual_confirm", instance.email, instance.id)
         if instance.application_type == "household":
             async_task(
-                "tasks.send_spouse_initial_message",
+                "api.tasks.send_spouse_initial_message",
                 instance.spouse_email,
                 instance.id,
                 instance.email,
@@ -24,7 +24,7 @@ def create_application(sender, instance, created, **kwargs):
 def after_household_member_save(sender, instance, created, **kwargs):
     if created and settings.EMAIL["SEND_EMAIL"]:
         async_task(
-            "tasks.send_individual_confirm",
+            "api.tasks.send_individual_confirm",
             instance.email,
             instance.application.id,
             instance.application.email,
