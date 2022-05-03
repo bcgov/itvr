@@ -1,4 +1,3 @@
-import logging
 import requests
 import json
 
@@ -6,8 +5,6 @@ from django.conf import settings
 from email.header import Header
 from email.utils import formataddr
 from requests.auth import HTTPBasicAuth
-
-LOGGER = logging.getLogger(__name__)
 
 
 def get_email_service_token() -> str:
