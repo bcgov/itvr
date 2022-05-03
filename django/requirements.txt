@@ -33,7 +33,6 @@ python-dateutil==2.8.2
 python-jose==3.3.0
 python-keycloak==0.26.1
 pytz==2022.1
-redis==3.5.3
 requests==2.27.1
 rsa==4.8
 s3transfer==0.5.2
