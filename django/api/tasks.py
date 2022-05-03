@@ -77,7 +77,7 @@ def send_individual_confirm(recipient_email, application_id):
 
 
 def send_spouse_initial_message(recipient_email, application_id, initiator_email):
-    origin = settings.CORS_ORIGIN_WHITELIST
+    origin = settings.CORS_ORIGIN_WHITELIST[0]
     message = """
         Dear Applicant,
 
@@ -91,7 +91,7 @@ def send_spouse_initial_message(recipient_email, application_id, initiator_email
 
         Please feel free to contact us at ZEVPrograms@gov.bc.ca
         """.format(
-        origin, application_id
+        origin=origin, application_id=application_id
     )
     send_email(recipient_email, application_id, message, [initiator_email])
 
