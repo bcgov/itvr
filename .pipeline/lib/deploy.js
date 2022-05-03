@@ -54,7 +54,7 @@ module.exports = settings => {
     }))
   }
   */
-
+/*
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc.yaml`, {
     'param': {
       'NAME': phases[phase].name,
@@ -86,7 +86,7 @@ module.exports = settings => {
       'DJANGO_DEBUG': phases[phase].backendDjangoDebug
     }
   })) 
-
+*/
   oc.applyRecommendedLabels(
       objects,
       phases[phase].name,
