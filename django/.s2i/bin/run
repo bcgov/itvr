@@ -89,7 +89,7 @@ fi
 if should_run_django_q; then
     if [[ -f "$manage_file" ]]; then
         echo "---> Running django-q"
-        exec python manage.py qcluster
+        exec ./worker_start.sh
     fi
 fi
 

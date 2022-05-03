@@ -97,7 +97,8 @@ module.exports = settings => {
       'CPU_LIMIT': phases[phase].taskQueueCpuLimit,
       'MEMORY_REQUEST': phases[phase].taskQueueMemoryRequest,
       'MEMORY_LIMIT': phases[phase].taskQueueMemoryLimit,
-      'REPLICAS':  phases[phase].taskQueueReplicas
+      'REPLICAS':  phases[phase].taskQueueReplicas,
+      'DJANGO_DEBUG': phases[phase].taskQueueDjangoDebug
     }
   })) 
   oc.applyRecommendedLabels(
