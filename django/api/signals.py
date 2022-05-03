@@ -22,10 +22,14 @@ def create_application(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=HouseholdMember)
 def after_household_member_save(sender, instance, created, **kwargs):
-    if created and settings.EMAIL["SEND_EMAIL"]:
-        async_task(
-            "api.tasks.send_individual_confirm",
-            instance.email,
-            instance.application.id,
-            instance.application.email,
-        )
+    if created:
+        application = instance.application
+        application.status = GoElectricRebateApplication.Status.SUBMITTED
+        application.save()
+        if settings.EMAIL["SEND_EMAIL"]:
+            async_task(
+                "api.tasks.send_household_confirm",
+                instance.email,
+                application.id,
+                application.email,
+            )

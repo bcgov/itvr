@@ -12,7 +12,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     class Meta:
         model = GoElectricRebateApplication
-        exclude = ["user"]
+        exclude = ["user", "status", "tax_year"]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -24,6 +24,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
         obj = GoElectricRebateApplication.objects.create(
             sin=validated_data["sin"],
+            status=self._get_status(validated_data),
             email=validated_data["email"],
             drivers_licence=validated_data["drivers_licence"],
             last_name=validated_data["last_name"],
@@ -52,6 +53,13 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         if month < 7:
             return year - 2
         return year - 1
+
+    def _get_status(self, validated_data):
+        application_type = validated_data["application_type"]
+        if application_type == "household":
+            return GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
+        return GoElectricRebateApplication.Status.SUBMITTED
+
 
 class ApplicationFormSerializer(ModelSerializer):
     sin = SerializerMethodField()
