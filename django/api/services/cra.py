@@ -39,7 +39,7 @@ def write(data):
   file += today # 
   file += ' ' # Blank space
 
-  file += 'BCVRA00004' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00009' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 99 # Blank space
 
@@ -77,7 +77,7 @@ def write(data):
   file += today # Request date
   file += ' ' # Blank space
 
-  file += 'BCVRA00004' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00009' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 6 # Blank space
 
