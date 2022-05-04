@@ -7,8 +7,6 @@ from django.db.models import (
     BooleanField,
     PROTECT,
     ForeignKey,
-    Model,
-    DateTimeField,
     OneToOneField,
 )
 from encrypted_fields.fields import EncryptedCharField
@@ -39,7 +37,7 @@ class HouseholdMember(TimeStampedModel):
 
     def doc1_tag(self):
         return mark_safe(
-            '<img src="%s" width="800" />'
+            '<img src="%s" width="600" />'
             % (media_storage.url(name=self.doc1.file.name))
         )
 
@@ -49,25 +47,14 @@ class HouseholdMember(TimeStampedModel):
 
     def doc2_tag(self):
         return mark_safe(
-            '<img src="%s" width="800" />'
+            '<img src="%s" width="600" />'
             % (media_storage.url(name=self.doc2.file.name))
         )
 
     doc2_tag.short_description = "Second Uploaded Document"
 
-    verified = BooleanField()
-
     consent_personal = BooleanField(validators=[validate_consent])
     consent_tax = BooleanField(validators=[validate_consent])
-
-    def address(self):
-        return self.application.address
-
-    def city(self):
-        return self.application.city
-
-    def postal_code(self):
-        return self.application.postal_code
 
     def __str__(self):
         return self.last_name + ", " + self.first_name

@@ -6,10 +6,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-import logging
-
-
-log = logging.getLogger("KeycloakAuthentication")
 
 ITVRUser = get_user_model()
 
@@ -55,17 +51,19 @@ class KeycloakAuthentication(TokenAuthentication):
         except Exception:
             raise AuthenticationFailed("Invalid Token")
 
+        # usernames will be uuids for bceid
+        # and long identifiers for bc services card.
         user, created = ITVRUser.objects.get_or_create(
             username=token_info.get("sub"),
-            identity_provider=token_info.get("identity_provider"),
             defaults={
                 "display_name": token_info.get("display_name"),
                 "email": token_info.get("email"),
+                "identity_provider": token_info.get("identity_provider"),
             },
         )
 
         if created:
-            log.debug("Created user")
-            log.debug(user)
+            user.set_unusable_password()
+            user.save()
 
         return user, token

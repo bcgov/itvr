@@ -10,8 +10,6 @@ from django.db.models import (
     UUIDField,
     PROTECT,
     ForeignKey,
-    Model,
-    DateTimeField,
     TextChoices,
 )
 from encrypted_fields.fields import EncryptedCharField
@@ -55,7 +53,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     def doc1_tag(self):
         return mark_safe(
-            '<img src="%s" width="800" />'
+            '<img src="%s" width="600" />'
             % (media_storage.url(name=self.doc1.file.name))
         )
 
@@ -65,16 +63,15 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     def doc2_tag(self):
         return mark_safe(
-            '<img src="%s" width="800" />'
+            '<img src="%s" width="600" />'
             % (media_storage.url(name=self.doc2.file.name))
         )
 
     doc2_tag.short_description = "Second Uploaded Document"
 
-    verified = BooleanField()
-
     spouse_email = EmailField(max_length=250, unique=False, null=True, blank=True)
 
+    # TODO this should be some kind of enum like the status is.
     application_type = CharField(
         max_length=25,
         unique=False,
@@ -87,3 +84,9 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     class Meta:
         db_table = "go_electric_rebate_application"
+
+
+# This is for the admin panel
+class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
