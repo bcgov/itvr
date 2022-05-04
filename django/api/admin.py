@@ -29,7 +29,6 @@ class HouseholdApplicationInline(admin.StackedInline):
         "last_name",
         "first_name",
         "middle_names",
-        "email",
         "date_of_birth",
         "doc1_tag",
         "doc2_tag",

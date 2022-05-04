@@ -3,7 +3,6 @@ from django.db.models import (
     CharField,
     ImageField,
     DateField,
-    EmailField,
     BooleanField,
     PROTECT,
     ForeignKey,
@@ -31,7 +30,6 @@ class HouseholdMember(TimeStampedModel):
     last_name = CharField(max_length=250, unique=False)
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
-    email = EmailField(max_length=250, unique=False)
     date_of_birth = DateField(validators=[validate_driving_age])
     doc1 = ImageField(upload_to="docs")
 

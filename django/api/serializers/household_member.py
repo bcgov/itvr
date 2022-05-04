@@ -25,7 +25,6 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
         obj = HouseholdMember.objects.create(
             application=validated_data["application"],
             sin=validated_data["sin"],
-            email=validated_data["email"],
             last_name=validated_data["last_name"],
             first_name=validated_data["first_name"],
             middle_names=validated_data["middle_names"],
@@ -77,7 +76,6 @@ class HouseholdMemberApplicationGetSerializer(ModelSerializer):
             "middle_names",
             "last_name",
             "sin",
-            "email",
             "date_of_birth",
             "doc1",
             "doc2",

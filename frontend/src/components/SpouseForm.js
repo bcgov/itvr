@@ -20,7 +20,6 @@ export const defaultValues = {
   first_name: '',
   last_name: '',
   middle_names: '',
-  email: '',
   address: '',
   city: '',
   postal_code: '',
@@ -167,25 +166,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             )}
           />
         </FormGroup>
-        <FormGroup>
-          {errors?.email?.type === 'required' && (
-            <p className="error">Email Address cannot be blank</p>
-          )}
-          <InputLabel htmlFor="email">Email Address:</InputLabel>
-          <Controller
-            name="email"
-            type="email"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="email"
-                inputProps={{ maxLength: 250 }}
-                onChange={(e) => setValue('email', e.target.value)}
-              />
-            )}
-            rules={{ required: true }}
-          />
-        </FormGroup>
+
         <FormGroup>
           {errors?.date_of_birth?.type === 'validate' && (
             <p className="error">
