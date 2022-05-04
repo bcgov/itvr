@@ -196,3 +196,10 @@ Q_CLUSTER = {
     "bulk": 10,
     "orm": "default",
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "itvr_cache_table",
+    }
+}
