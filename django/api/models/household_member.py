@@ -37,7 +37,7 @@ class HouseholdMember(TimeStampedModel):
 
     def doc1_tag(self):
         return mark_safe(
-            '<img src="%s" width="800" />'
+            '<img src="%s" width="600" />'
             % (media_storage.url(name=self.doc1.file.name))
         )
 
@@ -47,7 +47,7 @@ class HouseholdMember(TimeStampedModel):
 
     def doc2_tag(self):
         return mark_safe(
-            '<img src="%s" width="800" />'
+            '<img src="%s" width="600" />'
             % (media_storage.url(name=self.doc2.file.name))
         )
 
