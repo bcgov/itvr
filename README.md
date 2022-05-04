@@ -1,5 +1,9 @@
 # itvr
 
+## System
+
+ITVR system statuses and workflow can be [found documented in the flowchart](https://preview.uxpin.com/7f6104a26108508bb185e1b602677a5f91f49724#/pages/148655810/simulate/no-panels?mode=mf)
+
 ## Development
 
 Unfortunately we do not have a licence to use Docker Desktop at BC Gov. If you are on a mac [here is a blogpost](https://naomiaro.hashnode.dev/replacing-docker-desktop-with-lima-on-mac-os) about how to setup Lima as an alternative solution for development purposes.
