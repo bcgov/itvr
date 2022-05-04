@@ -20,7 +20,7 @@ admin_modify.submit_row = submit_row_custom
 
 class HouseholdApplicationInline(admin.StackedInline):
     model = HouseholdMember
-    exclude = ("sin", "doc1", "doc2")
+    exclude = ("sin", "doc1", "doc2", "user")
     readonly_fields = (
         "id",
         "last_name",
@@ -30,7 +30,6 @@ class HouseholdApplicationInline(admin.StackedInline):
         "date_of_birth",
         "doc1_tag",
         "doc2_tag",
-        "user",
         "consent_personal",
         "consent_tax",
     )
@@ -41,7 +40,7 @@ class HouseholdApplicationInline(admin.StackedInline):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    exclude = ("sin", "doc1", "doc2")
+    exclude = ("sin", "doc1", "doc2", "user")
     readonly_fields = (
         "id",
         "application_type",
@@ -57,7 +56,6 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "tax_year",
         "doc1_tag",
         "doc2_tag",
-        "user",
         "spouse_email",
         "consent_personal",
         "consent_tax",
