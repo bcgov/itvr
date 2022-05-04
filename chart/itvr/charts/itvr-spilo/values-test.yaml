@@ -20,7 +20,7 @@ spilo:
       secretName: itvr-db-backup-s3
 
   persistentVolume:
-    size: 500Mi
+    size: 700Mi
     storageClass: netapp-block-standard
 
   resources:
@@ -39,6 +39,6 @@ spilo:
       enabled: false
     readiness:
       enabled: true 
-      initialDelaySeconds: 90
+      initialDelaySeconds: 60
       failureThreshold: 20         
 
