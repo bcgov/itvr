@@ -112,8 +112,9 @@ objects:
                 - /bin/sh
                 - '-c'
                 - |-
-                  sleep 45
+                  sleep 60
                   python ./manage.py migrate
+                  python manage.py createcachetable
               containerName: task-queue
             failurePolicy: Retry
           timeoutSeconds: 600

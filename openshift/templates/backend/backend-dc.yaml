@@ -107,15 +107,53 @@ objects:
       creationTimestamp: 
       annotations:      
         haproxy.router.openshift.io/timeout: 1200s      
-#      labels:
-#        name: backend
-#        app: itvr
-#        role: backend
         env: '${ENV_NAME}'
       name: ${NAME}-backend${SUFFIX}
     spec:
       host: ${BACKEND_HOST_NAME}
       path: /api
+      port:
+        targetPort: backend
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: '${NAME}-backend${SUFFIX}'
+        weight: 100
+      wildcardPolicy: None
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: 
+      annotations:      
+        haproxy.router.openshift.io/timeout: 1200s      
+        env: '${ENV_NAME}'
+      name: ${NAME}-backend-admin${SUFFIX}
+    spec:
+      host: ${BACKEND_HOST_NAME}
+      path: /admin
+      port:
+        targetPort: backend
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: '${NAME}-backend${SUFFIX}'
+        weight: 100
+      wildcardPolicy: None
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: 
+      annotations:      
+        haproxy.router.openshift.io/timeout: 1200s      
+        env: '${ENV_NAME}'
+      name: ${NAME}-backend-static${SUFFIX}
+    spec:
+      host: ${BACKEND_HOST_NAME}
+      path: /static
       port:
         targetPort: backend
       tls:
