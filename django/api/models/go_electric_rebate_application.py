@@ -10,8 +10,6 @@ from django.db.models import (
     UUIDField,
     PROTECT,
     ForeignKey,
-    Model,
-    DateTimeField,
     TextChoices,
 )
 from encrypted_fields.fields import EncryptedCharField

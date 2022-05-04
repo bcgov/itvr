@@ -27,9 +27,6 @@ class HouseholdApplicationInline(admin.StackedInline):
         "first_name",
         "middle_names",
         "email",
-        "address",
-        "city",
-        "postal_code",
         "date_of_birth",
         "doc1",
         "doc1_tag",
@@ -46,7 +43,7 @@ class HouseholdApplicationInline(admin.StackedInline):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    inlines = [HouseholdApplicationInline]
+    # inlines = [HouseholdApplicationInline]
     exclude = ("sin",)
     readonly_fields = (
         "id",
@@ -69,7 +66,14 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "spouse_email",
         "consent_personal",
         "consent_tax",
+        "status",
     )
+
+    def get_inlines(self, request, obj=None):
+        if obj.application_type == "household":
+            return [HouseholdApplicationInline]
+        else:
+            return []
 
     def has_delete_permission(self, request, obj=None):
         return False

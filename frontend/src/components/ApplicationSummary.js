@@ -28,7 +28,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
   return (
     <Box>
       <h3>
-        {data.application_type === 'household'
+        {(applicationType || data.application_type) === 'household'
           ? 'Household Application'
           : 'Individual Application Confirmation'}
       </h3>
