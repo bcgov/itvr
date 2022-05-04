@@ -7,8 +7,6 @@ from django.db.models import (
     BooleanField,
     PROTECT,
     ForeignKey,
-    Model,
-    DateTimeField,
     OneToOneField,
 )
 from encrypted_fields.fields import EncryptedCharField

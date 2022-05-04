@@ -73,6 +73,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     spouse_email = EmailField(max_length=250, unique=False, null=True, blank=True)
 
+    # TODO this should be some kind of enum like the status is.
     application_type = CharField(
         max_length=25,
         unique=False,

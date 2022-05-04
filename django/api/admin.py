@@ -43,7 +43,6 @@ class HouseholdApplicationInline(admin.StackedInline):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    # inlines = [HouseholdApplicationInline]
     exclude = ("sin",)
     readonly_fields = (
         "id",
@@ -70,7 +69,8 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     )
 
     def get_inlines(self, request, obj=None):
-        if obj.application_type == "household":
+        # TODO update this to use the proper enum later.
+        if obj and obj.application_type == "household":
             return [HouseholdApplicationInline]
         else:
             return []
