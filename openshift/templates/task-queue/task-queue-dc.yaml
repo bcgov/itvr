@@ -53,7 +53,7 @@ objects:
         local: false
     status:
       dockerImageRepository: ''
-- apiVersion: v1
+  - apiVersion: v1
     kind: Service
     metadata:
       creationTimestamp: null
@@ -70,6 +70,27 @@ objects:
       type: ClusterIP
     status:
       loadBalancer: {}
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: 
+      annotations:      
+        haproxy.router.openshift.io/timeout: 1200s      
+        env: 'dev'
+      name: ${NAME}-task-queue${SUFFIX}
+    spec:
+      host: task-queue-dev-62.apps.silver.devops.gov.bc.ca
+      path: /
+      port:
+        targetPort: task-queue
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: '${NAME}-task-queue${SUFFIX}'
+        weight: 100
+      wildcardPolicy: None
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
@@ -175,15 +196,26 @@ objects:
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
                 - name: DJANGO_TASKS
-                  value: true
-              readinessProbe:
+                  value: 'true'
+              readinessProbe:  
+                exec:
+                  command:
+                    - /bin/bash
+                    - '-c'
+                    - ls -l
                 failureThreshold: 10
-                tcpSocket:
-                  port: 8080
                 initialDelaySeconds: 30
-                periodSeconds: 15
+                periodSeconds: 10
                 successThreshold: 1
                 timeoutSeconds: 3
+#              readinessProbe:
+#                failureThreshold: 10
+#                tcpSocket:
+#                  port: 8080
+#                initialDelaySeconds: 30
+#                periodSeconds: 15
+#                successThreshold: 1
+#                timeoutSeconds: 3
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
