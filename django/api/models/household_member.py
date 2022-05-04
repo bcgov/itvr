@@ -53,8 +53,6 @@ class HouseholdMember(TimeStampedModel):
 
     doc2_tag.short_description = "Second Uploaded Document"
 
-    verified = BooleanField()
-
     consent_personal = BooleanField(validators=[validate_consent])
     consent_tax = BooleanField(validators=[validate_consent])
 

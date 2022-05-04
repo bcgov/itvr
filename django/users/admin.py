@@ -13,14 +13,13 @@ class CustomUserAdmin(UserAdmin):
     form = ITVRUserChangeForm
     model = ITVRUser
     list_display = [
+        "username",
         "identity_provider",
         "display_name",
         "email",
-        "username",
         "is_staff",
         "is_superuser",
     ]
 
 
-if settings.DEBUG:
-    admin.site.register(ITVRUser, CustomUserAdmin)
+admin.site.register(ITVRUser, CustomUserAdmin)

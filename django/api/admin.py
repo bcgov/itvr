@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models.go_electric_rebate_application import GoElectricRebateApplication
+from .models.go_electric_rebate_application import (
+    GoElectricRebateApplication,
+    SubmittedGoElectricRebateApplication,
+)
 from .models.household_member import HouseholdMember
 from django.contrib.admin.templatetags import admin_modify
 from django.contrib.auth.models import Group
@@ -38,12 +41,19 @@ class HouseholdApplicationInline(admin.StackedInline):
         return False
 
 
-@admin.register(GoElectricRebateApplication)
-class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    exclude = ("sin", "doc1", "doc2", "user")
+@admin.register(SubmittedGoElectricRebateApplication)
+class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+        "spouse_email",
+        "status",
+        "application_type",
+    )
     readonly_fields = (
         "id",
-        "application_type",
         "last_name",
         "first_name",
         "middle_names",
@@ -56,11 +66,14 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "tax_year",
         "doc1_tag",
         "doc2_tag",
-        "spouse_email",
         "consent_personal",
         "consent_tax",
-        "status",
     )
+
+    def get_queryset(self, request):
+        return GoElectricRebateApplication.objects.filter(
+            status=GoElectricRebateApplication.Status.SUBMITTED
+        )
 
     def get_inlines(self, request, obj=None):
         # TODO update this to use the proper enum later.

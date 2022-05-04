@@ -37,7 +37,6 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             doc1=validated_data["doc1"],
             doc2=validated_data["doc2"],
             tax_year=self._get_tax_year(),
-            verified=False,
             application_type=validated_data["application_type"],
             spouse_email=validated_data["spouse_email"],
             user=user,
@@ -56,6 +55,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     def _get_status(self, validated_data):
         application_type = validated_data["application_type"]
+        # TODO use enum type here like status.
         if application_type == "household":
             return GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
         return GoElectricRebateApplication.Status.SUBMITTED

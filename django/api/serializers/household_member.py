@@ -20,7 +20,6 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
         return context
 
     def create(self, validated_data):
-        request = self.context.get("request")
         user = self.context["request"].user
 
         obj = HouseholdMember.objects.create(
@@ -33,7 +32,6 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
             date_of_birth=validated_data["date_of_birth"],
             doc1=validated_data["doc1"],
             doc2=validated_data["doc2"],
-            verified=False,
             user=user,
             consent_personal=validated_data["consent_personal"],
             consent_tax=validated_data["consent_tax"],

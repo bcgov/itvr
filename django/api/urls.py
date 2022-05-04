@@ -5,6 +5,10 @@ from rest_framework import routers
 from api.viewsets.application_form import ApplicationFormViewset
 from api.viewsets.household_member import HouseholdMemberApplicationViewset
 
+admin.site.site_header = "BC Gov ITVR"
+admin.site.index_title = "Admin Panel"
+admin.site.site_title = "BC Gov ITVR"
+
 
 class OptionalSlashRouter(routers.DefaultRouter):
     def __init__(self):

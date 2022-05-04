@@ -69,8 +69,6 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     doc2_tag.short_description = "Second Uploaded Document"
 
-    verified = BooleanField()
-
     spouse_email = EmailField(max_length=250, unique=False, null=True, blank=True)
 
     # TODO this should be some kind of enum like the status is.
@@ -86,3 +84,9 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     class Meta:
         db_table = "go_electric_rebate_application"
+
+
+# This is for the admin panel
+class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
