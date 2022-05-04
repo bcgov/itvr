@@ -169,7 +169,6 @@ objects:
                 - /bin/sh
                 - '-c'
                 - |-
-                  sleep 90
                   python ./manage.py migrate
               containerName: backend
             failurePolicy: Retry

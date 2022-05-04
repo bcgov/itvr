@@ -54,7 +54,7 @@ module.exports = settings => {
     }))
   }
   */
-
+/*
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc.yaml`, {
     'param': {
       'NAME': phases[phase].name,
@@ -86,6 +86,7 @@ module.exports = settings => {
       'DJANGO_DEBUG': phases[phase].backendDjangoDebug
     }
   })) 
+  */
 
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/task-queue/task-queue-dc.yaml`, {
     'param': {
@@ -100,7 +101,7 @@ module.exports = settings => {
       'DJANGO_DEBUG': phases[phase].taskQueueDjangoDebug
     }
   })) 
-  
+
 
   oc.applyRecommendedLabels(
       objects,
