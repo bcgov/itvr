@@ -50,8 +50,7 @@ const phases = {
   test: {namespace:'ac294c-test', name: `${name}`, ssoSuffix:'-test', 
         ssoName:'test.oidc.gov.bc.ca', phase: 'test'  ,  changeId:`${changeId}`, suffix: `-test`, 
         instance: `${name}-test`, version:`${version}`, tag:`test-${version}`, 
-        host: `
-        `, djangoDebug: 'False', logoutHostName: 'logontest.gov.bc.ca',
+        host: `itvr-test.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
         frontendCpuRequest: '70m', frontendCpuLimit: '210m', frontendMemoryRequest: '300Mi', frontendMemoryLimit: '600Mi', frontendReplicas: 2, frontendMinReplicas: 1, frontendMaxReplicas: 3,
         backendCpuRequest: '40m', backendCpuLimit: '120m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendReplicas: 2, backendMinReplicas: 1, backendMaxReplicas: 3, backendHost: `itvr-backend-test.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'True',

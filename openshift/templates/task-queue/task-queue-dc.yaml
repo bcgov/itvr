@@ -76,10 +76,9 @@ objects:
       creationTimestamp: 
       annotations:      
         haproxy.router.openshift.io/timeout: 1200s      
-        env: 'dev'
       name: ${NAME}-task-queue${SUFFIX}
     spec:
-      host: task-queue-dev-62.apps.silver.devops.gov.bc.ca
+      host: ${NAME}-task-queue${SUFFIX}.apps.silver.devops.gov.bc.ca
       path: /
       port:
         targetPort: task-queue
@@ -114,7 +113,7 @@ objects:
                 - |-
                   sleep 60
                   python ./manage.py migrate
-                  python manage.py createcachetable
+                  python ./manage.py createcachetable
               containerName: task-queue
             failurePolicy: Retry
           timeoutSeconds: 600
