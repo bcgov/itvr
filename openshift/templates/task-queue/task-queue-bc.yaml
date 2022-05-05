@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: itvr-backend-bc
+  name: itvr-task-queue-bc
 parameters:
   - name: NAME
     displayName:
@@ -33,7 +33,7 @@ objects:
       labels:
         shared: "true"
       creationTimestamp: null
-      name: ${NAME}-backend
+      name: ${NAME}-task-queue
     spec:
       lookupPolicy:
         local: false
@@ -45,13 +45,13 @@ objects:
       annotations:
         description: Defines how to build the application
       creationTimestamp: null
-      name: ${NAME}-backend${SUFFIX}
+      name: ${NAME}-task-queue${SUFFIX}
     spec:
       nodeSelector: null
       output:
         to:
           kind: ImageStreamTag
-          name: ${NAME}-backend:${VERSION}
+          name: ${NAME}-task-queue:${VERSION}
       postCommit: {}
       resources:
         limits:

@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: itvr-backend-dc
+  name: itvr-task-queue-dc
 parameters:
   - name: NAME
     displayName: null
@@ -16,15 +16,6 @@ parameters:
     displayName: null
     description: image tag name for output
     required: true
-  - name: ENV_NAME
-    value: dev
-    displayName: Environment name
-    description: 'Environment name, dev, test and prod'
-    required: true
-  - name: BACKEND_HOST_NAME
-    displayName: Host name for route
-    description: Host name for route
-    required: true    
   - name: CPU_REQUEST
     displayName: Requested CPU
     description: Requested CPU
@@ -41,11 +32,6 @@ parameters:
     displayName: Memory upper limit
     description: Memory upper limit
     required: true
-  - name: HEALTH_CHECK_DELAY
-    value: '150'
-    displayName: Memory upper limit
-    description: Memory upper limit
-    required: true    
   - name: REPLICAS
     value: '1'
     required: true
@@ -53,27 +39,15 @@ parameters:
     value: 'False'
     required: true
 objects:
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      annotations:
-        as-copy-of: "template.django-secret"
-      name: ${NAME}-django-secret${SUFFIX}
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      annotations:
-        as-copy-of: "template.django-salt"
-      name: ${NAME}-django-salt${SUFFIX}
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     metadata:
       annotations:
-        description: Keeps track of changes in the backend image
+        description: Keeps track of changes in the task-queue image
       labels:
         shared: "true"        
       creationTimestamp: null
-      name: '${NAME}-backend'
+      name: '${NAME}-task-queue'
     spec:
       lookupPolicy:
         local: false
@@ -83,20 +57,15 @@ objects:
     kind: Service
     metadata:
       creationTimestamp: null
-      name: '${NAME}-backend${SUFFIX}'
-#      labels:
-#        name: backend
-#        app: itvr
-#        role: backend
-#        env: '${ENV_NAME}'
+      name: '${NAME}-task-queue${SUFFIX}'
     spec:
       ports:
-        - name: backend
+        - name: task-queue
           port: 8080
           protocol: TCP
           targetPort: 8080
       selector:
-        name: '${NAME}-backend${SUFFIX}'
+        name: '${NAME}-task-queue${SUFFIX}'
       sessionAffinity: None
       type: ClusterIP
     status:
@@ -107,97 +76,33 @@ objects:
       creationTimestamp: 
       annotations:      
         haproxy.router.openshift.io/timeout: 1200s      
-        env: '${ENV_NAME}'
-      name: ${NAME}-backend${SUFFIX}
+        env: 'dev'
+      name: ${NAME}-task-queue${SUFFIX}
     spec:
-      host: ${BACKEND_HOST_NAME}
-      path: /api
+      host: task-queue-dev-62.apps.silver.devops.gov.bc.ca
+      path: /
       port:
-        targetPort: backend
+        targetPort: task-queue
       tls:
         insecureEdgeTerminationPolicy: Redirect
         termination: edge
       to:
         kind: Service
-        name: '${NAME}-backend${SUFFIX}'
+        name: '${NAME}-task-queue${SUFFIX}'
         weight: 100
       wildcardPolicy: None
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      creationTimestamp: 
-      annotations:      
-        haproxy.router.openshift.io/timeout: 1200s      
-        env: '${ENV_NAME}'
-      name: ${NAME}-backend-admin${SUFFIX}
-    spec:
-      host: ${BACKEND_HOST_NAME}
-      path: /admin
-      port:
-        targetPort: backend
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      to:
-        kind: Service
-        name: '${NAME}-backend${SUFFIX}'
-        weight: 100
-      wildcardPolicy: None
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      creationTimestamp: 
-      annotations:      
-        haproxy.router.openshift.io/timeout: 1200s      
-        env: '${ENV_NAME}'
-      name: ${NAME}-backend-static${SUFFIX}
-    spec:
-      host: ${BACKEND_HOST_NAME}
-      path: /static
-      port:
-        targetPort: backend
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      to:
-        kind: Service
-        name: '${NAME}-backend${SUFFIX}'
-        weight: 100
-      wildcardPolicy: None
-#  - apiVersion: route.openshift.io/v1
-#    kind: Route
-#    metadata:
-#      creationTimestamp: null
-#      labels:
-#        name: backend
-#        app: itvr
-#        role: backend
-#        env: '${ENV_NAME}'
-#      name: '${NAME}-backend-health${SUFFIX}'
-#    spec:
-#      host: ${HOST_NAME}
-#      path: /health
-#      port:
-#        targetPort: backend
-#      tls:
-#        termination: edge
-#      to:
-#        kind: Service
-#        name: '${NAME}-backend${SUFFIX}'
-#        weight: 100
-#      wildcardPolicy: None
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
       annotations:
         description: Defines how to deploy the application server
       creationTimestamp: null
-      name: ${NAME}-backend${SUFFIX}
+      name: ${NAME}-task-queue${SUFFIX}
     spec:
       replicas: ${{REPLICAS}}
       revisionHistoryLimit: 10
       selector:
-        name: ${NAME}-backend${SUFFIX}
+        name: ${NAME}-task-queue${SUFFIX}
       strategy:
         activeDeadlineSeconds: 800
         recreateParams:
@@ -207,29 +112,26 @@ objects:
                 - /bin/sh
                 - '-c'
                 - |-
+                  sleep 60
                   python ./manage.py migrate
-              containerName: backend
+                  python manage.py createcachetable
+              containerName: task-queue
             failurePolicy: Retry
           timeoutSeconds: 600
+        resources: {}
         resources: {}
         type: Recreate
       template:
         metadata:
           creationTimestamp: null
           labels:
-            name: ${NAME}-backend${SUFFIX}
+            name: ${NAME}-task-queue${SUFFIX}
         spec:
           containers:
-            - name: backend
+            - name: task-queue
               image: null
               imagePullPolicy: IfNotPresent
               env:
-                - name: ALLOWED_HOSTS
-                  value: ${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca
-                - name: CORS_ORIGIN_WHITELIST
-                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
-                - name: BACKEND_ORIGIN
-                  value: https://${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca
                 - name: DB_ENGINE
                   value: django.db.backends.postgresql
                 - name: DB_HOST
@@ -250,23 +152,6 @@ objects:
                     secretKeyRef:
                       name: itvr-patroni-app
                       key: app-db-username
-                - name: APP_CONFIG
-                  value: /opt/app-root/src/gunicorn.cfg.py
-                - name: KEYCLOAK_CLIENT_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_CLIENT_ID
-                - name: KEYCLOAK_REALM
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_REALM
-                - name: KEYCLOAK_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_URL                                  
                 - name: DJANGO_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
@@ -309,43 +194,29 @@ objects:
                       key: SENDER_NAME
                 - name: SEND_EMAIL
                   value: 'True'
-                - name: MINIO_ENDPOINT
-                  value: https://${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
-#               - name: MINIO_USE_SSL
-#                 value: "true"
-                - name: MINIO_ROOT_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-minio
-                      key: root-user
-                - name: MINIO_ROOT_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-minio
-                      key: root-password    
-                - name: MINIO_BUCKET_NAME
-                  value: itvr  
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
-              livenessProbe:
-                failureThreshold: 30
-                tcpSocket:
-                  port: 8080
-                initialDelaySeconds: ${{HEALTH_CHECK_DELAY}}
-                periodSeconds: 15
+                - name: DJANGO_TASKS
+                  value: 'true'
+              readinessProbe:  
+                exec:
+                  command:
+                    - /bin/bash
+                    - '-c'
+                    - ls -l
+                failureThreshold: 10
+                initialDelaySeconds: 30
+                periodSeconds: 10
                 successThreshold: 1
                 timeoutSeconds: 3
-              ports:
-                - containerPort: 8080
-                  protocol: TCP
-              readinessProbe:
-                failureThreshold: 30
-                tcpSocket:
-                  port: 8080
-                initialDelaySeconds: ${{HEALTH_CHECK_DELAY}}
-                periodSeconds: 15
-                successThreshold: 1
-                timeoutSeconds: 3
+#              readinessProbe:
+#                failureThreshold: 10
+#                tcpSocket:
+#                  port: 8080
+#                initialDelaySeconds: 30
+#                periodSeconds: 15
+#                successThreshold: 1
+#                timeoutSeconds: 3
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
@@ -365,10 +236,10 @@ objects:
         - imageChangeParams:
             automatic: true
             containerNames:
-              - backend
+              - task-queue
             from:
               kind: ImageStreamTag
-              name: ${NAME}-backend:${VERSION}
+              name: ${NAME}-task-queue:${VERSION}
             lastTriggeredImage: null
           type: ImageChange
         - type: ConfigChange

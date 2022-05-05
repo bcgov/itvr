@@ -5,8 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const HouseholdPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const householdApplicationId = searchParams.get('householdApplication');
-
+  const householdApplicationId = searchParams.get('q');
   const title = (
     <>
       <h3>Complete your rebate application for your household</h3>

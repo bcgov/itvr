@@ -27,3 +27,4 @@ Chart.lock
 chart/itvr/charts/itvr-minio/charts/
 cron.log
 .pipeline/package-lock.json
+*.tgz

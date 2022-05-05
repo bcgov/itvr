@@ -43,7 +43,7 @@
 #       A positive integer. Generally set in the 1-5 seconds range.
 #
 
-workers = 8
-timeout = 1800
-graceful_timeout = 1800
+workers = 2
+timeout = 20
+graceful_timeout = 20
 keepalive = 5

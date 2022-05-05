@@ -18,6 +18,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Box from '@mui/material/Box';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { isAgeValid, isSINValid } from '../utility';
 
 export const defaultValues = {
   sin: '',
@@ -62,7 +63,6 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         formData.append(key, value);
       }
     }
-    formData.append('tax_year', 2021);
     return axiosInstance.current.post('/api/application-form', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
@@ -256,26 +256,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             )}
             rules={{
               validate: (inputtedDOB) => {
-                if (!inputtedDOB) {
-                  return false;
-                }
-                const dobSplit = inputtedDOB.split('-');
-                const dobYear = parseInt(dobSplit[0]);
-                const dobMonthIndex = parseInt(dobSplit[1]) - 1;
-                const dobDay = parseInt(dobSplit[2]);
-                const today = new Date();
-                let age = today.getFullYear() - dobYear;
-                if (
-                  today.getMonth() < dobMonthIndex ||
-                  (today.getMonth() == dobMonthIndex &&
-                    today.getDate() < dobDay)
-                ) {
-                  age = age - 1;
-                }
-                if (age < 16) {
-                  return false;
-                }
-                return true;
+                return isAgeValid(inputtedDOB, 16);
               }
             }}
           />
@@ -362,34 +343,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             )}
             rules={{
               validate: (inputtedSin) => {
-                if (!inputtedSin || inputtedSin.length !== 9) {
-                  return false;
-                }
-                const regex = /^\d+$/;
-                if (!regex.test(inputtedSin)) {
-                  return false;
-                }
-                const products = [];
-                const fixedNumbers = [1, 2, 1, 2, 1, 2, 1, 2, 1];
-                for (let i = 0; i < 9; i++) {
-                  const sinChar = inputtedSin.charAt(i);
-                  const product = fixedNumbers[i] * parseInt(sinChar);
-                  if (product >= 10) {
-                    const productString = product.toString();
-                    products[i] =
-                      parseInt(productString.charAt(0)) +
-                      parseInt(productString.charAt(1));
-                  } else {
-                    products[i] = product;
-                  }
-                }
-                const result = products.reduce((prev, current) => {
-                  return prev + current;
-                });
-                if (result % 10 !== 0) {
-                  return false;
-                }
-                return true;
+                return isSINValid(inputtedSin);
               }
             }}
           />

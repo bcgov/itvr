@@ -16,8 +16,8 @@ the date of birth entered."
 
 def validate_sin(sin):
     """
-    Let's use this fictitious SIN to demonstrate:130 692 544
-    Always multiply the SIN Number by this number:121 212 121
+    Let's use this fictitious SIN to demonstrate: 130692544
+    Always multiply the SIN Number by this number: 121212121
     (Multiply the top number by the bottom number)
 
     130 692 544
