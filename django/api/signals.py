@@ -29,6 +29,6 @@ def after_household_member_save(sender, instance, created, **kwargs):
         if settings.EMAIL["SEND_EMAIL"]:
             async_task(
                 "api.tasks.send_household_confirm",
-                application.id,
                 application.email,
+                application.id,
             )
