@@ -93,7 +93,7 @@ def send_spouse_initial_message(recipient_email, application_id, initiator_email
     send_email(recipient_email, application_id, message, [initiator_email])
 
 
-def send_household_confirm(recipient_email, application_id, initiator_email):
+def send_household_confirm(recipient_email, application_id):
     message = """
         Thank you.
 
@@ -105,4 +105,4 @@ def send_household_confirm(recipient_email, application_id, initiator_email):
 
         Please feel free to contact us at ZEVPrograms@gov.bc.ca
         """
-    send_email(recipient_email, application_id, message, [initiator_email])
+    send_email(recipient_email, application_id, message, cc_list=[])
