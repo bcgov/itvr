@@ -22,3 +22,11 @@ spilo:
 
   podDisruptionBudget:
     enabled: false
+
+  probes:
+    liveness:
+      enabled: false
+    readiness:
+      enabled: true 
+      initialDelaySeconds: 90
+      failureThreshold: 20

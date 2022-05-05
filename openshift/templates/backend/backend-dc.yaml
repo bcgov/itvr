@@ -107,15 +107,53 @@ objects:
       creationTimestamp: 
       annotations:      
         haproxy.router.openshift.io/timeout: 1200s      
-#      labels:
-#        name: backend
-#        app: itvr
-#        role: backend
         env: '${ENV_NAME}'
       name: ${NAME}-backend${SUFFIX}
     spec:
       host: ${BACKEND_HOST_NAME}
       path: /api
+      port:
+        targetPort: backend
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: '${NAME}-backend${SUFFIX}'
+        weight: 100
+      wildcardPolicy: None
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: 
+      annotations:      
+        haproxy.router.openshift.io/timeout: 1200s      
+        env: '${ENV_NAME}'
+      name: ${NAME}-backend-admin${SUFFIX}
+    spec:
+      host: ${BACKEND_HOST_NAME}
+      path: /admin
+      port:
+        targetPort: backend
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: '${NAME}-backend${SUFFIX}'
+        weight: 100
+      wildcardPolicy: None
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: 
+      annotations:      
+        haproxy.router.openshift.io/timeout: 1200s      
+        env: '${ENV_NAME}'
+      name: ${NAME}-backend-static${SUFFIX}
+    spec:
+      host: ${BACKEND_HOST_NAME}
+      path: /static
       port:
         targetPort: backend
       tls:
@@ -169,8 +207,8 @@ objects:
                 - /bin/sh
                 - '-c'
                 - |-
-                  sleep 90
                   python ./manage.py migrate
+                  python ./manage.py createcachetable
               containerName: backend
             failurePolicy: Retry
           timeoutSeconds: 600
@@ -214,7 +252,7 @@ objects:
                       name: itvr-patroni-app
                       key: app-db-username
                 - name: APP_CONFIG
-                  value: /opt/app-root/src/gunicorn.cfg
+                  value: /opt/app-root/src/gunicorn.cfg.py
                 - name: KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:

@@ -2,6 +2,14 @@ spilo:
 
   replicaCount: 2
 
+  credentials:
+    useExistingSecret: true
+    existingSecret:
+      name: itvr-patroni-admin
+      superuserKey: password-superuser
+      adminKey: password-admin
+      standbyKey: password-standby
+
   continuousArchive:
     enabled: true
     scheduleCronJob: "0 2 * * *"
@@ -31,5 +39,5 @@ spilo:
       enabled: false
     readiness:
       enabled: true 
-      initialDelaySeconds: 90
+      initialDelaySeconds: 60
       failureThreshold: 20         

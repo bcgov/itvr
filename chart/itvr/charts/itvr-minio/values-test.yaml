@@ -21,6 +21,8 @@ minio:
     initialDelaySeconds: 30
     timeoutSeconds: 3
   defaultBuckets: itvr
+  hostName: itvr-minio-test.apps.silver.devops.gov.bc.ca
+  routeName: itvr-minio-test
 # distributed mode, but encountered issues about disk not found when pod is initialized
 #  mode: distributed
 #  statefulset:

@@ -28,6 +28,10 @@ def write(data):
 
   today = date.today().strftime("%Y%m%d") # Get today's date
 
+  # Number of records to write.
+  l = str(len(data) + 2) # Includes header and footer.
+  records = '0' * (8 - len(l))+l
+
   ####################### Write the header ##############################
   file += '7100' # Request transaction code
   file += ' ' * 24 # Blank space
@@ -35,7 +39,7 @@ def write(data):
   file += today # 
   file += ' ' # Blank space
 
-  file += 'BCGSP00521' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00009' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 99 # Blank space
 
@@ -57,12 +61,12 @@ def write(data):
     file += row['birth_date'].replace('-','') # Birth date
 
     file += row['year'] # Year
-    file += ' ' * 14 # Blank space
+    file += ' ' * 16 # Blank space
 
-    file += 'BCGS' # Program area code
+    file += 'BCVR' # Program area code
     file += '1234' # Record identification number (optional)
 
-    file += ' ' * 31 # Blank space
+    file += ' ' * 29 # Blank space
     file += '0\n' # Delimiter
 
 
@@ -73,15 +77,15 @@ def write(data):
   file += today # Request date
   file += ' ' # Blank space
 
-  file += 'BCGSP00521' # Requesting institution code TODO: make this dynamic
+  file += 'BCVRA00009' # Requesting institution code TODO: make this dynamic
 
   file += ' ' * 6 # Blank space
 
-  file += '0' * 8 # Number of records in file TODO: make this dynamic
+  file += records # Number of records in file
 
   file += ' ' * 85 # Blank space
 
-  file += '0\n' # terminating character 
+  file += '0' # terminating character 
 
   
   ####################### Return the file ##############################

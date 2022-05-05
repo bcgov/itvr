@@ -1,9 +1,9 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: itvr-minio-dev
+  name: {{ .Values.minio.routeName }}
 spec:
-  host: itvr-minio-dev.apps.silver.devops.gov.bc.ca
+  host: {{ .Values.minio.hostName }}
   to:
     kind: Service
     name: itvr-minio

@@ -5,7 +5,10 @@ import { useKeycloak } from '@react-keycloak/web';
 import HomePage from '../pages';
 import FormPage from '../pages/Form';
 import AdminPage from '../pages/admin';
-import ApplicationDetailsPage from '../pages/ApplicationDetails';
+import DetailsPage from '../pages/Details';
+import HouseholdPage from '../pages/Household';
+import HouseholdFormPage from '../pages/HouseholdForm';
+import HouseholdDetails from '../pages/HouseholdDetails';
 
 const RequireAuth = ({ children, redirectTo }) => {
   const { keycloak } = useKeycloak();
@@ -33,10 +36,27 @@ const AppRouter = () => (
         }
       />
       <Route
+        path="/details/:id/household"
+        element={
+          <RequireAuth redirectTo="/">
+            <HouseholdDetails />
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/details/:id"
         element={
           <RequireAuth redirectTo="/">
-            <ApplicationDetailsPage />
+            <DetailsPage />
+          </RequireAuth>
+        }
+      />
+      <Route path="/household" element={<HouseholdPage />} />
+      <Route
+        path="/householdForm"
+        element={
+          <RequireAuth redirectTo="/">
+            <HouseholdFormPage />
           </RequireAuth>
         }
       />
