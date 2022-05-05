@@ -208,6 +208,7 @@ objects:
                 - '-c'
                 - |-
                   python ./manage.py migrate
+                  python ./manage.py createcachetable
               containerName: backend
             failurePolicy: Retry
           timeoutSeconds: 600
