@@ -39,7 +39,7 @@ def send_email(
     sender_info = formataddr((str(Header(sender_name, "utf-8")), sender_email))
 
     data = {
-        "bcc": [recipient_email],
+        # "bcc": [recipient_email],
         "bodyType": bodyType,
         "body": message,
         "cc": cc_list,
@@ -48,7 +48,8 @@ def send_email(
         "from": sender_info,
         "priority": "normal",
         "subject": subject,
-        "to": ["Undisclosed recipients<donotreply@gov.bc.ca>"],
+        # "to": ["Undisclosed recipients<donotreply@gov.bc.ca>"],
+        "to": [recipient_email],
     }
 
     headers = {

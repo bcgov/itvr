@@ -20,7 +20,9 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         return context
 
     def create(self, validated_data):
-        user = self.context["request"].user
+        request = self.context["request"]
+        user = request.user
+        spouse_email = request.data.get("spouse_email")
 
         obj = GoElectricRebateApplication.objects.create(
             sin=validated_data["sin"],
@@ -38,7 +40,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
             doc2=validated_data["doc2"],
             tax_year=self._get_tax_year(),
             application_type=validated_data["application_type"],
-            spouse_email=validated_data["spouse_email"],
+            spouse_email=spouse_email,
             user=user,
             consent_personal=validated_data["consent_personal"],
             consent_tax=validated_data["consent_tax"],
