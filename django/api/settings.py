@@ -203,3 +203,12 @@ CACHES = {
         "LOCATION": "itvr_cache_table",
     }
 }
+
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "BC Gov ITVR",
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "BC Gov ITVR",
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": "BC Gov ITVR",
+}
