@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "jazzmin",
     "django_filters",
     "django_extensions",
+    "sequences",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

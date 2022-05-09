@@ -1,4 +1,11 @@
+import os
+import sys
+import django
 from datetime import date
+from sequences import get_next_value, Sequence
+
+
+
 
 ##
 # Read a text file that has been posted by CRA
@@ -24,6 +31,15 @@ def read(file):
 # OUTPUT: A string representing a text file
 #
 def write(data):
+  sys.path.append('../../')
+  os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
+  django.setup()
+
+  # seq = get_next_value("api_cra_wage_request_id_seq")
+  # print(seq)
+  seq = Sequence(sequence_name = "public.api_cra_wage_request_id_seq")
+  print(seq.get_next_value())
+
   file = "" # String to return
 
   today = date.today().strftime("%Y%m%d") # Get today's date
