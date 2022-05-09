@@ -1,7 +1,6 @@
 from api.serializers.application_form import ApplicationFormSpouseSerializer
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.household_member import HouseholdMember
-from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
 
 
@@ -40,6 +39,7 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
 
 
 class HouseholdMemberApplicationGetSerializer(ModelSerializer):
+    application_id = SerializerMethodField()
     sin = SerializerMethodField()
     address = SerializerMethodField()
     city = SerializerMethodField()
