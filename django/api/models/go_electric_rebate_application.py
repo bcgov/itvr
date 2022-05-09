@@ -43,6 +43,10 @@ class GoElectricRebateApplication(TimeStampedModel):
         SUBMITTED = ("submitted", _("Submitted"))
         VERIFIED = ("verified", _("Verified"))
         DECLINED = ("declined", _("Declined"))
+        APPROVED = ("approved", _("Approved"))
+        CRA_ERROR = ("cra_error", _("CRA Error"))
+        REDEEMED = ("redeemed", _("Redeemed"))
+        EXPIRED = ("expired", _("Expired"))
 
     user = ForeignKey(
         settings.AUTH_USER_MODEL,
