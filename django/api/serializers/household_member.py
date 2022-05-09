@@ -1,3 +1,4 @@
+from api.serializers.application_form import ApplicationFormSpouseSerializer
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.household_member import HouseholdMember
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
@@ -39,12 +40,13 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
 
 
 class HouseholdMemberApplicationGetSerializer(ModelSerializer):
-    application_id = SerializerMethodField()
     sin = SerializerMethodField()
     address = SerializerMethodField()
     city = SerializerMethodField()
     postal_code = SerializerMethodField()
     tax_year = SerializerMethodField()
+    application_type = SerializerMethodField()
+    status = SerializerMethodField()
 
     def get_address(self, obj):
         return obj.application.address
@@ -61,6 +63,12 @@ class HouseholdMemberApplicationGetSerializer(ModelSerializer):
     def get_application_id(self, obj):
         return obj.application.id
 
+    def get_application_type(self, obj):
+        return obj.application.application_type
+
+    def get_status(self, obj):
+        return obj.application.status
+
     def get_sin(self, obj):
         return "******" + str(obj.sin)[-3:]
 
@@ -68,6 +76,8 @@ class HouseholdMemberApplicationGetSerializer(ModelSerializer):
         model = HouseholdMember
         fields = (
             "application_id",
+            "application_type",
+            "status",
             "address",
             "city",
             "postal_code",
