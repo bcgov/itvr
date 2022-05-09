@@ -37,10 +37,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
         confirmation at {data.email}.
       </p>
       {data.status === 'household_initiated' && (
-        <p>
-          Your spouse will receive an email at {data.spouse_email} to complete
-          this application.
-        </p>
+        <p>Your spouse will receive an email to complete this application.</p>
       )}
       <DetailsTable data={data} />
     </Box>

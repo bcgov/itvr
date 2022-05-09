@@ -11,6 +11,7 @@ from django.db.models import (
     PROTECT,
     ForeignKey,
     TextChoices,
+    Manager,
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -23,7 +24,20 @@ from django.utils.translation import gettext_lazy as _
 media_storage = get_storage_class()()
 
 
+class ApplicationManager(Manager):
+    def create(self, **kwargs):
+        spouse_email = kwargs.pop("spouse_email", None)
+        obj = self.model(**kwargs)
+        self._for_write = True
+        if spouse_email:
+            obj.spouse_email = spouse_email
+        obj.save(force_insert=True, using=self.db)
+        return obj
+
+
 class GoElectricRebateApplication(TimeStampedModel):
+    objects = ApplicationManager()
+
     class Status(TextChoices):
         HOUSEHOLD_INITIATED = ("household_initiated", _("Household Initiated"))
         SUBMITTED = ("submitted", _("Submitted"))
@@ -68,8 +82,6 @@ class GoElectricRebateApplication(TimeStampedModel):
         )
 
     doc2_tag.short_description = "Second Uploaded Document"
-
-    spouse_email = EmailField(max_length=250, unique=False, null=True, blank=True)
 
     # TODO this should be some kind of enum like the status is.
     application_type = CharField(
