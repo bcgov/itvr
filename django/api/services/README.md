@@ -33,3 +33,7 @@ The Entrust executables for encrypting and decrypting can be found here:
 - deencrypt.exe
 
 ## CRA Wage Requests
+
+Submitting wage requests can be done manually by logging into `ftp://ftp-ot.cra-arc.gc.ca/pub/BC/iv/bcvr/` anonymously and dropping any encrypted files in the `uaclient2cra` folder. Within a short time the encrypted response will be available within the `uacra2client` folder. All security is trusted within the encryption algorithm. Anybody can download a file from here. Only the target user/computer can decrypt the file.
+
+Example code for automatically uploading and downloading files to any ftp server [here](../tests/ftp.py)
