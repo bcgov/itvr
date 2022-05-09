@@ -4,21 +4,6 @@ from .models.go_electric_rebate_application import (
     SubmittedGoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
-from django.contrib.admin.templatetags import admin_modify
-from django.contrib.auth.models import Group
-
-admin.site.unregister(Group)
-submit_row = admin_modify.submit_row
-
-
-def submit_row_custom(context):
-    ctx = submit_row(context)
-    ctx["show_save_and_add_another"] = False
-    ctx["show_save_and_continue"] = False
-    return ctx
-
-
-admin_modify.submit_row = submit_row_custom
 
 
 class HouseholdApplicationInline(admin.StackedInline):
@@ -40,8 +25,19 @@ class HouseholdApplicationInline(admin.StackedInline):
         return False
 
 
+@admin.register(GoElectricRebateApplication)
+class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    pass
+
+
+# The proxy model is used to avoid a Django limitation where a model can only
+# be registered once on the admin panel. This locked down version will be used
+# by government staff to verify or decline submitted applications
+# by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    # disable bulk actions
+    actions = None
     exclude = (
         "sin",
         "doc1",
@@ -83,3 +79,13 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def response_change(self, request, obj):
+        ret = super().response_change(request, obj)
+        if "approve_application" in request.POST:
+            obj.status = GoElectricRebateApplication.Status.VERIFIED
+            obj.save()
+        if "reject_application" in request.POST:
+            obj.status = GoElectricRebateApplication.Status.DECLINED
+            obj.save()
+        return ret
