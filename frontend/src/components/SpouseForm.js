@@ -227,6 +227,9 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.documents?.type === 'validate' && (
             <p className="error">Need at least 2 files</p>
           )}
+          {errors?.documents?.type === 'maxSize' && (
+            <p className="error">No file may exceed 5MB</p>
+          )}
           <FileDropArea name="documents" />
         </FormGroup>
         <FormGroup>
