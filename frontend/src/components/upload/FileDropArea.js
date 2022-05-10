@@ -61,6 +61,7 @@ const FileDropArea = ({
               return false;
             }
           }
+          return true;
         }
       }
     });
