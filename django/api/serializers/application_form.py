@@ -72,3 +72,13 @@ class ApplicationFormSerializer(ModelSerializer):
     class Meta:
         model = GoElectricRebateApplication
         fields = "__all__"
+
+
+class ApplicationFormSpouseSerializer(ModelSerializer):
+    class Meta:
+        model = GoElectricRebateApplication
+        fields = [
+            "address",
+            "city",
+            "postal_code",
+        ]

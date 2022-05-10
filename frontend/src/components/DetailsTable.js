@@ -67,25 +67,29 @@ const DetailsTable = ({ data }) => {
     <TableContainer component={Paper} sx={{ boxShadow: 0 }}>
       <Table sx={{ minWidth: 650, border: 0 }} aria-label="simple table">
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name} sx={{ border: 0 }}>
-              <TableCell
-                component="th"
-                scope="row"
-                sx={{ border: 0, width: '25%' }}
-              >
-                <b>{row.name}</b>
-              </TableCell>
-              <TableCell
-                align="left"
-                sx={{ border: 0 }}
-                className="application-details-table-answer"
-                style={{ verticalAlign: 'top' }}
-              >
-                {row.answer}
-              </TableCell>
-            </TableRow>
-          ))}
+          {rows.map((row) => {
+            if (row.answer) {
+              return (
+                <TableRow key={row.name} sx={{ border: 0 }}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{ border: 0, width: '25%' }}
+                  >
+                    <b>{row.name}</b>
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{ border: 0 }}
+                    className="application-details-table-answer"
+                    style={{ verticalAlign: 'top' }}
+                  >
+                    {row.answer}
+                  </TableCell>
+                </TableRow>
+              );
+            }
+          })}
         </TableBody>
       </Table>
     </TableContainer>

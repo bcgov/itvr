@@ -47,7 +47,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
 
   const queryFn = () =>
     axiosInstance.current
-      .get(`/api/spouse-application/${id}/initiate`)
+      .get(`/api/application-form/${id}/household`)
       .then((response) => response.data);
 
   const { data, isLoading, isError, error } = useQuery(
