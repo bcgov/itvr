@@ -383,6 +383,13 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
+          <Box>
+            Upload an image (jpg or png) of your B.C. Driver's Licence (photo
+            side) and a secondary piece of ID &nbsp;
+            <a href="/identificationExamples" target="_blank">
+              (see examples):
+            </a>
+          </Box>
           {errors?.documents?.type === 'validate' && (
             <p className="error">Need at least 2 files</p>
           )}
