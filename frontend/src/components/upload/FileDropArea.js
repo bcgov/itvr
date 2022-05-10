@@ -48,7 +48,6 @@ const FileDropArea = ({
     register(name, {
       validate: {
         twoOrMore: (inputtedFiles) => {
-          console.log(inputtedFiles);
           if (!inputtedFiles || inputtedFiles.length < 2) {
             return false;
           }
@@ -62,7 +61,6 @@ const FileDropArea = ({
               return false;
             }
           }
-          return true;
         }
       }
     });
