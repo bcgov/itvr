@@ -218,8 +218,10 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           <Box mt={2}>
             <InputLabel htmlFor="documents">
               Upload an image (jpg or png) of your B.C. Driver's Licence or B.C.
-              Services Card (photo side) and a secondary piece of ID (see
-              examples):
+              Services Card (photo side) and a secondary piece of ID &nbsp;
+              <a href="/identificationExamples" target="_blank">
+                (see examples):
+              </a>
             </InputLabel>
           </Box>
           {errors?.documents?.type === 'validate' && (

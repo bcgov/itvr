@@ -9,6 +9,7 @@ import DetailsPage from '../pages/Details';
 import HouseholdPage from '../pages/Household';
 import HouseholdFormPage from '../pages/HouseholdForm';
 import HouseholdDetails from '../pages/HouseholdDetails';
+import IdentificationExamplesPage from '../pages/IdentificationExamples';
 
 const RequireAuth = ({ children, redirectTo }) => {
   const { keycloak } = useKeycloak();
@@ -67,6 +68,10 @@ const AppRouter = () => (
             <AdminPage />
           </RequireAuth>
         }
+      />
+      <Route
+        path="/identificationExamples"
+        element={<IdentificationExamplesPage />}
       />
     </Routes>
   </BrowserRouter>
