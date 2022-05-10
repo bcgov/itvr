@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';
 
+const MAX_SIZE = 5242880; //5MB in bytes
 const getFileSize = (bytes) => {
   if (bytes === 0) {
     return '0 bytes';
@@ -16,6 +17,13 @@ const getFileSize = (bytes) => {
   const filesize = parseFloat((bytes / 1000 ** i).toFixed(1));
 
   return `${filesize} ${sizes[i]}`;
+};
+
+const fileTooLarge = (bytes, maxBytes) => {
+  if (bytes <= maxBytes) {
+    return false;
+  }
+  return true;
 };
 
 const FileDropArea = ({
@@ -37,12 +45,26 @@ const FileDropArea = ({
     accept
   });
   useEffect(() => {
-    register(name, {validate: (inputtedFiles) => {
-      if(!inputtedFiles || inputtedFiles.length < 2) {
-        return false;
+    register(name, {
+      validate: {
+        twoOrMore: (inputtedFiles) => {
+          if (!inputtedFiles || inputtedFiles.length < 2) {
+            return false;
+          }
+          return true;
+        },
+        maxSize: (inputtedFiles) => {
+          for (const i in inputtedFiles) {
+            const inputtedFile = inputtedFiles[i];
+            const inputtedFileSize = inputtedFile.size;
+            if (fileTooLarge(inputtedFileSize, MAX_SIZE)) {
+              return false;
+            }
+          }
+          return true;
+        }
       }
-      return true;
-    }});
+    });
     return () => {
       unregister(name);
     };

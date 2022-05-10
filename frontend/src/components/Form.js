@@ -390,8 +390,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               (see examples):
             </a>
           </Box>
-          {errors?.documents?.type === 'validate' && (
+          {errors?.documents?.type === 'twoOrMore' && (
             <p className="error">Need at least 2 files</p>
+          )}
+          {errors?.documents?.type === 'maxSize' && (
+            <p className="error">No file may exceed 5MB</p>
           )}
           <FileDropArea name="documents" />
         </FormGroup>
