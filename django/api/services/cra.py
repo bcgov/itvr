@@ -1,5 +1,6 @@
 from datetime import date
 
+
 ##
 # Read a text file that has been posted by CRA
 # INPUT: A string representing a text file
