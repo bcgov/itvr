@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_q",
+    "sequences.apps.SequencesConfig",
     "users",
     "api.apps.ApiConfig",
 ]
@@ -160,10 +161,6 @@ MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 MINIO_BUCKET_NAME = os.getenv("MINIO_BUCKET_NAME")
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
-MINIO_USE_SSL = bool(os.getenv("MINIO_USE_SSL", "False").lower() in ["true", 1])
-
-if DEBUG:
-    MINIO_USE_SSL = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -211,3 +208,5 @@ JAZZMIN_SETTINGS = {
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_brand": "BC Gov ITVR",
 }
+
+CRA_ENVIRONMENT = os.getenv("CRA_ENVIRONMENT", "A")

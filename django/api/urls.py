@@ -16,6 +16,9 @@ ROUTER = OptionalSlashRouter()
 ROUTER.register(r"application-form", ApplicationFormViewset)
 ROUTER.register(r"spouse-application", HouseholdMemberApplicationViewset)
 
+print(str(admin.site.__class__))
+print(admin.site.urls)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(ROUTER.urls)),

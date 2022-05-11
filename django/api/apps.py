@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 from django.contrib.admin import AdminSite
 from django.contrib.admin.apps import AdminConfig
+from .views import download_file
 
 
 class ApiConfig(AppConfig):
@@ -11,14 +12,15 @@ class ApiConfig(AppConfig):
 
 
 class ITVRAdminSite(AdminSite):
-    pass
+    def get_urls(self):
+        from django.urls import path
 
-    # def get_urls(self):
-    #     from django.urls import path
+        print("GETTING CUSTOM URLS")
 
-    #     urls = super().get_urls()
-    #     urls += [path("my_view/", self.admin_view(some_view))]
-    #     return urls
+        urls = super().get_urls()
+        urls = [path("cra-download", self.admin_view(download_file))] + urls
+
+        return urls
 
 
 class ITVRAdminConfig(AdminConfig):
