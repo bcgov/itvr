@@ -3,22 +3,28 @@ from datetime import date
 
 ##
 # Read a text file that has been posted by CRA
-# INPUT: A string representing a text file
+# Will have \r\n as it's from a Windows machine
+# INPUT: A bytes string representing a text file
 # OUTPUT: An array of dictionaries for each assessment made
 #
 def read(file):
-    results = []  # Array to return
-    for line in file:
-        subCode = line[17:21]  # Grab the sub-code, defining type of record.
-        if subCode != "0236":
-            continue  # If not an income entry.... pass.
+    print(file)
+    results = []
+    for line in file.split(b"\r\n"):
+        print("LINE")
+        print(line)
+        # Grab the sub-code, defining type of record.
+        subCode = line[17:21]
+        print("subCode")
+        print(subCode)
 
-        # All rows have a set number of spaces for each value
-        sin = line[4:13]
-        year = line[13:17]
-        income = line[21:30].lstrip("0")
-        results.append({"sin": sin, "year": year, "income": income})  # Add to array
-    return results  # Return results
+        # subcode 0236 is for income
+        if subCode != b"0236":
+            sin = line[4:13]
+            year = line[13:17]
+            income = line[21:30].lstrip(b"0")
+            results.append({"sin": sin, "year": year, "income": income})
+    return results
 
 
 ##
