@@ -25,6 +25,20 @@ parameters:
     description: itvr branch name of the pr
     required: true
 objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Keeps track of changes in the client / front end image
+    labels:
+      shared: "true"
+    creationTimestamp: null
+    name: ${NAME}-frontend
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
 - apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
@@ -37,6 +51,13 @@ objects:
       to:
         kind: ImageStreamTag
         name: ${NAME}-frontend:${VERSION}
+    resources:
+    limits:
+        cpu: 1000m
+        memory: 2Gi
+    requests:
+        cpu: 500m
+        memory: 100Mi
     source:
       contextDir: frontend
       git:
@@ -45,7 +66,18 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
-        dockerfilePath: ./Dockerfilep-Openshift
+        dockerfilePath: ./Dockerfile-Openshift
+        env:
+          - name: ARTIFACTORY_USER
+            valueFrom:
+              secretKeyRef:
+                name: artifacts-default-pwpgbz
+                key: username
+          - name: ARTIFACTORY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: artifacts-default-pwpgbz
+                key: password
       type: Docker
     triggers:
     - type: ConfigChange
