@@ -35,7 +35,6 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 INSTALLED_APPS = [
     "jazzmin",
-    "api.apps.ITVRAdminConfig",
     "django_filters",
     "django_extensions",
     "django.contrib.auth",
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     "sequences.apps.SequencesConfig",
     "users",
     "api.apps.ApiConfig",
+    "api.apps.ITVRAdminConfig",
 ]
 
 MIDDLEWARE = [
