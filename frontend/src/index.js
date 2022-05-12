@@ -11,7 +11,8 @@ const queryClient = new QueryClient();
 
 const initOptions = {
   onLoad: 'check-sso',
-  pkceMethod: 'S256'
+  pkceMethod: 'S256',
+  useNonce: false
 };
 
 ReactDOM.render(
