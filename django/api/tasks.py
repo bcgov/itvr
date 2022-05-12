@@ -233,17 +233,17 @@ def send_approve(recipient_email, application_id):
         
         <p>Next steps:</p>
         <ol>
-        <li>
-        Please allow X business days for your information to be populated into
-        the rebate database at B.C. automotive dealerships.</li>
-        <li>
-        Bring your drivers license with you to an automotive dealer in B.C.
-        </li>
-        <li>
-        Use your rebate at the time of vehicle purchase to realize cost savings
-        on your new zero-emission vehicle!
-        </li>
-        
+          <li>
+          Please allow X business days for your information to be populated into
+          the rebate database at B.C. automotive dealerships.</li>
+          <li>
+            Bring your drivers license with you to an automotive dealer in B.C.
+          </li>
+          <li>
+            Use your rebate at the time of vehicle purchase to realize cost savings
+            on your new zero-emission vehicle!
+          </li>
+        </ol>
         <p>Please note: This e-mail confirms that you have been approved for a
         rebate under the CleanBC Go Electric Light-Duty Vehicle program only.
         Accessing the rebate is conditional on Program funds being available
