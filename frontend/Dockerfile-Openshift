@@ -1,8 +1,8 @@
 # Stage 1: Use yarn to build the app
 FROM artifacts.developer.gov.bc.ca/docker-remote/node:16 as builder
 WORKDIR /usr/src/app
-COPY . ./
-RUN ls -l && \
+RUN pwd && \
+    ls -l && \
     node -v && \
     npm version && \
     npm run build
