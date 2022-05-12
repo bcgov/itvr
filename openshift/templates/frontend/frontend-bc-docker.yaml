@@ -52,12 +52,12 @@ objects:
         kind: ImageStreamTag
         name: ${NAME}-frontend:${VERSION}
     resources:
-    limits:
-        cpu: 2000m
-        memory: 3Gi
-    requests:
-        cpu: 1000m
-        memory: 1Gi
+        limits:
+            cpu: 2000m
+            memory: 3Gi
+        requests:
+            cpu: 1000m
+            memory: 1Gi
     source:
       contextDir: frontend
       git:
