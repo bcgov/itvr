@@ -32,3 +32,24 @@ def after_household_member_save(sender, instance, created, **kwargs):
                 application.email,
                 application.id,
             )
+
+
+@receiver(post_save, sender=GoElectricRebateApplication)
+def after_status_change(sender, instance, created, **kwargs):
+    if not created:
+        ## if identity is declined (eg id doesnt match address)
+        if instance.status == GoElectricRebateApplication.Status.DECLINED:
+            if settings.EMAIL["SEND_EMAIL"]:
+                async_task(
+                    "api.tasks.send_reject",
+                    instance.email,
+                    instance.id,
+                )
+        ## if rebate is approved, send an email with amount which we will need to pass in
+        elif instance.status == GoElectricRebateApplication.Status.APPROVED:
+            if settings.EMAIL["SEND_EMAIL"]:
+                async_task(
+                    "api.tasks.send_approve",
+                    instance.email,
+                    instance.id,
+                )
