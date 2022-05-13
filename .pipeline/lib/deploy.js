@@ -55,7 +55,7 @@ module.exports = settings => {
   }
   */
 
-  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc.yaml`, {
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc-docker.yaml`, {
     'param': {
       'NAME': phases[phase].name,
       'SUFFIX': phases[phase].suffix,
