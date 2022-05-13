@@ -8,8 +8,7 @@ RUN npm run build
 
 # Stage 2: Copy the JS React SPA into the Nginx HTML directory
 FROM artifacts.developer.gov.bc.ca/docker-remote/bitnami/nginx:1.21.6
-RUN sudo apt-get update
-RUN sudo apt-get install vim
+RUN apt-get update && apt-get install vim -y
 COPY --from=builder /usr/src/app/build /app
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
