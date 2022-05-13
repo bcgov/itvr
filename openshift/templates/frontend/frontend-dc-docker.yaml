@@ -155,24 +155,22 @@ objects:
               imagePullPolicy: IfNotPresent
               livenessProbe:
                 failureThreshold: 10
-                initialDelaySeconds: 50
+                initialDelaySeconds: 30
                 periodSeconds: 10
                 successThreshold: 1
                 tcpSocket:
-                  port: 3000
+                  port: 8080
                 timeoutSeconds: 3
               ports:
-                - containerPort: 3000
-                  protocol: TCP
-                - containerPort: 5002
+                - containerPort: 8080
                   protocol: TCP
               readinessProbe:
                 failureThreshold: 10
-                initialDelaySeconds: 40
+                initialDelaySeconds: 20
                 periodSeconds: 10
                 successThreshold: 1
                 tcpSocket:
-                  port: 3000
+                  port: 8080
                 timeoutSeconds: 3
               resources:
                 limits:
