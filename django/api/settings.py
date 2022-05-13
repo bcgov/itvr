@@ -35,6 +35,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 INSTALLED_APPS = [
     "jazzmin",
+    "api.apps.ITVRAdminConfig",
     "django_filters",
     "django_extensions",
     "django.contrib.auth",
@@ -48,7 +49,6 @@ INSTALLED_APPS = [
     "sequences.apps.SequencesConfig",
     "users",
     "api.apps.ApiConfig",
-    "api.apps.ITVRAdminConfig",
 ]
 
 MIDDLEWARE = [
@@ -68,7 +68,7 @@ ROOT_URLCONF = "api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "../", "frontend", "public")],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

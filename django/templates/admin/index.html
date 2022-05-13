@@ -1,0 +1,20 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="col-lg-9 col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header"><h5 class="m-0">CRA IN and OUT Files</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6 col-12">
+                        <a href="{% url 'admin:cra-download' %}">Download CRA IN File</a>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <a href="{% url 'admin:cra-upload' %}">Upload CRA OUT File</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

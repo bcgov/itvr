@@ -8,18 +8,13 @@ from datetime import date
 # OUTPUT: An array of dictionaries for each assessment made
 #
 def read(file):
-    print(file)
     results = []
     for line in file.split(b"\r\n"):
-        print("LINE")
-        print(line)
         # Grab the sub-code, defining type of record.
         subCode = line[17:21]
-        print("subCode")
-        print(subCode)
 
         # subcode 0236 is for income
-        if subCode != b"0236":
+        if subCode == b"0236":
             sin = line[4:13]
             year = line[13:17]
             income = line[21:30].lstrip(b"0")
@@ -32,29 +27,29 @@ def read(file):
 # INPUT: A dictionary of values to write to the file
 # OUTPUT: A string representing a text file
 #
-def write(data):
-    file = ""  # String to return
+def write(data, program_code="BCVR", cra_env="A", cra_sequence="00001"):
+    file = ""
 
-    today = date.today().strftime("%Y%m%d")  # Get today's date
+    today = date.today().strftime("%Y%m%d")
 
     # Number of records to write.
-    l = str(len(data) + 2)  # Includes header and footer.
-    records = "0" * (8 - len(l)) + l
+    lines = str(len(data) + 2)  # Includes header and footer.
+    records = "0" * (8 - len(lines)) + lines
 
-    ####################### Write the header ##############################
+    # Write the header
     file += "7100"  # Request transaction code
     file += " " * 24  # Blank space
 
     file += today  #
     file += " "  # Blank space
 
-    file += "BCVRA00009"  # Requesting institution code TODO: make this dynamic
+    file += program_code + cra_env + cra_sequence
 
     file += " " * 99  # Blank space
 
     file += "0\n"  # Blank space
 
-    ####################### Write the body ##############################
+    # Write the body
     for row in data:
         file += "7101"  # Request transaction code
         file += row["sin"]  # SIN
@@ -75,16 +70,16 @@ def write(data):
         file += "1234"  # Record identification number (optional)
 
         file += " " * 29  # Blank space
-        file += "0\n"  # Delimiter
+        file += "0\r\n"  # Delimiter
 
-    ####################### Write the trailer ###########################
+    # Write the trailer
     file += "7102"  # Request transaction code
     file += " " * 24  # Blank space
 
     file += today  # Request date
     file += " "  # Blank space
 
-    file += "BCVRA00009"  # Requesting institution code TODO: make this dynamic
+    file += program_code + cra_env + cra_sequence
 
     file += " " * 6  # Blank space
 
@@ -94,5 +89,4 @@ def write(data):
 
     file += "0"  # terminating character
 
-    ####################### Return the file ##############################
     return file

@@ -1,19 +1,17 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>CRA File Upload</title>   
-    </head>
-    <body>
-        <form action="{% url 'admin:cra-upload' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
-            <p>{{ form.cra_response_file.label_tag }} {{ form.cra_response_file.help_text }}</p>
-            <p>
-                {{ form.cra_response_file.errors }}
-                {{ form.cra_response_file }}
-            </p>
-            <p><input type="submit" value="Upload"></p>
-        </form>
-    </body>
-</html>
+{% extends "admin/index.html" %}
+{% load i18n admin_urls jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+{% block title %}Upload CRA OUT File{% endblock %}
+{% block content_title %}Upload CRA OUT File{% endblock %}
+{% block content %}
+    <form action="{% url 'admin:cra-upload' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.non_field_errors }}</p>
+        <p>{{ form.cra_response_file.label_tag }} {{ form.cra_response_file.help_text }}</p>
+        <p>
+            {{ form.cra_response_file.errors }}
+            {{ form.cra_response_file }}
+        </p>
+        <p><input type="submit" value="Upload" class="btn {{ jazzmin_ui.button_classes.success }} form-control"></p>
+    </form>
+{% endblock %}
