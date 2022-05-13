@@ -9,10 +9,10 @@ import HouseholdPage from '../pages/Household';
 import HouseholdFormPage from '../pages/HouseholdForm';
 import HouseholdDetails from '../pages/HouseholdDetails';
 import IdentificationExamplesPage from '../pages/IdentificationExamples';
-import useCustomKeycloak from '../utils/keycloakHook';
+import { useKeycloak } from '@react-keycloak/web';
 
 const RequireAuth = ({ children, redirectTo }) => {
-  const { keycloak } = useCustomKeycloak();
+  const { keycloak } = useKeycloak();
   return keycloak.authenticated ? children : <Navigate to={redirectTo} />;
 };
 

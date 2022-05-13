@@ -1,10 +1,10 @@
+import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
 import Layout from '../components/Layout';
-import useCustomKeycloak from '../utils/keycloakHook';
 
 function Index() {
-  const { keycloak } = useCustomKeycloak();
+  const { keycloak } = useKeycloak();
 
   return (
     <div className="app">

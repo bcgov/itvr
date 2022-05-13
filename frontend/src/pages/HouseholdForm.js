@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import jwt_decode from 'jwt-decode';
 import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
-import useCustomKeycloak from '../utils/keycloakHook';
+import { useKeycloak } from '@react-keycloak/web';
 
 const HouseholdFormPage = () => {
-  const { keycloak } = useCustomKeycloak();
+  const { keycloak } = useKeycloak();
   // we can validate the token server side
   const decoded = jwt_decode(keycloak.token);
   const householdApplicationId = keycloak.idTokenParsed.nonce;

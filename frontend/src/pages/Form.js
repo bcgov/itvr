@@ -3,10 +3,10 @@ import jwt_decode from 'jwt-decode';
 import Form from '../components/Form';
 import Layout from '../components/Layout';
 import RebateTable from '../components/RebateTable';
-import useCustomKeycloak from '../utils/keycloakHook';
+import { useKeycloak } from '@react-keycloak/web';
 
 const FormPage = () => {
-  const { keycloak } = useCustomKeycloak();
+  const { keycloak } = useKeycloak();
   // we can validate the token server side
   const decoded = jwt_decode(keycloak.token);
   console.log(decoded);
