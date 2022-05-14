@@ -89,34 +89,3 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             obj.status = GoElectricRebateApplication.Status.DECLINED
             obj.save()
         return ret
-
-
-# class YourAdmin(admin.ModelAdmin):
-#      # add the link to the various fields attributes (fieldsets if necessary)
-#     readonly_fields = ('download_link',)
-#     fields = (..., 'download_link', ...)
-
-#     # add custom view to urls
-#     def get_urls(self):
-#         urls = super(YourAdmin, self).get_urls()
-#         urls += [
-#             url(r'^download-file/(?P<pk>\d+)$', self.download_file,
-#                 name='applabel_modelname_download-file'),
-#         ]
-#         return urls
-
-#     # custom "field" that returns a link to the custom function
-#     def download_link(self, obj):
-#         return format_html(
-#             '<a href="{}">Download file</a>',
-#             reverse('admin:applabel_modelname_download-file', args=[obj.pk])
-#         )
-#     download_link.short_description = "Download file"
-
-#     # add custom view function that downloads the file
-#     def download_file(self, request, pk):
-#         response = HttpResponse(content_type='application/force-download')
-#         response['Content-Disposition'] = 'attachment; filename="whatever.txt"')
-#         # generate dynamic file content using object pk
-#         response.write('whatever content')
-#         return response
