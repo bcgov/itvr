@@ -54,3 +54,13 @@ def validate_consent(has_consented):
         raise ValidationError(
             "You must confirm both consent check boxes to submit your application."
         )
+
+
+# default max filesize is 5MB
+def validate_file_size(max_size=5242880):
+    def validator(file):
+        filesize = file.size
+        if filesize > max_size:
+            raise ValidationError("File too large.")
+
+    return validator

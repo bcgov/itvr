@@ -17,7 +17,12 @@ from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
 from django.core.files.storage import get_storage_class
 from django.core.validators import MinLengthValidator
-from api.validators import validate_driving_age, validate_sin, validate_consent
+from api.validators import (
+    validate_driving_age,
+    validate_sin,
+    validate_consent,
+    validate_file_size,
+)
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 
@@ -67,7 +72,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     )
     date_of_birth = DateField(validators=[validate_driving_age])
     tax_year = IntegerField()
-    doc1 = ImageField(upload_to="docs")
+    doc1 = ImageField(upload_to="docs", validators=[validate_file_size()])
 
     def doc1_tag(self):
         return mark_safe(
@@ -77,7 +82,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     doc1_tag.short_description = "First Uploaded Document"
 
-    doc2 = ImageField(upload_to="docs")
+    doc2 = ImageField(upload_to="docs", validators=[validate_file_size()])
 
     def doc2_tag(self):
         return mark_safe(

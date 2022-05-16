@@ -12,7 +12,12 @@ from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
 from django.core.files.storage import get_storage_class
 from django_extensions.db.models import TimeStampedModel
-from api.validators import validate_driving_age, validate_sin, validate_consent
+from api.validators import (
+    validate_driving_age,
+    validate_sin,
+    validate_consent,
+    validate_file_size,
+)
 
 media_storage = get_storage_class()()
 
@@ -31,7 +36,7 @@ class HouseholdMember(TimeStampedModel):
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
     date_of_birth = DateField(validators=[validate_driving_age])
-    doc1 = ImageField(upload_to="docs")
+    doc1 = ImageField(upload_to="docs", validators=[validate_file_size()])
 
     def doc1_tag(self):
         return mark_safe(
@@ -41,7 +46,7 @@ class HouseholdMember(TimeStampedModel):
 
     doc1_tag.short_description = "First Uploaded Document"
 
-    doc2 = ImageField(upload_to="docs")
+    doc2 = ImageField(upload_to="docs", validators=[validate_file_size()])
 
     def doc2_tag(self):
         return mark_safe(
