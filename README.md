@@ -67,6 +67,18 @@ To get access to the created client, go [request account](https://getok.nrs.gov.
 Submitting wage requests can be done manually by logging into
 ftp://ftp-ot.cra-arc.gc.ca/pub/BC/iv/bcvr/ anonymously and dropping any encrypted files in the uaclient2cra folder. Within a short time the encrypted response will be available within the uacra2client folder. All security is trusted within the encryption algorithm. Anybody can download a file from here. Only the target user/computer can decrypt the file.
 
+For the next valid sequence number:
+
+If you ever are not sure, Susan can verify with ITB or send a request with the last sequence you are aware of and it will will fail but you will get an email notification indicating the error and what the next available sequence is.
+
+Example of the contents of the error email for wrong sequence number:
+
+THE FOLLOWING FILENAME IS EXCLUDED FROM PROCESSING PLEASE INVESTIGATE THE FILE LISTED BELOW:
+INPUT FILENAME: DEMO.A00154
+REASON : INVALID SEQUENCE NUMBER ON INPUT FILENAME
+
+        THE NEXT VALID SEQUENCE NUMBER TO USE IS :   00155
+
 ## Frontend
 
 We've decided to run the frontend outside of docker at this time mostly because of mounted Lima volumes causing issues with npm permissions. [Track the open issue](https://github.com/lima-vm/lima/issues/693)
