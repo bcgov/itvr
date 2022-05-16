@@ -1,92 +1,92 @@
 from datetime import date
 
+
 ##
 # Read a text file that has been posted by CRA
-# INPUT: A string representing a text file
+# Will have \r\n as it's from a Windows machine
+# INPUT: A bytes string representing a text file
 # OUTPUT: An array of dictionaries for each assessment made
 #
 def read(file):
-  results = [] # Array to return
-  for line in file: 
-    subCode = line[17:21] # Grab the sub-code, defining type of record.
-    if subCode != '0236': continue # If not an income entry.... pass.
+    results = []
+    for line in file.split(b"\r\n"):
+        # Grab the sub-code, defining type of record.
+        subCode = line[17:21]
 
-    # All rows have a set number of spaces for each value
-    sin = line[4:13]
-    year = line[13:17]
-    income = line[21:30].lstrip("0")
-    results.append({'sin':sin,'year':year,'income':income}) # Add to array
-  return results # Return results
+        # subcode 0236 is for income
+        if subCode == b"0236":
+            sin = line[4:13]
+            year = line[13:17]
+            income = line[21:30].lstrip(b"0")
+            results.append({"sin": sin, "year": year, "income": income})
+    return results
+
 
 ##
 # Write a CRA request file
 # INPUT: A dictionary of values to write to the file
 # OUTPUT: A string representing a text file
 #
-def write(data):
-  file = "" # String to return
+def write(data, program_code="BCVR", cra_env="A", cra_sequence="00001"):
+    file = ""
 
-  today = date.today().strftime("%Y%m%d") # Get today's date
+    today = date.today().strftime("%Y%m%d")
 
-  # Number of records to write.
-  l = str(len(data) + 2) # Includes header and footer.
-  records = '0' * (8 - len(l))+l
+    # Number of records to write.
+    lines = str(len(data) + 2)  # Includes header and footer.
+    records = "0" * (8 - len(lines)) + lines
 
-  ####################### Write the header ##############################
-  file += '7100' # Request transaction code
-  file += ' ' * 24 # Blank space
+    # Write the header
+    file += "7100"  # Request transaction code
+    file += " " * 24  # Blank space
 
-  file += today # 
-  file += ' ' # Blank space
+    file += today  #
+    file += " "  # Blank space
 
-  file += 'BCVRA00009' # Requesting institution code TODO: make this dynamic
+    file += program_code + cra_env + cra_sequence
 
-  file += ' ' * 99 # Blank space
+    file += " " * 99  # Blank space
 
-  file += '0\n' # Blank space
+    file += "0\n"  # Blank space
 
+    # Write the body
+    for row in data:
+        file += "7101"  # Request transaction code
+        file += row["sin"]  # SIN
+        file += " " * 4  # Blank space
+        file += "0020"  # Sub-code
+        file += row["family_name"]  # Family name
 
-  ####################### Write the body ##############################
-  for row in data:
-    file += '7101' # Request transaction code
-    file += row['sin'] # SIN
-    file += ' ' * 4 # Blank space
-    file += '0020' # Sub-code
-    file += row['family_name'] # Family name
+        file += " " * (30 - len(row["family_name"]))  # Blank space
+        file += row["given_name"]  # Given name
 
-    file += ' ' * (30 - len(row['family_name'])) # Blank space
-    file += row['given_name'] # Given name
+        file += " " * (30 - len(row["given_name"]))  # Blank space
+        file += row["birth_date"].replace("-", "")  # Birth date
 
-    file += ' ' * (30 - len(row['given_name'])) # Blank space
-    file += row['birth_date'].replace('-','') # Birth date
+        file += row["year"]  # Year
+        file += " " * 16  # Blank space
 
-    file += row['year'] # Year
-    file += ' ' * 16 # Blank space
+        file += "BCVR"  # Program area code
+        file += "1234"  # Record identification number (optional)
 
-    file += 'BCVR' # Program area code
-    file += '1234' # Record identification number (optional)
+        file += " " * 29  # Blank space
+        file += "0\r\n"  # Delimiter
 
-    file += ' ' * 29 # Blank space
-    file += '0\n' # Delimiter
+    # Write the trailer
+    file += "7102"  # Request transaction code
+    file += " " * 24  # Blank space
 
+    file += today  # Request date
+    file += " "  # Blank space
 
-  ####################### Write the trailer ###########################
-  file += '7102' # Request transaction code 
-  file += ' ' * 24 # Blank space
+    file += program_code + cra_env + cra_sequence
 
-  file += today # Request date
-  file += ' ' # Blank space
+    file += " " * 6  # Blank space
 
-  file += 'BCVRA00009' # Requesting institution code TODO: make this dynamic
+    file += records  # Number of records in file
 
-  file += ' ' * 6 # Blank space
+    file += " " * 85  # Blank space
 
-  file += records # Number of records in file
+    file += "0"  # terminating character
 
-  file += ' ' * 85 # Blank space
-
-  file += '0' # terminating character 
-
-  
-  ####################### Return the file ##############################
-  return file
+    return file
