@@ -1,4 +1,4 @@
-import uuid
+from shortuuid.django_fields import ShortUUIDField
 from django.conf import settings
 from django.db.models import (
     CharField,
@@ -57,7 +57,7 @@ class GoElectricRebateApplication(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=PROTECT,
     )
-    id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = ShortUUIDField(length=16, primary_key=True, editable=False)
     sin = EncryptedCharField(max_length=9, unique=False, validators=[validate_sin])
     status = CharField(max_length=250, choices=Status.choices, unique=False)
     last_name = CharField(max_length=250, unique=False)
@@ -72,7 +72,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     )
     date_of_birth = DateField(validators=[validate_driving_age])
     tax_year = IntegerField()
-    doc1 = ImageField(upload_to="docs", validators=[validate_file_size()])
+    doc1 = ImageField(upload_to="docs", validators=[validate_file_size])
 
     def doc1_tag(self):
         return mark_safe(
@@ -82,7 +82,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     doc1_tag.short_description = "First Uploaded Document"
 
-    doc2 = ImageField(upload_to="docs", validators=[validate_file_size()])
+    doc2 = ImageField(upload_to="docs", validators=[validate_file_size])
 
     def doc2_tag(self):
         return mark_safe(
