@@ -62,7 +62,12 @@ We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-em
 
 To get access to the created client, go [request account](https://getok.nrs.gov.bc.ca/app/requestAccount) with application acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
 
-### Frontend
+### CRA
+
+Submitting wage requests can be done manually by logging into
+ftp://ftp-ot.cra-arc.gc.ca/pub/BC/iv/bcvr/ anonymously and dropping any encrypted files in the uaclient2cra folder. Within a short time the encrypted response will be available within the uacra2client folder. All security is trusted within the encryption algorithm. Anybody can download a file from here. Only the target user/computer can decrypt the file.
+
+## Frontend
 
 We've decided to run the frontend outside of docker at this time mostly because of mounted Lima volumes causing issues with npm permissions. [Track the open issue](https://github.com/lima-vm/lima/issues/693)
 
