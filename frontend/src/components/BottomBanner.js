@@ -1,13 +1,22 @@
 import Box from '@mui/material/Box';
-import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
+import React from 'react';
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
+  if (householdApplicationId) {
+    const origCreateLoginUrl = keycloak.createLoginUrl;
+    keycloak.createLoginUrl = (options) => {
+      let url = origCreateLoginUrl(options);
+      url = url + '&nonce=' + encodeURIComponent(householdApplicationId);
+      return url;
+    };
+  }
   const redirectUri = householdApplicationId
-    ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
+    ? `${window.location.origin}/householdForm`
     : `${window.location.origin}/form`;
-  const buttonText = "Please answer the questions above to confirm you are eligible to apply for a rebate.";
+  const buttonText =
+    'Please answer the questions above to confirm you are eligible to apply for a rebate.';
   return (
     <>
       <div

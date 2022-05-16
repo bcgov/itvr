@@ -1,9 +1,9 @@
 import React from 'react';
 import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
-import { useKeycloak } from '@react-keycloak/web';
 import BottomBanner from '../BottomBanner';
 import Box from '@mui/material/Box';
+import { useKeycloak } from '@react-keycloak/web';
 
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
@@ -68,11 +68,12 @@ const EligibilityPage = (props) => {
             />
           ))}
         </Box>
-        {eligible && 
-        <span className="validated">
-          Congratulations! You are eligible to apply for a rebate, proceed by logging in below.
-        </span>
-        }
+        {eligible && (
+          <span className="validated">
+            Congratulations! You are eligible to apply for a rebate, proceed by
+            logging in below.
+          </span>
+        )}
         <Box sx={{ mt: 5, mb: 0 }} className="whats-needed-individual">
           {title}
           {applicationText}

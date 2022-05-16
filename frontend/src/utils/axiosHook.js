@@ -14,8 +14,8 @@ const useAxios = (opts = {}) => {
       baseURL,
       ...opts,
       headers: {
-        Authorization: initialized ? `Bearer ${kcToken}` : undefined,
-      },
+        Authorization: initialized ? `Bearer ${kcToken}` : undefined
+      }
     });
 
     return () => {
