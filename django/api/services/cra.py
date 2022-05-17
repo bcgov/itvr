@@ -8,8 +8,10 @@ from datetime import date
 # OUTPUT: An array of dictionaries for each assessment made
 #
 def read(file):
+    print(file)
     results = []
     for line in file.split(b"\r\n"):
+        print(line)
         # Grab the sub-code, defining type of record.
         subCode = line[17:21]
 
