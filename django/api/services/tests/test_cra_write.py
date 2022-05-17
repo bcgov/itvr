@@ -3,7 +3,7 @@ from django.test import SimpleTestCase
 from api.services import cra
 
 
-class TestCra(SimpleTestCase):
+class TestCraWrite(SimpleTestCase):
     # Test against cra in file 00007
     def test_write_in_00007(self):
         data = [
