@@ -100,7 +100,7 @@ We use [Openshift](https://www.redhat.com/en/technologies/cloud-computing/opensh
 
 There's training on Openshift offered by BCDevExchange. Check the [schedule here](https://bcdevexchange.org/learning)
 
-## Git Process/ Rebasing
+### Git Process/ Rebasing
 
 We use git for version control.
 Each developer has their own fork of the repo and works off of branches from there
