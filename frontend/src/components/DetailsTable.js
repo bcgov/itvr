@@ -14,6 +14,13 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
   const timestampSplit = timestamp.split('T');
   const date = timestampSplit[0];
   const time = timestampSplit[1].split('.')[0];
+  const offset = timestampSplit[1].split('-')[1];
+  let pacificTimeType = 'Pacific Time';
+  if (offset === '07:00') {
+    pacificTimeType = 'PDT';
+  } else if (offset === '08:00') {
+    pacificTimeType = 'PST';
+  }
   if (consent) {
     return (
       'BCEID\\' +
@@ -23,7 +30,8 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
       date +
       ' ' +
       time +
-      ' PST'
+      ' ' +
+      pacificTimeType
     );
   }
 }
