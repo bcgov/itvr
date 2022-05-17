@@ -1,4 +1,4 @@
-import uuid
+from shortuuid.django_fields import ShortUUIDField
 from django.conf import settings
 from django.db.models import (
     CharField,
@@ -17,7 +17,12 @@ from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
 from django.core.files.storage import get_storage_class
 from django.core.validators import MinLengthValidator
-from api.validators import validate_driving_age, validate_sin, validate_consent
+from api.validators import (
+    validate_driving_age,
+    validate_sin,
+    validate_consent,
+    validate_file_size,
+)
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 
@@ -52,7 +57,7 @@ class GoElectricRebateApplication(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=PROTECT,
     )
-    id = UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = ShortUUIDField(length=16, primary_key=True, editable=False)
     sin = EncryptedCharField(max_length=9, unique=False, validators=[validate_sin])
     status = CharField(max_length=250, choices=Status.choices, unique=False)
     last_name = CharField(max_length=250, unique=False)
@@ -67,7 +72,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     )
     date_of_birth = DateField(validators=[validate_driving_age])
     tax_year = IntegerField()
-    doc1 = ImageField(upload_to="docs")
+    doc1 = ImageField(upload_to="docs", validators=[validate_file_size])
 
     def doc1_tag(self):
         return mark_safe(
@@ -77,7 +82,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     doc1_tag.short_description = "First Uploaded Document"
 
-    doc2 = ImageField(upload_to="docs")
+    doc2 = ImageField(upload_to="docs", validators=[validate_file_size])
 
     def doc2_tag(self):
         return mark_safe(
