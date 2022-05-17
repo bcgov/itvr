@@ -64,13 +64,13 @@ def write(
         file += row["given_name"]  # Given name
 
         file += " " * (30 - len(row["given_name"]))  # Blank space
-        file += row["birth_date"].replace("-", "")  # Birth date
+        file += row["birth_date"]  # Birth date
 
         file += row["year"]  # Year
         file += " " * 16  # Blank space
 
         file += program_code
-        file += "1234"  # Record identification number (optional)
+        file += row["application_id"]  # Record identification number (optional)
 
         file += " " * 29  # Blank space
         file += "0\n"  # Delimiter

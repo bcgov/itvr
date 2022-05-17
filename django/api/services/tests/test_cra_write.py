@@ -12,21 +12,24 @@ class TestCra(SimpleTestCase):
                 "year": "2020",
                 "given_name": "Alice",
                 "family_name": "Solange",
-                "birth_date": "1971-01-22",
+                "birth_date": "19710122",
+                "application_id": "1234",
             },
             {
                 "sin": "302435839",
                 "year": "2020",
                 "given_name": "Wendy",
                 "family_name": "Turner",
-                "birth_date": "1978-05-21",
+                "birth_date": "19780521",
+                "application_id": "1234",
             },
             {
                 "sin": "129922258",
                 "year": "2020",
                 "given_name": "Lily",
                 "family_name": "Redding",
-                "birth_date": "1983-07-07",
+                "birth_date": "19830707",
+                "application_id": "1234",
             },
         ]
 
