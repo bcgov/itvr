@@ -15,6 +15,10 @@ def read(file):
         # Grab the sub-code, defining type of record.
         subCode = line[17:21]
 
+        # From Susan:
+        # The business folks did flip flop on the net income
+        # (record 0236) line 23600 vs total income (0150)
+        # but total income (record 0150) or line 15000 was the final decision.
         # subcode 0236 is for income
         if subCode == b"0236":
             sin = line[4:13]
