@@ -40,7 +40,7 @@ objects:
       ## Allow patroni to accept communications from backend
       podSelector:
         matchLabels:
-          cluster-name: patroni${SUFFIX}
+          app.kubernetes.io/instance: itvr-spilo
       ingress:
         - from:
             - podSelector:
@@ -57,7 +57,7 @@ objects:
       ## Allow minio to accept communication from backend
       podSelector:
         matchLabels:
-          app: itvr-minio-${ENVIRONMENT}
+          app.kubernetes.io/instance: itvr-minio
       ingress:
         - from:
             - podSelector:
@@ -75,7 +75,7 @@ objects:
       ## Allow patroni to accept communications from backend mid lifecycle pod
       podSelector:
         matchLabels:
-          cluster-name: patroni${SUFFIX}
+          app.kubernetes.io/instance: itvr-spilo
       ingress:
         - from:
             - podSelector:
@@ -92,12 +92,12 @@ objects:
       ## Allow patroni to accept communications from other patroni pods
       podSelector:
         matchLabels:
-          cluster-name: patroni${SUFFIX}
+          app.kubernetes.io/instance: itvr-spilo
       ingress:
         - from:
             - podSelector:
                 matchLabels:
-                  cluster-name: patroni${SUFFIX}
+                  app.kubernetes.io/instance: itvr-spilo
           ports:
             - protocol: TCP
               port: 5432    
@@ -106,12 +106,12 @@ objects:
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-patroni-accepts-backup-container${SUFFIX}
+      name: allow-patroni-accepts-backup-container
     spec:
       ## Allow patroni to accept communications from backup container
       podSelector:
         matchLabels:
-          cluster-name: patroni${SUFFIX}
+          app.kubernetes.io/instance: itvr-spilo
       ingress:
         - from:
             - podSelector:
@@ -120,63 +120,46 @@ objects:
           ports:
             - protocol: TCP
               port: 5432                   
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-nagios${SUFFIX}
-    spec:
+#  - apiVersion: networking.k8s.io/v1
+#    kind: NetworkPolicy
+#    metadata:
+#      name: allow-patroni-accepts-nagios${SUFFIX}
+#    spec:
       ## Allow patroni to accept communications from nagios
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  app: nagios
-          ports:
-            - protocol: TCP
-              port: 5432
-            - protocol: TCP
-              port: 8008
+#      podSelector:
+#        matchLabels:
+#          cluster-name: patroni${SUFFIX}
+#      ingress:
+#        - from:
+#            - podSelector:
+#                matchLabels:
+#                  app: nagios
+#          ports:
+#            - protocol: TCP
+#              port: 5432
+#            - protocol: TCP
+#              port: 8008
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-patroni-accepts-schemaspy${SUFFIX}
+      name: allow-patroni-accepts-schemaspy
     spec:
       ## Allow patroni to accept communications from schemaspy
       podSelector:
         matchLabels:
-          cluster-name: patroni${SUFFIX}
+          app.kubernetes.io/instance: itvr-spilo
       ingress:
         - from:
             - podSelector:
                 matchLabels:
-                  name: schemaspy-public${SUFFIX}
+                  name: schemaspy-public
           ports:
             - protocol: TCP
               port: 5432          
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-patroni-accepts-metabase
-    spec:
-      ## Allow patroni to accept communications from backup container
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  app: metabase
-          ports:
-            - protocol: TCP
-              port: 5432                                         
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-backend-accepts-schemaspy${SUFFIX}
+      name: allow-backend-accepts-schemaspy
     spec:
       ## Allow backend to accept communication from schemaspy
       podSelector:
@@ -186,7 +169,7 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  name: schemaspy-public${SUFFIX}
+                  name: schemaspy-public
           ports:
             - protocol: TCP
               port: 8080

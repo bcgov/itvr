@@ -16,6 +16,7 @@ objects:
     metadata:
       name: allow-minio-accepts-nagios
     spec:
+      ## This knp is not used by itvr as it doesn't have nagios
       ## Allow minio to accept communication from nagios
       podSelector:
         matchLabels:
