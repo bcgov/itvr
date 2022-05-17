@@ -1,3 +1,4 @@
+from datetime import date
 from django.contrib.admin import AdminSite
 from django.contrib import messages
 from django.urls import path
@@ -81,8 +82,15 @@ class ITVRAdminSite(AdminSite):
             )
 
         filename = self.get_cra_filename(program_code, cra_env, cra_sequence)
+        today = date.today().strftime("%Y%m%d")
         response = HttpResponse(
-            cra.write(data, program_code, cra_env, f"{cra_sequence:05}"),
+            cra.write(
+                data,
+                today=today,
+                program_code=program_code,
+                cra_env=cra_env,
+                cra_sequence=f"{cra_sequence:05}",
+            ),
             content_type="text/plain",
         )
         response["Content-Disposition"] = "attachment; filename=" + filename

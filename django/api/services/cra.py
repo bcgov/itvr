@@ -1,6 +1,3 @@
-from datetime import date
-
-
 ##
 # Read a text file that has been posted by CRA
 # Will have \r\n as it's from a Windows machine
@@ -33,10 +30,10 @@ def read(file):
 # INPUT: A dictionary of values to write to the file
 # OUTPUT: A string representing a text file
 #
-def write(data, program_code="BCVR", cra_env="A", cra_sequence="00001"):
+def write(
+    data, today="20220516", program_code="BCVR", cra_env="A", cra_sequence="00001"
+):
     file = ""
-
-    today = date.today().strftime("%Y%m%d")
 
     # Number of records to write.
     lines = str(len(data) + 2)  # Includes header and footer.
@@ -72,11 +69,11 @@ def write(data, program_code="BCVR", cra_env="A", cra_sequence="00001"):
         file += row["year"]  # Year
         file += " " * 16  # Blank space
 
-        file += "BCVR"  # Program area code
+        file += program_code
         file += "1234"  # Record identification number (optional)
 
         file += " " * 29  # Blank space
-        file += "0\r\n"  # Delimiter
+        file += "0\n"  # Delimiter
 
     # Write the trailer
     file += "7102"  # Request transaction code
