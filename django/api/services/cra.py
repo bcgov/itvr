@@ -5,9 +5,8 @@
 # OUTPUT: An array of dictionaries for each assessment made
 #
 def read(file):
-    print(file)
     results = []
-    for line in file.split(b"\r\n"):
+    for line in file.split("\r\n"):
         print(line)
         # Grab the sub-code, defining type of record.
         subCode = line[17:21]
@@ -16,11 +15,10 @@ def read(file):
         # The business folks did flip flop on the net income
         # (record 0236) line 23600 vs total income (0150)
         # but total income (record 0150) or line 15000 was the final decision.
-        # subcode 0236 is for income
-        if subCode == b"0236":
+        if subCode == "0150":
             sin = line[4:13]
             year = line[13:17]
-            income = line[21:30].lstrip(b"0")
+            income = line[21:30].lstrip("0")
             results.append({"sin": sin, "year": year, "income": income})
     return results
 

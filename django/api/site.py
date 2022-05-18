@@ -43,7 +43,7 @@ class ITVRAdminSite(AdminSite):
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 file = request.FILES["cra_response_file"]
-                file_contents = file.read()
+                file_contents = file.read().decode("utf-8")
                 data = cra.read(file_contents)
                 # TODO do something with this data
                 # (store rebate amount receiving)
@@ -77,9 +77,24 @@ class ITVRAdminSite(AdminSite):
                     "year": str(rebate.tax_year),  # should we just save as string?
                     "given_name": rebate.first_name,
                     "family_name": rebate.last_name,
-                    "birth_date": rebate.date_of_birth.strftime("%Y-%m-%d"),
+                    "birth_date": rebate.date_of_birth.strftime("%Y%m%d"),
+                    "application_id": rebate.id,
                 }
             )
+
+            # TODO this should be some kind of enum like the status is.
+            if rebate.application_type == "household":
+                household_member = rebate.householdmember
+                data.append(
+                    {
+                        "sin": household_member.sin,
+                        "year": str(rebate.tax_year),  # should we just save as string?
+                        "given_name": household_member.first_name,
+                        "family_name": household_member.last_name,
+                        "birth_date": household_member.date_of_birth.strftime("%Y%m%d"),
+                        "application_id": rebate.id,
+                    }
+                )
 
         filename = self.get_cra_filename(program_code, cra_env, cra_sequence)
         today = date.today().strftime("%Y%m%d")
