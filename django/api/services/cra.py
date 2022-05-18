@@ -57,7 +57,6 @@ def write(
         given_name = row["given_name"].ljust(30)
         tax_years = " ".join([str(year) for year in row["years"]]).ljust(20)
         birth_date = row["birth_date"]
-        program_code = program_code
         identifier = row["application_id"].ljust(30)
         row = f"7101{sin}    0020{family_name}{given_name}{birth_date}{tax_years}{program_code}{identifier}   0\n"
         file += row

@@ -49,10 +49,5 @@ class TestCraWrite(SimpleTestCase):
         )
         cra_in_file_00007 = open(cra_in_file_00007_filename).read()
 
-        print("\n")
-        print(file_contents)
-        print("\n")
-        print(cra_in_file_00007)
-
         # Check file contents are exactly equal.
         self.assertEqual(file_contents, cra_in_file_00007)
