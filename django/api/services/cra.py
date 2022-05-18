@@ -52,26 +52,15 @@ def write(
 
     # Write the body
     for row in data:
-        file += "7101"  # Request transaction code
-        file += row["sin"]  # SIN
-        file += " " * 4  # Blank space
-        file += "0020"  # Sub-code
-        file += row["family_name"]  # Family name
-
-        file += " " * (30 - len(row["family_name"]))  # Blank space
-        file += row["given_name"]  # Given name
-
-        file += " " * (30 - len(row["given_name"]))  # Blank space
-        file += row["birth_date"]  # Birth date
-
-        file += row["year"]  # Year
-        file += " " * 16  # Blank space
-
-        file += program_code
-        file += row["application_id"]  # Record identification number (optional)
-
-        file += " " * 29  # Blank space
-        file += "0\n"  # Delimiter
+        sin = row["sin"]
+        family_name = row["family_name"].ljust(30)
+        given_name = row["given_name"].ljust(30)
+        tax_years = " ".join([str(year) for year in row["years"]]).ljust(20)
+        birth_date = row["birth_date"]
+        program_code = program_code
+        identifier = row["application_id"].ljust(30)
+        row = f"7101{sin}    0020{family_name}{given_name}{birth_date}{tax_years}{program_code}{identifier}   0\n"
+        file += row
 
     # Write the trailer
     file += "7102"  # Request transaction code

@@ -74,7 +74,7 @@ class ITVRAdminSite(AdminSite):
             data.append(
                 {
                     "sin": rebate.sin,
-                    "year": str(rebate.tax_year),  # should we just save as string?
+                    "years": [rebate.tax_year],
                     "given_name": rebate.first_name,
                     "family_name": rebate.last_name,
                     "birth_date": rebate.date_of_birth.strftime("%Y%m%d"),
@@ -88,7 +88,7 @@ class ITVRAdminSite(AdminSite):
                 data.append(
                     {
                         "sin": household_member.sin,
-                        "year": str(rebate.tax_year),  # should we just save as string?
+                        "years": [rebate.tax_year],
                         "given_name": household_member.first_name,
                         "family_name": household_member.last_name,
                         "birth_date": household_member.date_of_birth.strftime("%Y%m%d"),

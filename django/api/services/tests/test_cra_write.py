@@ -9,7 +9,7 @@ class TestCraWrite(SimpleTestCase):
         data = [
             {
                 "sin": "270300379",
-                "year": "2020",
+                "years": [2020],
                 "given_name": "Alice",
                 "family_name": "Solange",
                 "birth_date": "19710122",
@@ -17,7 +17,7 @@ class TestCraWrite(SimpleTestCase):
             },
             {
                 "sin": "302435839",
-                "year": "2020",
+                "years": [2020],
                 "given_name": "Wendy",
                 "family_name": "Turner",
                 "birth_date": "19780521",
@@ -25,7 +25,7 @@ class TestCraWrite(SimpleTestCase):
             },
             {
                 "sin": "129922258",
-                "year": "2020",
+                "years": [2020],
                 "given_name": "Lily",
                 "family_name": "Redding",
                 "birth_date": "19830707",
@@ -48,6 +48,11 @@ class TestCraWrite(SimpleTestCase):
             "TO.ATO#@@00.R7005.IN.BCVR.A00007",
         )
         cra_in_file_00007 = open(cra_in_file_00007_filename).read()
+
+        print("\n")
+        print(file_contents)
+        print("\n")
+        print(cra_in_file_00007)
 
         # Check file contents are exactly equal.
         self.assertEqual(file_contents, cra_in_file_00007)
