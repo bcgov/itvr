@@ -196,6 +196,7 @@ objects:
     spec:
       replicas: ${{REPLICAS}}
       revisionHistoryLimit: 10
+      automountServiceAccountToken: false
       selector:
         name: ${NAME}-backend${SUFFIX}
       strategy:
