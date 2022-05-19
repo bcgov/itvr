@@ -76,7 +76,7 @@ objects:
     status:
       dockerImageRepository: ""
   - kind: ConfigMap
-    apiVersion: image.openshift.io/v1
+    apiVersion: v1
     metadata:
       name: ${NAME}-frontend-features${SUFFIX}
       creationTimestamp:
