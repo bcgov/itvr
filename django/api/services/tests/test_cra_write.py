@@ -47,10 +47,12 @@ class TestCraWrite(SimpleTestCase):
             "in",
             "TO.ATO#@@00.R7005.IN.BCVR.A00007",
         )
-        cra_in_file_00007 = open(cra_in_file_00007_filename).read()
 
-        # Check file contents are exactly equal.
-        self.assertEqual(file_contents, cra_in_file_00007)
+        with open(cra_in_file_00007_filename, "r") as cra_in_file_00007:
+            file = cra_in_file_00007.read()
+
+            # Check file contents are exactly equal.
+            self.assertEqual(file_contents, file)
 
     # Test against cra in file 00008
     def test_write_in_00008(self):
@@ -103,7 +105,9 @@ class TestCraWrite(SimpleTestCase):
             "in",
             "TO.ATO#@@00.R7005.IN.BCVR.A00008",
         )
-        cra_in_file_00008 = open(cra_in_file_00008_filename).read()
 
-        # Check file contents are exactly equal.
-        self.assertEqual(file_contents, cra_in_file_00008)
+        with open(cra_in_file_00008_filename, "r") as cra_in_file_00008:
+            file = cra_in_file_00008.read()
+
+            # Check file contents are exactly equal.
+            self.assertEqual(file_contents, file)

@@ -13,8 +13,8 @@ class TestCraRead(SimpleTestCase):
             "ABCVR00007",
         )
 
-        with open(cra_out_file_00007_filename, "r") as cra_in_file_00007:
-            data = cra.read(cra_in_file_00007.read())
+        with open(cra_out_file_00007_filename, "r") as cra_out_file_00007:
+            data = cra.read(cra_out_file_00007.read())
             self.assertDictEqual(
                 data,
                 {
@@ -35,8 +35,8 @@ class TestCraRead(SimpleTestCase):
             "ABCVR00008",
         )
 
-        with open(cra_out_file_00008_filename, "r") as cra_in_file_00008:
-            data = cra.read(cra_in_file_00008.read())
+        with open(cra_out_file_00008_filename, "r") as cra_out_file_00008:
+            data = cra.read(cra_out_file_00008.read())
             self.assertDictEqual(
                 data,
                 {
