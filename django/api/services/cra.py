@@ -1,15 +1,31 @@
 ##
 # Read a text file that has been posted by CRA
-# Will have \r\n as it's from a Windows machine
 # INPUT: A bytes string representing a text file
 # OUTPUT: An array of dictionaries for each assessment made
 #
+from distutils import filelist
+
+
 def read(file):
-    results = []
-    for line in file.split("\r\n"):
-        print(line)
+    results = {}
+    current_application_id = None
+    current_application = None
+    for line in file.split("\n"):
         # Grab the sub-code, defining type of record.
         subCode = line[17:21]
+
+        # CRA-RESPONSE-0022
+        if subCode == "0022":
+            current_application_id = line[41:57]
+            if current_application_id not in results:
+                results[current_application_id] = []
+            current_application = results[current_application_id]
+
+        # CRA-NO-DATA-RESPONSE-0023
+        if subCode == "0023":
+            sin = line[4:13]
+            year = line[13:17]
+            current_application.append({"sin": sin, "year": year, "income": None})
 
         # From Susan:
         # The business folks did flip flop on the net income
@@ -19,7 +35,7 @@ def read(file):
             sin = line[4:13]
             year = line[13:17]
             income = line[21:30].lstrip("0")
-            results.append({"sin": sin, "year": year, "income": income})
+            current_application.append({"sin": sin, "year": year, "income": income})
     return results
 
 
