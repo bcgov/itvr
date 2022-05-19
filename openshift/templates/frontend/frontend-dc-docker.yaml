@@ -59,6 +59,19 @@ objects:
         local: false
     status:
       dockerImageRepository: ""
+  - kind: ConfigMap
+    apiVersion: image.openshift.io/v1
+    metadata:
+      name: ${NAME}-frontend-features${SUFFIX}
+      creationTimestamp:
+    data:
+      features.js: |
+        window.itvr_config = {
+          "REACT_APP_KEYCLOAK_CLIENT_ID": "${REACT_APP_KEYCLOAK_CLIENT_ID}"
+          "REACT_APP_KEYCLOAK_REALM": "${REACT_APP_KEYCLOAK_REALM}"
+          "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}"
+          "REACT_APP_API_BASE": "${REACT_APP_API_BASE}"
+        };
   - apiVersion: v1
     kind: Service
     metadata:
@@ -130,6 +143,10 @@ objects:
           labels:
             name: ${NAME}-frontend${SUFFIX}
         spec:
+          volumes:
+            - name: ${NAME}-frontend-features${SUFFIX}
+              configMap:
+                name: ${NAME}-frontend-features${SUFFIX}
           containers:
             - name: frontend
               env:
@@ -154,6 +171,9 @@ objects:
                       key: KEYCLOAK_URL
               image:
               imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: ${NAME}-frontend-features${SUFFIX}
+                  mountPath: /app/static/js/config
               livenessProbe:
                 failureThreshold: 10
                 initialDelaySeconds: 30
