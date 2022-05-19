@@ -1,11 +1,3 @@
-##
-# Read a text file that has been posted by CRA
-# INPUT: A bytes string representing a text file
-# OUTPUT: An array of dictionaries for each assessment made
-#
-from distutils import filelist
-
-
 def read(file):
     results = {}
     current_application_id = None
@@ -39,11 +31,6 @@ def read(file):
     return results
 
 
-##
-# Write a CRA request file
-# INPUT: A dictionary of values to write to the file
-# OUTPUT: A string representing a text file
-#
 def write(
     data, today="20220516", program_code="BCVR", cra_env="A", cra_sequence="00001"
 ):
