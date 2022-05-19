@@ -66,7 +66,11 @@ module.exports = settings => {
       'CPU_LIMIT': phases[phase].frontendCpuLimit,
       'MEMORY_REQUEST': phases[phase].frontendMemoryRequest,
       'MEMORY_LIMIT': phases[phase].frontendMemoryLimit,
-      'REPLICAS':  phases[phase].frontendReplicas
+      'REPLICAS':  phases[phase].frontendReplicas,
+      'REACT_APP_KEYCLOAK_CLIENT_ID': phases[phase].reactAppKeycloakClientId,
+      'REACT_APP_KEYCLOAK_REALM': phases[phase].reactAppKeycloakRealm,
+      'REACT_APP_KEYCLOAK_URL': phases[phase].reactAppKeycloakUrl,
+      'REACT_APP_API_BASE': phases[phase].reactAppApiBase
     }
   }))
   

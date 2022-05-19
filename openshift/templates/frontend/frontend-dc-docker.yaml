@@ -149,26 +149,7 @@ objects:
                 name: ${NAME}-frontend-features${SUFFIX}
           containers:
             - name: frontend
-              env:
-                - name: REACT_APP_API_BASE
-                  value: "https://${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca"
-                - name: REAC_APP_ENABLE_KEYCLOAK
-                  value: "true"
-                - name: REACT_APP_KEYCLOAK_CLIENT_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_CLIENT_ID
-                - name: REACT_APP_KEYCLOAK_REALM
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_REALM
-                - name: REACT_APP_KEYCLOAK_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_URL
+              env: null
               image:
               imagePullPolicy: IfNotPresent
               volumeMounts:
