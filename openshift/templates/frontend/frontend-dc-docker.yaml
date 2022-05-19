@@ -44,6 +44,22 @@ parameters:
   - name: REPLICAS
     value: '1'
     required: true
+  - name: REACT_APP_KEYCLOAK_CLIENT_ID
+    displayName: REACT_APP_KEYCLOAK_CLIENT_ID
+    description: keycload client id
+    required: true
+  - name: REACT_APP_KEYCLOAK_REALM
+    displayName: REACT_APP_KEYCLOAK_REALM
+    description: keycload client realm
+    required: true
+  - name: REACT_APP_KEYCLOAK_URL
+    displayName: REACT_APP_KEYCLOAK_URL
+    description: keycload url
+    required: true
+  - name: REACT_APP_API_BASE
+    displayName: REACT_APP_API_BASE
+    description: backend url
+    required: true
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
