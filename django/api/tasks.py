@@ -272,7 +272,6 @@ def send_approve(recipient_email, application_id):
 
 
 def calculate_rebate_amount(cra_response, application_id):
-    ##if the application is individual
     def check_individual(primary_income):
 
         if primary_income is None:
@@ -286,10 +285,7 @@ def calculate_rebate_amount(cra_response, application_id):
             return "b"
         elif primary_income <= 80000:
             return "a"
-        else:
-            return "error"
 
-    ##if the application is household
     def check_household(primary_income, secondary_income):
         if (primary_income is None) | (secondary_income is None):
             return ""
@@ -302,8 +298,6 @@ def calculate_rebate_amount(cra_response, application_id):
             return "b"
         if household_income <= 125000:
             return "a"
-        else:
-            return ""
 
     def get_final_rebate(individual_rebate, household_rebate):
         if household_rebate == "a":
