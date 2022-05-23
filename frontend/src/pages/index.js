@@ -1,18 +1,24 @@
-import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
 import Layout from '../components/Layout';
+import { useDominantKeycloak } from '../keycloak';
 
 function Index() {
-  const { keycloak } = useKeycloak();
+  const keycloak = useDominantKeycloak();
+  const authenticated = keycloak ? true : false;
 
   return (
     <div className="app">
       <Layout>
         <EligibilityPageContainer />
       </Layout>
-      {keycloak.authenticated && (
-        <button type="button" onClick={() => keycloak.logout()}>
+      {authenticated && (
+        <button
+          type="button"
+          onClick={() => {
+            keycloak.logout();
+          }}
+        >
           Logout
         </button>
       )}

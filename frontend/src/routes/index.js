@@ -9,11 +9,14 @@ import HouseholdPage from '../pages/Household';
 import HouseholdFormPage from '../pages/HouseholdForm';
 import HouseholdDetails from '../pages/HouseholdDetails';
 import IdentificationExamplesPage from '../pages/IdentificationExamples';
-import { useKeycloak } from '@react-keycloak/web';
+import { useDominantKeycloak } from '../keycloak';
 
 const RequireAuth = ({ children, redirectTo }) => {
-  const { keycloak } = useKeycloak();
-  return keycloak.authenticated ? children : <Navigate to={redirectTo} />;
+  const keycloak = useDominantKeycloak();
+  if (keycloak) {
+    return children;
+  }
+  return <Navigate to={redirectTo} />;
 };
 
 const AppRouter = () => (

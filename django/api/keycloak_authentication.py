@@ -28,42 +28,56 @@ def base64_decode(data: str) -> str:
 class KeycloakAuthentication(TokenAuthentication):
     keyword = "Bearer"
 
+    def get_keycloaks(self):
+        keycloaks = {}
+        bceid_keycloak_openid = KeycloakOpenID(
+            server_url=settings.BCEID_KEYCLOAK_URL,
+            client_id=settings.BCEID_KEYCLOAK_CLIENT_ID,
+            realm_name=settings.BCEID_KEYCLOAK_REALM,
+        )
+        bcsc_keycloak_openid = KeycloakOpenID(
+            server_url=settings.BCSC_KEYCLOAK_URL,
+            client_id=settings.BCSC_KEYCLOAK_CLIENT_ID,
+            realm_name=settings.BCSC_KEYCLOAK_REALM,
+        )
+        keycloaks["bcsc"] = bcsc_keycloak_openid
+        keycloaks["bceid"] = bceid_keycloak_openid
+        return keycloaks
+
     def authenticate_credentials(self, token):
-        keycloak_openid = KeycloakOpenID(
-            server_url=settings.KEYCLOAK_URL,
-            client_id=settings.KEYCLOAK_CLIENT_ID,
-            realm_name=settings.KEYCLOAK_REALM,
-        )
-
-        # Decode the token from the front-end
-        KEYCLOAK_PUBLIC_KEY = (
-            "-----BEGIN PUBLIC KEY-----\n"
-            + keycloak_openid.public_key()
-            + "\n-----END PUBLIC KEY-----"
-        )
-
-        options = {"verify_signature": True, "verify_aud": True, "verify_exp": True}
-
-        try:
-            token_info = keycloak_openid.decode_token(
-                token, key=KEYCLOAK_PUBLIC_KEY, options=options
+        keycloaks = self.get_keycloaks()
+        for keycloak in keycloaks.values():
+            # Decode the token from the front-end
+            KEYCLOAK_PUBLIC_KEY = (
+                "-----BEGIN PUBLIC KEY-----\n"
+                + keycloak.public_key()
+                + "\n-----END PUBLIC KEY-----"
             )
-        except Exception:
-            raise AuthenticationFailed("Invalid Token")
 
-        # usernames will be uuids for bceid
-        # and long identifiers for bc services card.
-        user, created = ITVRUser.objects.get_or_create(
-            username=token_info.get("sub"),
-            defaults={
-                "display_name": token_info.get("display_name"),
-                "email": token_info.get("email"),
-                "identity_provider": token_info.get("identity_provider"),
-            },
-        )
+            options = {"verify_signature": True, "verify_aud": True, "verify_exp": True}
 
-        if created:
-            user.set_unusable_password()
-            user.save()
+            try:
+                token_info = keycloak.decode_token(
+                    token, key=KEYCLOAK_PUBLIC_KEY, options=options
+                )
+            except Exception:
+                continue
 
-        return user, token
+            # usernames will be uuids for bceid
+            # and long identifiers for bc services card.
+            print(token_info)
+            user, created = ITVRUser.objects.get_or_create(
+                username=token_info.get("sub"),
+                defaults={
+                    "display_name": token_info.get("display_name"),
+                    "email": token_info.get("email"),
+                    "identity_provider": token_info.get("identity_provider"),
+                },
+            )
+
+            if created:
+                user.set_unusable_password()
+                user.save()
+
+            return user, token
+        raise AuthenticationFailed("Invalid token")

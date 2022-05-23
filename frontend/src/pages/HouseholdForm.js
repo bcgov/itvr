@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import jwt_decode from 'jwt-decode';
 import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
-import { useKeycloak } from '@react-keycloak/web';
+import { useSearchParams } from 'react-router-dom';
 
 const HouseholdFormPage = () => {
-  const { keycloak } = useKeycloak();
-  // we can validate the token server side
-  const decoded = jwt_decode(keycloak.token);
-  const householdApplicationId = keycloak.idTokenParsed.nonce;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const householdApplicationId = searchParams.get('q');
 
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
@@ -22,7 +19,6 @@ const HouseholdFormPage = () => {
 
   return (
     <div>
-      Hello BCeID {decoded.preferred_username}
       <Layout>
         {numberOfErrors > 0 && (
           <span className="error" ref={errorMessageRef}>

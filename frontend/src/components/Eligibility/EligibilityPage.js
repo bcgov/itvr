@@ -3,7 +3,7 @@ import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
 import BottomBanner from '../BottomBanner';
 import Box from '@mui/material/Box';
-import { useKeycloak } from '@react-keycloak/web';
+import { useKeycloaks } from '../../keycloak';
 
 const EligibilityPage = (props) => {
   const { taxYear, questions, setQuestions, handleCheckboxChange, eligible } =
@@ -11,7 +11,7 @@ const EligibilityPage = (props) => {
   const date = new Date();
   const twoYearsAgo = date.getFullYear() - 2;
   const lastYear = date.getFullYear() - 1;
-  const { keycloak } = useKeycloak();
+  const keycloaks = useKeycloaks();
   const title = <h3>What you will need to complete this application</h3>;
   const applicationText = (
     <div>
@@ -96,8 +96,9 @@ const EligibilityPage = (props) => {
         <button
           type="button"
           className="button"
+          disabled={keycloaks.bcsc.authenticated}
           onClick={() =>
-            keycloak.login({
+            keycloaks.bceid.login({
               idpHint: 'idir',
               redirectUri: `${window.location.origin}/admin`
             })

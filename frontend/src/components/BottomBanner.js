@@ -1,19 +1,11 @@
 import Box from '@mui/material/Box';
-import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
+import { useKeycloaks } from '../keycloak';
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
-  const { keycloak } = useKeycloak();
-  if (householdApplicationId) {
-    const origCreateLoginUrl = keycloak.createLoginUrl;
-    keycloak.createLoginUrl = (options) => {
-      let url = origCreateLoginUrl(options);
-      url = url + '&nonce=' + encodeURIComponent(householdApplicationId);
-      return url;
-    };
-  }
+  const keycloaks = useKeycloaks();
   const redirectUri = householdApplicationId
-    ? `${window.location.origin}/householdForm`
+    ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
     : `${window.location.origin}/form`;
   const buttonText =
     'Please answer the questions above to confirm you are eligible to apply for a rebate.';
@@ -32,16 +24,30 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible}
+            disabled={!eligible /*|| keycloaks.bcsc.authenticated*/}
             title={!eligible && buttonText}
             onClick={() =>
-              keycloak.login({
+              keycloaks.bceid.login({
                 idpHint: 'bceid-basic',
                 redirectUri: redirectUri
               })
             }
           >
             Login with BCeID
+          </button>
+          <button
+            type="button"
+            className="button"
+            disabled={!eligible /*|| keycloaks.bceid.authenticated*/}
+            title={!eligible && buttonText}
+            onClick={() => {
+              keycloaks.bcsc.login({
+                idpHint: 'bcsc',
+                redirectUri: redirectUri
+              });
+            }}
+          >
+            Login with BCSC
           </button>
           <div>
             <a
