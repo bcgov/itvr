@@ -19,6 +19,7 @@ ReactDOM.render(
   <ReactKeycloakProvider
     authClient={keycloak}
     initOptions={initOptions}
+    LoadingComponent={<div>Loading</div>}
   >
     <QueryClientProvider client={queryClient}>
       <AppRouter />

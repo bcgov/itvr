@@ -10,8 +10,10 @@ function Index() {
   return (
     <div className="app">
        <Helmet>
-            <meta charSet="utf-8" />
             <title>Passenger vehicle rebate log in – CleanBC Go Electric</title>
+            <title>Passenger vehicle rebate application form – CleanBC Go Electric</title>
+            <title>Passenger vehicle rebate identification requirements – CleanBC Go Electric</title>
+            <title>Passenger vehicle rebate application confirmation  – CleanBC Go Electric</title>
         </Helmet>
       <Layout>
         <EligibilityPageContainer />
