@@ -65,7 +65,6 @@ class KeycloakAuthentication(TokenAuthentication):
 
             # usernames will be uuids for bceid
             # and long identifiers for bc services card.
-            print(token_info)
             user, created = ITVRUser.objects.get_or_create(
                 username=token_info.get("sub"),
                 defaults={

@@ -24,7 +24,7 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible /*|| keycloaks.bcsc.authenticated*/}
+            disabled={!eligible || keycloaks.bcsc.authenticated}
             title={!eligible && buttonText}
             onClick={() =>
               keycloaks.bceid.login({
@@ -38,7 +38,7 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible /*|| keycloaks.bceid.authenticated*/}
+            disabled={!eligible || keycloaks.bceid.authenticated}
             title={!eligible && buttonText}
             onClick={() => {
               keycloaks.bcsc.login({

@@ -5,16 +5,25 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useDominantKeycloak } from '../keycloak';
 
 function createData(name, answer) {
   return { name, answer };
 }
 
-function createConsentValue(consent, firstName, lastName, timestamp) {
+function createConsentValue(
+  consent,
+  firstName,
+  lastName,
+  timestamp,
+  kcTokenParsed
+) {
   const timestampSplit = timestamp.split('T');
   const date = timestampSplit[0];
   const time = timestampSplit[1].split('.')[0];
   const offset = timestampSplit[1].split('-')[1];
+  const authType =
+    kcTokenParsed.identity_provider === 'bcsc' ? 'BCSC' : 'BCEID';
   let pacificTimeType = 'Pacific Time';
   if (offset === '07:00') {
     pacificTimeType = 'PDT';
@@ -23,7 +32,8 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
   }
   if (consent) {
     return (
-      'BCEID\\' +
+      authType +
+      '\\' +
       firstName.charAt(0).toUpperCase() +
       lastName.toUpperCase() +
       ' ' +
@@ -37,6 +47,8 @@ function createConsentValue(consent, firstName, lastName, timestamp) {
 }
 
 const DetailsTable = ({ data }) => {
+  const keycloak = useDominantKeycloak();
+  const kcTokenParsed = keycloak.tokenParsed;
   let rows = [
     createData('Application ID:', data.application_id || data.id),
     createData('Last name / surname:', data.last_name),
@@ -57,7 +69,8 @@ const DetailsTable = ({ data }) => {
         data.consent_personal,
         data.first_name,
         data.last_name,
-        data.created
+        data.created,
+        kcTokenParsed
       )
     ),
     createData(
@@ -66,7 +79,8 @@ const DetailsTable = ({ data }) => {
         data.consent_tax,
         data.first_name,
         data.last_name,
-        data.created
+        data.created,
+        kcTokenParsed
       )
     )
   ];

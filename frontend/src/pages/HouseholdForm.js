@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
 import { useSearchParams } from 'react-router-dom';
+import { useDominantKeycloak } from '../keycloak';
 
 const HouseholdFormPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,6 +11,8 @@ const HouseholdFormPage = () => {
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
+  const keycloak = useDominantKeycloak();
+  console.log(keycloak.tokenParsed);
 
   useEffect(() => {
     if (numberOfErrors > 0) {

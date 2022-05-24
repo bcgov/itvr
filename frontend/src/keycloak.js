@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import Keycloak from 'keycloak-js';
 
-export const bceidKeycloak = new Keycloak({
+const bceidKeycloak = new Keycloak({
   clientId: process.env.REACT_APP_BCEID_KEYCLOAK_CLIENT_ID,
   realm: process.env.REACT_APP_BCEID_KEYCLOAK_REALM,
   url: process.env.REACT_APP_BCEID_KEYCLOAK_URL
 });
 
-export const bcscKeycloak = new Keycloak({
+const bcscKeycloak = new Keycloak({
   clientId: process.env.REACT_APP_BCSC_KEYCLOAK_CLIENT_ID,
   realm: process.env.REACT_APP_BCSC_KEYCLOAK_REALM,
   url: process.env.REACT_APP_BCSC_KEYCLOAK_URL

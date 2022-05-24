@@ -17,7 +17,7 @@ for (const i in keycloaks) {
   keycloakPromises.push(keycloaks[i].init(initOptions));
 }
 
-Promise.all(keycloakPromises).then((values) => {
+Promise.all(keycloakPromises).then(() => {
   ReactDOM.render(
     <KeycloakContext.Provider value={keycloaks}>
       <QueryClientProvider client={queryClient}>
