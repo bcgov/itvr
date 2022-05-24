@@ -44,6 +44,22 @@ parameters:
   - name: REPLICAS
     value: '1'
     required: true
+  - name: REACT_APP_KEYCLOAK_CLIENT_ID
+    displayName: REACT_APP_KEYCLOAK_CLIENT_ID
+    description: keycload client id
+    required: true
+  - name: REACT_APP_KEYCLOAK_REALM
+    displayName: REACT_APP_KEYCLOAK_REALM
+    description: keycload client realm
+    required: true
+  - name: REACT_APP_KEYCLOAK_URL
+    displayName: REACT_APP_KEYCLOAK_URL
+    description: keycload url
+    required: true
+  - name: REACT_APP_API_BASE
+    displayName: REACT_APP_API_BASE
+    description: backend url
+    required: true
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
@@ -59,6 +75,19 @@ objects:
         local: false
     status:
       dockerImageRepository: ""
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: ${NAME}-frontend-features${SUFFIX}
+      creationTimestamp:
+    data:
+      features.js: |
+        window.itvr_config = {
+          "REACT_APP_KEYCLOAK_CLIENT_ID": "${REACT_APP_KEYCLOAK_CLIENT_ID}"
+          "REACT_APP_KEYCLOAK_REALM": "${REACT_APP_KEYCLOAK_REALM}"
+          "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}"
+          "REACT_APP_API_BASE": "${REACT_APP_API_BASE}"
+        };
   - apiVersion: v1
     kind: Service
     metadata:
@@ -115,6 +144,7 @@ objects:
     spec:
       replicas: ${{REPLICAS}}
       revisionHistoryLimit: 10
+      automountServiceAccountToken: false
       selector:
         name: ${NAME}-frontend${SUFFIX}
       strategy:
@@ -129,30 +159,18 @@ objects:
           labels:
             name: ${NAME}-frontend${SUFFIX}
         spec:
+          volumes:
+            - name: ${NAME}-frontend-features${SUFFIX}
+              configMap:
+                name: ${NAME}-frontend-features${SUFFIX}
           containers:
             - name: frontend
-              env:
-                - name: REACT_APP_API_BASE
-                  value: "https://${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca"
-                - name: REAC_APP_ENABLE_KEYCLOAK
-                  value: "true"
-                - name: REACT_APP_KEYCLOAK_CLIENT_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_CLIENT_ID
-                - name: REACT_APP_KEYCLOAK_REALM
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_REALM
-                - name: REACT_APP_KEYCLOAK_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: itvr-keycloak
-                      key: KEYCLOAK_URL
+              env: null
               image:
               imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: ${NAME}-frontend-features${SUFFIX}
+                  mountPath: /app/static/js/config
               livenessProbe:
                 failureThreshold: 10
                 initialDelaySeconds: 30

@@ -1,3 +1,5 @@
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=bcgov_itvr)  
+
 # itvr
 
 ## System
@@ -62,7 +64,24 @@ We are using [CHES](https://digital.gov.bc.ca/common-components/common-hosted-em
 
 To get access to the created client, go [request account](https://getok.nrs.gov.bc.ca/app/requestAccount) with application acronym `ITVR`. This will allow you to reset client secrets for environments (dev, test, prod) as needed.
 
-### Frontend
+### CRA
+
+Submitting wage requests can be done manually by logging into
+ftp://ftp-ot.cra-arc.gc.ca/pub/BC/iv/bcvr/ anonymously and dropping any encrypted files in the uaclient2cra folder. Within a short time the encrypted response will be available within the uacra2client folder. All security is trusted within the encryption algorithm. Anybody can download a file from here. Only the target user/computer can decrypt the file.
+
+For the next valid sequence number:
+
+If you ever are not sure, Susan can verify with ITB or send a request with the last sequence you are aware of and it will will fail but you will get an email notification indicating the error and what the next available sequence is.
+
+Example of the contents of the error email for wrong sequence number:
+
+THE FOLLOWING FILENAME IS EXCLUDED FROM PROCESSING PLEASE INVESTIGATE THE FILE LISTED BELOW:
+INPUT FILENAME: DEMO.A00154
+REASON : INVALID SEQUENCE NUMBER ON INPUT FILENAME
+
+        THE NEXT VALID SEQUENCE NUMBER TO USE IS :   00155
+
+## Frontend
 
 We've decided to run the frontend outside of docker at this time mostly because of mounted Lima volumes causing issues with npm permissions. [Track the open issue](https://github.com/lima-vm/lima/issues/693)
 
@@ -99,3 +118,28 @@ The storybook is available by default at `http://localhost:6006/`
 We use [Openshift](https://www.redhat.com/en/technologies/cloud-computing/openshift) to deploy our applications. [Access the console here](https://console.apps.silver.devops.gov.bc.ca/k8s/cluster/projects)
 
 There's training on Openshift offered by BCDevExchange. Check the [schedule here](https://bcdevexchange.org/learning)
+
+### Git Process/ Rebasing
+
+We use git for version control.
+Each developer has their own fork of the repo and works off of branches from there
+If another branch is merged in (eg from another developer) then the branch in progress will need
+to be rebased before it gets merged in.
+
+Steps:
+git checkout <release-branch>
+git fetch upstream
+git pull --rebase upstream <release-branch>
+git checkout <featurebranch>
+git rebase <release-branch>
+
+If there are any conflicts, you will have to step through each commit and fix them. After
+conflicts are fixed and added (git add) then:
+
+git rebase --continue
+
+until all of the conflicts are fixed.
+
+If you already have a branch at origin you'll have to force push, otherwise doing a
+regular push will just give errors:
+git push -f origin <feature-branch>
