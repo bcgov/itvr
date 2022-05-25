@@ -1,9 +1,10 @@
 import Keycloak from 'keycloak-js';
+import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM, KEYCLOAK_URL } from './config';
 
 const keycloak = new Keycloak({
-  clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
-  realm: process.env.REACT_APP_KEYCLOAK_REALM,
-  url: process.env.REACT_APP_KEYCLOAK_URL,
+  clientId: KEYCLOAK_CLIENT_ID,
+  realm: KEYCLOAK_REALM,
+  url: KEYCLOAK_URL
 });
 
 export default keycloak;
