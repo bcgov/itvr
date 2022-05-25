@@ -83,9 +83,9 @@ objects:
     data:
       features.js: |
         window.itvr_config = {
-          "REACT_APP_KEYCLOAK_CLIENT_ID": "${REACT_APP_KEYCLOAK_CLIENT_ID}"
-          "REACT_APP_KEYCLOAK_REALM": "${REACT_APP_KEYCLOAK_REALM}"
-          "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}"
+          "REACT_APP_KEYCLOAK_CLIENT_ID": "${REACT_APP_KEYCLOAK_CLIENT_ID}",
+          "REACT_APP_KEYCLOAK_REALM": "${REACT_APP_KEYCLOAK_REALM}",
+          "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}",
           "REACT_APP_API_BASE": "${REACT_APP_API_BASE}"
         };
   - apiVersion: v1

@@ -26,6 +26,9 @@ objects:
       # to accept traffic from the OpenShift router pods. This is
       # required for things outside of OpenShift (like the Internet)
       # to reach your pods.
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: itvr-minio
       ingress:
         - from:
             - namespaceSelector:
