@@ -22,7 +22,9 @@
 
 7. create itvr-email-service secret
 
-8. python manage.py createsuperuser
+8. create itvr-object-storage secret
+
+9. run "python manage.py createsuperuser" on backend pod
 
 #### After pipeline completes
 

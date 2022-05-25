@@ -87,7 +87,8 @@ module.exports = settings => {
       'MEMORY_LIMIT': phases[phase].backendMemoryLimit,
       'HEALTH_CHECK_DELAY': phases[phase].backendHealthCheckDelay,
       'REPLICAS':  phases[phase].backendReplicas,
-      'DJANGO_DEBUG': phases[phase].backendDjangoDebug
+      'DJANGO_DEBUG': phases[phase].backendDjangoDebug,
+      'BUCKET_NAME': phases[phase].bucketName
     }
   })) 
 
