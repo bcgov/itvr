@@ -52,6 +52,10 @@ parameters:
   - name: DJANGO_DEBUG
     value: 'False'
     required: true
+  - name: BUCKET_NAME
+    displayName: bucket name
+    description: bucket name
+    required: true    
 objects:
   - apiVersion: v1
     kind: Secret
@@ -318,15 +322,15 @@ objects:
                 - name: MINIO_ROOT_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${NAME}-minio
+                      name: ${NAME}-object-storage
                       key: root-user
                 - name: MINIO_ROOT_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${NAME}-minio
+                      name: ${NAME}-object-storage
                       key: root-password    
                 - name: MINIO_BUCKET_NAME
-                  value: itvr  
+                  value: ${BUCKET_NAME}  
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
               livenessProbe:
