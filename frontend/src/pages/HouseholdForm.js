@@ -2,16 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
 import { useSearchParams } from 'react-router-dom';
-import { useDominantKeycloak } from '../keycloak';
+import { useDominantAuthenticatedKeycloak } from '../keycloak';
 
 const HouseholdFormPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const householdApplicationId = searchParams.get('q');
 
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
-  const keycloak = useDominantKeycloak();
+  const keycloak = useDominantAuthenticatedKeycloak();
   console.log(keycloak.tokenParsed);
 
   useEffect(() => {

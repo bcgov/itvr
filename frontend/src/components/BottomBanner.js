@@ -3,7 +3,7 @@ import React from 'react';
 import { useKeycloaks } from '../keycloak';
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
-  const keycloaks = useKeycloaks();
+  const { keycloaks } = useKeycloaks();
   const redirectUri = householdApplicationId
     ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
     : `${window.location.origin}/form`;

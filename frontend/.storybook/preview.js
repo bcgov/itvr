@@ -1,8 +1,7 @@
-import { ReactKeycloakProvider } from '@react-keycloak/web';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import keycloak from '../src/keycloak';
 import '../src/styles/index.scss';
 import { BrowserRouter } from 'react-router-dom';
+import { KeycloakProvider, bcscKeycloak, bceidKeycloak } from '../src/keycloak';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -18,9 +17,16 @@ const queryClient = new QueryClient();
 
 export const decorators = [
   (Story) => (
-    <ReactKeycloakProvider authClient={keycloak}>
+    <KeycloakProvider
+      authClient={{ bcsc: bcscKeycloak, bceid: bceidKeycloak }}
+      initOptions={{
+        onLoad: 'check-sso',
+        pkceMethod: 'S256'
+      }}
+      LoadingComponent={<div>Loading</div>}
+    >
       <Story />
-    </ReactKeycloakProvider>
+    </KeycloakProvider>
   ),
   (Story) => (
     <QueryClientProvider client={queryClient}>

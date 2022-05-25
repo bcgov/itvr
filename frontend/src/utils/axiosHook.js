@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useDominantKeycloak } from '../keycloak';
+import { useDominantAuthenticatedKeycloak } from '../keycloak';
 
 const baseURL = process.env.REACT_APP_API_BASE;
 
 const useAxios = (opts = {}) => {
   const axiosInstance = useRef();
-  const keycloak = useDominantKeycloak();
+  const keycloak = useDominantAuthenticatedKeycloak();
 
   useEffect(() => {
     const instance = axios.create({

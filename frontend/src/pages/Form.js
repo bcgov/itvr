@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useKeycloaks } from '..';
 import Form from '../components/Form';
 import Layout from '../components/Layout';
 import RebateTable from '../components/RebateTable';
-import { useDominantKeycloak } from '../keycloak';
+import { useDominantAuthenticatedKeycloak } from '../keycloak';
 
 const FormPage = () => {
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
-  const keycloak = useDominantKeycloak();
+  const keycloak = useDominantAuthenticatedKeycloak();
   console.log(keycloak.tokenParsed);
 
   useEffect(() => {

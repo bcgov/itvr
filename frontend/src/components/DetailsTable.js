@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useDominantKeycloak } from '../keycloak';
+import { useDominantAuthenticatedKeycloak } from '../keycloak';
 
 function createData(name, answer) {
   return { name, answer };
@@ -47,7 +47,7 @@ function createConsentValue(
 }
 
 const DetailsTable = ({ data }) => {
-  const keycloak = useDominantKeycloak();
+  const keycloak = useDominantAuthenticatedKeycloak();
   const kcTokenParsed = keycloak.tokenParsed;
   let rows = [
     createData('Application ID:', data.application_id || data.id),

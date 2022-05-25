@@ -1,10 +1,10 @@
 import React from 'react';
 import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
 import Layout from '../components/Layout';
-import { useDominantKeycloak } from '../keycloak';
+import { useDominantAuthenticatedKeycloak } from '../keycloak';
 
 function Index() {
-  const keycloak = useDominantKeycloak();
+  const keycloak = useDominantAuthenticatedKeycloak();
   const authenticated = keycloak ? true : false;
 
   return (

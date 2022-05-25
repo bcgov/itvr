@@ -9,10 +9,10 @@ import HouseholdPage from '../pages/Household';
 import HouseholdFormPage from '../pages/HouseholdForm';
 import HouseholdDetails from '../pages/HouseholdDetails';
 import IdentificationExamplesPage from '../pages/IdentificationExamples';
-import { useDominantKeycloak } from '../keycloak';
+import { useDominantAuthenticatedKeycloak } from '../keycloak';
 
 const RequireAuth = ({ children, redirectTo }) => {
-  const keycloak = useDominantKeycloak();
+  const keycloak = useDominantAuthenticatedKeycloak();
   if (keycloak) {
     return children;
   }
