@@ -92,20 +92,6 @@ const EligibilityPage = (props) => {
           use your {lastYear} NOA.
         </p>
       </div>
-      <div>
-        <button
-          type="button"
-          className="button"
-          onClick={() =>
-            keycloak.login({
-              idpHint: 'idir',
-              redirectUri: `${window.location.origin}/admin`
-            })
-          }
-        >
-          Login with IDIR
-        </button>
-      </div>
     </Box>
   );
 };

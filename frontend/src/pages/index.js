@@ -12,7 +12,13 @@ function Index() {
         <EligibilityPageContainer />
       </Layout>
       {keycloak.authenticated && (
-        <button type="button" onClick={() => keycloak.logout()}>
+        <button
+          type="button"
+          onClick={() => {
+            localStorage.removeItem('keycloakRealm');
+            keycloak.logout();
+          }}
+        >
           Logout
         </button>
       )}

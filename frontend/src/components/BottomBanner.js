@@ -1,19 +1,18 @@
 import Box from '@mui/material/Box';
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
+import {
+  bceidRealm,
+  bcscRealm,
+  keycloakInitOptions,
+  keycloaks
+} from '../keycloak';
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
-  if (householdApplicationId) {
-    const origCreateLoginUrl = keycloak.createLoginUrl;
-    keycloak.createLoginUrl = (options) => {
-      let url = origCreateLoginUrl(options);
-      url = url + '&nonce=' + encodeURIComponent(householdApplicationId);
-      return url;
-    };
-  }
+  const realm = localStorage.getItem('keycloakRealm');
   const redirectUri = householdApplicationId
-    ? `${window.location.origin}/householdForm`
+    ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
     : `${window.location.origin}/form`;
   const buttonText =
     'Please answer the questions above to confirm you are eligible to apply for a rebate.';
@@ -32,16 +31,52 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible}
+            disabled={!eligible || (realm && realm !== bceidRealm)}
             title={!eligible && buttonText}
-            onClick={() =>
-              keycloak.login({
-                idpHint: 'bceid-basic',
-                redirectUri: redirectUri
-              })
-            }
+            onClick={() => {
+              localStorage.setItem('keycloakRealm', bceidRealm);
+              if (keycloak.realm === bceidRealm) {
+                keycloak.login({
+                  idpHint: 'bceid-basic',
+                  redirectUri: redirectUri
+                });
+              } else {
+                const bceidKeycloak = keycloaks[bceidRealm];
+                bceidKeycloak.init(keycloakInitOptions).then(() => {
+                  bceidKeycloak.login({
+                    idpHint: 'bceid-basic',
+                    redirectUri: redirectUri
+                  });
+                });
+              }
+            }}
           >
             Login with BCeID
+          </button>
+          <button
+            type="button"
+            className="button"
+            disabled={!eligible || (realm && realm !== bcscRealm)}
+            title={!eligible && buttonText}
+            onClick={() => {
+              localStorage.setItem('keycloakRealm', bcscRealm);
+              if (keycloak.realm === bcscRealm) {
+                keycloak.login({
+                  idpHint: 'bcsc',
+                  redirectUri: redirectUri
+                });
+              } else {
+                const bcscKeycloak = keycloaks[bcscRealm];
+                bcscKeycloak.init(keycloakInitOptions).then(() => {
+                  bcscKeycloak.login({
+                    idpHint: 'bcsc',
+                    redirectUri: redirectUri
+                  });
+                });
+              }
+            }}
+          >
+            Login with BCSC
           </button>
           <div>
             <a
