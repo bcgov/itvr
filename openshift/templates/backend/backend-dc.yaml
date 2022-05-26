@@ -316,7 +316,7 @@ objects:
                 - name: SEND_EMAIL
                   value: 'True'
                 - name: MINIO_ENDPOINT
-                  value: nrs.objectstore.gov.bc.ca
+                  value: https://nrs.objectstore.gov.bc.ca
 #                  value: https://${NAME}-minio-${ENV_NAME}.apps.silver.devops.gov.bc.ca
 #               - name: MINIO_USE_SSL
 #                 value: "true"
