@@ -24,7 +24,7 @@ backup      1m          20M
 
 Set the cpu usage 20m as the lowest
 Set the limit as two times of request
-
+electric-vehicle-rebates.gov.bc.ca
 */
 options.git.owner='bcgov'
 
@@ -64,13 +64,14 @@ const phases = {
         ssoName:'oidc.gov.bc.ca', phase: 'prod'  , changeId:`${changeId}`, suffix: `-prod`, 
         instance: `${name}-prod`, version:`${version}`, tag:`prod-${version}`, 
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        host: 'electric-vehicle-reba_tes.gov.bc.ca', djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
-        frontendCpuRequest: '400m', frontendCpuLimit: '800m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 1, frontendMinReplicas: 1, frontendMaxReplicas: 3, reactAppKeycloakClientId: 'itvr-2674', reactAppKeycloakRealm: 'onestopauth-basic', reactAppKeycloakUrl: 'https://oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
+        host: `itvr-prod.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
+        frontendCpuRequest: '140m', frontendCpuLimit: '280m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 2, frontendMinReplicas: 2, frontendMaxReplicas: 5, reactAppKeycloakClientId: 'itvr-2674', reactAppKeycloakRealm: 'onestopauth-basic', reactAppKeycloakUrl: 'https://oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
         backendCpuRequest: '80m', backendCpuLimit: '160m', backendMemoryRequest: '240Mi', backendMemoryLimit: '480Mi', backendHealthCheckDelay: 30, backendReplicas: 3, backendMinReplicas: 3, backendMaxReplicas: 5, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrpr',
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '5G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
-        patroniCpuRequest: '200m', patroniCpuLimit: '400m', patroniMemoryRequest: '250Mi', patroniMemoryLimit: '500Mi', patroniPvcSize: '8G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`}
+        patroniCpuRequest: '200m', patroniCpuLimit: '400m', patroniMemoryRequest: '250Mi', patroniMemoryLimit: '500Mi', patroniPvcSize: '8G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
+        taskQueueCpuRequest: '80m', taskQueueCpuLimit: '160m', taskQueueMemoryRequest: '150Mi', taskQueueMemoryLimit: '300Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',}
 
 };
 
