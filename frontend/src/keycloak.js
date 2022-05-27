@@ -29,3 +29,11 @@ export const keycloaks = {
   [BCSC_KEYCLOAK_REALM]: bcscKeycloak,
   [BCEID_KEYCLOAK_REALM]: bceidKeycloak
 };
+
+export const getKeycloak = () => {
+  const realm = localStorage.getItem('keycloakRealm');
+  if (realm) {
+    return keycloaks[realm];
+  }
+  return keycloaks[BCSC_KEYCLOAK_REALM];
+};
