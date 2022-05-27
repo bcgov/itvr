@@ -4,6 +4,7 @@ import Form from '../components/Form';
 import Layout from '../components/Layout';
 import RebateTable from '../components/RebateTable';
 import { useKeycloak } from '@react-keycloak/web';
+import {Helmet} from "react-helmet";
 
 const FormPage = () => {
   const { keycloak } = useKeycloak();
@@ -22,18 +23,23 @@ const FormPage = () => {
   }, [errorsExistCounter]);
 
   return (
-    <Layout>
-      {numberOfErrors > 0 && (
-        <span className="error" ref={errorMessageRef}>
-          Errors below, please ensure all fields are complete
-        </span>
-      )}
-      <RebateTable />
-      <Form
-        setNumberOfErrors={setNumberOfErrors}
-        setErrorsExistCounter={setErrorsExistCounter}
-      />
-    </Layout>
+    <div>
+      <Helmet>
+        <title>Passenger vehicle rebate application form – CleanBC Go Electric</title>
+      </Helmet>
+      <Layout>
+        {numberOfErrors > 0 && (
+          <span className="error" ref={errorMessageRef}>
+            Errors below, please ensure all fields are complete
+          </span>
+        )}
+        <RebateTable />
+        <Form
+          setNumberOfErrors={setNumberOfErrors}
+          setErrorsExistCounter={setErrorsExistCounter}
+        />
+      </Layout>
+    </div>
   );
 };
 
