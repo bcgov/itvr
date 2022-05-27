@@ -1,18 +1,23 @@
 import Keycloak from 'keycloak-js';
-
-export const bcscRealm = process.env.REACT_APP_BCSC_KEYCLOAK_REALM;
-export const bceidRealm = process.env.REACT_APP_BCEID_KEYCLOAK_REALM;
+import {
+  BCEID_KEYCLOAK_CLIENT_ID,
+  BCEID_KEYCLOAK_REALM,
+  BCEID_KEYCLOAK_URL,
+  BCSC_KEYCLOAK_CLIENT_ID,
+  BCSC_KEYCLOAK_REALM,
+  BCSC_KEYCLOAK_URL
+} from './config';
 
 const bcscKeycloak = new Keycloak({
-  clientId: process.env.REACT_APP_BCSC_KEYCLOAK_CLIENT_ID,
-  realm: bcscRealm,
-  url: process.env.REACT_APP_BCSC_KEYCLOAK_URL
+  clientId: BCSC_KEYCLOAK_CLIENT_ID,
+  realm: BCSC_KEYCLOAK_REALM,
+  url: BCSC_KEYCLOAK_URL
 });
 
 const bceidKeycloak = new Keycloak({
-  clientId: process.env.REACT_APP_BCEID_KEYCLOAK_CLIENT_ID,
-  realm: bceidRealm,
-  url: process.env.REACT_APP_BCEID_KEYCLOAK_URL
+  clientId: BCEID_KEYCLOAK_CLIENT_ID,
+  realm: BCEID_KEYCLOAK_REALM,
+  url: BCEID_KEYCLOAK_URL
 });
 
 export const keycloakInitOptions = {
@@ -21,6 +26,6 @@ export const keycloakInitOptions = {
 };
 
 export const keycloaks = {
-  [bcscRealm]: bcscKeycloak,
-  [bceidRealm]: bceidKeycloak
+  [BCSC_KEYCLOAK_REALM]: bcscKeycloak,
+  [BCEID_KEYCLOAK_REALM]: bceidKeycloak
 };

@@ -1,12 +1,8 @@
 import Box from '@mui/material/Box';
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
-import {
-  bceidRealm,
-  bcscRealm,
-  keycloakInitOptions,
-  keycloaks
-} from '../keycloak';
+import { BCEID_KEYCLOAK_REALM, BCSC_KEYCLOAK_REALM } from '../config';
+import { keycloakInitOptions, keycloaks } from '../keycloak';
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
@@ -32,18 +28,19 @@ const BottomBanner = (props) => {
             className="button"
             disabled={
               !eligible ||
-              (keycloak.authenticated && keycloak.realm !== bceidRealm)
+              (keycloak.authenticated &&
+                keycloak.realm !== BCEID_KEYCLOAK_REALM)
             }
             title={!eligible && buttonText}
             onClick={() => {
-              localStorage.setItem('keycloakRealm', bceidRealm);
-              if (keycloak.realm === bceidRealm) {
+              localStorage.setItem('keycloakRealm', BCEID_KEYCLOAK_REALM);
+              if (keycloak.realm === BCEID_KEYCLOAK_REALM) {
                 keycloak.login({
                   idpHint: 'bceid-basic',
                   redirectUri: redirectUri
                 });
               } else {
-                const bceidKeycloak = keycloaks[bceidRealm];
+                const bceidKeycloak = keycloaks[BCEID_KEYCLOAK_REALM];
                 bceidKeycloak.init(keycloakInitOptions).then(() => {
                   bceidKeycloak.login({
                     idpHint: 'bceid-basic',
@@ -60,18 +57,18 @@ const BottomBanner = (props) => {
             className="button"
             disabled={
               !eligible ||
-              (keycloak.authenticated && keycloak.realm !== bcscRealm)
+              (keycloak.authenticated && keycloak.realm !== BCSC_KEYCLOAK_REALM)
             }
             title={!eligible && buttonText}
             onClick={() => {
-              localStorage.setItem('keycloakRealm', bcscRealm);
-              if (keycloak.realm === bcscRealm) {
+              localStorage.setItem('keycloakRealm', BCSC_KEYCLOAK_REALM);
+              if (keycloak.realm === BCSC_KEYCLOAK_REALM) {
                 keycloak.login({
                   idpHint: 'bcsc',
                   redirectUri: redirectUri
                 });
               } else {
-                const bcscKeycloak = keycloaks[bcscRealm];
+                const bcscKeycloak = keycloaks[BCSC_KEYCLOAK_REALM];
                 bcscKeycloak.init(keycloakInitOptions).then(() => {
                   bcscKeycloak.login({
                     idpHint: 'bcsc',
