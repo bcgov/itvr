@@ -2,26 +2,34 @@ spilo:
 
   replicaCount: 3
 
+  credentials:
+    useExistingSecret: true
+    existingSecret:
+      name: itvr-patroni-admin
+      superuserKey: password-superuser
+      adminKey: password-admin
+      standbyKey: password-standby
+
   continuousArchive:
     enabled: true
-    scheduleCronJob: "0 2 * * *"
-    retainBackups: 14
+    scheduleCronJob: "0 */6 * * *"
+    retainBackups: 3
     storage: s3
     s3:
       bucket: itvrpr
       secretName: itvr-db-backup-s3
 
   persistentVolume:
-    size: 500Mi
+    size: 5Gi
     storageClass: netapp-block-standard
 
   resources:
     limits:
-      cpu: 120m
-      memory: 400Mi
+      cpu: 240m
+      memory: 800Mi
     requests:
-      cpu: 60m
-      memory: 200Mi  
+      cpu: 120m
+      memory: 400Mi  
 
   podDisruptionBudget:
     enabled: false
@@ -33,3 +41,4 @@ spilo:
       enabled: true 
       initialDelaySeconds: 60
       failureThreshold: 20         
+

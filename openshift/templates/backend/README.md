@@ -12,20 +12,19 @@
 
 2. Create template secret template.django-secret, template.django-salt
 
-3. create user for itvr database, create user [username] with password '[password]'
+3. create secret itvr-patroni-app
 
-4. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'
+4. create user for itvr database, create user [username] with password '[password]'
 
-5. create secret itvr-patroni-app
+5. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'
 
-6. create template.django-secret
+6. create itvr-email-service secret
 
-7. create itvr-email-service secret
+7. create itvr-object-storage secret
 
-8. create itvr-object-storage secret
-
-9. run "python manage.py createsuperuser" on backend pod
 
 #### After pipeline completes
 
 1. After pipeline completes, create autoscaler for backend
+
+2. run "python manage.py createsuperuser" on backend pod

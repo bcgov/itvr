@@ -14,9 +14,6 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:ac294c-pr
 ## Keycloak
 openshift/templates/keycloak/README.md
 
-## Minio
-openshift/templates/minio/README.md
-
 ## Patroni
 openshift/templates/patroni-2.1.1/README.md
 
