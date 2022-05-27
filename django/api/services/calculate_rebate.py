@@ -37,14 +37,19 @@ def calculate_rebate_amount(cra_response, application_id):
     application = cra_response.get(application_id)
     primary_applicant = application[0]
     primary_income = primary_applicant.get("income")
+
     if len(application) > 1:
         secondary_applicant = application[1]
         secondary_income = secondary_applicant.get("income")
-    individual_rebate = check_individual(primary_income)
-    if individual_rebate == "":
-        return "not approved"
-    elif individual_rebate == "a" or len(application) == 1:
-        return individual_rebate
-    elif len(application) > 1:
         household_rebate = check_household(primary_income, secondary_income)
-        return get_final_rebate(individual_rebate, household_rebate)
+
+        if household_rebate == "":
+            return "not approved"
+        else:
+            return household_rebate
+    else:
+        individual_rebate = check_individual(primary_income)
+        if individual_rebate == "":
+            return "not approved"
+        else:
+            return individual_rebate
