@@ -22,6 +22,8 @@
 
 7. create itvr-email-service secret
 
+8. python manage.py createsuperuser
+
 #### After pipeline completes
 
 1. After pipeline completes, create autoscaler for backend

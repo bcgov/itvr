@@ -16,8 +16,7 @@ module.exports = settings => {
   // The deployment of your cool app goes here ▼▼▼
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/knp/knp-env-pr.yaml`, {
     'param': {
-      'SUFFIX': phases[phase].suffix,
-      'ENVIRONMENT': phases[phase].phase
+      'SUFFIX': phases[phase].suffix
     }
   }))
   
