@@ -10,7 +10,6 @@ import {
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
-  const realm = localStorage.getItem('keycloakRealm');
   const redirectUri = householdApplicationId
     ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
     : `${window.location.origin}/form`;
@@ -31,7 +30,10 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible || (realm && realm !== bceidRealm)}
+            disabled={
+              !eligible ||
+              (keycloak.authenticated && keycloak.realm !== bceidRealm)
+            }
             title={!eligible && buttonText}
             onClick={() => {
               localStorage.setItem('keycloakRealm', bceidRealm);
@@ -56,7 +58,10 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible || (realm && realm !== bcscRealm)}
+            disabled={
+              !eligible ||
+              (keycloak.authenticated && keycloak.realm !== bcscRealm)
+            }
             title={!eligible && buttonText}
             onClick={() => {
               localStorage.setItem('keycloakRealm', bcscRealm);

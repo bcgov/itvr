@@ -15,7 +15,6 @@ function Index() {
         <button
           type="button"
           onClick={() => {
-            localStorage.removeItem('keycloakRealm');
             keycloak.logout();
           }}
         >
