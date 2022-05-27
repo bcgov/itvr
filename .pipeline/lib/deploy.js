@@ -67,9 +67,12 @@ module.exports = settings => {
       'MEMORY_REQUEST': phases[phase].frontendMemoryRequest,
       'MEMORY_LIMIT': phases[phase].frontendMemoryLimit,
       'REPLICAS':  phases[phase].frontendReplicas,
-      'REACT_APP_KEYCLOAK_CLIENT_ID': phases[phase].reactAppKeycloakClientId,
-      'REACT_APP_KEYCLOAK_REALM': phases[phase].reactAppKeycloakRealm,
-      'REACT_APP_KEYCLOAK_URL': phases[phase].reactAppKeycloakUrl,
+      'REACT_APP_BCSC_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCSCKeycloakClientId,
+      'REACT_APP_BCSC_KEYCLOAK_REALM': phases[phase].reactAppBCSCKeycloakRealm,
+      'REACT_APP_BCSC_KEYCLOAK_URL': phases[phase].reactAppBCSCKeycloakUrl,
+      'REACT_APP_BCEID_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCeIDKeycloakClientId,
+      'REACT_APP_BCEID_KEYCLOAK_REALM': phases[phase].reactAppBCeIDKeycloakRealm,
+      'REACT_APP_BCEID_KEYCLOAK_URL': phases[phase].reactAppBCeIDKeycloakUrl,
       'REACT_APP_API_BASE': phases[phase].reactAppApiBase
     }
   }))
