@@ -20,7 +20,7 @@ spilo:
       secretName: itvr-db-backup-s3
 
   persistentVolume:
-    size: 700Mi
+    size: 5Gi
     storageClass: netapp-block-standard
 
   resources:
