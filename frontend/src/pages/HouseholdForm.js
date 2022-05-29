@@ -3,6 +3,7 @@ import jwt_decode from 'jwt-decode';
 import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
 import { useKeycloak } from '@react-keycloak/web';
+import {Helmet} from "react-helmet";
 
 const HouseholdFormPage = () => {
   const { keycloak } = useKeycloak();
@@ -22,6 +23,9 @@ const HouseholdFormPage = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Passenger vehicle rebate application form – CleanBC Go Electric</title>
+      </Helmet>
       Hello BCeID {decoded.preferred_username}
       <Layout>
         {numberOfErrors > 0 && (
