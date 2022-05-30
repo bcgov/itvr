@@ -187,14 +187,21 @@ def send_reject(recipient_email, application_id):
         <p>Some examples of why this may have happened include:</p>
 
         <ul>
-          <li>
-            Driver’s license/secondary piece of ID quality
-            not sufficient, identification documents don’t match.
-          </li>
-          <li>
-            Household application address are not the same
-            for applicant and spouse.
-          </li>
+            <li>
+                No record of your 2020 Notice of Assessment on file with the Canada Revenue Agency (CRA).
+            </li>
+        
+            <li>
+                The identity records that you have supplied do not match CRA records.
+            </li>
+
+            <li>
+                Your income does not qualify/exceeds the maximum eligible amount under the program.
+            </li>
+            <li>
+                Household application addresses are not the same
+                for applicant and spouse.
+            </li>
         </ul>
 
         <p>Questions?</p>
@@ -227,7 +234,7 @@ def send_approve(recipient_email, application_id):
         program.</p>
 
         <p>We would like to notify you, that your application has been approved
-        and you are entitled to a maximum rebate about of $X,XXX.</p>
+        and you are entitled to a maximum rebate amount of $X,XXX.</p>
 
         <p>Your rebate will expire one year from today’s date.</p>
         
