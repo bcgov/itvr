@@ -84,8 +84,8 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         ret = super().response_change(request, obj)
         if "approve_application" in request.POST:
             obj.status = GoElectricRebateApplication.Status.VERIFIED
-            obj.save()
+            obj.save(update_fields=["status"])
         if "reject_application" in request.POST:
             obj.status = GoElectricRebateApplication.Status.DECLINED
-            obj.save()
+            obj.save(update_fields=["status"])
         return ret

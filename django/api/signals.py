@@ -36,7 +36,7 @@ def after_household_member_save(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=GoElectricRebateApplication)
 def after_status_change(sender, instance, created, **kwargs):
-    if not created:
+    if (not created) and (kwargs.get("update_fields") == {"status"}):
         ## if identity is declined (eg id doesnt match address)
         if instance.status == GoElectricRebateApplication.Status.DECLINED:
             if settings.EMAIL["SEND_EMAIL"]:
