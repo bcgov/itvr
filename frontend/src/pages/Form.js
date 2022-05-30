@@ -1,19 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import jwt_decode from 'jwt-decode';
 import Form from '../components/Form';
 import Layout from '../components/Layout';
 import RebateTable from '../components/RebateTable';
 import { useKeycloak } from '@react-keycloak/web';
 
 const FormPage = () => {
-  const { keycloak } = useKeycloak();
-  // we can validate the token server side
-  const decoded = jwt_decode(keycloak.token);
-  console.log(decoded);
-
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
+  const { keycloak } = useKeycloak();
+  console.log(keycloak.tokenParsed);
 
   useEffect(() => {
     if (numberOfErrors > 0) {

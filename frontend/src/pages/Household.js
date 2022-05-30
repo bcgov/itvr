@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import { useSearchParams } from 'react-router-dom';
 
 const HouseholdPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const householdApplicationId = searchParams.get('q');
   const title = (
     <>

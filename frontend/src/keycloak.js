@@ -1,10 +1,39 @@
 import Keycloak from 'keycloak-js';
-import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM, KEYCLOAK_URL } from './config';
+import {
+  BCEID_KEYCLOAK_CLIENT_ID,
+  BCEID_KEYCLOAK_REALM,
+  BCEID_KEYCLOAK_URL,
+  BCSC_KEYCLOAK_CLIENT_ID,
+  BCSC_KEYCLOAK_REALM,
+  BCSC_KEYCLOAK_URL
+} from './config';
 
-const keycloak = new Keycloak({
-  clientId: KEYCLOAK_CLIENT_ID,
-  realm: KEYCLOAK_REALM,
-  url: KEYCLOAK_URL
+const bcscKeycloak = new Keycloak({
+  clientId: BCSC_KEYCLOAK_CLIENT_ID,
+  realm: BCSC_KEYCLOAK_REALM,
+  url: BCSC_KEYCLOAK_URL
 });
 
-export default keycloak;
+const bceidKeycloak = new Keycloak({
+  clientId: BCEID_KEYCLOAK_CLIENT_ID,
+  realm: BCEID_KEYCLOAK_REALM,
+  url: BCEID_KEYCLOAK_URL
+});
+
+export const keycloakInitOptions = {
+  onLoad: 'check-sso',
+  pkceMethod: 'S256'
+};
+
+export const keycloaks = {
+  [BCSC_KEYCLOAK_REALM]: bcscKeycloak,
+  [BCEID_KEYCLOAK_REALM]: bceidKeycloak
+};
+
+export const getKeycloak = () => {
+  const realm = localStorage.getItem('keycloakRealm');
+  if (realm) {
+    return keycloaks[realm];
+  }
+  return keycloaks[BCSC_KEYCLOAK_REALM];
+};
