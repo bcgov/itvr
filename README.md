@@ -1,4 +1,4 @@
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=bcgov_itvr)  
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=bcgov_itvr)
 
 # itvr
 
@@ -143,3 +143,15 @@ until all of the conflicts are fixed.
 If you already have a branch at origin you'll have to force push, otherwise doing a
 regular push will just give errors:
 git push -f origin <feature-branch>
+
+### Testing
+
+backend tests will be recognized and run with other tests if they have follow this naming convention:
+test\_[name].py
+eg. test_calculate_rebate.py
+
+to run tests use a terminal in the api container and type
+python manage.py test
+
+or to run specific test files, point to the folder or file
+python manage.py test api.services.tests.test_calculate_rebate
