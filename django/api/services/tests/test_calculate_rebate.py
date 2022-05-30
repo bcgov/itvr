@@ -2,6 +2,7 @@ from unittest import TestCase
 from rest_framework.serializers import ValidationError
 from django.test import TestCase
 from ...models.go_electric_rebate_application import GoElectricRebateApplication
+from ...models.household_member import HouseholdMember
 from django.contrib.auth import get_user_model
 from ..calculate_rebate import calculate_rebate_amount
 
@@ -12,13 +13,14 @@ class TestCalculate(TestCase):
 
         user = get_user_model()
         user.objects.create(id=1, username="tester")
+        user.objects.create(id=2, username="tester2")
 
         GoElectricRebateApplication.objects.create(
             id="B5t92XeH7NnFUwxc",
             user_id=1,
             sin="302435839",
             application_type="individual",
-            last_name="test",
+            last_name="person",
             first_name="person",
             doc1="image1.png",
             doc2="image2.png",
@@ -31,6 +33,18 @@ class TestCalculate(TestCase):
             postal_code="v8s4j9",
             tax_year=2020,
         )
+        HouseholdMember.objects.create(
+            application_id="B5t92XeH7NnFUwxc",
+            user_id=2,
+            sin="270300379",
+            last_name="test",
+            first_name="test",
+            doc1="image1.png",
+            doc2="image2.png",
+            consent_personal=True,
+            consent_tax=True,
+            date_of_birth="2000-01-01",
+        )
 
     def test_application_a_ind(self):
         # qualifies for an individual rebate of a
@@ -39,6 +53,7 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "65687"}
             ],
         }
+
         individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
         rebate_amount = calculate_rebate_amount(cra_response, individual.id)
         self.assertEqual(rebate_amount, 4000)
@@ -112,6 +127,19 @@ class TestCalculate(TestCase):
         rebate_amount = calculate_rebate_amount(cra_response, individual.id)
         self.assertEqual(rebate_amount, 2000)
 
+    def test_application_c_ind_b_hs_switched(self):
+        # qualifies for 'c' individual and 'b' household (should get b)
+        # just switched cra response
+        cra_response = {
+            "B5t92XeH7NnFUwxc": [
+                {"sin": "270300379", "year": "2020", "income": "50000"},
+                {"sin": "302435839", "year": "2020", "income": "95000"},
+            ],
+        }
+        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        self.assertEqual(rebate_amount, 2000)
+
     def test_application_na_ind_a_hs(self):
         # too high personal income but qualifies for 'a' household
         cra_response = {
@@ -137,11 +165,11 @@ class TestCalculate(TestCase):
         self.assertEqual(rebate_amount, "not approved")
 
     def test_application_no_cra(self):
-        # too high invididual AND household income
+        # no income
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": None},
-                {"sin": "270300379", "year": "2020", "income": "100100"},
+                {"sin": "270300379", "year": "v", "income": "100100"},
             ],
         }
         individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")

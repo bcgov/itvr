@@ -1,3 +1,7 @@
+from ..models.go_electric_rebate_application import GoElectricRebateApplication
+from ..models.household_member import HouseholdMember
+
+
 def calculate_rebate_amount(cra_response, application_id):
     rebate_numbers = {"a": 4000, "b": 2000, "c": 1000, "not approved": "not approved"}
 
@@ -38,14 +42,27 @@ def calculate_rebate_amount(cra_response, application_id):
             return "not approved"
 
     application = cra_response.get(application_id)
-    primary_applicant = application[0]
+    primary_applicant = {}
+    secondary_applicant = {}
+    filtered_applications = GoElectricRebateApplication.objects.filter(
+        id=application_id
+    )
+    filtered_household = HouseholdMember.objects.filter(application=application_id)
+    for idx, x in enumerate(application):
+        # loop through the application lists provided by cra and check against
+        # our database, find our record for that application id and
+        # determine which item in the array is primary or secondary
+        if x["sin"] == filtered_applications[0].sin:
+            primary_applicant = application[idx]
     primary_income = primary_applicant.get("income")
     individual_rebate = check_individual(primary_income)
-
     if individual_rebate == "a" or len(application) == 1:
         return rebate_numbers.get(individual_rebate)
+
     elif len(application) > 1:
-        secondary_applicant = application[1]
+        for idx, x in enumerate(application):
+            if x["sin"] == filtered_household[0].sin:
+                secondary_applicant = application[idx]
         secondary_income = secondary_applicant.get("income")
         household_rebate = check_household(primary_income, secondary_income)
         return get_final_rebate(individual_rebate, household_rebate)
