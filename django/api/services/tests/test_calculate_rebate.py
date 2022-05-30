@@ -81,7 +81,7 @@ class TestCalculate(TestCase):
         self.assertEqual(rebate_amount, 1000)
 
     def test__application_na_ind(self):
-        # qualifies for an individual rebate of 'c'
+        # qualifies for an individual rebate of 'not approved'
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "105687"}
