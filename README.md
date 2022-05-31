@@ -127,11 +127,11 @@ If another branch is merged in (eg from another developer) then the branch in pr
 to be rebased before it gets merged in.
 
 Steps:
-git checkout <release-branch>
+git checkout release-branch
 git fetch upstream
-git pull --rebase upstream <release-branch>
-git checkout <featurebranch>
-git rebase <release-branch>
+git pull --rebase upstream release-branch
+git checkout featurebranch
+git rebase release-branch
 
 If there are any conflicts, you will have to step through each commit and fix them. After
 conflicts are fixed and added (git add) then:
