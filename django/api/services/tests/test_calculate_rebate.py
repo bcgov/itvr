@@ -3,7 +3,8 @@ from django.test import TestCase
 from ...models.go_electric_rebate_application import GoElectricRebateApplication
 from ...models.household_member import HouseholdMember
 from django.contrib.auth import get_user_model
-from ..calculate_rebate import calculate_rebate_amount
+from ..calculate_rebate import calculate_rebate_amount, RebateType
+from ...settings import INCOME_REBATES
 
 
 User = get_user_model()
@@ -54,7 +55,9 @@ class TestCalculate(TestCase):
         }
 
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 4000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.A.value).get("rebate")
+        )
 
     def test_individual_receives_rebate_b(self):
         # qualifies for an individual rebate of b
@@ -64,7 +67,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 2000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
+        )
 
     def test_individual_receives_rebate_c(self):
         # qualifies for an individual rebate of 'c'
@@ -74,7 +79,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 1000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.C.value).get("rebate")
+        )
 
     def test_individual_receives_not_approved(self):
         # qualifies for an individual rebate of 'Not Approved'
@@ -84,7 +91,10 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, "Not Approved")
+
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.D.value).get("rebate")
+        )
 
     def test_household_receives_rebate_a_individual(self):
         # qualifies for a individual rebate of 'a' even though its a household application
@@ -95,7 +105,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 4000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.A.value).get("rebate")
+        )
 
     def test_household_receives_rebate_b_individual(self):
         # qualifies for 'b' individual or 'c' household (gets b)
@@ -106,7 +118,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 2000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
+        )
 
     def test_household_receives_rebate_b(self):
         # qualifies for 'c' individual and 'b' household (should get b)
@@ -117,7 +131,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 2000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
+        )
 
     def test_household_receives_rebate_b_switched_cra(self):
         # qualifies for 'c' individual and 'b' household (should get b)
@@ -129,7 +145,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 2000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
+        )
 
     def test_household_receives_rebate_a(self):
         # too high personal income but qualifies for 'a' household
@@ -140,7 +158,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, 4000)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.A.value).get("rebate")
+        )
 
     def test_household_receives_not_approved(self):
         # too high invididual AND household income
@@ -151,7 +171,9 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, "Not Approved")
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.D.value).get("rebate")
+        )
 
     def test_application_no_cra(self):
         # no income
@@ -162,4 +184,6 @@ class TestCalculate(TestCase):
             ],
         }
         rebate_amount = calculate_rebate_amount(cra_response)
-        self.assertEqual(rebate_amount, "Not Approved")
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.D.value).get("rebate")
+        )

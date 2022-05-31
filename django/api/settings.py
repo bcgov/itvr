@@ -217,6 +217,7 @@ CRA_ENVIRONMENT = os.getenv("CRA_ENVIRONMENT", "A")
 
 
 INCOME_REBATES = {
+    "Not Approved": {"rebate": "Not Approved"},
     "C": {"individual_income": 100000, "household_income": 165000, "rebate": 1000},
     "B": {"individual_income": 90000, "household_income": 145000, "rebate": 2000},
     "A": {"individual_income": 80000, "household_income": 125000, "rebate": 4000},
