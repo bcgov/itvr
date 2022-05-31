@@ -73,11 +73,12 @@ def get_final_rebate(individual_rebate, household_rebate):
         return RebateType.D.value
 
 
-def calculate_rebate_amount(cra_response, application_id):
+def calculate_rebate_amount(cra_response):
+    application_id = list(cra_response.keys())[0]
     application = cra_response.get(application_id)
     filtered_applications = GoElectricRebateApplication.objects.select_related(
         "householdmember"
-    ).get(id__in=cra_response.keys())
+    ).get(id__in=[application_id])
     for idx, x in enumerate(application):
         # loop through the application lists provided by cra and check against
         # our database, find our record for that application id and

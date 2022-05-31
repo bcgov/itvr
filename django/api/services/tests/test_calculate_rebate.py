@@ -51,7 +51,7 @@ class TestCalculate(TestCase):
             ],
         }
 
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 4000)
 
     def test_individual_receives_rebate_b(self):
@@ -61,7 +61,7 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "85687"}
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 2000)
 
     def test_individual_receives_rebate_c(self):
@@ -71,7 +71,7 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "95687"}
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 1000)
 
     def test_individual_receives_not_approved(self):
@@ -81,7 +81,7 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "105687"}
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, "Not Approved")
 
     def test_household_receives_rebate_a_individual(self):
@@ -92,7 +92,7 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "49000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 4000)
 
     def test_household_receives_rebate_b_individual(self):
@@ -103,7 +103,7 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "70000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 2000)
 
     def test_household_receives_rebate_b(self):
@@ -114,7 +114,7 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "50000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 2000)
 
     def test_household_receives_rebate_b_switched_cra(self):
@@ -126,7 +126,7 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "95000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 2000)
 
     def test_household_receives_rebate_a(self):
@@ -137,7 +137,7 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "1"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, 4000)
 
     def test_household_receives_not_approved(self):
@@ -148,7 +148,7 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "100100"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, "Not Approved")
 
     def test_application_no_cra(self):
@@ -159,5 +159,5 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "v", "income": "100100"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
+        rebate_amount = calculate_rebate_amount(cra_response)
         self.assertEqual(rebate_amount, "Not Approved")
