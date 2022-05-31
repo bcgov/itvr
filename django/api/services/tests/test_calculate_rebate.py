@@ -6,9 +6,11 @@ from django.contrib.auth import get_user_model
 from ..calculate_rebate import calculate_rebate_amount
 
 
+User = get_user_model()
+
+
 class TestCalculate(TestCase):
     def setUp(self):
-        User = get_user_model()
         User.objects.create(id=1, username="tester")
         User.objects.create(id=2, username="tester2")
 
