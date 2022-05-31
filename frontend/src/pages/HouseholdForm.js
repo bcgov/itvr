@@ -3,6 +3,7 @@ import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from 'react-router-dom';
+import {Helmet} from "react-helmet";
 
 const HouseholdFormPage = () => {
   const [searchParams] = useSearchParams();
@@ -21,6 +22,10 @@ const HouseholdFormPage = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Passenger vehicle rebate application form – CleanBC Go Electric</title>
+      </Helmet>
+      Hello BCeID {decoded.preferred_username}
       <Layout>
         {numberOfErrors > 0 && (
           <span className="error" ref={errorMessageRef}>

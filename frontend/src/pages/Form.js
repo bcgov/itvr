@@ -3,6 +3,7 @@ import Form from '../components/Form';
 import Layout from '../components/Layout';
 import RebateTable from '../components/RebateTable';
 import { useKeycloak } from '@react-keycloak/web';
+import {Helmet} from "react-helmet";
 
 const FormPage = () => {
   const [numberOfErrors, setNumberOfErrors] = useState(0);
@@ -18,7 +19,11 @@ const FormPage = () => {
   }, [errorsExistCounter]);
 
   return (
-    <Layout>
+    <div>
+      <Helmet>
+        <title>Passenger vehicle rebate application form – CleanBC Go Electric</title>
+      </Helmet>
+      <Layout>
       {numberOfErrors > 0 && (
         <span className="error" ref={errorMessageRef}>
           Errors below, please ensure all fields are complete
@@ -29,7 +34,9 @@ const FormPage = () => {
         setNumberOfErrors={setNumberOfErrors}
         setErrorsExistCounter={setErrorsExistCounter}
       />
-    </Layout>
+      </Layout>
+    </div>
+    
   );
 };
 
