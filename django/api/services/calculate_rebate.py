@@ -1,44 +1,77 @@
 from ..models.go_electric_rebate_application import GoElectricRebateApplication
 from ..models.household_member import HouseholdMember
 from ..settings import INCOME_REBATES
+from enum import Enum
+
+
+class RebateType(Enum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "Not Approved"
 
 
 def calculate_rebate_amount(cra_response, application_id):
     def check_individual(primary_income):
         if primary_income is None:
-            return "not approved"
+            return RebateType.D.value
         primary_income = int(primary_income)
-        if primary_income > INCOME_REBATES.get("C").get("individual_income"):
-            return "not approved"
-        elif primary_income <= INCOME_REBATES.get("A").get("individual_income"):
-            return "A"
-        elif primary_income <= INCOME_REBATES.get("B").get("individual_income"):
-            return "B"
-        elif primary_income <= INCOME_REBATES.get("C").get("individual_income"):
-            return "C"
+        if primary_income > INCOME_REBATES.get(RebateType.C.value).get(
+            "individual_income"
+        ):
+            return RebateType.D.value
+        elif primary_income <= INCOME_REBATES.get(RebateType.A.value).get(
+            "individual_income"
+        ):
+            return RebateType.A.value
+        elif primary_income <= INCOME_REBATES.get(RebateType.B.value).get(
+            "individual_income"
+        ):
+            return RebateType.B.value
+        elif primary_income <= INCOME_REBATES.get(RebateType.C.value).get(
+            "individual_income"
+        ):
+            return RebateType.C.value
 
     def check_household(primary_income, secondary_income):
         if (primary_income is None) | (secondary_income is None):
-            return "not approved"
+            return RebateType.D.value
         household_income = int(primary_income) + int(secondary_income)
-        if household_income > INCOME_REBATES.get("C").get("household_income"):
-            return "not approved"
-        if household_income <= INCOME_REBATES.get("A").get("household_income"):
-            return "A"
-        elif household_income <= INCOME_REBATES.get("B").get("household_income"):
-            return "B"
-        elif household_income <= INCOME_REBATES.get("C").get("household_income"):
-            return "C"
+        if household_income > INCOME_REBATES.get(RebateType.C.value).get(
+            "household_income"
+        ):
+            return RebateType.D.value
+        if household_income <= INCOME_REBATES.get(RebateType.A.value).get(
+            "household_income"
+        ):
+            return RebateType.A.value
+        elif household_income <= INCOME_REBATES.get(RebateType.B.value).get(
+            "household_income"
+        ):
+            return RebateType.B.value
+        elif household_income <= INCOME_REBATES.get(RebateType.C.value).get(
+            "household_income"
+        ):
+            return RebateType.C.value
 
     def get_final_rebate(individual_rebate, household_rebate):
-        if household_rebate == "A":
-            return INCOME_REBATES.get("A").get("rebate")
-        if individual_rebate == "B" or household_rebate == "B":
-            return INCOME_REBATES.get("B").get("rebate")
-        if individual_rebate == "C" or household_rebate == "C":
-            return INCOME_REBATES.get("C").get("rebate")
-        if household_rebate == "not approved" and individual_rebate == "not approved":
-            return "not approved"
+        if household_rebate == RebateType.A.value:
+            return INCOME_REBATES.get(RebateType.A.value).get("rebate")
+        if (
+            individual_rebate == RebateType.B.value
+            or household_rebate == RebateType.B.value
+        ):
+            return INCOME_REBATES.get(RebateType.B.value).get("rebate")
+        if (
+            individual_rebate == RebateType.C.value
+            or household_rebate == RebateType.C.value
+        ):
+            return INCOME_REBATES.get(RebateType.C.value).get("rebate")
+        if (
+            household_rebate == RebateType.D.value
+            and individual_rebate == RebateType.D.value
+        ):
+            return RebateType.D.value
 
     application = cra_response.get(application_id)
     primary_applicant = {}
@@ -55,9 +88,9 @@ def calculate_rebate_amount(cra_response, application_id):
             primary_applicant = application[idx]
     primary_income = primary_applicant.get("income")
     individual_rebate = check_individual(primary_income)
-    if individual_rebate == "A" or len(application) == 1:
-        if individual_rebate == "not approved":
-            return "not approved"
+    if individual_rebate == RebateType.A.value or len(application) == 1:
+        if individual_rebate == RebateType.D.value:
+            return RebateType.D.value
         else:
             return INCOME_REBATES.get(individual_rebate).get("rebate")
 

@@ -1,5 +1,4 @@
 from unittest import TestCase
-from rest_framework.serializers import ValidationError
 from django.test import TestCase
 from ...models.go_electric_rebate_application import GoElectricRebateApplication
 from ...models.household_member import HouseholdMember
@@ -9,8 +8,6 @@ from ..calculate_rebate import calculate_rebate_amount
 
 class TestCalculate(TestCase):
     def setUp(self):
-        super().setUp()
-
         user = get_user_model()
         user.objects.create(id=1, username="tester")
         user.objects.create(id=2, username="tester2")
@@ -81,7 +78,7 @@ class TestCalculate(TestCase):
         self.assertEqual(rebate_amount, 1000)
 
     def test__application_na_ind(self):
-        # qualifies for an individual rebate of 'not approved'
+        # qualifies for an individual rebate of 'Not Approved'
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "105687"}
@@ -89,7 +86,7 @@ class TestCalculate(TestCase):
         }
         individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
         rebate_amount = calculate_rebate_amount(cra_response, individual.id)
-        self.assertEqual(rebate_amount, "not approved")
+        self.assertEqual(rebate_amount, "Not Approved")
 
     def test__application_a_ind_a_hs(self):
         # qualifies for a individual rebate of 'a' even though its a household application
@@ -162,7 +159,7 @@ class TestCalculate(TestCase):
         }
         individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
         rebate_amount = calculate_rebate_amount(cra_response, individual.id)
-        self.assertEqual(rebate_amount, "not approved")
+        self.assertEqual(rebate_amount, "Not Approved")
 
     def test_application_no_cra(self):
         # no income
@@ -174,4 +171,4 @@ class TestCalculate(TestCase):
         }
         individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
         rebate_amount = calculate_rebate_amount(cra_response, individual.id)
-        self.assertEqual(rebate_amount, "not approved")
+        self.assertEqual(rebate_amount, "Not Approved")
