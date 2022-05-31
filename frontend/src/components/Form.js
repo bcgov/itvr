@@ -59,6 +59,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
       if (key === 'documents') {
         formData.append('doc1', value[0]);
         formData.append('doc2', value[1]);
+      } else if (key === 'postal_code' && value.length === 7) {
+        formData.append(key, value.replace(/[ -]/, ''));
       } else {
         formData.append(key, value);
       }
@@ -308,16 +310,20 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             render={({ field }) => (
               <TextField
                 id="postal_code"
-                inputProps={{ maxLength: 6 }}
+                inputProps={{ maxLength: 7 }}
                 onChange={(e) => setValue('postal_code', e.target.value)}
               />
             )}
             rules={{
               validate: (inputtedPostalCode) => {
-                if (!inputtedPostalCode || inputtedPostalCode.length !== 6) {
+                if (
+                  !inputtedPostalCode ||
+                  (inputtedPostalCode.length !== 6 &&
+                    inputtedPostalCode.length !== 7)
+                ) {
                   return false;
                 }
-                const regex = /[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d/;
+                const regex = /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/;
                 if (!regex.test(inputtedPostalCode)) {
                   return false;
                 }
