@@ -8,9 +8,9 @@ from ..calculate_rebate import calculate_rebate_amount
 
 class TestCalculate(TestCase):
     def setUp(self):
-        user = get_user_model()
-        user.objects.create(id=1, username="tester")
-        user.objects.create(id=2, username="tester2")
+        User = get_user_model()
+        User.objects.create(id=1, username="tester")
+        User.objects.create(id=2, username="tester2")
 
         GoElectricRebateApplication.objects.create(
             id="B5t92XeH7NnFUwxc",
@@ -43,7 +43,7 @@ class TestCalculate(TestCase):
             date_of_birth="2000-01-01",
         )
 
-    def test_application_a_ind(self):
+    def test_individual_receives_rebate_a(self):
         # qualifies for an individual rebate of a
         cra_response = {
             "B5t92XeH7NnFUwxc": [
@@ -51,44 +51,40 @@ class TestCalculate(TestCase):
             ],
         }
 
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 4000)
 
-    def test_application_b_ind(self):
+    def test_individual_receives_rebate_b(self):
         # qualifies for an individual rebate of b
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "85687"}
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 2000)
 
-    def test__application_c_ind(self):
+    def test_individual_receives_rebate_c(self):
         # qualifies for an individual rebate of 'c'
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "95687"}
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 1000)
 
-    def test__application_na_ind(self):
+    def test_individual_receives_not_approved(self):
         # qualifies for an individual rebate of 'Not Approved'
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "105687"}
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, "Not Approved")
 
-    def test__application_a_ind_a_hs(self):
+    def test_household_receives_rebate_a_individual(self):
         # qualifies for a individual rebate of 'a' even though its a household application
         cra_response = {
             "B5t92XeH7NnFUwxc": [
@@ -96,11 +92,10 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "49000"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 4000)
 
-    def test_application_b_ind_c_hs(self):
+    def test_household_receives_rebate_b_individual(self):
         # qualifies for 'b' individual or 'c' household (gets b)
         cra_response = {
             "B5t92XeH7NnFUwxc": [
@@ -108,11 +103,10 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "70000"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 2000)
 
-    def test_application_c_ind_b_hs(self):
+    def test_household_receives_rebate_b(self):
         # qualifies for 'c' individual and 'b' household (should get b)
         cra_response = {
             "B5t92XeH7NnFUwxc": [
@@ -120,11 +114,10 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "50000"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 2000)
 
-    def test_application_c_ind_b_hs_switched(self):
+    def test_household_receives_rebate_b_switched_cra(self):
         # qualifies for 'c' individual and 'b' household (should get b)
         # just switched cra response
         cra_response = {
@@ -133,11 +126,10 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "95000"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 2000)
 
-    def test_application_na_ind_a_hs(self):
+    def test_household_receives_rebate_a(self):
         # too high personal income but qualifies for 'a' household
         cra_response = {
             "B5t92XeH7NnFUwxc": [
@@ -145,11 +137,10 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "1"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, 4000)
 
-    def test_application_na_ind_hs(self):
+    def test_household_receives_not_approved(self):
         # too high invididual AND household income
         cra_response = {
             "B5t92XeH7NnFUwxc": [
@@ -157,8 +148,7 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "2020", "income": "100100"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, "Not Approved")
 
     def test_application_no_cra(self):
@@ -169,6 +159,5 @@ class TestCalculate(TestCase):
                 {"sin": "270300379", "year": "v", "income": "100100"},
             ],
         }
-        individual = GoElectricRebateApplication.objects.get(id="B5t92XeH7NnFUwxc")
-        rebate_amount = calculate_rebate_amount(cra_response, individual.id)
+        rebate_amount = calculate_rebate_amount(cra_response, "B5t92XeH7NnFUwxc")
         self.assertEqual(rebate_amount, "Not Approved")
