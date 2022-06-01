@@ -171,7 +171,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b_individual(self):
-        # qualifies for 'B' individual or 'C' household (gets B) (primary income 85000, houehold 70000)
+        # qualifies for 'B' individual or 'C' household (gets 'B') (primary income 85000, houehold 70000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "85000"},
@@ -189,7 +189,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b(self):
-        # qualifies for 'C' individual and 'B' household (should get b) (primary 95000, spouse 50000)
+        # qualifies for 'C' individual and 'B' household (should get 'B') (primary 95000, spouse 50000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "95000"},
@@ -207,7 +207,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b_switched_cra(self):
-        # qualifies for 'C' individual and 'B' household (should get b)
+        # qualifies for 'C' individual and 'B' household (should get 'B')
         # just switched cra response order (primary 95000, spouse 50000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
@@ -284,7 +284,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_no_primary_income_receives_rebate_d(self):
-        # no income for primary, but income for spouse (should get d)
+        # no income for primary, but income for spouse (should get 'D)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": None},
@@ -302,7 +302,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_no_secondary_income_receives_individual_b(self):
-        # no income for secondary so receives the primary amount B
+        # no income for secondary so receives the primary amount 'B'
         # (primary 81000, spouse none)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
