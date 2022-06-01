@@ -258,21 +258,36 @@ objects:
                       key: app-db-username
                 - name: APP_CONFIG
                   value: /opt/app-root/src/gunicorn.cfg.py
-                - name: KEYCLOAK_CLIENT_ID
+                - name: BCSC_KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
                       name: itvr-keycloak
-                      key: KEYCLOAK_CLIENT_ID
-                - name: KEYCLOAK_REALM
+                      key: BCSC_KEYCLOAK_CLIENT_ID
+                - name: BCSC_KEYCLOAK_REALM
                   valueFrom:
                     secretKeyRef:
                       name: itvr-keycloak
-                      key: KEYCLOAK_REALM
-                - name: KEYCLOAK_URL
+                      key: BCSC_KEYCLOAK_REALM
+                - name: BCSC_KEYCLOAK_URL
                   valueFrom:
                     secretKeyRef:
                       name: itvr-keycloak
-                      key: KEYCLOAK_URL                                  
+                      key: BCSC_KEYCLOAK_URL           
+                - name: BCEID_KEYCLOAK_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-keycloak
+                      key: BCEID_KEYCLOAK_CLIENT_ID
+                - name: BCEID_KEYCLOAK_REALM
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-keycloak
+                      key: BCEID_KEYCLOAK_REALM
+                - name: BCEID_KEYCLOAK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-keycloak
+                      key: BCEID_KEYCLOAK_URL                          
                 - name: DJANGO_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
