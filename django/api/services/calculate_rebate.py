@@ -11,6 +11,20 @@ class RebateType(Enum):
     D = "Not Approved"
 
 
+def get_cra_results(cra_response):
+    filtered_applications = GoElectricRebateApplication.objects.select_related(
+        "householdmember"
+    ).filter(id__in=list(cra_response.keys()))
+    # iterate through the entire cra response, call calculate function
+    # for each seperate id
+    rebates = {}
+    for each in filtered_applications:
+        single_cra_response = cra_response.get(each.id)
+        rebate = calculate_rebate_amount(single_cra_response, each)
+        rebates[each.id] = rebate
+    return rebates
+
+
 def check_individual(primary_income):
     if primary_income is None:
         return RebateType.D.value
@@ -32,8 +46,8 @@ def check_individual(primary_income):
 
 
 def check_household(primary_income, secondary_income):
-    if (primary_income is None) | (secondary_income is None):
-        return RebateType.D.value
+    if secondary_income is None:
+        return check_individual(primary_income)
     household_income = int(primary_income) + int(secondary_income)
     if household_income > INCOME_REBATES.get(RebateType.C.value).get(
         "household_income"
@@ -73,30 +87,27 @@ def get_final_rebate(individual_rebate, household_rebate):
         return RebateType.D.value
 
 
-def calculate_rebate_amount(cra_response):
-    application_id = list(cra_response.keys())[0]
-    application = cra_response.get(application_id)
-    filtered_applications = GoElectricRebateApplication.objects.select_related(
-        "householdmember"
-    ).get(id__in=[application_id])
-    for idx, x in enumerate(application):
-        # loop through the application lists provided by cra and check against
-        # our database, find our record for that application id and
-        # determine which item in the array is primary or secondary
-        if x["sin"] == filtered_applications.sin:
-            primary_applicant = application[idx]
+def calculate_rebate_amount(cra_response, filtered_applications):
+    primary_applicant = next(
+        (x for x in cra_response if x["sin"] == filtered_applications.sin), None
+    )
     primary_income = primary_applicant.get("income")
     individual_rebate = check_individual(primary_income)
-    if individual_rebate == RebateType.A.value or len(application) == 1:
+    if (
+        individual_rebate == RebateType.A.value
+        or len(cra_response) == 1
+        or primary_income == None
+    ):
         if individual_rebate == RebateType.D.value:
             return RebateType.D.value
         else:
             return INCOME_REBATES.get(individual_rebate).get("rebate")
 
-    elif len(application) > 1:
-        for idx, x in enumerate(application):
-            if x["sin"] == filtered_applications.householdmember.sin:
-                secondary_applicant = application[idx]
+    elif len(cra_response) > 1:
+        hm = filtered_applications.householdmember
+        secondary_applicant = next(
+            (x for x in cra_response if x["sin"] == hm.sin), None
+        )
         secondary_income = secondary_applicant.get("income")
         household_rebate = check_household(primary_income, secondary_income)
         return get_final_rebate(individual_rebate, household_rebate)

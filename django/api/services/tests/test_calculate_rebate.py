@@ -3,7 +3,7 @@ from django.test import TestCase
 from ...models.go_electric_rebate_application import GoElectricRebateApplication
 from ...models.household_member import HouseholdMember
 from django.contrib.auth import get_user_model
-from ..calculate_rebate import calculate_rebate_amount, RebateType
+from ..calculate_rebate import calculate_rebate_amount, RebateType, get_cra_results
 from ...settings import INCOME_REBATES
 
 
@@ -33,8 +33,44 @@ class TestCalculate(TestCase):
             postal_code="v8s4j9",
             tax_year=2020,
         )
+        GoElectricRebateApplication.objects.create(
+            id="9uXLvNQS5vkKnscD",
+            user_id=1,
+            sin="302435839",
+            application_type="individual",
+            last_name="person",
+            first_name="person",
+            doc1="image1.png",
+            doc2="image2.png",
+            consent_personal=True,
+            consent_tax=True,
+            date_of_birth="2000-01-01",
+            email="emily.hillier@gov.bc.ca",
+            address="123 street",
+            city="Victoria",
+            postal_code="v8s4j9",
+            tax_year=2020,
+        )
+        GoElectricRebateApplication.objects.create(
+            id="ctW8gU57YX4xfQ9o",
+            user_id=1,
+            sin="302435839",
+            application_type="individual",
+            last_name="person",
+            first_name="person",
+            doc1="image1.png",
+            doc2="image2.png",
+            consent_personal=True,
+            consent_tax=True,
+            date_of_birth="2000-01-01",
+            email="emily.hillier@gov.bc.ca",
+            address="123 street",
+            city="Victoria",
+            postal_code="v8s4j9",
+            tax_year=2020,
+        )
         HouseholdMember.objects.create(
-            application_id="B5t92XeH7NnFUwxc",
+            application_id="9uXLvNQS5vkKnscD",
             user_id=2,
             sin="270300379",
             last_name="test",
@@ -54,7 +90,12 @@ class TestCalculate(TestCase):
             ],
         }
 
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.A.value).get("rebate")
         )
@@ -66,7 +107,12 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "85687"}
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
         )
@@ -78,7 +124,12 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "95687"}
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.C.value).get("rebate")
         )
@@ -90,7 +141,12 @@ class TestCalculate(TestCase):
                 {"sin": "302435839", "year": "2020", "income": "105687"}
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
 
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.D.value).get("rebate")
@@ -99,12 +155,17 @@ class TestCalculate(TestCase):
     def test_household_receives_rebate_a_individual(self):
         # qualifies for a individual rebate of 'a' even though its a household application
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "75000"},
                 {"sin": "270300379", "year": "2020", "income": "49000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.A.value).get("rebate")
         )
@@ -112,12 +173,17 @@ class TestCalculate(TestCase):
     def test_household_receives_rebate_b_individual(self):
         # qualifies for 'b' individual or 'c' household (gets b)
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "85000"},
                 {"sin": "270300379", "year": "2020", "income": "70000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
         )
@@ -125,12 +191,17 @@ class TestCalculate(TestCase):
     def test_household_receives_rebate_b(self):
         # qualifies for 'c' individual and 'b' household (should get b)
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "95000"},
                 {"sin": "270300379", "year": "2020", "income": "50000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
         )
@@ -139,12 +210,18 @@ class TestCalculate(TestCase):
         # qualifies for 'c' individual and 'b' household (should get b)
         # just switched cra response
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "270300379", "year": "2020", "income": "50000"},
                 {"sin": "302435839", "year": "2020", "income": "95000"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
+
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
         )
@@ -152,38 +229,115 @@ class TestCalculate(TestCase):
     def test_household_receives_rebate_a(self):
         # too high personal income but qualifies for 'a' household
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "100001"},
                 {"sin": "270300379", "year": "2020", "income": "1"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.A.value).get("rebate")
+        )
+
+    def test_household_receives_rebate_b_spouse_is_0(self):
+        # too high personal income but qualifies for 'a' household
+        cra_response = {
+            "9uXLvNQS5vkKnscD": [
+                {"sin": "302435839", "year": "2020", "income": "125001"},
+                {"sin": "270300379", "year": "2020", "income": "0"},
+            ],
+        }
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
         )
 
     def test_household_receives_not_approved(self):
         # too high invididual AND household income
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "100002"},
                 {"sin": "270300379", "year": "2020", "income": "100100"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.D.value).get("rebate")
         )
 
-    def test_application_no_cra(self):
+    def test_household_no_primary_income_receives_rebate_d(self):
         # no income
         cra_response = {
-            "B5t92XeH7NnFUwxc": [
+            "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": None},
-                {"sin": "270300379", "year": "v", "income": "100100"},
+                {"sin": "270300379", "year": "2020", "income": "100100"},
             ],
         }
-        rebate_amount = calculate_rebate_amount(cra_response)
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
         self.assertEqual(
             rebate_amount, INCOME_REBATES.get(RebateType.D.value).get("rebate")
+        )
+
+    def test_household_no_secondary_income_receives_individual_b(self):
+        # no income for secondary so receives the primary amount
+        cra_response = {
+            "9uXLvNQS5vkKnscD": [
+                {"sin": "302435839", "year": "2020", "income": 81000},
+                {"sin": "270300379", "year": "2020", "income": None},
+            ],
+        }
+        filtered_applications = GoElectricRebateApplication.objects.select_related(
+            "householdmember"
+        ).filter(id__in=list(cra_response.keys()))
+        for each in filtered_applications:
+            single_cra_response = cra_response.get(each.id)
+            rebate_amount = calculate_rebate_amount(single_cra_response, each)
+        self.assertEqual(
+            rebate_amount, INCOME_REBATES.get(RebateType.B.value).get("rebate")
+        )
+
+    def test_iterate_cra(self):
+        # checks cra results one by one
+        cra_response = {
+            "B5t92XeH7NnFUwxc": [
+                {"sin": "302435839", "year": "2020", "income": "55687"}
+            ],
+            "9uXLvNQS5vkKnscD": [
+                {"sin": "302435839", "year": "2020", "income": "85687"},
+                {"sin": "270300379", "year": "2020", "income": "81830"},
+            ],
+            "ctW8gU57YX4xfQ9o": [{"sin": "302435839", "year": "2020", "income": None}],
+        }
+        rebate_amounts = get_cra_results(cra_response)
+        self.assertEqual(
+            rebate_amounts.get("B5t92XeH7NnFUwxc"),
+            INCOME_REBATES.get(RebateType.A.value).get("rebate"),
+        )
+        self.assertEqual(
+            rebate_amounts.get("9uXLvNQS5vkKnscD"),
+            INCOME_REBATES.get(RebateType.B.value).get("rebate"),
+        )
+        self.assertEqual(
+            rebate_amounts.get("ctW8gU57YX4xfQ9o"),
+            INCOME_REBATES.get(RebateType.D.value).get("rebate"),
         )
