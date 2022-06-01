@@ -83,7 +83,7 @@ class TestCalculate(TestCase):
         )
 
     def test_individual_receives_rebate_a(self):
-        # qualifies for an individual rebate of a
+        # qualifies for an individual rebate of 'A' (income of 65687)
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "65687"}
@@ -101,7 +101,7 @@ class TestCalculate(TestCase):
         )
 
     def test_individual_receives_rebate_b(self):
-        # qualifies for an individual rebate of b
+        # qualifies for an individual rebate of 'B' (income of 85687)
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "85687"}
@@ -118,7 +118,7 @@ class TestCalculate(TestCase):
         )
 
     def test_individual_receives_rebate_c(self):
-        # qualifies for an individual rebate of 'c'
+        # qualifies for an individual rebate of 'C' (income of 95687)
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "95687"}
@@ -135,7 +135,7 @@ class TestCalculate(TestCase):
         )
 
     def test_individual_receives_not_approved(self):
-        # qualifies for an individual rebate of 'Not Approved'
+        # qualifies for an individual rebate of 'Not Approved' (income 105687)
         cra_response = {
             "B5t92XeH7NnFUwxc": [
                 {"sin": "302435839", "year": "2020", "income": "105687"}
@@ -153,7 +153,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_a_individual(self):
-        # qualifies for a individual rebate of 'a' even though its a household application
+        # qualifies for a individual rebate of 'A' even though its a household application (primary income 75000, spouse 49000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "75000"},
@@ -171,7 +171,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b_individual(self):
-        # qualifies for 'b' individual or 'c' household (gets b)
+        # qualifies for 'B' individual or 'C' household (gets B) (primary income 85000, houehold 70000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "85000"},
@@ -189,7 +189,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b(self):
-        # qualifies for 'c' individual and 'b' household (should get b)
+        # qualifies for 'C' individual and 'B' household (should get b) (primary 95000, spouse 50000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "95000"},
@@ -207,8 +207,8 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b_switched_cra(self):
-        # qualifies for 'c' individual and 'b' household (should get b)
-        # just switched cra response
+        # qualifies for 'C' individual and 'B' household (should get b)
+        # just switched cra response order (primary 95000, spouse 50000)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "270300379", "year": "2020", "income": "50000"},
@@ -227,7 +227,8 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_a(self):
-        # too high personal income but qualifies for 'a' household
+        # too high personal income but qualifies for 'A' household
+        # (primary 10001, spouse 1)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "100001"},
@@ -245,7 +246,8 @@ class TestCalculate(TestCase):
         )
 
     def test_household_receives_rebate_b_spouse_is_0(self):
-        # too high personal income but qualifies for 'a' household
+        # too high personal income but qualifies for 'A' household
+        # (primary 125001, spouse 0)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "125001"},
@@ -264,6 +266,7 @@ class TestCalculate(TestCase):
 
     def test_household_receives_not_approved(self):
         # too high invididual AND household income
+        # (primary 100002, spouse 100100)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": "100002"},
@@ -281,7 +284,7 @@ class TestCalculate(TestCase):
         )
 
     def test_household_no_primary_income_receives_rebate_d(self):
-        # no income
+        # no income for primary, but income for spouse (should get d)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": None},
@@ -299,7 +302,8 @@ class TestCalculate(TestCase):
         )
 
     def test_household_no_secondary_income_receives_individual_b(self):
-        # no income for secondary so receives the primary amount
+        # no income for secondary so receives the primary amount B
+        # (primary 81000, spouse none)
         cra_response = {
             "9uXLvNQS5vkKnscD": [
                 {"sin": "302435839", "year": "2020", "income": 81000},
