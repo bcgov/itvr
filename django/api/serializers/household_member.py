@@ -87,8 +87,6 @@ class HouseholdMemberApplicationGetSerializer(ModelSerializer):
             "last_name",
             "sin",
             "date_of_birth",
-            "doc1",
-            "doc2",
             "consent_personal",
             "consent_tax",
             "created",
