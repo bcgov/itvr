@@ -3,9 +3,12 @@ import { useQuery } from 'react-query';
 import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
 import DetailsTable from './DetailsTable';
+import { useKeycloak } from '@react-keycloak/web';
 
 const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
+  const { keycloak } = useKeycloak();
+  const idp = keycloak.tokenParsed.identity_provider;
   const detailUrl =
     applicationType === 'household'
       ? `/api/spouse-application/${id}`
@@ -41,7 +44,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
       {data.status === 'household_initiated' && (
         <p>Your spouse will receive an email to complete this application.</p>
       )}
-      <DetailsTable data={data} />
+      <DetailsTable data={{ ...data, idp }} />
     </Box>
   );
 };

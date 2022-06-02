@@ -7,7 +7,6 @@ from django.db.models import (
     DateField,
     EmailField,
     BooleanField,
-    UUIDField,
     PROTECT,
     ForeignKey,
     TextChoices,
@@ -66,7 +65,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     email = EmailField(max_length=250, unique=False)
     address = CharField(max_length=250, unique=False)
     city = CharField(max_length=250, unique=False)
-    postal_code = CharField(max_length=6, unique=False)
+    postal_code = CharField(max_length=6, unique=False, blank=True, null=True)
     drivers_licence = CharField(
         max_length=8, unique=False, validators=[MinLengthValidator(7)]
     )

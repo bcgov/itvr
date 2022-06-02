@@ -303,7 +303,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.postal_code?.type === 'validate' && (
             <p className="error">Not a valid Postal Code</p>
           )}
-          <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
+          <InputLabel htmlFor="postal_code">Postal Code (optional):</InputLabel>
           <Controller
             name="postal_code"
             control={control}
@@ -316,16 +316,17 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             )}
             rules={{
               validate: (inputtedPostalCode) => {
-                if (
-                  !inputtedPostalCode ||
-                  (inputtedPostalCode.length !== 6 &&
-                    inputtedPostalCode.length !== 7)
-                ) {
-                  return false;
-                }
-                const regex = /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/;
-                if (!regex.test(inputtedPostalCode)) {
-                  return false;
+                if (inputtedPostalCode) {
+                  if (
+                    inputtedPostalCode.length !== 6 &&
+                    inputtedPostalCode.length !== 7
+                  ) {
+                    return false;
+                  }
+                  const regex = /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/;
+                  if (!regex.test(inputtedPostalCode)) {
+                    return false;
+                  }
                 }
                 return true;
               }

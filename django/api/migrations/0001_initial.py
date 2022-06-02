@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=250)),
                 ('address', models.CharField(max_length=250)),
                 ('city', models.CharField(max_length=250)),
-                ('postal_code', models.CharField(max_length=6)),
+                ('postal_code', models.CharField(blank=True, max_length=6, null=True)),
                 ('drivers_licence', models.CharField(max_length=8, validators=[django.core.validators.MinLengthValidator(7)])),
                 ('date_of_birth', models.DateField(validators=[api.validators.validate_driving_age])),
                 ('tax_year', models.IntegerField()),

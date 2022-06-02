@@ -112,10 +112,12 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           <InputLabel htmlFor="city">City:</InputLabel>
           <p>{city}</p>
         </span>
-        <span>
-          <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
-          <p>{postalCode}</p>
-        </span>
+        {postalCode && (
+          <span>
+            <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
+            <p>{postalCode}</p>
+          </span>
+        )}
         <FormGroup>
           {errors?.last_name?.type === 'required' && (
             <p className="error">Last Name cannot be blank</p>
