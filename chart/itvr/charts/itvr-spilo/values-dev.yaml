@@ -23,7 +23,7 @@ spilo:
     enabled: true
     s3:
       bucket: s3://itvrdv
-      shipSchedule: 0 0 * * *
+      shipSchedule: 0 7 * * *
 
   persistentVolume:
     size: 5Gi
