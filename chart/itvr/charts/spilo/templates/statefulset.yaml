@@ -112,6 +112,12 @@ spec:
         - name: USE_WALE
           value: ""
         {{- end }}
+        {{- if .Values.shipLogs.enabled }}
+        - name: LOG_S3_BUCKET
+          value: {{ .Values.shipLogs.s3.bucket | quote }}
+        - name: LOG_SHIP_SCHEDULE
+          value: {{ .Values.shipLogs.s3.shipSchedule | quote }}
+        {{- end }}
         - name: PGROOT
           value: "{{ .Values.persistentVolume.mountPath }}/pgroot"
         - name: POD_NAMESPACE

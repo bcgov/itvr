@@ -12,12 +12,18 @@ spilo:
 
   continuousArchive:
     enabled: true
-    scheduleCronJob: "0 2 * * *"
+    scheduleCronJob: "0 10 * * *"
     retainBackups: 3
     storage: s3
     s3:
       bucket: itvrdv
       secretName: itvr-db-backup-s3
+
+  shipLogs:
+    enabled: true
+    s3:
+      bucket: s3://itvrdv
+      shipSchedule: 0 0 * * *
 
   persistentVolume:
     size: 5Gi
