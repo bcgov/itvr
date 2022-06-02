@@ -18,10 +18,13 @@
 
 5. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'
 
-6. create itvr-email-service secret
+6. login to spilo pods, run the following psql to only keep 24 hours log files, otherwise they take too much space
+    ALTER SYSTEM SET log_filename='postgresql-%H.log';
+    select pg_reload_conf();
 
-7. create itvr-object-storage secret
+7. create itvr-email-service secret
 
+8. create itvr-object-storage secret
 
 #### After pipeline completes
 
