@@ -12,15 +12,21 @@ spilo:
 
   continuousArchive:
     enabled: true
-    scheduleCronJob: "0 2 * * *"
+    scheduleCronJob: "0 */3 * * *"
     retainBackups: 3
     storage: s3
     s3:
       bucket: itvrts
       secretName: itvr-db-backup-s3
 
+  shipLogs:
+    enabled: false
+#    s3:
+#      bucket: s3://itvrts
+#      shipSchedule: 0 7 * * *
+
   persistentVolume:
-    size: 700Mi
+    size: 5Gi
     storageClass: netapp-block-standard
 
   resources:

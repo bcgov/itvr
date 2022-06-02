@@ -55,7 +55,7 @@ module.exports = settings => {
   }
   */
 
-  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc.yaml`, {
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc-docker.yaml`, {
     'param': {
       'NAME': phases[phase].name,
       'SUFFIX': phases[phase].suffix,
@@ -66,7 +66,14 @@ module.exports = settings => {
       'CPU_LIMIT': phases[phase].frontendCpuLimit,
       'MEMORY_REQUEST': phases[phase].frontendMemoryRequest,
       'MEMORY_LIMIT': phases[phase].frontendMemoryLimit,
-      'REPLICAS':  phases[phase].frontendReplicas
+      'REPLICAS':  phases[phase].frontendReplicas,
+      'REACT_APP_BCSC_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCSCKeycloakClientId,
+      'REACT_APP_BCSC_KEYCLOAK_REALM': phases[phase].reactAppBCSCKeycloakRealm,
+      'REACT_APP_BCSC_KEYCLOAK_URL': phases[phase].reactAppBCSCKeycloakUrl,
+      'REACT_APP_BCEID_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCeIDKeycloakClientId,
+      'REACT_APP_BCEID_KEYCLOAK_REALM': phases[phase].reactAppBCeIDKeycloakRealm,
+      'REACT_APP_BCEID_KEYCLOAK_URL': phases[phase].reactAppBCeIDKeycloakUrl,
+      'REACT_APP_API_BASE': phases[phase].reactAppApiBase
     }
   }))
   
@@ -83,7 +90,8 @@ module.exports = settings => {
       'MEMORY_LIMIT': phases[phase].backendMemoryLimit,
       'HEALTH_CHECK_DELAY': phases[phase].backendHealthCheckDelay,
       'REPLICAS':  phases[phase].backendReplicas,
-      'DJANGO_DEBUG': phases[phase].backendDjangoDebug
+      'DJANGO_DEBUG': phases[phase].backendDjangoDebug,
+      'BUCKET_NAME': phases[phase].bucketName
     }
   })) 
 

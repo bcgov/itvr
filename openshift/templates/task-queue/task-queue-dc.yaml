@@ -53,43 +53,43 @@ objects:
         local: false
     status:
       dockerImageRepository: ''
-  - apiVersion: v1
-    kind: Service
-    metadata:
-      creationTimestamp: null
-      name: '${NAME}-task-queue${SUFFIX}'
-    spec:
-      ports:
-        - name: task-queue
-          port: 8080
-          protocol: TCP
-          targetPort: 8080
-      selector:
-        name: '${NAME}-task-queue${SUFFIX}'
-      sessionAffinity: None
-      type: ClusterIP
-    status:
-      loadBalancer: {}
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      creationTimestamp: 
-      annotations:      
-        haproxy.router.openshift.io/timeout: 1200s      
-      name: ${NAME}-task-queue${SUFFIX}
-    spec:
-      host: ${NAME}-task-queue${SUFFIX}.apps.silver.devops.gov.bc.ca
-      path: /
-      port:
-        targetPort: task-queue
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      to:
-        kind: Service
-        name: '${NAME}-task-queue${SUFFIX}'
-        weight: 100
-      wildcardPolicy: None
+#  - apiVersion: v1
+#    kind: Service
+#    metadata:
+#      creationTimestamp: null
+#      name: '${NAME}-task-queue${SUFFIX}'
+#    spec:
+#      ports:
+#        - name: task-queue
+#          port: 8080
+#          protocol: TCP
+#          targetPort: 8080
+#      selector:
+#        name: '${NAME}-task-queue${SUFFIX}'
+#      sessionAffinity: None
+#      type: ClusterIP
+#    status:
+#      loadBalancer: {}
+#  - apiVersion: route.openshift.io/v1
+#    kind: Route
+#    metadata:
+#      creationTimestamp: 
+#      annotations:      
+#        haproxy.router.openshift.io/timeout: 1200s      
+#      name: ${NAME}-task-queue${SUFFIX}
+#    spec:
+#      host: ${NAME}-task-queue${SUFFIX}.apps.silver.devops.gov.bc.ca
+#      path: /
+#      port:
+#        targetPort: task-queue
+#      tls:
+#        insecureEdgeTerminationPolicy: Redirect
+#        termination: edge
+#      to:
+#        kind: Service
+#        name: '${NAME}-task-queue${SUFFIX}'
+#        weight: 100
+#      wildcardPolicy: None
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
@@ -100,6 +100,7 @@ objects:
     spec:
       replicas: ${{REPLICAS}}
       revisionHistoryLimit: 10
+      automountServiceAccountToken: false
       selector:
         name: ${NAME}-task-queue${SUFFIX}
       strategy:

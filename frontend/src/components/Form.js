@@ -59,6 +59,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
       if (key === 'documents') {
         formData.append('doc1', value[0]);
         formData.append('doc2', value[1]);
+      } else if (key === 'postal_code' && value.length === 7) {
+        formData.append(key, value.replace(/[ -]/, ''));
       } else {
         formData.append(key, value);
       }
@@ -301,25 +303,30 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.postal_code?.type === 'validate' && (
             <p className="error">Not a valid Postal Code</p>
           )}
-          <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
+          <InputLabel htmlFor="postal_code">Postal Code (optional):</InputLabel>
           <Controller
             name="postal_code"
             control={control}
             render={({ field }) => (
               <TextField
                 id="postal_code"
-                inputProps={{ maxLength: 6 }}
+                inputProps={{ maxLength: 7 }}
                 onChange={(e) => setValue('postal_code', e.target.value)}
               />
             )}
             rules={{
               validate: (inputtedPostalCode) => {
-                if (!inputtedPostalCode || inputtedPostalCode.length !== 6) {
-                  return false;
-                }
-                const regex = /[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d/;
-                if (!regex.test(inputtedPostalCode)) {
-                  return false;
+                if (inputtedPostalCode) {
+                  if (
+                    inputtedPostalCode.length !== 6 &&
+                    inputtedPostalCode.length !== 7
+                  ) {
+                    return false;
+                  }
+                  const regex = /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/;
+                  if (!regex.test(inputtedPostalCode)) {
+                    return false;
+                  }
                 }
                 return true;
               }
@@ -383,8 +390,18 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          {errors?.documents?.type === 'validate' && (
+          <Box>
+            Upload an image (jpg or png) of your B.C. Driver's Licence (photo
+            side) and a secondary piece of ID &nbsp;
+            <a href="/identificationExamples" target="_blank">
+              (see examples):
+            </a>
+          </Box>
+          {errors?.documents?.type === 'twoOrMore' && (
             <p className="error">Need at least 2 files</p>
+          )}
+          {errors?.documents?.type === 'maxSize' && (
+            <p className="error">No file may exceed 5MB</p>
           )}
           <FileDropArea name="documents" />
         </FormGroup>

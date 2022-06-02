@@ -3,12 +3,15 @@ import { useQuery } from 'react-query';
 import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
 import DetailsTable from './DetailsTable';
+import { useKeycloak } from '@react-keycloak/web';
 
 const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
+  const { keycloak } = useKeycloak();
+  const idp = keycloak.tokenParsed.identity_provider;
   const detailUrl =
     applicationType === 'household'
-      ? `/api/application-form/${id}/household`
+      ? `/api/spouse-application/${id}`
       : `/api/application-form/${id}`;
   const queryFn = () =>
     axiosInstance.current.get(detailUrl).then((response) => {
@@ -28,21 +31,20 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
   return (
     <Box>
       <h3>
-        {(applicationType || data.application_type) === 'household'
+        {data.application_type === 'household'
           ? 'Household Application'
           : 'Individual Application Confirmation'}
       </h3>
       <p>
-        Print this page for your records. You will also receive an email
-        confirmation at {data.email}.
+        {data.status !== 'submitted' || data.application_type !== 'household'
+          ? 'Print this page for your records. You will also receive an email confirmation at ' +
+            data.email
+          : 'Print this page for your records.'}
       </p>
       {data.status === 'household_initiated' && (
-        <p>
-          Your spouse will receive an email at {data.spouse_email} to complete
-          this application.
-        </p>
+        <p>Your spouse will receive an email to complete this application.</p>
       )}
-      <DetailsTable data={data} />
+      <DetailsTable data={{ ...data, idp }} />
     </Box>
   );
 };

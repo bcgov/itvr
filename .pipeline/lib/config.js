@@ -24,7 +24,7 @@ backup      1m          20M
 
 Set the cpu usage 20m as the lowest
 Set the limit as two times of request
-
+electric-vehicle-rebates.gov.bc.ca
 */
 options.git.owner='bcgov'
 
@@ -39,8 +39,10 @@ const phases = {
         instance: `${name}-dev-${changeId}`  , version:`${version}-${changeId}`, tag:`dev-${version}-${changeId}`, 
         host: `itvr-dev-${changeId}.${ocpName}.gov.bc.ca`, djangoDebug: 'True', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        frontendCpuRequest: '70m', frontendCpuLimit: '210m', frontendMemoryRequest: '300Mi', frontendMemoryLimit: '600Mi', frontendReplicas: 1,
-        backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True',
+        frontendCpuRequest: '70m', frontendCpuLimit: '210m', frontendMemoryRequest: '300Mi', frontendMemoryLimit: '600Mi', frontendReplicas: 1, 
+        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://dev.oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-dev-${changeId}.apps.silver.devops.gov.bc.ca`,
+        reactAppBCeIDKeycloakClientId: 'itvr-2674', reactAppBCeIDKeycloakRealm: 'onestopauth-basic', reactAppBCeIDKeycloakUrl: 'https://dev.oidc.gov.bc.ca/auth/', 
+        backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True', bucketName: 'itvrdv',
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3Gi',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
@@ -52,25 +54,30 @@ const phases = {
         instance: `${name}-test`, version:`${version}`, tag:`test-${version}`, 
         host: `itvr-test.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        frontendCpuRequest: '70m', frontendCpuLimit: '210m', frontendMemoryRequest: '300Mi', frontendMemoryLimit: '600Mi', frontendReplicas: 2, frontendMinReplicas: 1, frontendMaxReplicas: 3,
-        backendCpuRequest: '40m', backendCpuLimit: '120m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendReplicas: 2, backendMinReplicas: 1, backendMaxReplicas: 3, backendHost: `itvr-backend-test.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'True',
+        frontendCpuRequest: '70m', frontendCpuLimit: '210m', frontendMemoryRequest: '300Mi', frontendMemoryLimit: '600Mi', frontendReplicas: 2, frontendMinReplicas: 1, frontendMaxReplicas: 3, 
+        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://test.oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-test.apps.silver.devops.gov.bc.ca`,
+        reactAppBCeIDKeycloakClientId: 'itvr-2674', reactAppBCeIDKeycloakRealm: 'onestopauth-basic', reactAppBCeIDKeycloakUrl: 'https://test.oidc.gov.bc.ca/auth/',
+        backendCpuRequest: '40m', backendCpuLimit: '120m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendReplicas: 2, backendMinReplicas: 1, backendMaxReplicas: 3, backendHost: `itvr-backend-test.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrts',
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '20m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '700M', rabbitmqPvcSize: '1G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '200m', patroniCpuLimit: '400m', patroniMemoryRequest: '250Mi', patroniMemoryLimit: '500Mi', patroniPvcSize: '5G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '40m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '120Mi', taskQueueMemoryLimit: '240Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True',},
+        taskQueueCpuRequest: '40m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '120Mi', taskQueueMemoryLimit: '240Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',},
 
   prod: {namespace:'ac294c-prod', name: `${name}`, ssoSuffix:'', 
         ssoName:'oidc.gov.bc.ca', phase: 'prod'  , changeId:`${changeId}`, suffix: `-prod`, 
         instance: `${name}-prod`, version:`${version}`, tag:`prod-${version}`, 
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        host: 'electric-vehicle-reba_tes.gov.bc.ca', djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
-        frontendCpuRequest: '400m', frontendCpuLimit: '800m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 1, frontendMinReplicas: 1, frontendMaxReplicas: 3,
-        backendCpuRequest: '50m', backendCpuLimit: '100m', backendMemoryRequest: '520Mi', backendMemoryLimit: '1Gi', backendHealthCheckDelay: 30, backendReplicas: 1, backendMinReplicas: 1, backendMaxReplicas: 3, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False',
+        host: `itvr-prod.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
+        frontendCpuRequest: '140m', frontendCpuLimit: '280m', frontendMemoryRequest: '600Mi', frontendMemoryLimit: '1200Mi', frontendReplicas: 2, frontendMinReplicas: 2, frontendMaxReplicas: 5, 
+        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
+        reactAppBCeIDKeycloakClientId: 'itvr-2674', reactAppBCeIDKeycloakRealm: 'onestopauth-basic', reactAppBCeIDKeycloakUrl: 'https://oidc.gov.bc.ca/auth/',
+        backendCpuRequest: '80m', backendCpuLimit: '160m', backendMemoryRequest: '240Mi', backendMemoryLimit: '480Mi', backendHealthCheckDelay: 30, backendReplicas: 3, backendMinReplicas: 3, backendMaxReplicas: 5, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrpr',
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '5G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
-        patroniCpuRequest: '200m', patroniCpuLimit: '400m', patroniMemoryRequest: '250Mi', patroniMemoryLimit: '500Mi', patroniPvcSize: '8G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`}
+        patroniCpuRequest: '200m', patroniCpuLimit: '400m', patroniMemoryRequest: '250Mi', patroniMemoryLimit: '500Mi', patroniPvcSize: '8G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
+        taskQueueCpuRequest: '80m', taskQueueCpuLimit: '160m', taskQueueMemoryRequest: '150Mi', taskQueueMemoryLimit: '300Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',}
 
 };
 

@@ -1,6 +1,6 @@
 import { ReactKeycloakProvider } from '@react-keycloak/web';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import keycloak from '../src/keycloak';
+import { getKeycloak } from '../src/keycloak';
 import '../src/styles/index.scss';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 
 export const decorators = [
   (Story) => (
-    <ReactKeycloakProvider authClient={keycloak}>
+    <ReactKeycloakProvider authClient={getKeycloak()}>
       <Story />
     </ReactKeycloakProvider>
   ),

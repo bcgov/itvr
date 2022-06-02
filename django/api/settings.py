@@ -35,9 +35,9 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 INSTALLED_APPS = [
     "jazzmin",
+    "api.apps.ITVRAdminConfig",
     "django_filters",
     "django_extensions",
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
@@ -46,13 +46,14 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_q",
-    # our apps
+    "sequences.apps.SequencesConfig",
     "users",
     "api.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -60,7 +61,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "api.urls"
@@ -68,7 +68,7 @@ ROOT_URLCONF = "api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "../", "frontend", "public")],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -119,20 +119,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+TIME_ZONE = "Canada/Pacific"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "../", "frontend", "public")]
+# https://docs.djangoproject.com/en/4.0/howto/static-files/
+PUBLIC_DIR = os.path.join(BASE_DIR, "public")
+STATICFILES_DIRS = [PUBLIC_DIR]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-
 STATIC_URL = "/static/"
-WHITENOISE_ROOT = os.path.join(BASE_DIR, "../", "frontend", "public", "root")
 
 
 # Django Rest Framework Settings
@@ -153,19 +152,19 @@ REST_FRAMEWORK = {
     ],
 }
 
-KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
-KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
+BCEID_KEYCLOAK_CLIENT_ID = os.getenv("BCEID_KEYCLOAK_CLIENT_ID")
+BCEID_KEYCLOAK_REALM = os.getenv("BCEID_KEYCLOAK_REALM")
+BCEID_KEYCLOAK_URL = os.getenv("BCEID_KEYCLOAK_URL")
+
+BCSC_KEYCLOAK_CLIENT_ID = os.getenv("BCSC_KEYCLOAK_CLIENT_ID")
+BCSC_KEYCLOAK_REALM = os.getenv("BCSC_KEYCLOAK_REALM")
+BCSC_KEYCLOAK_URL = os.getenv("BCSC_KEYCLOAK_URL")
 
 
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 MINIO_BUCKET_NAME = os.getenv("MINIO_BUCKET_NAME")
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
-MINIO_USE_SSL = bool(os.getenv("MINIO_USE_SSL", "False").lower() in ["true", 1])
-
-if DEBUG:
-    MINIO_USE_SSL = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -195,6 +194,7 @@ Q_CLUSTER = {
     "queue_limit": 50,
     "bulk": 10,
     "orm": "default",
+    "save_limit": -1,
 }
 
 CACHES = {
@@ -202,4 +202,23 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "itvr_cache_table",
     }
+}
+
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "BC Gov ITVR",
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "BC Gov ITVR",
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": "BC Gov ITVR",
+}
+
+CRA_ENVIRONMENT = os.getenv("CRA_ENVIRONMENT", "A")
+
+
+INCOME_REBATES = {
+    "Not Approved": {"rebate": "Not Approved"},
+    "C": {"individual_income": 100000, "household_income": 165000, "rebate": 1000},
+    "B": {"individual_income": 90000, "household_income": 145000, "rebate": 2000},
+    "A": {"individual_income": 80000, "household_income": 125000, "rebate": 4000},
 }

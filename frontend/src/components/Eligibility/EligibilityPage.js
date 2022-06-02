@@ -1,7 +1,6 @@
 import React from 'react';
 import EligibilityQuestions from './EligibilityQuestions';
 import RebateTable from '../RebateTable';
-import { useKeycloak } from '@react-keycloak/web';
 import BottomBanner from '../BottomBanner';
 import Box from '@mui/material/Box';
 
@@ -11,7 +10,6 @@ const EligibilityPage = (props) => {
   const date = new Date();
   const twoYearsAgo = date.getFullYear() - 2;
   const lastYear = date.getFullYear() - 1;
-  const { keycloak } = useKeycloak();
   const title = <h3>What you will need to complete this application</h3>;
   const applicationText = (
     <div>
@@ -68,11 +66,12 @@ const EligibilityPage = (props) => {
             />
           ))}
         </Box>
-        {eligible && 
-        <span className="validated">
-          Congratulations! You are eligible to apply for a rebate, proceed by logging in below.
-        </span>
-        }
+        {eligible && (
+          <span className="validated">
+            Congratulations! You are eligible to apply for a rebate, proceed by
+            logging in below.
+          </span>
+        )}
         <Box sx={{ mt: 5, mb: 0 }} className="whats-needed-individual">
           {title}
           {applicationText}
@@ -90,20 +89,6 @@ const EligibilityPage = (props) => {
           be used to determine your rebate amount. On July 1 it will change to
           use your {lastYear} NOA.
         </p>
-      </div>
-      <div>
-        <button
-          type="button"
-          className="button"
-          onClick={() =>
-            keycloak.login({
-              idpHint: 'idir',
-              redirectUri: `${window.location.origin}/admin`
-            })
-          }
-        >
-          Login with IDIR
-        </button>
       </div>
     </Box>
   );

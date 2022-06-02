@@ -1,13 +1,16 @@
 import Box from '@mui/material/Box';
-import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
+import React from 'react';
+import { BCEID_KEYCLOAK_REALM, BCSC_KEYCLOAK_REALM } from '../config';
+import { keycloakInitOptions, keycloaks } from '../keycloak';
 const BottomBanner = (props) => {
   const { eligible, text = '', type = '', householdApplicationId = '' } = props;
   const { keycloak } = useKeycloak();
   const redirectUri = householdApplicationId
     ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
     : `${window.location.origin}/form`;
-  const buttonText = "Please answer the questions above to confirm you are eligible to apply for a rebate.";
+  const buttonText =
+    'Please answer the questions above to confirm you are eligible to apply for a rebate.';
   return (
     <>
       <div
@@ -23,16 +26,59 @@ const BottomBanner = (props) => {
           <button
             type="button"
             className="button"
-            disabled={!eligible}
-            title={!eligible && buttonText}
-            onClick={() =>
-              keycloak.login({
-                idpHint: 'bceid-basic',
-                redirectUri: redirectUri
-              })
+            disabled={
+              !eligible ||
+              (keycloak.authenticated &&
+                keycloak.realm !== BCEID_KEYCLOAK_REALM)
             }
+            title={!eligible && buttonText}
+            onClick={() => {
+              localStorage.setItem('keycloakRealm', BCEID_KEYCLOAK_REALM);
+              if (keycloak.realm === BCEID_KEYCLOAK_REALM) {
+                keycloak.login({
+                  idpHint: 'bceid-basic',
+                  redirectUri: redirectUri
+                });
+              } else {
+                const bceidKeycloak = keycloaks[BCEID_KEYCLOAK_REALM];
+                bceidKeycloak.init(keycloakInitOptions).then(() => {
+                  bceidKeycloak.login({
+                    idpHint: 'bceid-basic',
+                    redirectUri: redirectUri
+                  });
+                });
+              }
+            }}
           >
             Login with BCeID
+          </button>
+          <button
+            type="button"
+            className="button"
+            disabled={
+              !eligible ||
+              (keycloak.authenticated && keycloak.realm !== BCSC_KEYCLOAK_REALM)
+            }
+            title={!eligible && buttonText}
+            onClick={() => {
+              localStorage.setItem('keycloakRealm', BCSC_KEYCLOAK_REALM);
+              if (keycloak.realm === BCSC_KEYCLOAK_REALM) {
+                keycloak.login({
+                  idpHint: 'bcsc',
+                  redirectUri: redirectUri
+                });
+              } else {
+                const bcscKeycloak = keycloaks[BCSC_KEYCLOAK_REALM];
+                bcscKeycloak.init(keycloakInitOptions).then(() => {
+                  bcscKeycloak.login({
+                    idpHint: 'bcsc',
+                    redirectUri: redirectUri
+                  });
+                });
+              }
+            }}
+          >
+            Login with BCSC
           </button>
           <div>
             <a

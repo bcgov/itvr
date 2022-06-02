@@ -10,20 +10,30 @@ function createData(name, answer) {
   return { name, answer };
 }
 
-function createConsentValue(consent, firstName, lastName, timestamp) {
+function createConsentValue(consent, firstName, lastName, timestamp, idp) {
   const timestampSplit = timestamp.split('T');
   const date = timestampSplit[0];
   const time = timestampSplit[1].split('.')[0];
+  const offset = timestampSplit[1].split('-')[1];
+  const authType = idp === 'bcsc' ? 'BCSC' : 'BCEID';
+  let pacificTimeType = 'Pacific Time';
+  if (offset === '07:00') {
+    pacificTimeType = 'PDT';
+  } else if (offset === '08:00') {
+    pacificTimeType = 'PST';
+  }
   if (consent) {
     return (
-      'BCEID\\' +
+      authType +
+      '\\' +
       firstName.charAt(0).toUpperCase() +
       lastName.toUpperCase() +
       ' ' +
       date +
       ' ' +
       time +
-      ' PST'
+      ' ' +
+      pacificTimeType
     );
   }
 }
@@ -49,7 +59,8 @@ const DetailsTable = ({ data }) => {
         data.consent_personal,
         data.first_name,
         data.last_name,
-        data.created
+        data.created,
+        data.idp
       )
     ),
     createData(
@@ -58,7 +69,8 @@ const DetailsTable = ({ data }) => {
         data.consent_tax,
         data.first_name,
         data.last_name,
-        data.created
+        data.created,
+        data.idp
       )
     )
   ];
@@ -67,25 +79,29 @@ const DetailsTable = ({ data }) => {
     <TableContainer component={Paper} sx={{ boxShadow: 0 }}>
       <Table sx={{ minWidth: 650, border: 0 }} aria-label="simple table">
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name} sx={{ border: 0 }}>
-              <TableCell
-                component="th"
-                scope="row"
-                sx={{ border: 0, width: '25%' }}
-              >
-                <b>{row.name}</b>
-              </TableCell>
-              <TableCell
-                align="left"
-                sx={{ border: 0 }}
-                className="application-details-table-answer"
-                style={{ verticalAlign: 'top' }}
-              >
-                {row.answer}
-              </TableCell>
-            </TableRow>
-          ))}
+          {rows.map((row) => {
+            if (row.answer) {
+              return (
+                <TableRow key={row.name} sx={{ border: 0 }}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{ border: 0, width: '25%' }}
+                  >
+                    <b>{row.name}</b>
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{ border: 0 }}
+                    className="application-details-table-answer"
+                    style={{ verticalAlign: 'top' }}
+                  >
+                    {row.answer}
+                  </TableCell>
+                </TableRow>
+              );
+            }
+          })}
         </TableBody>
       </Table>
     </TableContainer>

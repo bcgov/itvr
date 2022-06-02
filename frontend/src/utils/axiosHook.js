@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useKeycloak } from '@react-keycloak/web';
-
-const baseURL = process.env.REACT_APP_API_BASE;
+import { API_BASE } from '../config';
 
 const useAxios = (opts = {}) => {
   const axiosInstance = useRef();
@@ -11,11 +10,11 @@ const useAxios = (opts = {}) => {
 
   useEffect(() => {
     axiosInstance.current = axios.create({
-      baseURL,
+      baseURL: API_BASE,
       ...opts,
       headers: {
-        Authorization: initialized ? `Bearer ${kcToken}` : undefined,
-      },
+        Authorization: initialized ? `Bearer ${kcToken}` : undefined
+      }
     });
 
     return () => {

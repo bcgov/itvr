@@ -47,7 +47,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
 
   const queryFn = () =>
     axiosInstance.current
-      .get(`/api/spouse-application/${id}/initiate`)
+      .get(`/api/application-form/${id}/household`)
       .then((response) => response.data);
 
   const { data, isLoading, isError, error } = useQuery(
@@ -112,10 +112,12 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           <InputLabel htmlFor="city">City:</InputLabel>
           <p>{city}</p>
         </span>
-        <span>
-          <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
-          <p>{postalCode}</p>
-        </span>
+        {postalCode && (
+          <span>
+            <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
+            <p>{postalCode}</p>
+          </span>
+        )}
         <FormGroup>
           {errors?.last_name?.type === 'required' && (
             <p className="error">Last Name cannot be blank</p>
@@ -218,12 +220,17 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           <Box mt={2}>
             <InputLabel htmlFor="documents">
               Upload an image (jpg or png) of your B.C. Driver's Licence or B.C.
-              Services Card (photo side) and a secondary piece of ID (see
-              examples):
+              Services Card (photo side) and a secondary piece of ID &nbsp;
+              <a href="/identificationExamples" target="_blank">
+                (see examples):
+              </a>
             </InputLabel>
           </Box>
           {errors?.documents?.type === 'validate' && (
             <p className="error">Need at least 2 files</p>
+          )}
+          {errors?.documents?.type === 'maxSize' && (
+            <p className="error">No file may exceed 5MB</p>
           )}
           <FileDropArea name="documents" />
         </FormGroup>

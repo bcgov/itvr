@@ -9,18 +9,15 @@ parameters:
   - name: SUFFIX
     displayName: null
     description: sample is -dev-97
-    required: true  
-  - name: ENVIRONMENT
-    displayName: null
-    description: such as dev, test or prod
-    required: true  
+    required: true    
 objects:
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-backend-accepts-frontend${SUFFIX}
+      name: allow-backend-accepts${SUFFIX}
     spec:
       ## Allow backend to accept communication from frontend
+      ## Allow backend to accept communication from schema-spy
       podSelector:
         matchLabels:
           name: itvr-backend${SUFFIX}
@@ -29,35 +26,54 @@ objects:
             - podSelector:
                 matchLabels:
                   name: itvr-frontend${SUFFIX}
+            - podSelector:
+                matchLabels:
+                  name: schemaspy-public
           ports:
             - protocol: TCP
               port: 8080
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-patroni-accepts-backend${SUFFIX}
+      name: allow-patroni-accepts${SUFFIX}
     spec:
       ## Allow patroni to accept communications from backend
+      ## Allow patroni to accept communications from backend mid lifecycle pod
+      ## Allow patroni to accept communications from backup container
+      ## Allow patroni to accept communications from django-q
+      ## Allow patroni to accept communications from schemaspy
       podSelector:
         matchLabels:
-          cluster-name: patroni${SUFFIX}
+          app.kubernetes.io/instance: itvr-spilo
       ingress:
         - from:
             - podSelector:
                 matchLabels:
                   name: itvr-backend${SUFFIX}
+            - podSelector:
+                matchLabels:
+                  openshift.io/deployer-pod.type: hook-mid
+            - podSelector:
+                matchLabels:
+                  name: patroni-backup
+            - podSelector:
+                matchLabels:
+                  name: itvr-task-queue${SUFFIX}
+            - podSelector:
+                matchLabels:
+                  name: schemaspy-public
           ports:
             - protocol: TCP
               port: 5432
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-minio-accepts-backend${SUFFIX}
+      name: allow-minio-accepts${SUFFIX}
     spec:
       ## Allow minio to accept communication from backend
       podSelector:
         matchLabels:
-          app: itvr-minio-${ENVIRONMENT}
+          app.kubernetes.io/instance: itvr-minio
       ingress:
         - from:
             - podSelector:
@@ -66,127 +82,3 @@ objects:
           ports:
             - protocol: TCP
               port: 9000                  
-  ## Other Network Policies              
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-backendmid${SUFFIX}
-    spec:
-      ## Allow patroni to accept communications from backend mid lifecycle pod
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  openshift.io/deployer-pod.type: hook-mid
-          ports:
-            - protocol: TCP
-              port: 5432
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-patroni-itself${SUFFIX}
-    spec:
-      ## Allow patroni to accept communications from other patroni pods
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  cluster-name: patroni${SUFFIX}
-          ports:
-            - protocol: TCP
-              port: 5432    
-            - protocol: TCP
-              port: 8008                             
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-backup-container${SUFFIX}
-    spec:
-      ## Allow patroni to accept communications from backup container
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  name: patroni-backup
-          ports:
-            - protocol: TCP
-              port: 5432                   
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-nagios${SUFFIX}
-    spec:
-      ## Allow patroni to accept communications from nagios
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  app: nagios
-          ports:
-            - protocol: TCP
-              port: 5432
-            - protocol: TCP
-              port: 8008
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-schemaspy${SUFFIX}
-    spec:
-      ## Allow patroni to accept communications from schemaspy
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  name: schemaspy-public${SUFFIX}
-          ports:
-            - protocol: TCP
-              port: 5432          
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-patroni-accepts-metabase
-    spec:
-      ## Allow patroni to accept communications from backup container
-      podSelector:
-        matchLabels:
-          cluster-name: patroni${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  app: metabase
-          ports:
-            - protocol: TCP
-              port: 5432                                         
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-backend-accepts-schemaspy${SUFFIX}
-    spec:
-      ## Allow backend to accept communication from schemaspy
-      podSelector:
-        matchLabels:
-          name: itvr-backend${SUFFIX}
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  name: schemaspy-public${SUFFIX}
-          ports:
-            - protocol: TCP
-              port: 8080

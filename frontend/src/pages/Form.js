@@ -1,32 +1,41 @@
-import React, { useEffect, useState , useRef} from 'react';
-import jwt_decode from 'jwt-decode';
+import React, { useEffect, useState, useRef } from 'react';
 import Form from '../components/Form';
-import { useKeycloak } from '@react-keycloak/web';
 import Layout from '../components/Layout';
 import RebateTable from '../components/RebateTable';
+import { useKeycloak } from '@react-keycloak/web';
+import {Helmet} from "react-helmet";
 
 const FormPage = () => {
-  const { keycloak } = useKeycloak();
-  // we can validate the token server side
-  const decoded = jwt_decode(keycloak.token);
-  console.log(decoded);
-
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
+  const { keycloak } = useKeycloak();
+  console.log(keycloak.tokenParsed);
 
   useEffect(() => {
-    if(numberOfErrors > 0) {
-      errorMessageRef.current.scrollIntoView({behavior: "smooth"});
+    if (numberOfErrors > 0) {
+      errorMessageRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [errorsExistCounter]);
 
   return (
-    <Layout>
-      {numberOfErrors > 0 && <span className="error" ref={errorMessageRef}>Errors below, please ensure all fields are complete</span>}
-      <RebateTable />
-      <Form setNumberOfErrors={setNumberOfErrors} setErrorsExistCounter={setErrorsExistCounter} />
-    </Layout>
+    <div>
+      <Helmet>
+        <title>Passenger Vehicle Rebate Application Form – CleanBC Go Electric</title>
+      </Helmet>
+      <Layout>
+        {numberOfErrors > 0 && (
+          <span className="error" ref={errorMessageRef}>
+            Errors below, please ensure all fields are complete
+          </span>
+        )}
+        <RebateTable />
+        <Form
+          setNumberOfErrors={setNumberOfErrors}
+          setErrorsExistCounter={setErrorsExistCounter}
+        />
+      </Layout>
+    </div>
   );
 };
 

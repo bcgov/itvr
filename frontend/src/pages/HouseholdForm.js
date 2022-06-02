@@ -1,20 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
-import jwt_decode from 'jwt-decode';
 import SpouseForm from '../components/SpouseForm';
-import { useKeycloak } from '@react-keycloak/web';
 import Layout from '../components/Layout';
+import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from 'react-router-dom';
+import {Helmet} from "react-helmet";
 
 const HouseholdFormPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const householdApplicationId = searchParams.get('q');
-  const { keycloak } = useKeycloak();
-  // we can validate the token server side
-  const decoded = jwt_decode(keycloak.token);
-
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
+  const { keycloak } = useKeycloak();
+  console.log(keycloak.tokenParsed);
 
   useEffect(() => {
     if (numberOfErrors > 0) {
@@ -24,7 +22,9 @@ const HouseholdFormPage = () => {
 
   return (
     <div>
-      Hello BCeID {decoded.preferred_username}
+      <Helmet>
+        <title>Passenger Vehicle Rebate Application Form – CleanBC Go Electric</title>
+      </Helmet>
       <Layout>
         {numberOfErrors > 0 && (
           <span className="error" ref={errorMessageRef}>

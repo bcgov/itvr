@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useKeycloak } from '@react-keycloak/web';
 
 import HomePage from '../pages';
 import FormPage from '../pages/Form';
@@ -9,6 +8,8 @@ import DetailsPage from '../pages/Details';
 import HouseholdPage from '../pages/Household';
 import HouseholdFormPage from '../pages/HouseholdForm';
 import HouseholdDetails from '../pages/HouseholdDetails';
+import IdentificationExamplesPage from '../pages/IdentificationExamples';
+import { useKeycloak } from '@react-keycloak/web';
 
 const RequireAuth = ({ children, redirectTo }) => {
   const { keycloak } = useKeycloak();
@@ -67,6 +68,10 @@ const AppRouter = () => (
             <AdminPage />
           </RequireAuth>
         }
+      />
+      <Route
+        path="/identificationExamples"
+        element={<IdentificationExamplesPage />}
       />
     </Routes>
   </BrowserRouter>

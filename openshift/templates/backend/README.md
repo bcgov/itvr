@@ -12,16 +12,22 @@
 
 2. Create template secret template.django-secret, template.django-salt
 
-3. create user for itvr database, create user [username] with password '[password]'
+3. create secret itvr-patroni-app
 
-4. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'
+4. create user for itvr database, create user [username] with password '[password]'
 
-5. create secret itvr-patroni-app
+5. create itvr database in patroni cluster, create database itvr owner [username] ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'
 
-6. create template.django-secret
+6. login to spilo pods, run the following psql to only keep 24 hours log files, otherwise they take too much space
+    ALTER SYSTEM SET log_filename='postgresql-%H.log';
+    select pg_reload_conf();
 
 7. create itvr-email-service secret
+
+8. create itvr-object-storage secret
 
 #### After pipeline completes
 
 1. After pipeline completes, create autoscaler for backend
+
+2. run "python manage.py createsuperuser" on backend pod
