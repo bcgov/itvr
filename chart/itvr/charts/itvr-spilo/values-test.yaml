@@ -20,10 +20,10 @@ spilo:
       secretName: itvr-db-backup-s3
 
   shipLogs:
-    enabled: true
-    s3:
-      bucket: s3://itvrts
-      shipSchedule: 0 7 * * *
+    enabled: false
+#    s3:
+#      bucket: s3://itvrts
+#      shipSchedule: 0 7 * * *
 
   persistentVolume:
     size: 5Gi
