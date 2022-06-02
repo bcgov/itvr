@@ -7,28 +7,54 @@ export default {
   component: DetailsTable
 };
 
+const data = {
+  id: '332vdFaugEWXTuex',
+  sin: '******544',
+  created: '2022-06-01T19:00:37.512469-07:00',
+  status: 'submitted',
+  last_name: 'Aro',
+  first_name: 'Naomi',
+  middle_names: '',
+  email: 'naomi.aro@gov.bc.ca',
+  address: '345 Fake St',
+  city: 'Victoria',
+  postal_code: 'V8P2N5',
+  drivers_licence: '1234567',
+  date_of_birth: '1999-01-01',
+  tax_year: 2020,
+  application_type: 'individual',
+  consent_personal: true,
+  consent_tax: true
+};
+
 const Template = (args) => <DetailsTable {...args} />;
-export const Default = Template.bind({});
-Default.args = {
+
+export const BCEID_PDT = Template.bind({});
+BCEID_PDT.args = {
+  data
+};
+
+export const BCSC_PDT = Template.bind({});
+BCSC_PDT.args = {
   data: {
-    id: '948b5f3d-f347-4d07-a46c-7907c3874d2f',
-    create_timestamp: '2022-04-05T18:53:53.647558Z',
-    create_user: 'SYSTEM',
-    update_timestamp: '2022-04-05T18:53:53.647608Z',
-    update_user: null,
-    sin: '234234234',
-    last_name: 'Aro',
-    first_name: 'Naomi',
-    middle_names: '',
-    email: 'naomi.aro@gov.bc.ca',
-    address: '345 Fake St',
-    city: 'Victoria',
-    postal_code: 'V8P2N5',
-    drivers_licence: '1234567',
-    date_of_birth: '2022-04-15',
-    tax_year: 2021,
-    doc1: 'http://minio:9000/itvr/docs/275764713_370797044908674_1617869606850339037_n_5j2r2mn.jpg',
-    doc2: 'http://minio:9000/itvr/docs/275637215_462674682262245_3325277982481944110_n_kEk97ON.jpg',
-    verified: false
+    ...data,
+    idp: 'bcsc'
+  }
+};
+
+export const BCEID_PST = Template.bind({});
+BCEID_PST.args = {
+  data: {
+    ...data,
+    created: '2022-01-01T19:00:37.512469-08:00'
+  }
+};
+
+export const BCSC_PST = Template.bind({});
+BCSC_PST.args = {
+  data: {
+    ...data,
+    idp: 'bcsc',
+    created: '2022-01-01T19:00:37.512469-08:00'
   }
 };

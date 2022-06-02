@@ -5,25 +5,17 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useKeycloak } from '@react-keycloak/web';
 
 function createData(name, answer) {
   return { name, answer };
 }
 
-function createConsentValue(
-  consent,
-  firstName,
-  lastName,
-  timestamp,
-  kcTokenParsed
-) {
+function createConsentValue(consent, firstName, lastName, timestamp, idp) {
   const timestampSplit = timestamp.split('T');
   const date = timestampSplit[0];
   const time = timestampSplit[1].split('.')[0];
   const offset = timestampSplit[1].split('-')[1];
-  const authType =
-    kcTokenParsed.identity_provider === 'bcsc' ? 'BCSC' : 'BCEID';
+  const authType = idp === 'bcsc' ? 'BCSC' : 'BCEID';
   let pacificTimeType = 'Pacific Time';
   if (offset === '07:00') {
     pacificTimeType = 'PDT';
@@ -47,8 +39,6 @@ function createConsentValue(
 }
 
 const DetailsTable = ({ data }) => {
-  const { keycloak } = useKeycloak();
-  const kcTokenParsed = keycloak.tokenParsed;
   let rows = [
     createData('Application ID:', data.application_id || data.id),
     createData('Last name / surname:', data.last_name),
@@ -70,7 +60,7 @@ const DetailsTable = ({ data }) => {
         data.first_name,
         data.last_name,
         data.created,
-        kcTokenParsed
+        data.idp
       )
     ),
     createData(
@@ -80,7 +70,7 @@ const DetailsTable = ({ data }) => {
         data.first_name,
         data.last_name,
         data.created,
-        kcTokenParsed
+        data.idp
       )
     )
   ];
