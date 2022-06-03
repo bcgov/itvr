@@ -86,7 +86,7 @@ const DetailsTable = ({ data }) => {
                   <TableCell
                     component="th"
                     scope="row"
-                    sx={{ border: 0, width: '25%' }}
+                    sx={{ border: 0, width: '25%', fontSize: '1.35rem' }}
                   >
                     <b>{row.name}</b>
                   </TableCell>
@@ -94,7 +94,7 @@ const DetailsTable = ({ data }) => {
                     align="left"
                     sx={{ border: 0 }}
                     className="application-details-table-answer"
-                    style={{ verticalAlign: 'top' }}
+                    style={{ verticalAlign: 'top', fontSize: '1.35rem' }}
                   >
                     {row.answer}
                   </TableCell>
