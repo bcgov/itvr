@@ -3,70 +3,96 @@ import Box from '@mui/material/Box';
 import dl from '../styles/images/sample-dl.png';
 import bceid from '../styles/images/sample-bcsc.png';
 import bankStatement from '../styles/images/sample-bank-statement.png';
-import utility from '../styles/images/samle-utility-statement.png';
-import Button from '@mui/material/Button';
+import utility from '../styles/images/sample-utility-statement.png';
 
 const IdentificationExamples = (props) => {
   return (
     <Box className="identification">
-      <h3>Identification Requirements for Basic BCeID Rebate Applications</h3>
-      <p>
-        A photo of the applicant's B.C. Driver's Licence (the spouse of a
-        household aplication can use a B.C. Services Card) and 1 piece of
-        secondary ID as shown below are required for rebate applications made
-        using Basic BCeID.
-      </p>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        <Box
-          className="left-img"
-          component="img"
-          sx={{
-            maxWidth: 400
-          }}
-          alt="example driver's license"
-          src={dl}
-        />
-        <Box
-          component="img"
-          sx={{
-            maxWidth: 400
-          }}
-          alt="example of BCEID"
-          src={bceid}
-        />
-      </Box>
+      <h2>Identification requirements for rebate applications using BCeID</h2>
+      <h3>Names and addresses must be the same</h3>
+      <ul>
+        <li>Both pieces of your ID must show the same name and address.</li>
+        <li>
+          Both pieces of ID from both members of a household must have the same
+          address.
+        </li>
+      </ul>
+      <h3>Primary identification</h3>
+      <p>A passport cannot be used as ID as it doesn't show your address.</p>
+      <h4>BC Driver's Licence</h4>
+      <ul>
+        <li>An image of the primary applicant's BC Driver's Licence.</li>
+      </ul>
+
+      <Box
+        className="left-img"
+        component="img"
+        sx={{
+          maxWidth: 400
+        }}
+        alt="example driver's license"
+        src={dl}
+      />
+      <h4>BC Services Card</h4>
+      <ul>
+        <li>
+          The spouse of a household application can use a BC Services Card or
+          driver's licence.
+        </li>
+      </ul>
+      <Box
+        component="img"
+        sx={{
+          maxWidth: 400
+        }}
+        alt="example of BCEID"
+        src={bceid}
+      />
+
       <h3>Secondary Identification</h3>
       <p>
-        The secondary piece of identification is intended to provide proof of
-        address when using Basic BCeID. For example a financial statement or
-        utility bill. It must have been issued within the last 90 days and the
-        name and address must match that on the applicants driver’s licence.
-        Only the letterhead, date, name and address portion should be shown,
-        account details should be obscured or not displayed.
+        The secondary piece of identification gives further proof of your
+        address.
       </p>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        <Box
-          className="left-img"
-          component="img"
-          sx={{
-            maxWidth: 400
-          }}
-          src={bankStatement}
-          alt="example bank statement with account number covered and only the header and applicant's address visible"
-        />
-        <Box
-          component="img"
-          sx={{
-            maxWidth: 500,
-            maxHeight: '60%'
-          }}
-          alt="example of utility bill with account number covered and only the header and applicant's address visible"
-          src={utility}
-        />
-      </Box>
-      <Button sx={{ mt: 5 }} variant="contained" onClick={() => window.close()}>
-        Close
-      </Button>
+      <h4>Accepted secondary identification</h4>
+      <p>Your secondary ID must show the same address as your primary ID.</p>
+      <h5>BC Services Card</h5>
+      <ul>
+        <li>
+          A BC Services Card can be used if your primary ID is your driver's
+          licence.
+        </li>
+      </ul>
+      <h5>Financial statements and utility bills</h5>
+      <ul>
+        <li>Must have been issued in the last 90 days.</li>
+        <li>Only show the letterhead, date, name and address. </li>
+        <li>
+          To protect your personal information, obscure or do not display your
+          account details.
+        </li>
+      </ul>
+
+      <Box
+        className="left-img"
+        component="img"
+        mb={3}
+        sx={{
+          maxWidth: 400,
+          display: 'block'
+        }}
+        src={bankStatement}
+        alt="example bank statement with account number covered and only the header and applicant's address visible"
+      />
+      <Box
+        component="img"
+        sx={{
+          maxWidth: 500,
+          maxHeight: '60%'
+        }}
+        alt="example of utility bill with account number covered and only the header and applicant's address visible"
+        src={utility}
+      />
     </Box>
   );
 };

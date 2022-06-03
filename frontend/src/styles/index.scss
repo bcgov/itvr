@@ -78,19 +78,19 @@ h2 {
 h3 {
   font-size: 1.7rem;
   font-weight: bold;
-  margin-bottom: 10px;
 }
-h4,
+h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
 .button {
   font-size: 1.5rem;
   font-weight: normal;
 }
 h5 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
-
-h4,
-h5,
 h6 {
   color: $black;
   font-weight: normal;
