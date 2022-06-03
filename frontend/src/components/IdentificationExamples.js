@@ -51,8 +51,8 @@ const IdentificationExamples = (props) => {
 
       <h3>Secondary Identification</h3>
       <p>
-        The secondary piece of identification gives further proof of your
-        address.
+        The secondary piece of identification gives further proof of your name
+        and address.
       </p>
       <h4>Accepted secondary identification</h4>
       <p>Your secondary ID must show the same address as your primary ID.</p>
