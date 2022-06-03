@@ -82,7 +82,7 @@ const BottomBanner = (props) => {
                 }
               }}
             >
-              Login with BCeID
+              Log in with BCeID
             </button>
 
             <div>
