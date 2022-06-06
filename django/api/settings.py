@@ -136,7 +136,7 @@ STATIC_URL = "/static/"
 
 # Django Rest Framework Settings
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
+    "DEFAULT_AUTHENTICATION_CLASSES": [] if "BYPASS_AUTHENTICATION" in os.environ else [
         "api.keycloak_authentication.KeycloakAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
@@ -151,6 +151,7 @@ REST_FRAMEWORK = {
         "api.filters.order_by.RelatedOrderingFilter",
     ],
 }
+
 
 BCEID_KEYCLOAK_CLIENT_ID = os.getenv("BCEID_KEYCLOAK_CLIENT_ID")
 BCEID_KEYCLOAK_REALM = os.getenv("BCEID_KEYCLOAK_REALM")
