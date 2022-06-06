@@ -4,6 +4,7 @@ import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
 import DetailsTable from './DetailsTable';
 import { useKeycloak } from '@react-keycloak/web';
+import INeedHelp from './INeedHelp';
 
 const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
@@ -43,9 +44,8 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
       nextSteps = (
         <>
           <p>
-            Your spouse will receive an email at trcook77@gmail.com to complete
-            this application. You'll also receive a copy of this email at{' '}
-            {data.email}
+            Your spouse will receive an email to complete this application.
+            You'll also receive a copy of this email at {data.email}
           </p>
 
           <p>
@@ -62,9 +62,8 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
       confirmMessage = 'Success! You’ve applied for a passenger vehicle rebate';
       nextSteps = (
         <p>
-          Your spouse will receive an email at trcook77@gmail.com to complete
-          this application. You'll also receive a copy of this email at $
-          {data.email}
+          The primary applicant will get an email reply with the result of your
+          application within 3 weeks.
         </p>
       );
       break;
@@ -86,21 +85,23 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
     <Box>
       <h2>{confirmMessage}</h2>
       <p>
-        Print this page for your records. You'll also receive an email
-        confirmation of your application at {data.email || 'no email'}
+        Print this page for your records.
+        {(typeForConfirmation === 'primary_household' ||
+          typeForConfirmation === 'individual') && (
+          <>
+            {' '}
+            You'll also receive an email confirmation of your application at{' '}
+            {data.email}
+          </>
+        )}
       </p>
       <h2>Next steps</h2>
       {nextSteps}
-      <h2>I need help</h2>
-      <p>
+      <INeedHelp
+        helpText="
         Email us if you have questions or need help updating any of the
-        information you’ve submitted. ​
-      </p>
-      <ul>
-        <li>
-          <a href="mailto:ZEVPrograms@gov.bc.ca">ZEVPrograms@gov.bc.ca</a>
-        </li>
-      </ul>
+        information you’ve submitted."
+      />
       <h2>What you submitted</h2>
       <DetailsTable data={{ ...data, idp }} />
       <h2>Other rebate offers for you</h2>

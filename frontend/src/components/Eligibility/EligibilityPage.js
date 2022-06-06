@@ -1,6 +1,7 @@
 import React from 'react';
 import BottomBanner from '../BottomBanner';
 import Box from '@mui/material/Box';
+import INeedHelp from '../INeedHelp';
 
 const EligibilityPage = (props) => {
   return (
@@ -32,7 +33,7 @@ const EligibilityPage = (props) => {
           Driver’s Licence and a secondary piece of ID.{' '}
           <a href="/identificationExamples" target="_blank">
             Learn more about ID requirements.
-          </a>{' '}
+          </a>
         </p>
         <h3>Household applications</h3>
         <p>
@@ -45,17 +46,10 @@ const EligibilityPage = (props) => {
         text="Log in to start your rebate application"
         type="individual"
       />
-      <h3 id="help-email">I need help</h3>
-      <p>
-        Contact Go Electric if you have questions about the rebate process or
-        your application:
-        <ul>
-          <li>
-            Email{' '}
-            <a href="mailto:ZEVPrograms@gov.bc.ca">ZEVPrograms@gov.bc.ca</a>
-          </li>
-        </ul>
-      </p>
+      <INeedHelp
+        helpText="Contact Go Electric if you have questions about the rebate process or
+        your application:"
+      />
     </Box>
   );
 };
