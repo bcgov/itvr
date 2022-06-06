@@ -13,6 +13,7 @@ import FileDropArea from './upload/FileDropArea';
 import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
 import { isAgeValid, isSINValid } from '../utility';
+import LockIcon from '@mui/icons-material/Lock';
 
 export const defaultValues = {
   application: '',
@@ -104,25 +105,40 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <span>
-          <InputLabel htmlFor="address">Street Address:</InputLabel>
-          <p>{address}</p>
-        </span>
-        <span>
-          <InputLabel htmlFor="city">City:</InputLabel>
-          <p>{city}</p>
-        </span>
-        {postalCode && (
-          <span>
-            <InputLabel htmlFor="postal_code">Postal Code:</InputLabel>
-            <p>{postalCode}</p>
-          </span>
-        )}
+        <h2>Apply for a passenger vehicle rebate</h2>
+        <Box sx={{ display: 'inline' }}>
+          <h3 id="form-submission-title">
+            Complete your household rebate application <LockIcon />
+          </h3>
+          <span> secure form submission</span>
+        </Box>
+        <p>
+          The address information below has been provided from your household
+          application and must match your identification.
+        </p>
+        <Box sx={{ maxWidth: '550px' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>Street Address:</span>
+            <span className="primary-answer">{address}</span>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>City:</span>
+            <span className="primary-answer">{city}</span>
+          </Box>
+          {postalCode && (
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Postal Code:</span>
+              <span className="primary-answer">{postalCode}</span>
+            </Box>
+          )}
+        </Box>
         <FormGroup>
           {errors?.last_name?.type === 'required' && (
             <p className="error">Last Name cannot be blank</p>
           )}
-          <InputLabel htmlFor="last_name">Last Name (Surname):</InputLabel>
+          <InputLabel sx={{ color: 'black' }} htmlFor="last_name">
+            Your last name (surname):
+          </InputLabel>
           <Controller
             name="last_name"
             control={control}
@@ -140,7 +156,9 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.first_name?.type === 'required' && (
             <p className="error">First Name cannot be blank</p>
           )}
-          <InputLabel htmlFor="first_name">First Name (Given Name):</InputLabel>
+          <InputLabel htmlFor="first_name" sx={{ color: 'black' }}>
+            First name (given name):
+          </InputLabel>
           <Controller
             name="first_name"
             control={control}
@@ -155,7 +173,9 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          <InputLabel htmlFor="middle_names">Middle Names(s):</InputLabel>
+          <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
+            Middle Names(s) (optional):
+          </InputLabel>
           <Controller
             name="middle_names"
             control={control}
@@ -176,7 +196,9 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
               the date of birth entered.
             </p>
           )}
-          <InputLabel htmlFor="date_of_birth">Date of Birth:</InputLabel>
+          <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
+            Date of Birth:
+          </InputLabel>
           <Controller
             name="date_of_birth"
             control={control}
@@ -185,6 +207,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
                 id="date_of_birth"
                 type="date"
                 onChange={(e) => setValue('date_of_birth', e.target.value)}
+                sx={{ width: '300px' }}
               />
             )}
             rules={{
@@ -198,7 +221,9 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.sin?.type === 'validate' && (
             <p className="error">Not a valid SIN</p>
           )}
-          <InputLabel htmlFor="sin">Social Insurance Number (SIN):</InputLabel>
+          <InputLabel htmlFor="sin" sx={{ color: 'black' }}>
+            Social Insurance Number (SIN) (used for CRA income disclosure):
+          </InputLabel>
           <Controller
             name="sin"
             control={control}
@@ -217,14 +242,23 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          <Box mt={2}>
-            <InputLabel htmlFor="documents">
-              Upload an image (jpg or png) of your B.C. Driver's Licence or B.C.
-              Services Card (photo side) and a secondary piece of ID &nbsp;
-              <a href="/identificationExamples" target="_blank">
-                (see examples):
-              </a>
-            </InputLabel>
+          <Box className="form-upload-instructions">
+            <h3>Upload images of your ID</h3>
+            <h5>Take a picture of:</h5>
+            <ul>
+              <li>The photo side of your BC Driver's Licence</li>
+              <li>
+                A secondary piece of ID like a financial statement or utility
+                bill that has been issued in the last 90 days
+              </li>
+            </ul>
+            <p>
+              Both pieces of ID must show the same address. Image files must be
+              in jpg or png format.
+            </p>
+            <a href="/identificationExamples" target="_blank">
+              See examples of accepted ID
+            </a>
           </Box>
           {errors?.documents?.type === 'validate' && (
             <p className="error">Need at least 2 files</p>
@@ -240,8 +274,17 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
         <FormGroup>
           <ConsentTax name="consent_tax" required={true} />
         </FormGroup>
-        <Button variant="contained" type="submit">
-          Submit
+        <Button
+          variant="contained"
+          type="submit"
+          sx={{
+            fontSize: '1.35rem',
+            backgroundColor: '#003154',
+            paddingX: '30px',
+            paddingY: '10px'
+          }}
+        >
+          Submit Application
         </Button>
       </form>
     </FormProvider>

@@ -3,7 +3,7 @@ import React from 'react';
 import HouseholdPage from '../pages/Household';
 
 export default {
-  title: 'ITVR/Household',
+  title: 'ITVR/HouseholdLogin',
   component: HouseholdPage
 };
 

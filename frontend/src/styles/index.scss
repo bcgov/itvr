@@ -11,6 +11,7 @@ Base Style
 @import 'ApplicationDetails.scss';
 @import 'Login.scss';
 @import 'Identification.scss';
+@import 'Form.scss';
 
 /* BC Sans Regular */
 @font-face {
@@ -119,7 +120,7 @@ a {
   border: 0 solid $button-blue;
 
   &:disabled {
-    color: $background-grey-dark;
+    color: $grey-dark;
     background-image: none;
     opacity: 0.6;
   }
