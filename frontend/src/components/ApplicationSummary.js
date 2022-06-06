@@ -40,15 +40,43 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
     case 'primary_household':
       confirmMessage =
         'You’ve started a household application for a passenger vehicle rebate';
-      nextSteps = `Your spouse will receive an email at trcook77@gmail.com to complete this application. You'll also receive a copy of this email at ${data.email}`;
+      nextSteps = (
+        <>
+          <p>
+            Your spouse will receive an email at trcook77@gmail.com to complete
+            this application. You'll also receive a copy of this email at{' '}
+            {data.email}
+          </p>
+
+          <p>
+            Once your spouse has submitted their part of the application you’ll
+            get an email reply with the result of your application within 3
+            weeks. If approved the email will tell you your maximum rebate
+            amount. You have one year to use the rebate from the date of
+            approval.
+          </p>
+        </>
+      );
       break;
     case 'secondary_household':
       confirmMessage = 'Success! You’ve applied for a passenger vehicle rebate';
-      nextSteps = `Your spouse will receive an email at trcook77@gmail.com to complete this application. You'll also receive a copy of this email at ${data.email}`;
+      nextSteps = (
+        <p>
+          Your spouse will receive an email at trcook77@gmail.com to complete
+          this application. You'll also receive a copy of this email at $
+          {data.email}
+        </p>
+      );
       break;
     case 'individual':
       confirmMessage = 'Success! You’ve applied for a passenger vehicle rebate';
-      nextSteps = `You’ll get an email reply with the result of your application within 3 weeks. If approved the email will tell you your maximum rebate amount. You have one year to use the rebate from the date of approval.`;
+      nextSteps = (
+        <p>
+          You’ll get an email reply with the result of your application within 3
+          weeks. If approved the email will tell you your maximum rebate amount.
+          You have one year to use the rebate from the date of approval.
+        </p>
+      );
       break;
     default:
       nextSteps = '';
@@ -62,7 +90,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
         confirmation of your application at {data.email || 'no email'}
       </p>
       <h2>Next steps</h2>
-      <p> {nextSteps} </p>
+      {nextSteps}
       <h2>I need help</h2>
       <p>
         Email us if you have questions or need help updating any of the
