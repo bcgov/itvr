@@ -9,12 +9,11 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
-import FileDropArea from './upload/FileDropArea';
 import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
 import { isAgeValid, isSINValid } from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
-
+import Upload from './upload/Upload';
 export const defaultValues = {
   application: '',
   sin: '',
@@ -118,7 +117,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
         </p>
         <Box sx={{ maxWidth: '550px' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Street Address:</span>
+            <span>Street address:</span>
             <span className="primary-answer">{address}</span>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -127,7 +126,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           </Box>
           {postalCode && (
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Postal Code:</span>
+              <span>Postal code:</span>
               <span className="primary-answer">{postalCode}</span>
             </Box>
           )}
@@ -174,7 +173,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
         </FormGroup>
         <FormGroup>
           <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
-            Middle Names(s) (optional):
+            Middle names(s) (optional):
           </InputLabel>
           <Controller
             name="middle_names"
@@ -197,7 +196,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             </p>
           )}
           <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
-            Date of Birth:
+            Date of birth:
           </InputLabel>
           <Controller
             name="date_of_birth"
@@ -242,31 +241,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          <Box className="form-upload-instructions">
-            <h3>Upload images of your ID</h3>
-            <h5>Take a picture of:</h5>
-            <ul>
-              <li>The photo side of your BC Driver's Licence</li>
-              <li>
-                A secondary piece of ID like a financial statement or utility
-                bill that has been issued in the last 90 days
-              </li>
-            </ul>
-            <p>
-              Both pieces of ID must show the same address. Image files must be
-              in jpg or png format.
-            </p>
-            <a href="/identificationExamples" target="_blank">
-              See examples of accepted ID
-            </a>
-          </Box>
-          {errors?.documents?.type === 'validate' && (
-            <p className="error">Need at least 2 files</p>
-          )}
-          {errors?.documents?.type === 'maxSize' && (
-            <p className="error">No file may exceed 5MB</p>
-          )}
-          <FileDropArea name="documents" />
+          <Upload applicationType="spouse" />
         </FormGroup>
         <FormGroup>
           <ConsentPersonal name="consent_personal" required={true} />

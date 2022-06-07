@@ -8,7 +8,6 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
-import FileDropArea from './upload/FileDropArea';
 import useAxios from '../utils/axiosHook';
 import SpouseEmail from './SpouseEmail';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -19,7 +18,10 @@ import Box from '@mui/material/Box';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { isAgeValid, isSINValid } from '../utility';
-
+import LockIcon from '@mui/icons-material/Lock';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Upload from './upload/Upload';
 export const defaultValues = {
   sin: '',
   first_name: '',
@@ -93,22 +95,32 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
+        <h5>Application process for households</h5>
+        <p>
+          Your spouse will need to complete a part of the application.
+          Instructions will be sent to them by email after you complete your
+          part of the application below.
+        </p>
+        <p>
+          Your spouse will need their own BC Services Card app or Basic BCeID
+          account. Your ID will be used to confirm that you and your spouse live
+          at the same address.
+        </p>
         <FormGroup>
-          <Box my={5}>
+          <Box mb={5}>
             <FormControl>
-              <FormLabel className="label" id="application_type" sx={{ mb: 1 }}>
-                If you can receive a larger rebate applying as a household your
-                spouse or common law partner will need to complete a portion of
-                this application to confirm their identity and provide their CRA
-                income disclosure consent. Instructions will be sent to them by
-                email.
-              </FormLabel>
+              <FormLabel
+                className="label"
+                id="application_type"
+                sx={{ mb: 1 }}
+              ></FormLabel>
               <RadioGroup
                 aria-labelledby="application_type"
                 name="application_type"
                 defaultValue={defaultValues.application_type}
               >
                 <FormControlLabel
+                  sx={{ color: 'black' }}
                   value="individual"
                   control={
                     <Radio
@@ -148,32 +160,21 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             {watch('application_type') === 'household' && (
               <SpouseEmail name="spouse_email" />
             )}
-
-            <Box mt={2}>
-              <sup>3</sup>
-              <sub>
-                <b>Household:</b> a person or group of persons who occupy the
-                same dwelling and do not have a usual place of residence
-                elsewhere in Canada or abroad. The dwelling may be either a
-                collective dwelling or a private dwelling.
-              </sub>
-            </Box>
-            <Box mt={2}>
-              <sup>4</sup>
-              <sub>
-                <b>Spouse:</b> someone of the same or opposite gender who has
-                one of the following types of relationship to you (1) they are
-                married to you (2) they are living in a marriage-like
-                relationship with you.
-              </sub>
-            </Box>
           </Box>
         </FormGroup>
+        <Box sx={{ display: 'inline' }}>
+          <h3 id="form-submission-title">
+            Complete your household rebate application <LockIcon />
+          </h3>
+          <span> secure form submission</span>
+        </Box>
         <FormGroup>
           {errors?.last_name?.type === 'required' && (
             <p className="error">Last Name cannot be blank</p>
           )}
-          <InputLabel htmlFor="last_name">Last Name (Surname):</InputLabel>
+          <InputLabel htmlFor="last_name" sx={{ color: 'black', mt: '15px' }}>
+            Your last name (surname):
+          </InputLabel>
           <Controller
             name="last_name"
             control={control}
@@ -191,7 +192,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.first_name?.type === 'required' && (
             <p className="error">First Name cannot be blank</p>
           )}
-          <InputLabel htmlFor="first_name">First Name (Given Name):</InputLabel>
+          <InputLabel htmlFor="first_name" sx={{ color: 'black' }}>
+            First name (given name):
+          </InputLabel>
           <Controller
             name="first_name"
             control={control}
@@ -206,7 +209,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          <InputLabel htmlFor="middle_names">Middle Names(s):</InputLabel>
+          <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
+            Middle Names(s) (optional):
+          </InputLabel>
           <Controller
             name="middle_names"
             control={control}
@@ -223,7 +228,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.email?.type === 'required' && (
             <p className="error">Email Address cannot be blank</p>
           )}
-          <InputLabel htmlFor="email">Email Address:</InputLabel>
+          <InputLabel htmlFor="email" sx={{ color: 'black' }}>
+            Email Address:
+          </InputLabel>
           <Controller
             name="email"
             type="email"
@@ -245,12 +252,15 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               the date of birth entered.
             </p>
           )}
-          <InputLabel htmlFor="date_of_birth">Date of Birth:</InputLabel>
+          <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
+            Date of birth:
+          </InputLabel>
           <Controller
             name="date_of_birth"
             control={control}
             render={({ field }) => (
               <TextField
+                sx={{ width: '300px' }}
                 id="date_of_birth"
                 type="date"
                 onChange={(e) => setValue('date_of_birth', e.target.value)}
@@ -267,7 +277,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.address?.type === 'required' && (
             <p className="error">Street Address cannot be blank</p>
           )}
-          <InputLabel htmlFor="address">Street Address:</InputLabel>
+          <InputLabel htmlFor="address" sx={{ color: 'black' }}>
+            Street address:
+          </InputLabel>
           <Controller
             name="address"
             control={control}
@@ -283,9 +295,13 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         </FormGroup>
         <FormGroup>
           {errors?.city?.type === 'required' && (
-            <p className="error">City cannot be blank</p>
+            <p className="error" sx={{ color: 'black' }}>
+              City cannot be blank
+            </p>
           )}
-          <InputLabel htmlFor="city">City:</InputLabel>
+          <InputLabel htmlFor="city" sx={{ color: 'black' }}>
+            City:
+          </InputLabel>
           <Controller
             name="city"
             control={control}
@@ -303,12 +319,15 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.postal_code?.type === 'validate' && (
             <p className="error">Not a valid Postal Code</p>
           )}
-          <InputLabel htmlFor="postal_code">Postal Code (optional):</InputLabel>
+          <InputLabel htmlFor="postal_code" sx={{ color: 'black' }}>
+            Postal code (optional):
+          </InputLabel>
           <Controller
             name="postal_code"
             control={control}
             render={({ field }) => (
               <TextField
+                sx={{ width: '300px' }}
                 id="postal_code"
                 inputProps={{ maxLength: 7 }}
                 onChange={(e) => setValue('postal_code', e.target.value)}
@@ -337,7 +356,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.sin?.type === 'validate' && (
             <p className="error">Not a valid SIN</p>
           )}
-          <InputLabel htmlFor="sin">Social Insurance Number (SIN):</InputLabel>
+          <InputLabel htmlFor="sin" sx={{ color: 'black' }}>
+            Social Insurance Number (SIN) (used for CRA income disclosure):
+          </InputLabel>
           <Controller
             name="sin"
             control={control}
@@ -359,16 +380,21 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.drivers_licence?.type === 'validate' && (
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
-          <InputLabel htmlFor="drivers_licence">
-            B.C. Driver's Licence Number:
+          <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
+            BC Driver's Licence number (used for redeeming your rebate):
           </InputLabel>
           <Controller
             name="drivers_licence"
             control={control}
             render={({ field }) => (
-              <TextField
+              <OutlinedInput
                 id="drivers_licence"
-                inputProps={{ maxLength: 8 }}
+                inputProps={{
+                  maxLength: 8
+                }}
+                startAdornment={
+                  <InputAdornment position="start">DL: </InputAdornment>
+                }
                 onChange={(e) => setValue('drivers_licence', e.target.value)}
               />
             )}
@@ -390,29 +416,29 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup>
-          <Box>
-            Upload an image (jpg or png) of your B.C. Driver's Licence (photo
-            side) and a secondary piece of ID &nbsp;
-            <a href="/identificationExamples" target="_blank">
-              (see examples):
-            </a>
-          </Box>
-          {errors?.documents?.type === 'twoOrMore' && (
-            <p className="error">Need at least 2 files</p>
-          )}
-          {errors?.documents?.type === 'maxSize' && (
-            <p className="error">No file may exceed 5MB</p>
-          )}
-          <FileDropArea name="documents" />
+          <Upload errors={errors} />
         </FormGroup>
         <FormGroup>
           <ConsentPersonal name="consent_personal" required={true} />
         </FormGroup>
         <FormGroup>
-          <ConsentTax name="consent_tax" required={true} />
+          <ConsentTax
+            name="consent_tax"
+            required={true}
+            applicationType="individual"
+          />
         </FormGroup>
-        <Button variant="contained" type="submit">
-          Submit
+        <Button
+          variant="contained"
+          type="submit"
+          sx={{
+            fontSize: '1.35rem',
+            backgroundColor: '#003154',
+            paddingX: '30px',
+            paddingY: '10px'
+          }}
+        >
+          Submit Application
         </Button>
       </form>
     </FormProvider>
