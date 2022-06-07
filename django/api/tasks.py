@@ -219,7 +219,7 @@ def send_reject(recipient_email, application_id):
     )
 
 
-def send_approve(recipient_email, application_id):
+def send_approve(recipient_email, application_id, rebate_amount):
     message = """\
         <html>
         <body>
@@ -234,7 +234,7 @@ def send_approve(recipient_email, application_id):
         program.</p>
 
         <p>We would like to notify you, that your application has been approved
-        and you are entitled to a maximum rebate amount of $X,XXX.</p>
+        and you are entitled to a maximum rebate amount of ${rebate_amount}.</p>
 
         <p>Your rebate will expire one year from today’s date.</p>
         

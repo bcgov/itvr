@@ -4,6 +4,9 @@ from django.contrib import messages
 from django.urls import path
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+
+from .services.rebate import get_applications, save_rebates, update_application_statuses
+from .services.calculate_rebate import get_cra_results
 from sequences import get_next_value
 from django.conf import settings
 from django import forms
@@ -45,9 +48,10 @@ class ITVRAdminSite(AdminSite):
                 file = request.FILES["cra_response_file"]
                 file_contents = file.read().decode("utf-8")
                 data = cra.read(file_contents)
-                # TODO do something with this data
-                # (store rebate amount receiving)
-                print(data)
+                rebates = get_cra_results(data)
+                associated_applications = get_applications(rebates)
+                save_rebates(rebates, associated_applications)
+                update_application_statuses(rebates, associated_applications)
                 messages.add_message(
                     request, messages.SUCCESS, "CRA OUT file uploaded successfully"
                 )

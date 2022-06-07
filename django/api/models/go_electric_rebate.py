@@ -5,7 +5,7 @@ from django.db.models import (
     BooleanField,
     PROTECT,
     ForeignKey,
-    AutoField
+    AutoField,
 )
 
 from django.core.validators import MinLengthValidator
@@ -15,10 +15,11 @@ from django.utils.translation import gettext_lazy as _
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 
 
-
 class GoElectricRebate(TimeStampedModel):
     id = AutoField(primary_key=True)
-    application_id = ForeignKey(GoElectricRebateApplication, on_delete=PROTECT, blank=True, null=True)
+    application = ForeignKey(
+        GoElectricRebateApplication, on_delete=PROTECT, blank=True, null=True
+    )
     drivers_licence = CharField(
         max_length=8, unique=False, validators=[MinLengthValidator(7)]
     )

@@ -47,9 +47,8 @@ def after_status_change(sender, instance, created, **kwargs):
                 )
         ## if rebate is approved, send an email with amount which we will need to pass in
         elif instance.status == GoElectricRebateApplication.Status.APPROVED:
+            rebate_amount = kwargs.get("rebate_amount")
             if settings.EMAIL["SEND_EMAIL"]:
                 async_task(
-                    "api.tasks.send_approve",
-                    instance.email,
-                    instance.id,
+                    "api.tasks.send_approve", instance.email, instance.id, rebate_amount
                 )
