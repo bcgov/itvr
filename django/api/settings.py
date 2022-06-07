@@ -141,7 +141,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ],
-    "DEFAULT_PERMISSION_CLASSES": [
+    "DEFAULT_PERMISSION_CLASSES": [] if "BYPASS_AUTHENTICATION" in os.environ else [
         "rest_framework.permissions.IsAuthenticated",
     ],
     "COERCE_DECIMAL_TO_STRING": False,

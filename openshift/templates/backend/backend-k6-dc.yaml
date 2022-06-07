@@ -349,6 +349,8 @@ objects:
                   value: ${BUCKET_NAME}  
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
+                - name: BYPASS_AUTHENTICATION
+                  value: "Ture"
               livenessProbe:
                 failureThreshold: 30
                 tcpSocket:
