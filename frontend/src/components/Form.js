@@ -442,6 +442,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
+          disabled={loading}
         >
           Submit Application
         </Button>
