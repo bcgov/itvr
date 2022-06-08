@@ -1,7 +1,10 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
+from api.models.go_electric_rebate import GoElectricRebate
 from rest_framework.parsers import FormParser, MultiPartParser
 from datetime import date
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class ApplicationFormCreateSerializer(ModelSerializer):
@@ -21,6 +24,14 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     def create(self, validated_data):
         request = self.context["request"]
+
+        drivers_licence = validated_data.get("drivers_licence")
+        if GoElectricRebate.objects.filter(drivers_licence=drivers_licence).exists():
+            return Response(
+                {"response": "Application already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = request.user
         spouse_email = request.data.get("spouse_email")
 

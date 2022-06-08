@@ -41,3 +41,16 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
             return self.serializer_classes.get(self.action)
 
         return self.serializer_classes.get("default")
+
+    @action(detail=False, methods=["GET"], url_path="check_status")
+    def check_status(self, request, pk=None):
+        drivers_license = request.query_params.get("drivers_license", None)
+        res = GoElectricRebateApplication.objects.filter(
+            drivers_licence=drivers_license
+        )
+        if res.status:
+            if res.status in ["submitted", "verified", "approved", "redeemed"]:
+                return Response({"validation": "fail"})
+            elif res.status in ["declined", "cra_error"]:
+                return Response({"validation": "pass"})
+        return Response({"validation": ""})
