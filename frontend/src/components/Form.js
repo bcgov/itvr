@@ -152,8 +152,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                       {
                         <>
                           {' '}
-                          <b>Apply as a household,</b> enter your spouse or
-                          common law partner's email address below.
+                          <b>Apply as a household</b>
                         </>
                       }
                     </Typography>
@@ -173,11 +172,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           </h3>
           <span> secure form submission</span>
         </Box>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.last_name?.type === 'required' && (
             <p className="error">Last Name cannot be blank</p>
           )}
-          <InputLabel htmlFor="last_name" sx={{ color: 'black', mt: '15px' }}>
+          <InputLabel htmlFor="last_name" sx={{ color: 'black' }}>
             Your last name (surname):
           </InputLabel>
           <Controller
@@ -193,7 +192,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.first_name?.type === 'required' && (
             <p className="error">First Name cannot be blank</p>
           )}
@@ -213,7 +212,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
             Middle Names(s) (optional):
           </InputLabel>
@@ -229,7 +228,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             )}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.email?.type === 'required' && (
             <p className="error">Email Address cannot be blank</p>
           )}
@@ -250,11 +249,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.date_of_birth?.type === 'validate' && (
             <p className="error">
-              You must be 16 years or older to request a rebate, please check
-              the date of birth entered.
+              Date of birth cannot be blank and you must be 16 years or older to
+              request a rebate, please check the date of birth entered.
             </p>
           )}
           <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
@@ -278,7 +277,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.address?.type === 'required' && (
             <p className="error">Street Address cannot be blank</p>
           )}
@@ -298,7 +297,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.city?.type === 'required' && (
             <p className="error" sx={{ color: 'black' }}>
               City cannot be blank
@@ -320,7 +319,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.postal_code?.type === 'validate' && (
             <p className="error">Not a valid Postal Code</p>
           )}
@@ -357,7 +356,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.sin?.type === 'validate' && (
             <p className="error">Not a valid SIN</p>
           )}
@@ -381,7 +380,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.drivers_licence?.type === 'validate' && (
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
@@ -420,13 +419,13 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <Upload errors={errors} />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <ConsentPersonal name="consent_personal" required={true} />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <ConsentTax
             name="consent_tax"
             required={true}

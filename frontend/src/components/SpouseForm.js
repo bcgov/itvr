@@ -136,7 +136,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             </Box>
           )}
         </Box>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.last_name?.type === 'required' && (
             <p className="error">Last Name cannot be blank</p>
           )}
@@ -156,7 +156,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.first_name?.type === 'required' && (
             <p className="error">First Name cannot be blank</p>
           )}
@@ -176,7 +176,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{ required: true }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
             Middle names(s) (optional):
           </InputLabel>
@@ -193,11 +193,11 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
 
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.date_of_birth?.type === 'validate' && (
             <p className="error">
-              You must be 16 years or older to request a rebate, please check
-              the date of birth entered.
+              Date of birth cannot be blank and you must be 16 years or older to
+              request a rebate, please check the date of birth entered.
             </p>
           )}
           <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
@@ -221,7 +221,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           {errors?.sin?.type === 'validate' && (
             <p className="error">Not a valid SIN</p>
           )}
@@ -245,13 +245,13 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <Upload applicationType="spouse" />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <ConsentPersonal name="consent_personal" required={true} />
         </FormGroup>
-        <FormGroup>
+        <FormGroup sx={{ mt: '20px' }}>
           <ConsentTax name="consent_tax" required={true} />
         </FormGroup>
         <Button

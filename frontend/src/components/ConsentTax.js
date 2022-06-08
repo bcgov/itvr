@@ -15,7 +15,7 @@ June 30, ${currentYear}  your ${twoYearsAgo} NOA is considered your most recent,
 
   return (
     <ConsentGeneral
-      title="Consent to Disclosure of Information from Income Tax Records"
+      title="Consent to disclosure of information from income tax records"
       subtitle={subtitle}
       name={name}
       required={required}
