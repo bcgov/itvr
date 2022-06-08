@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
@@ -22,6 +22,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Upload from './upload/Upload';
+import Loading from './Loading';
+
 export const defaultValues = {
   sin: '',
   first_name: '',
@@ -41,6 +43,7 @@ export const defaultValues = {
 };
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
+  const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
   const methods = useForm({
     defaultValues
@@ -73,6 +76,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   });
   const onSubmit = (data) => {
     setNumberOfErrors(0);
+    setLoading(true);
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
@@ -94,6 +98,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
 
   return (
     <FormProvider {...methods}>
+      <Loading open={loading} />
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <h5>Application process for households</h5>
         <p>

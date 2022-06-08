@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -14,6 +14,8 @@ import Box from '@mui/material/Box';
 import { isAgeValid, isSINValid } from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
 import Upload from './upload/Upload';
+import Loading from './Loading';
+
 export const defaultValues = {
   application: '',
   sin: '',
@@ -30,6 +32,7 @@ export const defaultValues = {
 };
 
 const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
+  const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
   const methods = useForm({
     defaultValues
@@ -73,6 +76,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
   });
   const onSubmit = (data) => {
     setNumberOfErrors(0);
+    setLoading(true);
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         queryClient.setQueryData(
@@ -103,6 +107,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
   const { address, city, postal_code: postalCode } = data;
   return (
     <FormProvider {...methods}>
+      <Loading open={loading} />
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <h2>Apply for a passenger vehicle rebate</h2>
         <Box sx={{ display: 'inline' }}>

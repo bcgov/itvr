@@ -6,6 +6,7 @@ import { getKeycloak, keycloakInitOptions } from './keycloak';
 import AppRouter from './routes';
 
 import './styles/index.scss';
+import Loading from './components/Loading';
 
 const queryClient = new QueryClient();
 const keycloak = getKeycloak();
@@ -14,7 +15,7 @@ ReactDOM.render(
   <ReactKeycloakProvider
     authClient={keycloak}
     initOptions={keycloakInitOptions}
-    LoadingComponent={<div>Loading</div>}
+    LoadingComponent={<Loading open={true} />}
   >
     <QueryClientProvider client={queryClient}>
       <AppRouter />
