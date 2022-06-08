@@ -86,6 +86,14 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     });
   };
 
+  const check_dl_status = (dl) => {                 
+    const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
+    axiosInstance.current.get(detailUrl).then((response) => {
+      console.log(response);
+      return response.data.validation;
+    });
+  }
+
   const onError = (errors) => {
     const numberOfErrors = Object.keys(errors).length;
     setNumberOfErrors(numberOfErrors);
@@ -400,6 +408,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   <InputAdornment position="start">DL: </InputAdornment>
                 }
                 onChange={(e) => setValue('drivers_licence', e.target.value)}
+                onBlur={(e) => {check_dl_status(e.target.value)}}
               />
             )}
             rules={{
@@ -415,6 +424,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   return false;
                 }
                 return true;
+                
               }
             }}
           />
