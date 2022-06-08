@@ -87,6 +87,8 @@ class ApplicationFormSerializer(ModelSerializer):
             "consent_personal",
             "consent_tax",
             "created",
+            "email",
+            "drivers_licence",
         )
 
 

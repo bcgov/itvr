@@ -86,10 +86,14 @@ const FileDropArea = ({
               <div className="file-upload">
                 <UploadIcon />
                 <br />
-                <label htmlFor={name}>Drag and Drop files here</label> or <br />
+                <label htmlFor={name}>
+                  Drag and drop your images here or
+                </label>{' '}
+                or <br />
                 <Box p={2}>
-                  <Button variant="outlined">
-                    browse to select a file from your machine to upload.
+                  <Button variant="text">
+                    browse to select the image files from your machine to
+                    upload.
                   </Button>
                 </Box>
               </div>

@@ -3,7 +3,7 @@ import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from 'react-router-dom';
-import {Helmet} from "react-helmet";
+import { Helmet } from 'react-helmet';
 
 const HouseholdFormPage = () => {
   const [searchParams] = useSearchParams();
@@ -12,7 +12,6 @@ const HouseholdFormPage = () => {
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
   const { keycloak } = useKeycloak();
-  console.log(keycloak.tokenParsed);
 
   useEffect(() => {
     if (numberOfErrors > 0) {
@@ -23,7 +22,9 @@ const HouseholdFormPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Passenger Vehicle Rebate Application Form – CleanBC Go Electric</title>
+        <title>
+          Passenger Vehicle Rebate Application Form – CleanBC Go Electric
+        </title>
       </Helmet>
       <Layout>
         {numberOfErrors > 0 && (

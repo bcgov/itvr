@@ -2,8 +2,10 @@
   background-color: $default-background-grey;
 }
 .bordered {
+  margin-top: 1.5rem;
   border: 1px solid #e0e0e0;
   padding: 0.5rem;
+  width: 75%;
 }
 #dataset-select {
   padding-bottom: 2rem;

@@ -15,9 +15,15 @@ const ConsentGeneral = ({
   name,
   required = false
 }) => {
-  const { register, unregister, setValue, watch, formState: {errors} } = useFormContext();
+  const {
+    register,
+    unregister,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useFormContext();
   useEffect(() => {
-    register(name, required ? {required: true} : undefined);
+    register(name, required ? { required: true } : undefined);
     return () => {
       unregister(name);
     };
@@ -53,22 +59,25 @@ const ConsentGeneral = ({
         </p>
         <p>{subtitle}</p>
         <FormGroup>
-          {errors?.[name]?.type === "required" && (
-            <p className='error'>Consent required</p>
+          {errors?.[name]?.type === 'required' && (
+            <p className="error">Consent required</p>
           )}
           <FormControlLabel
             control={
               <Checkbox
                 checked={consent}
-                onChange={() =>
-                  setValue(name, !consent)
-                }
+                onChange={() => setValue(name, !consent)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             }
             className="label"
             label={
-              <Typography variant="body2" color="textPrimary" fontWeight="bold">
+              <Typography
+                variant="body2"
+                color="textPrimary"
+                fontWeight="bold"
+                fontSize="1.3rem"
+              >
                 {description}
               </Typography>
             }
