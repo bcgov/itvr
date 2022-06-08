@@ -7,7 +7,7 @@ const ConsentTax = ({ name, required, applicationType }) => {
   const twoYearsAgo = date.getFullYear() - 2;
   const lastYear = date.getFullYear() - 1;
   const subtitle = `You${
-    applicationType !== 'individual' && ', and your spouse (if applicable)'
+    applicationType === 'individual' ? ', and your spouse (if applicable)' : ''
   } are required to provide consent that allows the Ministry of Energy, Mines and Low Carbon Innovation to access and 
 review tax information related to line 15000 ‘gross income’ of your most recent Notice of Assessment from the Canada 
 Revenue Agency for your application to the CleanBC Go Electric Passenger Vehicle Rebate program. Up until 
@@ -15,7 +15,7 @@ June 30, ${currentYear}  your ${twoYearsAgo} NOA is considered your most recent,
 
   return (
     <ConsentGeneral
-      title="Consent to Disclosure of Information from Income Tax Records"
+      title="Consent to disclosure of information from income tax records"
       subtitle={subtitle}
       name={name}
       required={required}

@@ -25,6 +25,7 @@ const SpouseEmail = ({ name }) => {
         {errors?.[name]?.type === 'required' && (
           <p className="error">Spouse email address cannot be blank</p>
         )}
+        <p>enter your spouse or common law partner's email address</p>
         <InputLabel sx={{ color: 'black' }} htmlFor={name}>
           Spouse email address:
         </InputLabel>

@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import { useSearchParams } from 'react-router-dom';
 import INeedHelp from '../components/INeedHelp';
 
-const HouseholdPage = () => {
+const HouseholdLogin = () => {
   const [searchParams] = useSearchParams();
   const householdApplicationId = searchParams.get('q');
   const title = (
@@ -64,4 +64,4 @@ const HouseholdPage = () => {
   );
 };
 
-export default HouseholdPage;
+export default HouseholdLogin;

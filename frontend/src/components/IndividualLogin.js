@@ -1,11 +1,11 @@
 import React from 'react';
-import BottomBanner from '../BottomBanner';
+import BottomBanner from './BottomBanner';
 import Box from '@mui/material/Box';
-import INeedHelp from '../INeedHelp';
+import INeedHelp from './INeedHelp';
 
-const EligibilityPage = (props) => {
+const IndividualLogin = () => {
   return (
-    <Box id="eligibility">
+    <Box>
       <div>
         <h2>What you will need to complete this application</h2>
         <h3>Social Insurance Number and CRA income disclosure consent</h3>
@@ -54,4 +54,4 @@ const EligibilityPage = (props) => {
   );
 };
 
-export default EligibilityPage;
+export default IndividualLogin;
