@@ -48,7 +48,7 @@ class GoElectricRebateApplication(TimeStampedModel):
         VERIFIED = ("verified", _("Verified"))
         DECLINED = ("declined", _("Declined"))
         APPROVED = ("approved", _("Approved"))
-        CRA_ERROR = ("cra_error", _("CRA Error"))
+        NOT_APPROVED = ("not_approved", _("Not Approved"))
         REDEEMED = ("redeemed", _("Redeemed"))
         EXPIRED = ("expired", _("Expired"))
 
