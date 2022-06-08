@@ -7,7 +7,7 @@ const ConsentTax = ({ name, required, applicationType }) => {
   const twoYearsAgo = date.getFullYear() - 2;
   const lastYear = date.getFullYear() - 1;
   const subtitle = `You${
-    applicationType !== 'individual' && ', and your spouse (if applicable)'
+    applicationType === 'individual' ? ', and your spouse (if applicable)' : ''
   } are required to provide consent that allows the Ministry of Energy, Mines and Low Carbon Innovation to access and 
 review tax information related to line 15000 ‘gross income’ of your most recent Notice of Assessment from the Canada 
 Revenue Agency for your application to the CleanBC Go Electric Passenger Vehicle Rebate program. Up until 
