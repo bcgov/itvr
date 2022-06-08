@@ -59,6 +59,7 @@ services:
       - CHES_AUTH_URL
       - CHES_EMAIL_URL
       - SEND_EMAIL
+      - BYPASS_AUTHENTICATION
     volumes:
       - ./django:/api
     ports:
