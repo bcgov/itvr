@@ -27,10 +27,10 @@ const IdentificationExamples = (props) => {
       <Box
         className="left-img"
         component="img"
+        alt="A photograph of the front of the applicant's BC Driver’s Licence clearly showing the photograph and address"
         sx={{
           maxWidth: 400
         }}
-        alt="A photograph of the front of the spouse's BC Service Card clearly showing the photograph and address"
         src={dl}
       />
       <h4>BC Services Card</h4>
@@ -45,7 +45,7 @@ const IdentificationExamples = (props) => {
         sx={{
           maxWidth: 400
         }}
-        alt="A photograph of the front of the applicant's BC Driver’s Licence clearly showing the photograph and address"
+        alt="A photograph of the front of the spouse's BC Service Card clearly showing the photograph and address"
         src={bceid}
       />
 
