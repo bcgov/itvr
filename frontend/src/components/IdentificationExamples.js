@@ -27,10 +27,10 @@ const IdentificationExamples = (props) => {
       <Box
         className="left-img"
         component="img"
+        alt="A photograph of the front of the applicant's BC Driver’s Licence clearly showing the photograph and address"
         sx={{
           maxWidth: 400
         }}
-        alt="example driver's license"
         src={dl}
       />
       <h4>BC Services Card</h4>
@@ -45,7 +45,7 @@ const IdentificationExamples = (props) => {
         sx={{
           maxWidth: 400
         }}
-        alt="example of BCEID"
+        alt="A photograph of the front of the spouse's BC Service Card clearly showing the photograph and address"
         src={bceid}
       />
 
@@ -82,7 +82,7 @@ const IdentificationExamples = (props) => {
           display: 'block'
         }}
         src={bankStatement}
-        alt="example bank statement with account number covered and only the header and applicant's address visible"
+        alt="A photograph of a portion of a bank statement showing the company letterhead, applicant's name, address and the date the statement was issued. Personal information like account details are not displayed or blocked out by felt pen."
       />
       <Box
         component="img"
@@ -90,7 +90,7 @@ const IdentificationExamples = (props) => {
           maxWidth: 500,
           maxHeight: '60%'
         }}
-        alt="example of utility bill with account number covered and only the header and applicant's address visible"
+        alt="A photograph of a portion of a utility statement showing the company letterhead, applicant's name, address and the date the statement was issued. Personal information like account details are not displayed or blocked out by felt pen."
         src={utility}
       />
     </Box>
