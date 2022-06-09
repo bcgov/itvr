@@ -4,9 +4,8 @@ import { ReactKeycloakProvider } from '@react-keycloak/web';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { getKeycloak, keycloakInitOptions } from './keycloak';
 import AppRouter from './routes';
-
-import './styles/index.scss';
 import Loading from './components/Loading';
+import './styles/index.scss';
 
 const queryClient = new QueryClient();
 const keycloak = getKeycloak();
