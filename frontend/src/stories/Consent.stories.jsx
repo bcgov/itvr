@@ -19,5 +19,11 @@ PersonalConsentBox.args = { name: 'consent_personal' };
 
 const TemplateTax = (args) => <ConsentTax {...args} />;
 
-export const TaxConsentBox = TemplateTax.bind({});
-TaxConsentBox.args = { name: 'consent_tax' };
+export const TaxConsentBoxIndividual = TemplateTax.bind({});
+TaxConsentBoxIndividual.args = {
+  name: 'consent_tax',
+  applicationType: 'individual'
+};
+
+export const TaxConsentBoxSpouse = TemplateTax.bind({});
+TaxConsentBoxSpouse.args = { name: 'consent_tax', applicationType: 'spouse' };
