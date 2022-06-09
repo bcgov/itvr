@@ -84,7 +84,7 @@ const RebateTable = () => {
           </tr>
           <tr>
             <td>$100,001 and above</td>
-            <td>$165,000 and above</td>
+            <td>$165,001 and above</td>
             {(tableType === 'ev' || tableType === 'hybrid') && (
               <td>{rebateAmounts[tableType]['D']}</td>
             )}
