@@ -26,25 +26,25 @@ const data = {
   consent_tax: true
 };
 
-const Template = (args) => <ApplicationSummary {...args} />;
+// const Template = (args) => <ApplicationSummary {...args} />;
 
-export const Individual = Template.bind({});
-Individual.args = {
-  ...data
-};
-export const HouseholdSecondary = Template.bind({});
-HouseholdSecondary.args = {
-  data: {
-    ...data,
-    application_type: 'household'
-  }
-};
+// export const Individual = Template.bind({});
+// Individual.args = {
+//   ...data
+// };
+// export const HouseholdSecondary = Template.bind({});
+// HouseholdSecondary.args = {
+//   data: {
+//     ...data,
+//     application_type: 'household'
+//   }
+// };
 
-export const HouseholdPrimary = Template.bind({});
-HouseholdPrimary.args = {
-  data: {
-    ...data,
-    application_type: 'household',
-    status: 'household_initiated'
-  }
-};
+// export const HouseholdPrimary = Template.bind({});
+// HouseholdPrimary.args = {
+//   data: {
+//     ...data,
+//     application_type: 'household',
+//     status: 'household_initiated'
+//   }
+// };
