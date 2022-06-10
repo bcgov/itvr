@@ -12,6 +12,8 @@ module.exports = settings => {
 
   // The building of your cool app goes here ▼▼▼
 
+  // build frontend
+
   //build backend
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/backend/backend-bc.yaml`, {
     'param':{
