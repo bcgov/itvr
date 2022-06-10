@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
-import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
@@ -11,7 +10,6 @@ const HouseholdFormPage = () => {
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
-  const { keycloak } = useKeycloak();
 
   useEffect(() => {
     if (numberOfErrors > 0) {
