@@ -22,6 +22,28 @@ module.exports = settings => {
   var objects = [];
 
   // The deployment of your cool app goes here ▼▼▼
+
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/frontend/frontend-dc-docker.yaml`, {
+    'param': {
+      'NAME': phases[phase].name,
+      'SUFFIX': phases[phase].suffix,
+      'VERSION': phases[phase].tag,
+      'ENV_NAME': phases[phase].phase,
+      'HOST_NAME': phases[phase].host,
+      'CPU_REQUEST': phases[phase].frontendCpuRequest,
+      'CPU_LIMIT': phases[phase].frontendCpuLimit,
+      'MEMORY_REQUEST': phases[phase].frontendMemoryRequest,
+      'MEMORY_LIMIT': phases[phase].frontendMemoryLimit,
+      'REPLICAS':  phases[phase].frontendReplicas,
+      'REACT_APP_BCSC_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCSCKeycloakClientId,
+      'REACT_APP_BCSC_KEYCLOAK_REALM': phases[phase].reactAppBCSCKeycloakRealm,
+      'REACT_APP_BCSC_KEYCLOAK_URL': phases[phase].reactAppBCSCKeycloakUrl,
+      'REACT_APP_BCEID_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCeIDKeycloakClientId,
+      'REACT_APP_BCEID_KEYCLOAK_REALM': phases[phase].reactAppBCeIDKeycloakRealm,
+      'REACT_APP_BCEID_KEYCLOAK_URL': phases[phase].reactAppBCeIDKeycloakUrl,
+      'REACT_APP_API_BASE': phases[phase].reactAppApiBase
+    }
+  }))  
   
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/backend/backend-k6-dc.yaml`, {
     'param': {
