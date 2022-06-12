@@ -57,6 +57,6 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
                 "redeemed",
             ]:
                 return Response({"validation": "fail"})
-            elif application_status[0] in ["declined", "cra_error"]:
+            elif application_status[0] in ["declined", "not_approved"]:
                 return Response({"validation": "pass"})
         return Response({"validation": "pass"})
