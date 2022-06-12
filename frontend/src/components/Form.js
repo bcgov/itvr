@@ -39,7 +39,8 @@ export const defaultValues = {
   consent_personal: false,
   consent_tax: false,
   application_type: 'individual',
-  spouse_email: ''
+  spouse_email: '',
+  submit_status: true,
 };
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
@@ -89,11 +90,21 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const check_dl_status = (dl) => {                 
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
     axiosInstance.current.get(detailUrl).then((response) => {
-      console.log(response);
-      return response.data.validation;
+      if (response.data.validation === 'fail') {
+        setValue('submit_status', false);
+      }
+      else if (response.data.validation === 'pass') { 
+        setValue('submit_status', true);
+      }
     });
   }
 
+  const isDisabled = () => {
+    if (watch('submit_status') === false) {
+      return true;
+    }
+    return false;
+  }
   const onError = (errors) => {
     const numberOfErrors = Object.keys(errors).length;
     setNumberOfErrors(numberOfErrors);
@@ -451,7 +462,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || isDisabled()}
         >
           Submit Application
         </Button>
