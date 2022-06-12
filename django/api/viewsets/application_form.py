@@ -45,12 +45,18 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
     @action(detail=False, methods=["GET"], url_path="check_status")
     def check_status(self, request, pk=None):
         drivers_license = request.query_params.get("drivers_license", None)
-        res = GoElectricRebateApplication.objects.filter(
+        application_status = GoElectricRebateApplication.objects.filter(
             drivers_licence=drivers_license
-        )
-        if res.status:
-            if res.status in ["submitted", "verified", "approved", "redeemed"]:
+        ).values_list("status", flat=True)
+
+        if application_status:
+            if application_status[0] in [
+                "submitted",
+                "verified",
+                "approved",
+                "redeemed",
+            ]:
                 return Response({"validation": "fail"})
-            elif res.status in ["declined", "cra_error"]:
+            elif application_status[0] in ["declined", "cra_error"]:
                 return Response({"validation": "pass"})
-        return Response({"validation": ""})
+        return Response({"validation": "pass"})
