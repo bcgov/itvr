@@ -25,6 +25,7 @@ import Upload from './upload/Upload';
 import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import BCSCInfo from './BCSCInfo';
+import { addTokenFields } from '../keycloak';
 
 export const defaultValues = {
   sin: '',
@@ -46,6 +47,7 @@ export const defaultValues = {
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
   const methods = useForm({
@@ -83,6 +85,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
+        const refinedData = addTokenFields(data.data, kcToken);
+        queryClient.setQueryData(['application', id], refinedData);
         navigate(`/details/${id}`);
       }
     });
