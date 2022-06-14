@@ -2,8 +2,8 @@ import { sleep, group } from 'k6'
 import http from 'k6/http'
 import { FormData } from 'https://jslib.k6.io/formdata/0.0.2/index.js'
 
-const img1 = open('./image-2.5m-1.jpg', 'b');
-const img2 = open('./image-2.5m-1.jpg', 'b');
+const img1 = open('./image-5m-1.jpg', 'b');
+const img2 = open('./image-5m-2.jpg', 'b');
 
 export const options = {
   ext: {
@@ -44,8 +44,8 @@ export function scenario_1() {
       formData.append('date_of_birth', '1988-01-01')
       formData.append('drivers_licence', '1234567')
 
-      formData.append('doc1', http.file(img1, './image-2.5m-1.jpg', 'image/jpg'))
-      formData.append('doc2', http.file(img2, './image-2.5m-2.jpg', 'image/jpg'))
+      formData.append('doc1', http.file(img1, './image-5m-1.jpg', 'image/jpg'))
+      formData.append('doc2', http.file(img2, './image-5m-2.jpg', 'image/jpg'))
 
       formData.append('consent_personal', 'true')
       formData.append('consent_tax', 'true')
