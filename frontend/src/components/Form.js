@@ -85,7 +85,10 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
-        const refinedData = addTokenFields(data.data, kcToken);
+        let refinedData = data.data;
+        if (kcToken.identity_provider === 'bcsc') {
+          refinedData = addTokenFields(data.data, kcToken);
+        }
         queryClient.setQueryData(['application', id], refinedData);
         navigate(`/details/${id}`);
       }

@@ -84,7 +84,10 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     setLoading(true);
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
-        const refinedData = addTokenFields(data.data, kcToken);
+        let refinedData = data.data;
+        if (kcToken.identity_provider === 'bcsc') {
+          refinedData = addTokenFields(data.data, kcToken);
+        }
         queryClient.setQueryData(
           ['spouse-application', applicationId],
           refinedData
