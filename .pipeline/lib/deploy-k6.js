@@ -23,6 +23,8 @@ module.exports = settings => {
 
   // The deployment of your cool app goes here ▼▼▼
 
+  //before deploy k6 backend, copy backend-dc.yaml to backend-k6-dc.yaml and add BYPASS_AUTHENTICATION and gove value True
+  //sample image files are available at https://www.learningcontainer.com/sample-jpeg-file-download-for-testing/
   objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/templates/backend/backend-k6-dc.yaml`, {
     'param': {
       'NAME': phases[phase].name,
