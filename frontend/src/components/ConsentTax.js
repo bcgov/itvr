@@ -61,9 +61,11 @@ June 30, ${currentYear}  your ${twoYearsAgo} NOA is considered your most recent,
             information from my tax records and other taxpayer information from
             the most recent tax year to the year of signature of this consent.
           </li>
-          This consent is effective on the date by which I indicate that I
-          understand and agree to the statements and will not expire unless
-          revoked by me in writing to the contact listed below.
+          <li>
+            This consent is effective on the date by which I indicate that I
+            understand and agree to the statements and will not expire unless
+            revoked by me in writing to the contact listed below.
+          </li>
         </ol>
       </div>
     </ConsentGeneral>
