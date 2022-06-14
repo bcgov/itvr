@@ -73,15 +73,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GoElectricRebate',
             fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
                 ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('drivers_licence', models.CharField(max_length=8, validators=[django.core.validators.MinLengthValidator(7)])),
                 ('last_name', models.CharField(max_length=250)),
                 ('expiry_date', models.DateField()),
                 ('rebate_max_amount', models.IntegerField(default=0)),
                 ('rebate_state', models.BooleanField(default=False)),
                 ('application', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='api.goelectricrebateapplication')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'get_latest_by': 'modified',

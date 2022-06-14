@@ -9,14 +9,17 @@ from django.db.models import (
 )
 
 from django.core.validators import MinLengthValidator
-
+from django.conf import settings
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 
 
 class GoElectricRebate(TimeStampedModel):
-    id = AutoField(primary_key=True)
+    user = ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=PROTECT,
+    )
     application = ForeignKey(
         GoElectricRebateApplication, on_delete=PROTECT, blank=True, null=True
     )
