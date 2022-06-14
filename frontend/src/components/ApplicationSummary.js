@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import DetailsTable from './DetailsTable';
 import { useKeycloak } from '@react-keycloak/web';
 import INeedHelp from './INeedHelp';
+import Loading from './Loading';
 
 const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
@@ -24,7 +25,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
   );
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading open={true} />;
   }
   if (isError) {
     return <p>{error.message}</p>;

@@ -16,7 +16,6 @@ from api.validators import (
     validate_driving_age,
     validate_sin,
     validate_consent,
-    validate_file_size,
 )
 
 media_storage = get_storage_class()()
@@ -36,7 +35,7 @@ class HouseholdMember(TimeStampedModel):
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
     date_of_birth = DateField(validators=[validate_driving_age])
-    doc1 = ImageField(upload_to="docs", validators=[validate_file_size])
+    doc1 = ImageField(upload_to="docs", blank=True, null=True)
 
     def doc1_tag(self):
         return mark_safe(
@@ -46,7 +45,7 @@ class HouseholdMember(TimeStampedModel):
 
     doc1_tag.short_description = "First Uploaded Document"
 
-    doc2 = ImageField(upload_to="docs", validators=[validate_file_size])
+    doc2 = ImageField(upload_to="docs", blank=True, null=True)
 
     def doc2_tag(self):
         return mark_safe(

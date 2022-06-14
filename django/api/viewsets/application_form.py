@@ -6,7 +6,8 @@ from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
 
 from api.serializers.application_form import (
     ApplicationFormSerializer,
-    ApplicationFormCreateSerializer,
+    ApplicationFormCreateSerializerDefault,
+    ApplicationFormCreateSerializerBCSC,
     ApplicationFormSpouseSerializer,
 )
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
@@ -14,10 +15,6 @@ from api.models.go_electric_rebate_application import GoElectricRebateApplicatio
 
 class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixin):
     queryset = GoElectricRebateApplication.objects.all()
-    serializer_classes = {
-        "default": ApplicationFormSerializer,
-        "create": ApplicationFormCreateSerializer,
-    }
 
     @action(detail=True, methods=["GET"], url_path="household")
     def household(self, request, pk=None):
@@ -37,7 +34,8 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
         return Response(response, status=status.HTTP_403_FORBIDDEN)
 
     def get_serializer_class(self):
-        if self.action in list(self.serializer_classes.keys()):
-            return self.serializer_classes.get(self.action)
-
-        return self.serializer_classes.get("default")
+        if self.action == "create":
+            if self.request.user.identity_provider == "bcsc":
+                return ApplicationFormCreateSerializerBCSC
+            return ApplicationFormCreateSerializerDefault
+        return ApplicationFormSerializer

@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from api.models.household_member import HouseholdMember
 from django_q.tasks import async_task
+from api.utility import addresses_match
 
 
 @receiver(post_save, sender=GoElectricRebateApplication)
@@ -24,8 +25,19 @@ def create_application(sender, instance, created, **kwargs):
 def after_household_member_save(sender, instance, created, **kwargs):
     if created:
         application = instance.application
-        application.status = GoElectricRebateApplication.Status.SUBMITTED
-        application.save()
+        primary_user = application.user
+        secondary_user = instance.user
+        if (
+            primary_user.identity_provider == "bcsc"
+            and secondary_user.identity_provider == "bcsc"
+            and addresses_match(application, secondary_user)
+        ):
+            application.status = GoElectricRebateApplication.Status.VERIFIED
+            application.save()
+        else:
+            application.status = GoElectricRebateApplication.Status.SUBMITTED
+            application.save()
+
         if settings.EMAIL["SEND_EMAIL"]:
             async_task(
                 "api.tasks.send_household_confirm",

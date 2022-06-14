@@ -37,3 +37,15 @@ export const getKeycloak = () => {
   }
   return keycloaks[BCSC_KEYCLOAK_REALM];
 };
+
+export const addTokenFields = (data, kcToken) => {
+  if (data && kcToken) {
+    data.first_name = kcToken.given_name;
+    data.last_name = kcToken.family_name;
+    data.date_of_birth = kcToken.birthdate;
+    data.address = kcToken.street_address;
+    data.city = kcToken.locality;
+    data.postal_code = kcToken.postal_code;
+  }
+  return data;
+};

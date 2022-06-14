@@ -1,7 +1,8 @@
-from api.serializers.application_form import ApplicationFormSpouseSerializer
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.household_member import HouseholdMember
 from rest_framework.parsers import FormParser, MultiPartParser
+from api.validators import validate_file_size
+from django.core.exceptions import ValidationError
 
 
 class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
@@ -14,10 +15,16 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
         model = HouseholdMember
         exclude = ["user"]
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["request"] = self.request
-        return context
+
+class HouseholdMemberApplicationCreateSerializerDefault(
+    HouseholdMemberApplicationCreateSerializer
+):
+    def validate(self, data):
+        if data.get("doc1") is None or data.get("doc2") is None:
+            raise ValidationError("Missing required document.")
+        validate_file_size(data["doc1"])
+        validate_file_size(data["doc2"])
+        return data
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -31,6 +38,35 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
             date_of_birth=validated_data["date_of_birth"],
             doc1=validated_data["doc1"],
             doc2=validated_data["doc2"],
+            user=user,
+            consent_personal=validated_data["consent_personal"],
+            consent_tax=validated_data["consent_tax"],
+        )
+        return obj
+
+
+class HouseholdMemberApplicationCreateSerializerBCSC(
+    HouseholdMemberApplicationCreateSerializer
+):
+    class Meta(HouseholdMemberApplicationCreateSerializer.Meta):
+        exclude = [
+            "last_name",
+            "first_name",
+            "middle_names",
+            "date_of_birth",
+            "doc1",
+            "doc2",
+        ] + HouseholdMemberApplicationCreateSerializer.Meta.exclude
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+
+        obj = HouseholdMember.objects.create(
+            application=validated_data["application"],
+            sin=validated_data["sin"],
+            last_name=user.last_name,
+            first_name=user.first_name,
+            date_of_birth=user.date_of_birth,
             user=user,
             consent_personal=validated_data["consent_personal"],
             consent_tax=validated_data["consent_tax"],
