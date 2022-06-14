@@ -16,6 +16,7 @@
     "deploy-metabase": "node deploy-metabase.js",
     "deploy-patroni": "node deploy-patroni.js",
     "deploy-knp": "node deploy-knp.js",
+    "deploy-k6": "node deploy-k6.js",
     "version": "echo \"node@$(node --version) ($(which node))\" && echo \"npm@$(npm --version) ($(which npm))\" && npm ls"
   },
   "repository": {
