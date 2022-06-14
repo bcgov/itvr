@@ -31,9 +31,7 @@ const ConsentGeneral = ({
   const consent = watch(name);
   const commonStyles = {
     bgcolor: 'background.paper',
-    width: '100%',
-    height: '50vh',
-    overflowY: 'scroll'
+    width: '100%'
   };
   const emliAddress = (
     <address className="emli-address">
