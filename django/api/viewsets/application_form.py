@@ -10,7 +10,8 @@ from api.serializers.application_form import (
     ApplicationFormSpouseSerializer,
 )
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
-
+from api.models.go_electric_rebate import GoElectricRebate
+import datetime
 
 class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixin):
     queryset = GoElectricRebateApplication.objects.all()
@@ -46,8 +47,15 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
     def check_status(self, request, pk=None):
         drivers_license = request.query_params.get("drivers_license", None)
         application_status = GoElectricRebateApplication.objects.filter(
-            drivers_licence=drivers_license
-        ).values_list("status", flat=True)
+            drivers_licence=drivers_license).values_list("status", flat=True)
+        rebate_expiry_date = GoElectricRebate.objects.filter(
+            drivers_licence=drivers_license).values_list("expiry_date", flat=True)[0]
+
+        
+        # Rebates expire after one year
+        today = datetime.date.today()
+        if (today - rebate_expiry_date).days > 365:
+            rebate_expired = True
 
         if application_status:
             if application_status[0] in [
