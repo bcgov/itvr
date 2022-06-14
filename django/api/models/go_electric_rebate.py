@@ -24,7 +24,7 @@ class GoElectricRebate(TimeStampedModel):
         GoElectricRebateApplication, on_delete=PROTECT, blank=True, null=True
     )
     drivers_licence = CharField(
-        max_length=8, unique=False, validators=[MinLengthValidator(7)]
+        max_length=8, unique=True, validators=[MinLengthValidator(7)]
     )
     last_name = CharField(max_length=250, unique=False)
     expiry_date = DateField()
