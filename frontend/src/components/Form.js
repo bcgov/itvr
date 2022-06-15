@@ -260,6 +260,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                     sx={{ width: '300px' }}
                     id="date_of_birth"
                     type="date"
+                    InputProps={{inputProps: { max: "01-01-9999"} }}
                     onChange={(e) => setValue('date_of_birth', e.target.value)}
                   />
                 )}
