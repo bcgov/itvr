@@ -90,11 +90,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const check_dl_status = (dl) => {                 
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
     axiosInstance.current.get(detailUrl).then((response) => {
-      if (response.data.validation === 'fail') {
+      if (response.data.drivers_license_valid  === 'fail') {
         setSubmitStatus(false)
       }
-      else if (response.data.validation === 'pass') { 
-        setSubmitStatus(false)
+      else if (response.data.drivers_license_valid  === 'pass') { 
+        setSubmitStatus(true)
       }
     });
   }
