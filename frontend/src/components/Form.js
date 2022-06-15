@@ -40,12 +40,11 @@ export const defaultValues = {
   consent_tax: false,
   application_type: 'individual',
   spouse_email: '',
-  // submit_status: true,
 };
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
-  const [submit_status, setSubmit_status] = useState(true);
+  const [submitStatus, setSubmitStatus] = useState(true);
   const queryClient = useQueryClient();
   const methods = useForm({
     defaultValues
@@ -92,16 +91,16 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
     axiosInstance.current.get(detailUrl).then((response) => {
       if (response.data.validation === 'fail') {
-        setSubmit_status(false)
+        setSubmitStatus(false)
       }
       else if (response.data.validation === 'pass') { 
-        setSubmit_status(false)
+        setSubmitStatus(false)
       }
     });
   }
 
   const isDisabled = () => {
-    if (watch('submit_status') === false) {
+    if (watch('submitStatus') === false) {
       return true;
     }
     return false;
@@ -405,7 +404,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
           {
-           !submit_status && <span className="error">Error: This driver's licence number has already been submitted or issued a rebate.</span>
+           !submitStatus && <span className="error">Error: This driver's licence number has already been submitted or issued a rebate.</span>
           }
           
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
