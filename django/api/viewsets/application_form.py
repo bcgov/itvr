@@ -46,7 +46,8 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
     def check_status(self, request, pk=None):
         drivers_license = request.query_params.get("drivers_license", None)
         application_status = GoElectricRebateApplication.objects.filter(
-            drivers_licence=drivers_license).values_list("status", flat=True)
+            drivers_licence=drivers_license
+        ).values_list("status", flat=True)
 
         if application_status:
             if application_status[0] in [
@@ -55,11 +56,11 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
                 GoElectricRebateApplication.Status.APPROVED,
                 GoElectricRebateApplication.Status.REDEEMED,
                 ]:
-                return Response({"drivers_license_valid ": "false"})
+                return Response({"drivers_license_valid ": "fail"})
             elif application_status[0] in [
                 GoElectricRebateApplication.Status.DECLINED,
                 GoElectricRebateApplication.Status.NOT_APPROVED,
                 GoElectricRebateApplication.Status.EXPIRED
                 ]:
-                return Response({"drivers_license_valid ": "true"})
-        return Response({"drivers_license_valid ": "true"})
+                return Response({"drivers_license_valid ": "pass"})
+        return Response({"drivers_license_valid ": "pass"})
