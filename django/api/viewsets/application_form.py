@@ -57,6 +57,6 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
                 "redeemed",
             ]:
                 return Response({"drivers_license_valid ": "fail"})
-            elif application_status[0] in ["declined", "not_approved"]:
+            elif application_status[0] in ["declined", "not_approved", "expired"]:
                 return Response({"drivers_license_valid ": "pass"})
         return Response({"drivers_license_valid ": "pass"})

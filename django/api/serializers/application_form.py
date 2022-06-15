@@ -27,10 +27,13 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
         drivers_licence = validated_data.get("drivers_licence")
         if GoElectricRebate.objects.filter(drivers_licence=drivers_licence).exists():
-            return Response(
-                {"response": "Application already exists"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            existing_application_status = GoElectricRebateApplication.objects.filter(drivers_licence=drivers_licence).values_list("status", flat=True)
+            if existing_application_status:
+                if existing_application_status[0] not in ["declined", "not_approved", "expired"]:
+                    return Response(
+                        {"response": "Application already exists"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
         user = request.user
         spouse_email = request.data.get("spouse_email")
