@@ -1,4 +1,5 @@
 import base64
+from api.utility import format_postal_code
 from keycloak import KeycloakOpenID
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -77,6 +78,14 @@ class KeycloakAuthentication(TokenAuthentication):
             if created:
                 user.set_unusable_password()
                 user.save()
+
+            if token_info.get("identity_provider") == "bcsc":
+                user.last_name = token_info.get("family_name")
+                user.first_name = token_info.get("given_name")
+                user.date_of_birth = token_info.get("birthdate")
+                user.street_address = token_info.get("street_address")
+                user.locality = token_info.get("locality")
+                user.postal_code = format_postal_code(token_info.get("postal_code"))
 
             return user, token
         raise AuthenticationFailed("Invalid token")

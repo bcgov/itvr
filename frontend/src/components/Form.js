@@ -23,6 +23,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Upload from './upload/Upload';
 import Loading from './Loading';
+import { useKeycloak } from '@react-keycloak/web';
+import BCSCInfo from './BCSCInfo';
+import { addTokenFields } from '../keycloak';
 
 export const defaultValues = {
   sin: '',
@@ -46,6 +49,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(true);
   const queryClient = useQueryClient();
+  const { keycloak } = useKeycloak();
+  const kcToken = keycloak.tokenParsed;
   const methods = useForm({
     defaultValues
   });
@@ -81,7 +86,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
-        queryClient.setQueryData(['application', id], data.data);
+        let refinedData = data.data;
+        if (kcToken.identity_provider === 'bcsc') {
+          refinedData = addTokenFields(data.data, kcToken);
+        }
+        queryClient.setQueryData(['application', id], refinedData);
         navigate(`/details/${id}`);
       }
     });
@@ -191,62 +200,176 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           </h3>
           <span> secure form submission</span>
         </Box>
-        <FormGroup sx={{ mt: '20px' }}>
-          {errors?.last_name?.type === 'required' && (
-            <p className="error">Last Name cannot be blank</p>
-          )}
-          <InputLabel htmlFor="last_name" sx={{ color: 'black' }}>
-            Your last name (surname):
-          </InputLabel>
-          <Controller
-            name="last_name"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="last_name"
-                inputProps={{ maxLength: 250 }}
-                onChange={(e) => setValue('last_name', e.target.value)}
+        {kcToken.identity_provider === 'bcsc' ? (
+          <BCSCInfo kcToken={kcToken} />
+        ) : (
+          <>
+            <FormGroup sx={{ mt: '20px' }}>
+              {errors?.last_name?.type === 'required' && (
+                <p className="error">Last Name cannot be blank</p>
+              )}
+              <InputLabel htmlFor="last_name" sx={{ color: 'black' }}>
+                Your last name (surname):
+              </InputLabel>
+              <Controller
+                name="last_name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    id="last_name"
+                    inputProps={{ maxLength: 250 }}
+                    onChange={(e) => setValue('last_name', e.target.value)}
+                  />
+                )}
+                rules={{ required: true }}
               />
-            )}
-            rules={{ required: true }}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          {errors?.first_name?.type === 'required' && (
-            <p className="error">First Name cannot be blank</p>
-          )}
-          <InputLabel htmlFor="first_name" sx={{ color: 'black' }}>
-            First name (given name):
-          </InputLabel>
-          <Controller
-            name="first_name"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="first_name"
-                inputProps={{ maxLength: 250 }}
-                onChange={(e) => setValue('first_name', e.target.value)}
+            </FormGroup>
+            <FormGroup sx={{ mt: '20px' }}>
+              {errors?.first_name?.type === 'required' && (
+                <p className="error">First Name cannot be blank</p>
+              )}
+              <InputLabel htmlFor="first_name" sx={{ color: 'black' }}>
+                First name (given name):
+              </InputLabel>
+              <Controller
+                name="first_name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    id="first_name"
+                    inputProps={{ maxLength: 250 }}
+                    onChange={(e) => setValue('first_name', e.target.value)}
+                  />
+                )}
+                rules={{ required: true }}
               />
-            )}
-            rules={{ required: true }}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
-            Middle Names(s) (optional):
-          </InputLabel>
-          <Controller
-            name="middle_names"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="middle_names"
-                inputProps={{ maxLength: 250 }}
-                {...field}
+            </FormGroup>
+            <FormGroup sx={{ mt: '20px' }}>
+              <InputLabel htmlFor="middle_names" sx={{ color: 'black' }}>
+                Middle Names(s) (optional):
+              </InputLabel>
+              <Controller
+                name="middle_names"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    id="middle_names"
+                    inputProps={{ maxLength: 250 }}
+                    {...field}
+                  />
+                )}
               />
-            )}
-          />
-        </FormGroup>
+            </FormGroup>
+            <FormGroup sx={{ mt: '20px' }}>
+              {errors?.date_of_birth?.type === 'validate' && (
+                <p className="error">
+                  Date of birth cannot be blank and you must be 16 years or
+                  older to request a rebate, please check the date of birth
+                  entered.
+                </p>
+              )}
+              <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
+                Date of birth:
+              </InputLabel>
+              <Controller
+                name="date_of_birth"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    sx={{ width: '300px' }}
+                    id="date_of_birth"
+                    type="date"
+                    onChange={(e) => setValue('date_of_birth', e.target.value)}
+                  />
+                )}
+                rules={{
+                  validate: (inputtedDOB) => {
+                    return isAgeValid(inputtedDOB, 16);
+                  }
+                }}
+              />
+            </FormGroup>
+            <FormGroup sx={{ mt: '20px' }}>
+              {errors?.address?.type === 'required' && (
+                <p className="error">Street Address cannot be blank</p>
+              )}
+              <InputLabel htmlFor="address" sx={{ color: 'black' }}>
+                Street address:
+              </InputLabel>
+              <Controller
+                name="address"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    id="address"
+                    inputProps={{ maxLength: 250 }}
+                    onChange={(e) => setValue('address', e.target.value)}
+                  />
+                )}
+                rules={{ required: true }}
+              />
+            </FormGroup>
+            <FormGroup sx={{ mt: '20px' }}>
+              {errors?.city?.type === 'required' && (
+                <p className="error" sx={{ color: 'black' }}>
+                  City cannot be blank
+                </p>
+              )}
+              <InputLabel htmlFor="city" sx={{ color: 'black' }}>
+                City:
+              </InputLabel>
+              <Controller
+                name="city"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    id="city"
+                    inputProps={{ maxLength: 250 }}
+                    onChange={(e) => setValue('city', e.target.value)}
+                  />
+                )}
+                rules={{ required: true }}
+              />
+            </FormGroup>
+            <FormGroup sx={{ mt: '20px' }}>
+              {errors?.postal_code?.type === 'validate' && (
+                <p className="error">Not a valid Postal Code</p>
+              )}
+              <InputLabel htmlFor="postal_code" sx={{ color: 'black' }}>
+                Postal code (optional):
+              </InputLabel>
+              <Controller
+                name="postal_code"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    sx={{ width: '300px' }}
+                    id="postal_code"
+                    inputProps={{ maxLength: 7 }}
+                    onChange={(e) => setValue('postal_code', e.target.value)}
+                  />
+                )}
+                rules={{
+                  validate: (inputtedPostalCode) => {
+                    if (inputtedPostalCode) {
+                      if (
+                        inputtedPostalCode.length !== 6 &&
+                        inputtedPostalCode.length !== 7
+                      ) {
+                        return false;
+                      }
+                      const regex = /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/;
+                      if (!regex.test(inputtedPostalCode)) {
+                        return false;
+                      }
+                    }
+                    return true;
+                  }
+                }}
+              />
+            </FormGroup>
+          </>
+        )}
         <FormGroup sx={{ mt: '20px' }}>
           {errors?.email?.type === 'required' && (
             <p className="error">Email Address cannot be blank</p>
@@ -266,113 +389,6 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               />
             )}
             rules={{ required: true }}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          {errors?.date_of_birth?.type === 'validate' && (
-            <p className="error">
-              Date of birth cannot be blank and you must be 16 years or older to
-              request a rebate, please check the date of birth entered.
-            </p>
-          )}
-          <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
-            Date of birth:
-          </InputLabel>
-          <Controller
-            name="date_of_birth"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                sx={{ width: '300px' }}
-                id="date_of_birth"
-                type="date"
-                onChange={(e) => setValue('date_of_birth', e.target.value)}
-              />
-            )}
-            rules={{
-              validate: (inputtedDOB) => {
-                return isAgeValid(inputtedDOB, 16);
-              }
-            }}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          {errors?.address?.type === 'required' && (
-            <p className="error">Street Address cannot be blank</p>
-          )}
-          <InputLabel htmlFor="address" sx={{ color: 'black' }}>
-            Street address:
-          </InputLabel>
-          <Controller
-            name="address"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="address"
-                inputProps={{ maxLength: 250 }}
-                onChange={(e) => setValue('address', e.target.value)}
-              />
-            )}
-            rules={{ required: true }}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          {errors?.city?.type === 'required' && (
-            <p className="error" sx={{ color: 'black' }}>
-              City cannot be blank
-            </p>
-          )}
-          <InputLabel htmlFor="city" sx={{ color: 'black' }}>
-            City:
-          </InputLabel>
-          <Controller
-            name="city"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                id="city"
-                inputProps={{ maxLength: 250 }}
-                onChange={(e) => setValue('city', e.target.value)}
-              />
-            )}
-            rules={{ required: true }}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          {errors?.postal_code?.type === 'validate' && (
-            <p className="error">Not a valid Postal Code</p>
-          )}
-          <InputLabel htmlFor="postal_code" sx={{ color: 'black' }}>
-            Postal code (optional):
-          </InputLabel>
-          <Controller
-            name="postal_code"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                sx={{ width: '300px' }}
-                id="postal_code"
-                inputProps={{ maxLength: 7 }}
-                onChange={(e) => setValue('postal_code', e.target.value)}
-              />
-            )}
-            rules={{
-              validate: (inputtedPostalCode) => {
-                if (inputtedPostalCode) {
-                  if (
-                    inputtedPostalCode.length !== 6 &&
-                    inputtedPostalCode.length !== 7
-                  ) {
-                    return false;
-                  }
-                  const regex = /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/;
-                  if (!regex.test(inputtedPostalCode)) {
-                    return false;
-                  }
-                }
-                return true;
-              }
-            }}
           />
         </FormGroup>
         <FormGroup sx={{ mt: '20px' }}>
@@ -444,9 +460,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             }}
           />
         </FormGroup>
-        <FormGroup sx={{ mt: '20px' }}>
-          <Upload errors={errors} />
-        </FormGroup>
+        {kcToken.identity_provider !== 'bcsc' && (
+          <FormGroup sx={{ mt: '20px' }}>
+            <Upload errors={errors} />
+          </FormGroup>
+        )}
         <FormGroup sx={{ mt: '20px' }}>
           <ConsentPersonal name="consent_personal" required={true} />
         </FormGroup>

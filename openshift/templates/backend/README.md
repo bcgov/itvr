@@ -20,6 +20,9 @@
 
 6. login to spilo pods, run the following psql to only keep 24 hours log files, otherwise they take too much space
     ALTER SYSTEM SET log_filename='postgresql-%H.log';
+    ALTER SYSTEM SET log_connections='off';
+    ALTER SYSTEM SET log_disconnections='off';
+    ALTER SYSTEM SET log_checkpoints='off';
     select pg_reload_conf();
 
 #### After pipeline completes

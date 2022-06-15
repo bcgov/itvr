@@ -7,7 +7,8 @@ from api.models.household_member import HouseholdMember
 
 from api.serializers.household_member import (
     HouseholdMemberApplicationGetSerializer,
-    HouseholdMemberApplicationCreateSerializer,
+    HouseholdMemberApplicationCreateSerializerDefault,
+    HouseholdMemberApplicationCreateSerializerBCSC,
 )
 
 
@@ -15,10 +16,6 @@ class HouseholdMemberApplicationViewset(
     GenericViewSet, CreateModelMixin, RetrieveModelMixin
 ):
     queryset = HouseholdMember.objects.all()
-    serializer_classes = {
-        "default": HouseholdMemberApplicationGetSerializer,
-        "create": HouseholdMemberApplicationCreateSerializer,
-    }
 
     def retrieve(self, request, pk=None):
         household_member = HouseholdMember.objects.get(application=pk)
@@ -29,7 +26,8 @@ class HouseholdMemberApplicationViewset(
         return Response(response, status=status.HTTP_403_FORBIDDEN)
 
     def get_serializer_class(self):
-        if self.action in list(self.serializer_classes.keys()):
-            return self.serializer_classes.get(self.action)
-
-        return self.serializer_classes.get("default")
+        if self.action == "create":
+            if self.request.user.identity_provider == "bcsc":
+                return HouseholdMemberApplicationCreateSerializerBCSC
+            return HouseholdMemberApplicationCreateSerializerDefault
+        return HouseholdMemberApplicationGetSerializer
