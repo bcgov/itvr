@@ -253,7 +253,9 @@ def send_approve(recipient_email, application_id, rebate_amount):
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
         </body>
         </html>
-         """
+         """.format(
+        rebate_amount=rebate_amount
+    )
     send_email(
         recipient_email,
         application_id,
@@ -298,7 +300,9 @@ def send_not_approve(recipient_email, application_id, tax_year):
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
         </body>
         </html>
-         """
+         """.format(
+        tax_year=tax_year
+    )
     send_email(
         recipient_email,
         application_id,
