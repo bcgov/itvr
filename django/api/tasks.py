@@ -82,7 +82,7 @@ def send_individual_confirm(recipient_email, application_id):
 
         <p>
         We have received your application for a rebate under the CleanBC Go
-        Electric Passenger Vehicle Rebate program.
+        Electric Passenger Vehicle Rebate program. You can expect to get an email reply with the result of your application within 3 weeks.
         </p>
 
         <p>Please keep this e-mail for your records.</p>
@@ -147,7 +147,7 @@ def send_household_confirm(recipient_email, application_id):
         <p>
         We have now received all documentation for your application for a
         household rebate under the CleanBC Go Electric Passenger Vehicle
-        Rebate program.
+        Rebate program. You can expect to get an email reply with the result of your application within 3 weeks.
         </p>
 
         <p>Please keep this e-mail for your records.</p>
