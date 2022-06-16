@@ -50,15 +50,18 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount):
         "Status": "Not-Redeemed",
     }
 
-    print(payload)
-
     headers = {
-        "Content-Type": "application/json",
         "Authorization": "Bearer " + access_token,
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose",
     }
 
     url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
+
     print(url)
+    print(headers)
+    print(payload)
+
     ncda_rs = requests.post(
         url,
         data=payload,
@@ -66,6 +69,6 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount):
         verify=True,
     )
 
-    print(ncda_rs)
+    print(ncda_rs.text)
 
     ncda_rs.raise_for_status()
