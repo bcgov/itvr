@@ -55,42 +55,6 @@ const BottomBanner = (props) => {
               </a>
             </div>
           </Box>
-          <Box className="login-square">
-            <h2>Basic BCeID</h2>
-            <button
-              type="button"
-              className="button"
-              disabled={
-                keycloak.authenticated &&
-                keycloak.realm !== BCEID_KEYCLOAK_REALM
-              }
-              onClick={() => {
-                localStorage.setItem('keycloakRealm', BCEID_KEYCLOAK_REALM);
-                if (keycloak.realm === BCEID_KEYCLOAK_REALM) {
-                  keycloak.login({
-                    idpHint: 'bceid-basic',
-                    redirectUri: redirectUri
-                  });
-                } else {
-                  const bceidKeycloak = keycloaks[BCEID_KEYCLOAK_REALM];
-                  bceidKeycloak.init(keycloakInitOptions).then(() => {
-                    bceidKeycloak.login({
-                      idpHint: 'bceid-basic',
-                      redirectUri: redirectUri
-                    });
-                  });
-                }
-              }}
-            >
-              Log in with BCeID
-            </button>
-
-            <div>
-              <a href="https://www.bceid.ca/register/basic/account_details.aspx?type=regular&eServiceType=basic">
-                Get a Basic BCeID account
-              </a>
-            </div>
-          </Box>
         </Box>
       </div>
     </>
