@@ -3,7 +3,7 @@ import ConsentGeneral from './ConsentGeneral';
 const ConsentPersonal = ({ name, required }) => {
   return (
     <ConsentGeneral
-      title="Consent to Disclosure and Storage of, and Access to, Personal Information"
+      title="Consent to disclosure and storage of, and access to, personal information"
       name={name}
       required={required}
     >

@@ -12,7 +12,7 @@
 
 2. Create template secret template.django-secret, template.django-salt
 
-3. create secret itvr-patroni-app
+3. create secret itvr-patroni-app, itvr-email-service, itvr-object-storage and itvr-superuser(prod only)
 
 4. create user for itvr database, create user [username] with password '[password]'
 
@@ -20,11 +20,10 @@
 
 6. login to spilo pods, run the following psql to only keep 24 hours log files, otherwise they take too much space
     ALTER SYSTEM SET log_filename='postgresql-%H.log';
+    ALTER SYSTEM SET log_connections='off';
+    ALTER SYSTEM SET log_disconnections='off';
+    ALTER SYSTEM SET log_checkpoints='off';
     select pg_reload_conf();
-
-7. create itvr-email-service secret
-
-8. create itvr-object-storage secret
 
 #### After pipeline completes
 

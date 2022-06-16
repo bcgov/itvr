@@ -1,8 +1,8 @@
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
-import EligibilityPageContainer from '../components/Eligibility/EligibilityPageContainer';
 import Layout from '../components/Layout';
-import {Helmet} from "react-helmet";
+import { Helmet } from 'react-helmet';
+import IndividualLogin from '../components/IndividualLogin';
 
 function Index() {
   const { keycloak } = useKeycloak();
@@ -13,7 +13,7 @@ function Index() {
         <title>Passenger Vehicle Rebate Log In – CleanBC Go Electric</title>
       </Helmet>
       <Layout>
-        <EligibilityPageContainer />
+        <IndividualLogin />
       </Layout>
       {keycloak.authenticated && (
         <button

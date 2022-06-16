@@ -2,8 +2,7 @@
   background-color: $banner-blue;
   font-size: 1.25rem;
   color: $white;
-  border-bottom: 3px solid $text-link-orange;
-  height: 4.5rem;
+  border-bottom: 3px solid $border-orange;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -17,37 +16,24 @@
 }
 
 .page-header {
-  background-color: $white;
-  background-image: url('./images/top-graphic.svg');
-  background-position-y: top;
-  background-position-x: center;
-  background-repeat: no-repeat;
+  background-color: $banner-blue;
   width: 100%;
-  position: relative;
-  margin: 0;
-  min-height: 70vh;
-  background-size: cover;
+  height: 191px;
 
   .title {
-    margin: 4.5rem 0 0 6rem;
-    h1,
-    h2 {
+    h1 {
       color: $white;
-      font-size: 2.5rem;
-      font-weight: normal;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
     }
     h1 {
-      font-size: 3rem;
-    }
-    h2 {
-      padding-left: 5rem;
+      padding-left: 6rem;
     }
   }
 }
 
 @media (max-width: 992px) {
   .cleanbc-banner {
-    font-size: 1rem;
     font-weight: normal;
     height: 3rem;
     img {
@@ -59,40 +45,35 @@
     width: 100%;
     position: relative;
     margin: 0;
-    min-height: 25vh;
+    height: 140px;
     .title {
       margin: 5px 0 0 1rem;
       h1 {
-        // font-size: 2.5rem;
-      }
-      h2 {
-        // font-size: 2rem;
-        padding-left: 1rem;
+        padding-left: 0;
+        font-size: 2rem;
       }
     }
   }
 }
 @media (max-width: 688px) {
   .page-header {
+    height: 120px;
     .title {
       h1 {
+        padding-left: 0;
         font-size: 1.75rem;
-      }
-      h2 {
-        font-size: 1.5rem;
-        padding-left: 0.5rem;
       }
     }
   }
 }
 @media (max-width: 375px) {
   .page-header {
+    span {
+      font-size: 10pt;
+    }
     .title {
       h1 {
         font-size: 1.5rem;
-      }
-      h2 {
-        font-size: 1.25rem;
       }
     }
   }
@@ -102,9 +83,6 @@
     .title {
       h1 {
         font-size: 1.2rem;
-      }
-      h2 {
-        font-size: 1rem;
       }
     }
   }

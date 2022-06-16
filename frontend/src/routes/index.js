@@ -5,7 +5,7 @@ import HomePage from '../pages';
 import FormPage from '../pages/Form';
 import AdminPage from '../pages/admin';
 import DetailsPage from '../pages/Details';
-import HouseholdPage from '../pages/Household';
+import HouseholdLogin from '../pages/HouseholdLogin';
 import HouseholdFormPage from '../pages/HouseholdForm';
 import HouseholdDetails from '../pages/HouseholdDetails';
 import IdentificationExamplesPage from '../pages/IdentificationExamples';
@@ -29,14 +29,6 @@ const AppRouter = () => (
         }
       />
       <Route
-        path="/eligibility"
-        element={
-          <RequireAuth redirectTo="/">
-            <FormPage />
-          </RequireAuth>
-        }
-      />
-      <Route
         path="/details/:id/household"
         element={
           <RequireAuth redirectTo="/">
@@ -52,7 +44,7 @@ const AppRouter = () => (
           </RequireAuth>
         }
       />
-      <Route path="/household" element={<HouseholdPage />} />
+      <Route path="/household" element={<HouseholdLogin />} />
       <Route
         path="/householdForm"
         element={

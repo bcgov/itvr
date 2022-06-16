@@ -1,16 +1,21 @@
 import ConsentGeneral from './ConsentGeneral';
 
-const ConsentTax = ({ name, required }) => {
-  const subtitle = `You and your spouse (if applicable) are required to provide consent that
-        allows the Ministry of Energy, Mines and Low Carbon Innovation to access
-        and review tax information related to line 15000 ‘gross income’ of your
-        Notice of Assessment from the Canada Revenue Agency for the most recent
-        tax year for your application to the CleanBC Go Electric Vehicle Rebate
-        program.`;
+const ConsentTax = ({ name, required, applicationType }) => {
+  const date = new Date();
+
+  const currentYear = date.getFullYear();
+  const twoYearsAgo = date.getFullYear() - 2;
+  const lastYear = date.getFullYear() - 1;
+  const subtitle = `You${
+    applicationType === 'individual' ? ', and your spouse (if applicable)' : ''
+  } are required to provide consent that allows the Ministry of Energy, Mines and Low Carbon Innovation to access and 
+review tax information related to line 15000 ‘gross income’ of your most recent Notice of Assessment from the Canada 
+Revenue Agency for your application to the CleanBC Go Electric Passenger Vehicle Rebate program. Up until 
+June 30, ${currentYear}  your ${twoYearsAgo} NOA is considered your most recent, on July 1, ${currentYear} it will change to be your ${lastYear} NOA.`;
 
   return (
     <ConsentGeneral
-      title="Consent to Disclosure of Information from Income Tax Records"
+      title="Consent to disclosure of information from income tax records"
       subtitle={subtitle}
       name={name}
       required={required}
@@ -56,9 +61,11 @@ const ConsentTax = ({ name, required }) => {
             information from my tax records and other taxpayer information from
             the most recent tax year to the year of signature of this consent.
           </li>
-          This consent is effective on the date by which I indicate that I
-          understand and agree to the statements and will not expire unless
-          revoked by me in writing to the contact listed below.
+          <li>
+            This consent is effective on the date by which I indicate that I
+            understand and agree to the statements and will not expire unless
+            revoked by me in writing to the contact listed below.
+          </li>
         </ol>
       </div>
     </ConsentGeneral>
