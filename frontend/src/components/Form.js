@@ -177,7 +177,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         </FormGroup>
         <Box sx={{ display: 'inline' }}>
           <h3 id="form-submission-title">
-            Complete your rebate application <LockIcon />
+            Your application information <LockIcon />
           </h3>
           <span> secure form submission</span>
         </Box>
