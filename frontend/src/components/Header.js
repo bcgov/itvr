@@ -12,7 +12,13 @@ const Header = (props) => {
         >
           <img src={logo} alt="Government of B.C." />
         </a>
-        <span>CleanBC Go Electric</span>
+        <a
+          href="https://goelectricbc.gov.bc.ca/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          CleanBC Go Electric
+        </a>
       </div>
       <div className="title">
         <h1>Passenger vehicle rebates</h1>
