@@ -198,6 +198,8 @@ objects:
                   value: ${DJANGO_DEBUG}
                 - name: DJANGO_TASKS
                   value: 'true'
+                - name: CORS_ORIGIN_WHITELIST
+                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"                  
               readinessProbe:  
                 exec:
                   command:
