@@ -3,16 +3,4 @@ get_jazzmin_ui_tweaks as jazzmin_ui %}
 
 
 {% block content_title %} Submitted Rebate Applications {% endblock %}
-{% block content %}
-    <div class="col-12">
-        <div class="card card-primary card-outline">
-            <div class="card-header">
-                <h4 class="card-title">Select rebate applications to verify identity</h4>
-            </div>
-            <div class="card-body">
-               {% get_changeform_template adminform as changeform_template %}
-               {% include changeform_template %}
-            </div>
-       </div>
-    </div>
-{% endblock %}
+
