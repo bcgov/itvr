@@ -44,7 +44,10 @@ const HouseholdLogin = () => {
           type="spouse"
           householdApplicationId={householdApplicationId}
         />
-        <BCEIDLogin type="household" />
+        <BCEIDLogin
+          type="spouse"
+          householdApplicationId={householdApplicationId}
+        />
         <INeedHelp
           helpText="Contact Go Electric if you have questions about the rebate process or
         your application:"

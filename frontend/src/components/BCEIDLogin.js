@@ -22,8 +22,8 @@ const BCEIDLogin = (props) => {
             Basic BCeID account
           </a>
           . If you log in with BCeID you will need to upload images of your BC
-          Driver’s Licence {type === 'household' && ' or BC Services Card '} and
-          a secondary piece of ID.{' '}
+          Driver’s Licence {type === 'spouse' && ' or BC Services Card '} and a
+          secondary piece of ID.{' '}
           <a href="/identificationExamples" target="_blank">
             Learn more about ID requirements.
           </a>
