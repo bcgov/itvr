@@ -1,13 +1,16 @@
 .cleanbc-banner {
   background-color: $banner-blue;
   font-size: 1.25rem;
-  color: $white;
-  border-bottom: 3px solid $border-orange;
   display: flex;
+  border-bottom: 3px solid $border-orange;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-
+  a {
+    color: $white;
+    text-decoration: none;
+    font-weight: bold;
+  }
   img {
     margin-left: 10rem;
     height: 4.5rem;
@@ -23,8 +26,6 @@
   .title {
     h1 {
       color: $white;
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
     }
     h1 {
       padding-left: 6rem;
@@ -68,7 +69,7 @@
 }
 @media (max-width: 375px) {
   .page-header {
-    span {
+    a {
       font-size: 10pt;
     }
     .title {

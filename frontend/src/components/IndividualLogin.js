@@ -2,7 +2,7 @@ import React from 'react';
 import BottomBanner from './BottomBanner';
 import Box from '@mui/material/Box';
 import INeedHelp from './INeedHelp';
-
+import BCEIDLogin from './BCEIDLogin';
 const IndividualLogin = () => {
   return (
     <Box>
@@ -15,7 +15,7 @@ const IndividualLogin = () => {
         </p>
         <h3>BC Driver’s Licence</h3>
         <p>Used to connect you with your rebate. </p>
-        <h3>BC Services Card app or Basic BCeID</h3>
+        <h3>BC Services Card app</h3>
         <p>Used to confirm your identity.</p>
         <p>
           The{' '}
@@ -24,17 +24,7 @@ const IndividualLogin = () => {
           </a>
           is the simplest method to log in and confirm your identity.
         </p>
-        <p>
-          You can also log in with a{' '}
-          <a href="https://www.bceid.ca/register/basic/account_details.aspx?type=regular&eServiceType=basic">
-            Basic BCeID account
-          </a>
-          . If you log in with BCeID you will need to upload images of your BC
-          Driver’s Licence and a secondary piece of ID.{' '}
-          <a href="/identificationExamples" target="_blank">
-            Learn more about ID requirements.
-          </a>
-        </p>
+
         <h3>Household applications</h3>
         <p>
           For a household application your spouse or common law partner will
@@ -46,6 +36,7 @@ const IndividualLogin = () => {
         text="Log in to start your rebate application"
         type="individual"
       />
+      <BCEIDLogin />
       <INeedHelp
         helpText="Contact Go Electric if you have questions about the rebate process or
         your application:"
