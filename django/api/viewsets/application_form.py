@@ -54,11 +54,11 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
                 GoElectricRebateApplication.Status.APPROVED,
                 GoElectricRebateApplication.Status.REDEEMED,
                 ]:
-                return Response({"drivers_license_valid ": "fail"})
+                return Response({"drivers_license_valid": "false"})
             elif application_status[0] in [
                 GoElectricRebateApplication.Status.DECLINED,
                 GoElectricRebateApplication.Status.NOT_APPROVED,
                 GoElectricRebateApplication.Status.EXPIRED
                 ]:
-                return Response({"drivers_license_valid ": "pass"})
-        return Response({"drivers_license_valid ": "pass"})
+                return Response({"drivers_license_valid": "true"})
+        return Response({"drivers_license_valid": "true"})

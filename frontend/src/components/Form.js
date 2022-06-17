@@ -96,24 +96,13 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     });
   };
 
-  const check_dl_status = (dl) => {                 
+  const check_dl_status = (dl) => {             
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
     axiosInstance.current.get(detailUrl).then((response) => {
-      if (response.data.drivers_license_valid  === 'fail') {
-        setSubmitStatus(false)
-      }
-      else if (response.data.drivers_license_valid  === 'pass') { 
-        setSubmitStatus(true)
-      }
+      response.data.drivers_license_valid  === 'false' ? setSubmitStatus(false) : setSubmitStatus(true);
     });
   }
 
-  const isDisabled = () => {
-    if (watch('submitStatus') === false) {
-      return true;
-    }
-    return false;
-  }
   const onError = (errors) => {
     const numberOfErrors = Object.keys(errors).length;
     setNumberOfErrors(numberOfErrors);
@@ -484,7 +473,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading || isDisabled()}
+          disabled={loading || !submitStatus}
         >
           Submit Application
         </Button>

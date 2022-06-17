@@ -11,6 +11,8 @@ from django.db.models import (
     ForeignKey,
     TextChoices,
     Manager,
+    Q,
+    UniqueConstraint
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -103,6 +105,11 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     class Meta:
         db_table = "go_electric_rebate_application"
+        constraints = [
+            UniqueConstraint(fields=['drivers_licence'],
+                                    condition=Q(status__in=['submitted', 'approved', 'redeemed', 'verified']),
+                                    name='unique_approved_video')
+        ]
 
 
 # This is for the admin panel

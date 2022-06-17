@@ -51,29 +51,32 @@ class ApplicationFormCreateSerializerDefault(ApplicationFormCreateSerializer):
 
         user = request.user
         spouse_email = request.data.get("spouse_email")
-
-        obj = GoElectricRebateApplication.objects.create(
-            sin=validated_data["sin"],
-            status=self._get_status(validated_data),
-            email=validated_data["email"],
-            drivers_licence=validated_data["drivers_licence"],
-            last_name=validated_data["last_name"],
-            first_name=validated_data["first_name"],
-            middle_names=validated_data["middle_names"],
-            date_of_birth=validated_data["date_of_birth"],
-            address=validated_data["address"],
-            city=validated_data["city"],
-            postal_code=validated_data["postal_code"],
-            doc1=validated_data["doc1"],
-            doc2=validated_data["doc2"],
-            tax_year=self._get_tax_year(),
-            application_type=validated_data["application_type"],
-            spouse_email=spouse_email,
-            user=user,
-            consent_personal=validated_data["consent_personal"],
-            consent_tax=validated_data["consent_tax"],
-        )
-        return obj
+        
+        try:
+            obj = GoElectricRebateApplication.objects.create(
+                sin=validated_data["sin"],
+                status=self._get_status(validated_data),
+                email=validated_data["email"],
+                drivers_licence=validated_data["drivers_licence"],
+                last_name=validated_data["last_name"],
+                first_name=validated_data["first_name"],
+                middle_names=validated_data["middle_names"],
+                date_of_birth=validated_data["date_of_birth"],
+                address=validated_data["address"],
+                city=validated_data["city"],
+                postal_code=validated_data["postal_code"],
+                doc1=validated_data["doc1"],
+                doc2=validated_data["doc2"],
+                tax_year=self._get_tax_year(),
+                application_type=validated_data["application_type"],
+                spouse_email=spouse_email,
+                user=user,
+                consent_personal=validated_data["consent_personal"],
+                consent_tax=validated_data["consent_tax"],
+            )
+            return obj
+        except Exception as e:
+            return Response({"response": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def _get_status(self, validated_data):
         application_type = validated_data["application_type"]
