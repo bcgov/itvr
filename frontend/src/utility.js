@@ -32,6 +32,7 @@ export const isAgeValid = (dob, lowerBound, upperBound) => {
   if (!dob) {
     return false;
   }
+  dob = dob.toISOString().slice(0,10)
   const dobSplit = dob.split('-');
   const dobYear = parseInt(dobSplit[0]);
   const dobMonthIndex = parseInt(dobSplit[1]) - 1;
