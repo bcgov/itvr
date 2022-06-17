@@ -16,10 +16,6 @@ from api.models.go_electric_rebate_application import GoElectricRebateApplicatio
 
 
 class GoElectricRebate(TimeStampedModel):
-    user = ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=PROTECT,
-    )
     application = ForeignKey(
         GoElectricRebateApplication, on_delete=PROTECT, blank=True, null=True
     )
