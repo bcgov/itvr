@@ -14,6 +14,11 @@ class TestIssueRebate(TestRebate):
     @classmethod
     def setUpClass(self):
         super().setUpClass()
+        applications = GoElectricRebateApplication.objects.all()
+        for application in applications:
+            application.status = GoElectricRebateApplication.Status.VERIFIED
+        GoElectricRebateApplication.objects.bulk_update(applications, ["status"])
+
         self.rebates = {
             "9uXLvNQS5vkKnscD": 2000,
             "B5t92XeH7NnFUwxc": 4000,
