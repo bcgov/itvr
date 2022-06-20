@@ -87,7 +87,10 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
-    data = {...data, date_of_birth: data.date_of_birth.toISOString().slice(0,10)}
+    data = {
+      ...data,
+      date_of_birth: data.date_of_birth.toISOString().slice(0, 10)
+    };
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
@@ -101,12 +104,14 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     });
   };
 
-  const checkDLStatus = (dl) => {             
+  const checkDLStatus = (dl) => {
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
     axiosInstance.current.get(detailUrl).then((response) => {
-      response.data.drivers_license_valid  === 'false' ? setSubmitStatus(false) : setSubmitStatus(true);
+      response.data.drivers_license_valid === 'false'
+        ? setSubmitStatus(false)
+        : setSubmitStatus(true);
     });
-  }
+  };
 
   const onError = (errors) => {
     const numberOfErrors = Object.keys(errors).length;
@@ -275,17 +280,15 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                       openTo="year"
                       views={['year', 'month', 'day']}
                       value={DOB}
-                      format='YYYY-MM-DD'
-                      label='Responsive'
+                      format="YYYY-MM-DD"
                       onChange={(newDate) => {
-                      setValue('date_of_birth', newDate)
-                      setDOB(newDate)
-                        
+                        setValue('date_of_birth', newDate);
+                        setDOB(newDate);
                       }}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </LocalizationProvider>
-                  )}
+                )}
                 rules={{
                   validate: (inputtedDOB) => {
                     return isAgeValid(inputtedDOB, 16);
@@ -423,9 +426,12 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.drivers_licence?.type === 'validate' && (
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
-          {
-           !submitStatus && <span className="error">Error: This driver's licence number has already been submitted or issued a rebate.</span>
-          }
+          {!submitStatus && (
+            <span className="error">
+              Error: This driver's licence number has already been submitted or
+              issued a rebate.
+            </span>
+          )}
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
             BC Driver's Licence number (used for redeeming your rebate):
           </InputLabel>
@@ -442,7 +448,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   <InputAdornment position="start">DL: </InputAdornment>
                 }
                 onChange={(e) => setValue('drivers_licence', e.target.value)}
-                onBlur={(e) => {checkDLStatus(e.target.value)}}
+                onBlur={(e) => {
+                  checkDLStatus(e.target.value);
+                }}
               />
             )}
             rules={{
