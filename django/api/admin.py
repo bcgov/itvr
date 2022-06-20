@@ -4,7 +4,7 @@ from .models.go_electric_rebate_application import (
     SubmittedGoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
-
+from .models.go_electric_rebate import GoElectricRebate
 
 class HouseholdApplicationInline(admin.StackedInline):
     model = HouseholdMember
@@ -89,3 +89,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             obj.status = GoElectricRebateApplication.Status.DECLINED
             obj.save(update_fields=["status"])
         return ret
+
+@admin.register(GoElectricRebate)
+class GoElectricRebateAdmin(admin.ModelAdmin):
+    pass

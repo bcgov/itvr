@@ -47,6 +47,7 @@ export const defaultValues = {
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(true);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
@@ -94,6 +95,13 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
       }
     });
   };
+
+  const checkDLStatus = (dl) => {             
+    const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
+    axiosInstance.current.get(detailUrl).then((response) => {
+      response.data.drivers_license_valid  === 'false' ? setSubmitStatus(false) : setSubmitStatus(true);
+    });
+  }
 
   const onError = (errors) => {
     const numberOfErrors = Object.keys(errors).length;
@@ -400,6 +408,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.drivers_licence?.type === 'validate' && (
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
+          {
+           !submitStatus && <span className="error">Error: This driver's licence number has already been submitted or issued a rebate.</span>
+          }
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
             BC Driver's Licence number (used for redeeming your rebate):
           </InputLabel>
@@ -416,6 +427,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   <InputAdornment position="start">DL: </InputAdornment>
                 }
                 onChange={(e) => setValue('drivers_licence', e.target.value)}
+                onBlur={(e) => {checkDLStatus(e.target.value)}}
               />
             )}
             rules={{
@@ -459,7 +471,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || !submitStatus}
         >
           Submit Application
         </Button>
