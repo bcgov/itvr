@@ -46,7 +46,7 @@ const phases = {
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3Gi',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
-        patroniCpuRequest: '50m', patroniCpuLimit: '100m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '2G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
+        patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '2G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
         taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True',},
 
   test: {namespace:'ac294c-test', name: `${name}`, ssoSuffix:'-test', 
@@ -61,7 +61,7 @@ const phases = {
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '20m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '700M', rabbitmqPvcSize: '1G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
-        patroniCpuRequest: '50m', patroniCpuLimit: '100m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
+        patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
         taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',},
 
   prod: {namespace:'ac294c-prod', name: `${name}`, ssoSuffix:'', 
@@ -76,7 +76,7 @@ const phases = {
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '5G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
-        patroniCpuRequest: '50m', patroniCpuLimit: '100m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
+        patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
         taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',}
 
 };
