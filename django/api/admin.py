@@ -31,11 +31,6 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(GoElectricRebate)
-class GoElectricRebateAdmin(admin.ModelAdmin):
-    pass
-
-
 # The proxy model is used to avoid a Django limitation where a model can only
 # be registered once on the admin panel. This locked down version will be used
 # by government staff to verify or decline submitted applications
