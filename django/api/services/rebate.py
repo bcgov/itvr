@@ -21,7 +21,7 @@ def get_applications(rebates):
 
 # saves approved rebates to the rebate table; returns the saved rebates
 def save_rebates(rebates, applications):
-    result = []
+    created_rebates = []
     if rebates is not None and applications is not None:
         rebate_objs = []
         for application_id, rebate_amount in rebates.items():
@@ -37,8 +37,14 @@ def save_rebates(rebates, applications):
                         rebate_state=False,
                     )
                     rebate_objs.append(rebate_obj)
-        result = GoElectricRebate.objects.bulk_create(rebate_objs)
-    return result
+        created_rebates = GoElectricRebate.objects.bulk_create(rebate_objs)
+        for rebate in created_rebates:
+            post_save.send(
+                sender=GoElectricRebate,
+                instance=rebate,
+                created=True,
+            )
+    return created_rebates
 
 
 # updates application statuses; emits signals manually

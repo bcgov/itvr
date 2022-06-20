@@ -202,7 +202,7 @@ Q_CLUSTER = {
     "queue_limit": 50,
     "bulk": 10,
     "orm": "default",
-    "save_limit": -1,
+    "save_limit": 20 if DEBUG else -1,
 }
 
 CACHES = {
