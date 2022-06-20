@@ -7,10 +7,16 @@ from api.services.calculate_rebate import RebateType
 
 # gets applications from rebates
 def get_applications(rebates):
+    result = {}
     ids = []
     if rebates is not None:
         ids = list(rebates)
-    return GoElectricRebateApplication.objects.in_bulk(ids)
+        applications = GoElectricRebateApplication.objects.filter(id__in=ids).filter(
+            status__exact=GoElectricRebateApplication.Status.VERIFIED
+        )
+        for application in applications:
+            result[application.id] = application
+    return result
 
 
 # saves approved rebates to the rebate table; returns the saved rebates
