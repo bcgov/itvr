@@ -27,8 +27,8 @@ const Upload = (props) => {
           See examples of accepted ID
         </a>
       </Box>
-      {errors?.documents?.type === 'validate' && (
-        <p className="error">Need at least 2 files</p>
+      {errors?.documents?.type === 'exactlyTwo' && (
+        <p className="error">Need exactly 2 files</p>
       )}
       {errors?.documents?.type === 'maxSize' && (
         <p className="error">No file may exceed 5MB</p>
