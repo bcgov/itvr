@@ -118,7 +118,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     <FormProvider {...methods}>
       <Loading open={loading} />
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <h2>Apply for a passenger vehicle rebate</h2>
+        <h2>Apply for a passenger vehicle rebate pre-approval</h2>
         <Box sx={{ display: 'inline' }}>
           <h3 id="form-submission-title">
             Complete your household rebate application <LockIcon />
