@@ -24,3 +24,6 @@ class GoElectricRebate(TimeStampedModel):
     expiry_date = DateField()
     rebate_max_amount = IntegerField(default=0)
     rebate_state = BooleanField(default=False)
+
+    def __str__(self):
+        return "DL: " + self.drivers_licence + ", $" + str(self.rebate_max_amount)
