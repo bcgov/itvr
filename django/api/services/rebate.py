@@ -34,7 +34,7 @@ def save_rebates(rebates, applications):
                         last_name=application.last_name,
                         expiry_date=date.today() + timedelta(days=365),
                         rebate_max_amount=rebate_amount,
-                        rebate_state=False,
+                        redeemed=False,
                     )
                     rebate_objs.append(rebate_obj)
         created_rebates = GoElectricRebate.objects.bulk_create(rebate_objs)

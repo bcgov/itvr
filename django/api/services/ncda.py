@@ -1,6 +1,7 @@
 import requests
 import json
 from django.conf import settings
+from api.models.go_electric_rebate import GoElectricRebate
 
 
 def get_ncda_service_token() -> str:
@@ -29,7 +30,7 @@ def get_ncda_service_token() -> str:
 
 
 # Tell NCDA about a newly issued rebate.
-def notify(drivers_licence, last_name, expiry_date, rebate_amount):
+def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
 
@@ -176,3 +177,8 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount):
     print(ncda_rs.text)
 
     ncda_rs.raise_for_status()
+
+    data = ncda_rs.json()
+    ncda_id = data["d"]["ID"]
+
+    GoElectricRebate.objects.filter(pk=rebate_id).update(ncda_id=ncda_id)
