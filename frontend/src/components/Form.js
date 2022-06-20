@@ -26,6 +26,9 @@ import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import BCSCInfo from './BCSCInfo';
 import { addTokenFields } from '../keycloak';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const defaultValues = {
   sin: '',
@@ -47,6 +50,7 @@ export const defaultValues = {
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
+  const [DOB, setDOB] = useState(new Date());
   const [submitStatus, setSubmitStatus] = useState(true);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
@@ -83,6 +87,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
+    data = {...data, date_of_birth: data.date_of_birth.toISOString().slice(0,10)}
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
@@ -264,13 +269,23 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                 name="date_of_birth"
                 control={control}
                 render={({ field }) => (
-                  <TextField
-                    sx={{ width: '300px' }}
-                    id="date_of_birth"
-                    type="date"
-                    onChange={(e) => setValue('date_of_birth', e.target.value)}
-                  />
-                )}
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                      disableFuture
+                      openTo="year"
+                      views={['year', 'month', 'day']}
+                      value={DOB}
+                      format='YYYY-MM-DD'
+                      label='Responsive'
+                      onChange={(newDate) => {
+                      setValue('date_of_birth', newDate)
+                      setDOB(newDate)
+                        
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
+                  )}
                 rules={{
                   validate: (inputtedDOB) => {
                     return isAgeValid(inputtedDOB, 16);
