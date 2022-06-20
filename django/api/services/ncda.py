@@ -168,6 +168,11 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount):
     #         "OData__vti_ItemDeclaredRecord": null,
     #     }
     # }
-    # print(ncda_rs.text)
+
+    # 500 Server Error: Internal Server Error for url:
+    # is sent for duplicate driver's license no etc. Might come up in dev
+    # Our unique index on driver's license in the rebate table
+    # should prevent this in prod.
+    print(ncda_rs.text)
 
     ncda_rs.raise_for_status()
