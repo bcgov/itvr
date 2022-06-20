@@ -5,6 +5,7 @@ from django.db.models import (
     BooleanField,
     PROTECT,
     ForeignKey,
+    UUIDField,
 )
 
 from django.core.validators import MinLengthValidator
@@ -23,7 +24,10 @@ class GoElectricRebate(TimeStampedModel):
     last_name = CharField(max_length=250, unique=False)
     expiry_date = DateField()
     rebate_max_amount = IntegerField(default=0)
-    rebate_state = BooleanField(default=False)
+    redeemed = BooleanField(default=False)
+    # sharepoint id. If something goes wrong with notification we can find
+    # issued rebates with blank NCDA ids to try resending.
+    ncda_id = IntegerField(blank=True, null=True)
 
     def __str__(self):
         return "DL: " + self.drivers_licence + ", $" + str(self.rebate_max_amount)

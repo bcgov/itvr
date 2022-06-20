@@ -88,4 +88,5 @@ def after_rebate_issued(sender, instance, created, **kwargs):
             instance.last_name,
             instance.expiry_date.strftime("%m/%d/%Y"),
             str(instance.rebate_max_amount),
+            instance.id,
         )
