@@ -47,8 +47,8 @@ const FileDropArea = ({
   useEffect(() => {
     register(name, {
       validate: {
-        twoOrMore: (inputtedFiles) => {
-          if (!inputtedFiles || inputtedFiles.length < 2) {
+        exactlyTwo: (inputtedFiles) => {
+          if (!inputtedFiles || inputtedFiles.length !== 2) {
             return false;
           }
           return true;
