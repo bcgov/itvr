@@ -60,6 +60,7 @@ services:
       - CHES_EMAIL_URL
       - SEND_EMAIL
       - BYPASS_AUTHENTICATION
+      - NCDA_CLIENT_SECRET
     volumes:
       - ./django:/api
     ports:
@@ -87,6 +88,7 @@ services:
       - CHES_AUTH_URL
       - CHES_EMAIL_URL
       - SEND_EMAIL
+      - NCDA_CLIENT_SECRET
     volumes:
       - ./django:/api
     depends_on:
