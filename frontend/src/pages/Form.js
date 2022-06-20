@@ -28,7 +28,7 @@ const FormPage = () => {
             Errors below, please ensure all fields are complete
           </span>
         )}
-        <h2>Apply for a passenger vehicle rebate</h2>
+        <h2>Apply for a passenger vehicle rebate pre-approval</h2>
         <RebateTable />
         <Form
           setNumberOfErrors={setNumberOfErrors}

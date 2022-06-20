@@ -33,7 +33,7 @@ const IndividualLogin = () => {
         </p>
       </div>
       <BottomBanner
-        text="Log in to start your rebate application"
+        text="Log in to start your rebate pre-approval application"
         type="individual"
       />
       <BCEIDLogin />
