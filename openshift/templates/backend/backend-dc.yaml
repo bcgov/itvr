@@ -347,6 +347,31 @@ objects:
                       key: root-password    
                 - name: MINIO_BUCKET_NAME
                   value: ${BUCKET_NAME}  
+                - name: NCDA_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef: 
+                      name: itvr-ncda
+                      key: NCDA_CLIENT_ID
+                - name: NCDA_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_CLIENT_SECRET
+                - name: NCDA_RESOURCE
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_RESOURCE
+                - name: NCDA_AUTH_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_AUTH_URL
+                - name: NCDA_SHAREPOINT_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_SHAREPOINT_URL                                                        
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
               livenessProbe:
