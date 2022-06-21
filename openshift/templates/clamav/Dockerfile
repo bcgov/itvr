@@ -7,3 +7,4 @@ RUN chgrp -R root /var/log/clamav && \
     chgrp -R root /run && \
     chmod -R g+w /run
 RUN ls -l /
+RUN ls -l /run/clamav
