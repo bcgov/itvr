@@ -42,7 +42,7 @@ const phases = {
         frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 1, 
         reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://dev.oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-dev-${changeId}.apps.silver.devops.gov.bc.ca`,
         reactAppBCeIDKeycloakClientId: 'itvr-2674', reactAppBCeIDKeycloakRealm: 'onestopauth-basic', reactAppBCeIDKeycloakUrl: 'https://dev.oidc.gov.bc.ca/auth/', 
-        backendCpuRequest: '30m', backendCpuLimit: '60m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True', bucketName: 'itvrdv',
+        backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '120Mi', backendMemoryLimit: '240Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True', bucketName: 'itvrdv',
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3Gi',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
