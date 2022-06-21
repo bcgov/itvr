@@ -35,6 +35,8 @@ class HouseholdMember(TimeStampedModel):
     first_name = CharField(max_length=250, unique=False)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
     date_of_birth = DateField(validators=[validate_driving_age])
+    bcsc_street_address = CharField(max_length=250, unique=False)
+    bcsc_postal_code = CharField(max_length=6, unique=False, blank=True, null=True)
     doc1 = ImageField(upload_to="docs", blank=True, null=True)
 
     def doc1_tag(self):
