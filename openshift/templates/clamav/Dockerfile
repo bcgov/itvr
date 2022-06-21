@@ -13,5 +13,5 @@ RUN mkdir /run/clamav && \
 #    chmod -R g+w /run/clamav
 
 
-chown: /var/lib/clamav: Operation not permitted
-chown: /var/lib/clamav: Operation not permitted
+#chown: /var/lib/clamav: Operation not permitted
+#chown: /var/lib/clamav: Operation not permitted
