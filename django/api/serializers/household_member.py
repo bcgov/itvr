@@ -13,7 +13,7 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
 
     class Meta:
         model = HouseholdMember
-        exclude = ["user"]
+        exclude = ["user", "bcsc_address", "bcsc_city", "bcsc_postal_code"]
 
 
 class HouseholdMemberApplicationCreateSerializerDefault(
@@ -67,8 +67,9 @@ class HouseholdMemberApplicationCreateSerializerBCSC(
             last_name=user.last_name,
             first_name=user.first_name,
             date_of_birth=user.date_of_birth,
-            bcsc_street_address=validated_data["bcsc_street_address"],
-            bcsc_postal_code=validated_data["bcsc_postal_code"],
+            bcsc_address=user.street_address,
+            bcsc_city=user.locality,
+            bcsc_postal_code=user.postal_code,
             user=user,
             consent_personal=validated_data["consent_personal"],
             consent_tax=validated_data["consent_tax"],
