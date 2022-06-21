@@ -87,10 +87,12 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
-    data = {
-      ...data,
-      date_of_birth: data.date_of_birth.toISOString().slice(0, 10)
-    };
+    if (kcToken.identity_provider !== 'bcsc') {
+      data = {
+        ...data,
+        date_of_birth: data.date_of_birth.toISOString().slice(0, 10)
+      };
+    }
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
