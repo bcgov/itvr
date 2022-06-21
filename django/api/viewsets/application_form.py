@@ -50,6 +50,7 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
             .filter(
                 status__in=[
                     GoElectricRebateApplication.Status.SUBMITTED,
+                    GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED,
                     GoElectricRebateApplication.Status.VERIFIED,
                     GoElectricRebateApplication.Status.APPROVED,
                     GoElectricRebateApplication.Status.REDEEMED,
