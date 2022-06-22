@@ -182,3 +182,16 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
     ncda_id = data["d"]["ID"]
 
     GoElectricRebate.objects.filter(pk=rebate_id).update(ncda_id=ncda_id)
+
+
+# https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
+
+# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Status
+
+# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Created,Status&$orderby=Created desc
+
+# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=Modified ge datetime'2022-06-20T00:00:00Z'
+
+# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=Status eq 'Redeemed'
+
+# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-20T00:00:00Z')
