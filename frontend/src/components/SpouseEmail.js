@@ -30,16 +30,15 @@ const SpouseEmail = ({ name }) => {
           Spouse email address:
         </InputLabel>
         <TextField
+          sx={{ color: 'black' }}
           defaultValue=""
           type="text"
           name={name}
           onChange={(e) => setValue(name, e.target.value)}
-        />
-        <InputLabel sx={{ color: 'black' }}>
-          By providing this person’s email address you are confirming that the
+          helperText="By providing this person’s email address you are confirming that the
           owner has authorized you to provide their email for the purposes of
-          completing your rebate application for your household.
-        </InputLabel>
+          completing your rebate application for your household."
+        />
       </FormGroup>
     </div>
   );
