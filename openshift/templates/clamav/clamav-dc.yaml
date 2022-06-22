@@ -1,0 +1,135 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: frontend-dc
+objects:
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: clamav-signature-db
+      annotations:
+        volume.beta.kubernetes.io/storage-class: netapp-file-standard
+        template.openshift.io.bcgov/create: 'true'
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi
+    status: {}    
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: itvr-clamav
+      creationTimestamp:
+      labels:
+        name: tfrs-clamav
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+    spec:
+      ports:
+        - name: 3310-tcp
+          protocol: TCP
+          port: 3310
+          targetPort: 3310
+      selector:
+        name: tfrs-clamav
+      type: ClusterIP
+      sessionAffinity: None
+    status:
+      loadBalancer: {}    
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: itvr-clamav
+      annotations:
+        description: Defines how to deploy the clamav application
+      creationTimestamp: null
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 10
+      automountServiceAccountToken: false
+      selector:
+        name: itvr-clamav
+      strategy:
+        activeDeadlineSeconds: 21600
+        recreateParams:
+          timeoutSeconds: 600
+        resources: {}
+        type: Recreate
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            name: itvr-clamav
+        spec:
+          volumes:
+            - name: clamav-signature-db
+              persistentVolumeClaim:
+                claimName: clamav-signature-db
+          containers:
+            - name: itvr-clamav
+              env: null
+              image:
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: clamav-signature-db
+                  mountPath: /var/lib/clamav
+                  defaultMode: 666
+              livenessProbe:
+                tcpSocket:
+                  port: 3310
+                initialDelaySeconds: 60
+                timeoutSeconds: 3
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              readinessProbe:
+                tcpSocket:
+                  port: 3310
+                initialDelaySeconds: 60
+                timeoutSeconds: 3
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              ports:
+                - containerPort: 3310
+                  protocol: TCP
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 4Gi
+                requests:
+                  cpu: 250m
+                  memory: 2Gi
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext:
+            runAsUser: 1008280000
+            runAsGroup: 1008280000
+            fsGroup: 1008280000
+          terminationGracePeriodSeconds: 30
+      test: false
+      triggers:
+        - imageChangeParams:
+            automatic: true
+            containerNames:
+              - itvr-clamav
+            from:
+              kind: ImageStreamTag
+              name: itvr-clamav:0.105_base
+              namespace: ac294c-tools
+            lastTriggeredImage:
+          type: ImageChange
+        - type: ConfigChange
+    status:
+      availableReplicas: 0
+      latestVersion: 0
+      observedGeneration: 0
+      replicas: 0
+      unavailableReplicas: 0
+      updatedReplicas: 0

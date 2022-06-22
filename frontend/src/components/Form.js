@@ -26,6 +26,9 @@ import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import BCSCInfo from './BCSCInfo';
 import { addTokenFields } from '../keycloak';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const defaultValues = {
   sin: '',
@@ -47,6 +50,8 @@ export const defaultValues = {
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
+  const [DOB, setDOB] = useState(new Date());
+  const [submitStatus, setSubmitStatus] = useState(true);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
@@ -82,6 +87,12 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
+    if (kcToken.identity_provider !== 'bcsc') {
+      data = {
+        ...data,
+        date_of_birth: data.date_of_birth.toISOString().slice(0, 10)
+      };
+    }
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         const id = data.data.id;
@@ -92,6 +103,15 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         queryClient.setQueryData(['application', id], refinedData);
         navigate(`/details/${id}`);
       }
+    });
+  };
+
+  const checkDLStatus = (dl) => {
+    const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
+    axiosInstance.current.get(detailUrl).then((response) => {
+      response.data.drivers_license_valid === 'false'
+        ? setSubmitStatus(false)
+        : setSubmitStatus(true);
     });
   };
 
@@ -177,7 +197,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         </FormGroup>
         <Box sx={{ display: 'inline' }}>
           <h3 id="form-submission-title">
-            Complete your household rebate application <LockIcon />
+            Your application information <LockIcon />
           </h3>
           <span> secure form submission</span>
         </Box>
@@ -256,12 +276,20 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                 name="date_of_birth"
                 control={control}
                 render={({ field }) => (
-                  <TextField
-                    sx={{ width: '300px' }}
-                    id="date_of_birth"
-                    type="date"
-                    onChange={(e) => setValue('date_of_birth', e.target.value)}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                      disableFuture
+                      openTo="year"
+                      views={['year', 'month', 'day']}
+                      value={DOB}
+                      format="YYYY-MM-DD"
+                      onChange={(newDate) => {
+                        setValue('date_of_birth', newDate);
+                        setDOB(newDate);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
                 )}
                 rules={{
                   validate: (inputtedDOB) => {
@@ -400,6 +428,12 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.drivers_licence?.type === 'validate' && (
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
+          {!submitStatus && (
+            <span className="error">
+              Error: This driver's licence number has already been submitted or
+              issued a rebate.
+            </span>
+          )}
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
             BC Driver's Licence number (used for redeeming your rebate):
           </InputLabel>
@@ -416,6 +450,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   <InputAdornment position="start">DL: </InputAdornment>
                 }
                 onChange={(e) => setValue('drivers_licence', e.target.value)}
+                onBlur={(e) => {
+                  checkDLStatus(e.target.value);
+                }}
               />
             )}
             rules={{
@@ -459,7 +496,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || !submitStatus}
         >
           Submit Application
         </Button>

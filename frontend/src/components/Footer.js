@@ -27,7 +27,9 @@ const Footer = () => {
             </a>
           </li>
           <li>
-            <a href="/">Contact Us</a>
+            <a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">
+              Contact Us
+            </a>
           </li>
         </ul>
       </div>

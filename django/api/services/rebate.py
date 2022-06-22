@@ -7,15 +7,21 @@ from api.services.calculate_rebate import RebateType
 
 # gets applications from rebates
 def get_applications(rebates):
+    result = {}
     ids = []
     if rebates is not None:
         ids = list(rebates)
-    return GoElectricRebateApplication.objects.in_bulk(ids)
+        applications = GoElectricRebateApplication.objects.filter(id__in=ids).filter(
+            status__exact=GoElectricRebateApplication.Status.VERIFIED
+        )
+        for application in applications:
+            result[application.id] = application
+    return result
 
 
 # saves approved rebates to the rebate table; returns the saved rebates
 def save_rebates(rebates, applications):
-    result = []
+    created_rebates = []
     if rebates is not None and applications is not None:
         rebate_objs = []
         for application_id, rebate_amount in rebates.items():
@@ -28,11 +34,17 @@ def save_rebates(rebates, applications):
                         last_name=application.last_name,
                         expiry_date=date.today() + timedelta(days=365),
                         rebate_max_amount=rebate_amount,
-                        rebate_state=False,
+                        redeemed=False,
                     )
                     rebate_objs.append(rebate_obj)
-        result = GoElectricRebate.objects.bulk_create(rebate_objs)
-    return result
+        created_rebates = GoElectricRebate.objects.bulk_create(rebate_objs)
+        for rebate in created_rebates:
+            post_save.send(
+                sender=GoElectricRebate,
+                instance=rebate,
+                created=True,
+            )
+    return created_rebates
 
 
 # updates application statuses; emits signals manually

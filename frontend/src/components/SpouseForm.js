@@ -18,6 +18,9 @@ import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import BCSCInfo from './BCSCInfo';
 import { addTokenFields } from '../keycloak';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const defaultValues = {
   application: '',
@@ -51,6 +54,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     formState: { errors },
     setValue
   } = methods;
+  const [DOB, setDOB] = useState(new Date());
   const axiosInstance = useAxios();
 
   const queryFn = () =>
@@ -82,6 +86,12 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
+    if (kcToken.identity_provider !== 'bcsc') {
+      data = {
+        ...data,
+        date_of_birth: data.date_of_birth.toISOString().slice(0, 10)
+      };
+    }
     mutation.mutate(data, {
       onSuccess: (data, variables, context) => {
         let refinedData = data.data;
@@ -118,7 +128,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     <FormProvider {...methods}>
       <Loading open={loading} />
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <h2>Apply for a passenger vehicle rebate</h2>
+        <h2>Apply for a passenger vehicle rebate pre-approval</h2>
         <Box sx={{ display: 'inline' }}>
           <h3 id="form-submission-title">
             Complete your household rebate application <LockIcon />
@@ -221,12 +231,20 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
                 name="date_of_birth"
                 control={control}
                 render={({ field }) => (
-                  <TextField
-                    id="date_of_birth"
-                    type="date"
-                    onChange={(e) => setValue('date_of_birth', e.target.value)}
-                    sx={{ width: '300px' }}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                      disableFuture
+                      openTo="year"
+                      views={['year', 'month', 'day']}
+                      value={DOB}
+                      format="YYYY-MM-DD"
+                      onChange={(newDate) => {
+                        setValue('date_of_birth', newDate);
+                        setDOB(newDate);
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
                 )}
                 rules={{
                   validate: (inputtedDOB) => {

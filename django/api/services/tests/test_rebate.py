@@ -49,7 +49,7 @@ class TestRebate(TestCase):
             city="Victoria",
             postal_code="v8s4j9",
             tax_year=2020,
-            drivers_licence="1234567",
+            drivers_licence="1234568",
         )
         GoElectricRebateApplication.objects.create(
             id="ctW8gU57YX4xfQ9o",
@@ -68,7 +68,7 @@ class TestRebate(TestCase):
             city="Victoria",
             postal_code="v8s4j9",
             tax_year=2020,
-            drivers_licence="1234567",
+            drivers_licence="1234569",
         )
         HouseholdMember.objects.create(
             application_id="9uXLvNQS5vkKnscD",

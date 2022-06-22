@@ -1,6 +1,9 @@
 from django.db.models.signals import post_save
-from .models.go_electric_rebate_application import GoElectricRebateApplication
+from .models.go_electric_rebate_application import (
+    GoElectricRebateApplication,
+)
 from .models.household_member import HouseholdMember
+from .models.go_electric_rebate import GoElectricRebate
 from django.dispatch import receiver
 from django.conf import settings
 from api.models.household_member import HouseholdMember
@@ -74,3 +77,16 @@ def after_status_change(sender, instance, created, **kwargs):
                 instance.id,
                 instance.tax_year,
             )
+
+
+@receiver(post_save, sender=GoElectricRebate)
+def after_rebate_issued(sender, instance, created, **kwargs):
+    if created:
+        async_task(
+            "api.services.ncda.notify",
+            instance.drivers_licence,
+            instance.last_name,
+            instance.expiry_date.strftime("%m/%d/%Y"),
+            str(instance.rebate_max_amount),
+            instance.id,
+        )

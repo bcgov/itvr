@@ -1,3 +1,6 @@
+#bceid-login-button {
+  margin: 1.5rem 0 0 0;
+}
 .login-square {
   display: inline-block;
   background-color: $background-light-blue;
@@ -10,7 +13,6 @@
 .whats-needed {
   &-individual,
   &-spouse {
-    padding: 2rem 8rem 2rem 8rem;
     margin-top: 2rem;
   }
   &-individual {
@@ -50,7 +52,6 @@
       margin-top: 2rem;
     }
   }
-
   .start-application {
     &-individual,
     &-spouse {
@@ -69,18 +70,19 @@
     }
   }
   .login-square {
-    height: 9rem;
+    height: 10rem;
     width: 17rem;
     margin-right: auto;
     padding: 1rem;
     h2 {
       margin: 2px !important;
+      font-size: 1.5rem;
     }
 
     .button {
       font-size: 1rem;
       margin-top: 0.5rem;
-      margin-bottom: 0;
+      margin-bottom: 1rem;
     }
   }
 }

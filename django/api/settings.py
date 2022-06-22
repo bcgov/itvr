@@ -202,7 +202,7 @@ Q_CLUSTER = {
     "queue_limit": 50,
     "bulk": 10,
     "orm": "default",
-    "save_limit": -1,
+    "save_limit": 20 if DEBUG else -1,
 }
 
 CACHES = {
@@ -230,3 +230,22 @@ INCOME_REBATES = {
     "B": {"individual_income": 90000, "household_income": 145000, "rebate": 2000},
     "A": {"individual_income": 80000, "household_income": 125000, "rebate": 4000},
 }
+
+# NCDA Sharepoint config
+NCDA_CLIENT_ID = os.getenv(
+    "NCDA_CLIENT_ID",
+    "d4d97d40-bb26-44f8-ba70-c677471d6cc1@1d4864aa-f2da-42dc-a62a-34b4dd790b6a",
+)
+NCDA_CLIENT_SECRET = os.getenv("NCDA_CLIENT_SECRET")
+NCDA_RESOURCE = os.getenv(
+    "NCDA_RESOURCE",
+    "00000003-0000-0ff1-ce00-000000000000/newcardealers.sharepoint.com@1d4864aa-f2da-42dc-a62a-34b4dd790b6a",
+)
+NCDA_AUTH_URL = os.getenv(
+    "NCDA_AUTH_URL",
+    "https://accounts.accesscontrol.windows.net/1d4864aa-f2da-42dc-a62a-34b4dd790b6a/tokens/OAuth/2/",
+)
+NCDA_SHAREPOINT_URL = os.getenv(
+    "NCDA_SHAREPOINT_URL",
+    "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web",
+)

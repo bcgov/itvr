@@ -12,7 +12,7 @@
 
 2. Create template secret template.django-secret, template.django-salt
 
-3. create secret itvr-patroni-app, itvr-email-service, itvr-object-storage and itvr-superuser(prod only)
+3. create secret itvr-patroni-app, itvr-email-service, itvr-object-storage, itvr-ncda and itvr-superuser(prod only)
 
 4. create user for itvr database, create user [username] with password '[password]'
 

@@ -39,3 +39,26 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
                 return ApplicationFormCreateSerializerBCSC
             return ApplicationFormCreateSerializerDefault
         return ApplicationFormSerializer
+
+    @action(detail=False, methods=["GET"], url_path="check_status")
+    def check_status(self, request, pk=None):
+        drivers_licence = request.query_params.get("drivers_license", None)
+        dl_not_valid = (
+            GoElectricRebateApplication.objects.filter(
+                drivers_licence__exact=drivers_licence
+            )
+            .filter(
+                status__in=[
+                    GoElectricRebateApplication.Status.SUBMITTED,
+                    GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED,
+                    GoElectricRebateApplication.Status.VERIFIED,
+                    GoElectricRebateApplication.Status.APPROVED,
+                    GoElectricRebateApplication.Status.REDEEMED,
+                ]
+            )
+            .exists()
+        )
+
+        if dl_not_valid:
+            return Response({"drivers_license_valid": "false"})
+        return Response({"drivers_license_valid": "true"})
