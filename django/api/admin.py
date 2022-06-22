@@ -57,6 +57,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "first_name",
         "middle_names",
         "email",
+        "user_is_bcsc",
         "address",
         "city",
         "postal_code",
