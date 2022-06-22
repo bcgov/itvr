@@ -1,3 +1,4 @@
+from email import header
 import requests
 import json
 from django.conf import settings
@@ -182,6 +183,36 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
     ncda_id = data["d"]["ID"]
 
     GoElectricRebate.objects.filter(pk=rebate_id).update(ncda_id=ncda_id)
+
+
+def get_rebates_redeemed_since(iso_ts):
+    api_endpoint = settings.NCDA_SHAREPOINT_URL
+    access_token = get_ncda_service_token()
+
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose",
+    }
+
+    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
+
+    # $select=Id,Title,Modified,Status
+    # $orderby=Modified desc
+    # $filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-09T00:00:00Z')
+    payload = {
+        "$select": "Id,Title,Modified,Status",
+        "$orderby": "Modified desc",
+        "$filter": "(Status eq 'Redeemed')and(Modified ge datetime'%s')" % iso_ts,
+    }
+
+    ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
+
+    print(ncda_rs.text)
+
+    ncda_rs.raise_for_status()
+
+    data = ncda_rs.json()
 
 
 # https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
