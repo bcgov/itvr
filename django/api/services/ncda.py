@@ -185,6 +185,7 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
     GoElectricRebate.objects.filter(pk=rebate_id).update(ncda_id=ncda_id)
 
 
+# iso_ts ex 2023-08-01T07:00:00Z
 def get_rebates_redeemed_since(iso_ts):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
@@ -197,9 +198,6 @@ def get_rebates_redeemed_since(iso_ts):
 
     url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
 
-    # $select=Id,Title,Modified,Status
-    # $orderby=Modified desc
-    # $filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-09T00:00:00Z')
     payload = {
         "$select": "Id,Title,Modified,Status",
         "$orderby": "Modified desc",
@@ -208,29 +206,35 @@ def get_rebates_redeemed_since(iso_ts):
 
     ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
 
-    print(ncda_rs.text)
-
     ncda_rs.raise_for_status()
 
+    # {
+    #     "d": {
+    #         "results": [
+    #             {
+    #                 "__metadata": {
+    #                     "id": "a27d1060-03b2-4f1a-8006-0205c1ce6c43",
+    #                     "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)",
+    #                     "etag": '"3"',
+    #                     "type": "SP.Data.ITVREligibilityListItem",
+    #                 },
+    #                 "Id": 5,
+    #                 "ID": 5,
+    #                 "Title": "44444444",
+    #                 "Modified": "2022-06-09T06:01:10Z",
+    #                 "Status": "Redeemed",
+    #             }
+    #         ]
+    #     }
+    # }
     data = ncda_rs.json()
+    print(data)
 
 
 # https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
 
-# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Status
 
-# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Created,Status&$orderby=Created desc
-
-# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=Modified ge datetime'2022-06-20T00:00:00Z'
-
-# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=Status eq 'Redeemed'
-
-# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-20T00:00:00Z')
-
-# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Id,Title,Modified,Status&$orderby=Modified desc&$filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-09T00:00:00Z')
-
-
-# Example API response with one Sharepoint list item.
+# Example API response with one Sharepoint list item selecting all fields.
 # {
 #     "d": {
 #         "results": [
