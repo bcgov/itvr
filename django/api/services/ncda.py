@@ -195,3 +195,5 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
 # https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=Status eq 'Redeemed'
 
 # https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Title,Modified,Status&$orderby=Modified desc&$filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-20T00:00:00Z')
+
+# https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web/lists/getbytitle('ITVREligibility')/items?$select=Id,Title,Modified,Status&$orderby=Modified desc&$filter=(Status eq 'Redeemed')and(Modified ge datetime'2022-06-09T00:00:00Z')
