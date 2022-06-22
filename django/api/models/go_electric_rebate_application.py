@@ -100,6 +100,13 @@ class GoElectricRebateApplication(TimeStampedModel):
     consent_personal = BooleanField(validators=[validate_consent])
     consent_tax = BooleanField(validators=[validate_consent])
 
+    def user_is_bcsc(self):
+        if self.user.identity_provider == "bcsc":
+            return True
+        return False
+
+    user_is_bcsc.short_description = "Address is BCSC Verified"
+
     def __str__(self):
         return self.last_name + ", " + self.first_name + ": " + str(self.id)
 

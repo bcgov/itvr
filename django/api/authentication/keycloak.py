@@ -70,7 +70,7 @@ class KeycloakAuthentication(TokenAuthentication):
                 username=token_info.get("sub"),
                 defaults={
                     "display_name": token_info.get("display_name"),
-                    "email": token_info.get("email"),
+                    "email": token_info.get("email", ""),
                     "identity_provider": token_info.get("identity_provider"),
                 },
             )
