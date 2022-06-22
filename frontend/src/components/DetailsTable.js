@@ -77,7 +77,10 @@ const DetailsTable = ({ data }) => {
   rows = rows.filter((r) => r);
   return (
     <TableContainer component={Paper} sx={{ boxShadow: 0 }}>
-      <Table sx={{ minWidth: 650, border: 0 }} aria-label="simple table">
+      <Table
+        sx={{ minWidth: { md: 650 }, border: 0 }}
+        aria-label="simple table"
+      >
         <TableBody>
           {rows.map((row) => {
             if (row.answer) {
@@ -86,15 +89,21 @@ const DetailsTable = ({ data }) => {
                   <TableCell
                     component="th"
                     scope="row"
-                    sx={{ border: 0, width: '25%', fontSize: '1.35rem' }}
+                    sx={{
+                      border: 0,
+                      width: { xs: '40%', md: '25%' },
+                      fontSize: { xs: '.9rem', md: '1.35rem' }
+                    }}
                   >
                     <b>{row.name}</b>
                   </TableCell>
                   <TableCell
                     align="left"
-                    sx={{ border: 0 }}
+                    sx={{ border: 0, fontSize: { xs: '1rem', md: '1.35rem' } }}
                     className="application-details-table-answer"
-                    style={{ verticalAlign: 'top', fontSize: '1.35rem' }}
+                    style={{
+                      verticalAlign: 'top'
+                    }}
                   >
                     {row.answer}
                   </TableCell>
