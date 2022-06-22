@@ -1,4 +1,3 @@
-from email import header
 import requests
 import json
 from django.conf import settings
@@ -200,7 +199,6 @@ def get_rebates_redeemed_since(iso_ts):
 
     payload = {
         "$select": "Id,Title,Modified,Status",
-        "$orderby": "Modified desc",
         "$filter": "(Status eq 'Redeemed')and(Modified ge datetime'%s')" % iso_ts,
     }
 
