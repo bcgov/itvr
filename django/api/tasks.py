@@ -1,10 +1,14 @@
 import requests
 import json
+import datetime
 
 from django.conf import settings
 from email.header import Header
 from email.utils import formataddr
 from requests.auth import HTTPBasicAuth
+from django_q.tasks import schedule
+from api.services.ncda import get_rebates_redeemed_since
+from api.models.go_electric_rebate import GoElectricRebate
 
 
 def get_email_service_token() -> str:
@@ -293,3 +297,12 @@ def send_not_approve(recipient_email, application_id, tax_year):
         cc_list=[],
         optional_subject=" – Not Approved",
     )
+
+
+# check for newly redeemed rebates
+def check_rebates_redeemed_since(iso_ts=None):
+    ts = iso_ts if iso_ts else datetime.datetime.now().strftime("%Y-%m-%dT00:00:00Z")
+    print("check_rebate_status " + ts)
+    ncda_ids = get_rebates_redeemed_since(ts)
+    print(ncda_ids)
+    GoElectricRebate.objects.filter(ncda_id__in=ncda_ids).update(redeemed=True)

@@ -226,7 +226,9 @@ def get_rebates_redeemed_since(iso_ts):
     #     }
     # }
     data = ncda_rs.json()
-    print(data)
+    items = data["d"]["results"]
+    ncda_ids = map(lambda item: item["ID"], items)
+    return list(ncda_ids)
 
 
 # https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
