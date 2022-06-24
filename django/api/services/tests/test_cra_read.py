@@ -53,7 +53,7 @@ class TestCraRead(SimpleTestCase):
                 },
             )
 
-    # Test against response file 00008
+    # Test against response file 00009
     def test_read_out_00009(self):
         cra_out_file_00009_filename = os.path.join(
             os.path.dirname(__file__),
