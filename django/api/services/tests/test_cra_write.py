@@ -111,3 +111,53 @@ class TestCraWrite(SimpleTestCase):
 
             # Check file contents are exactly equal.
             self.assertEqual(file_contents, file)
+
+    # Test against cra in file 00009
+    def test_write_in_00009(self):
+        data = [
+            {
+                "sin": "270300379",
+                "years": [2020],
+                "given_name": "AliceAliceAliceAliceAliceAliceTruncateMe",
+                "family_name": "SolangeSolangeSolangeSolangeSolange",
+                "birth_date": "19710122",
+                "application_id": "1234",
+            },
+            {
+                "sin": "302435839",
+                "years": [2020],
+                "given_name": "Wendy",
+                "family_name": "Turner",
+                "birth_date": "19780521",
+                "application_id": "1234",
+            },
+            {
+                "sin": "129922258",
+                "years": [2020],
+                "given_name": "Lily",
+                "family_name": "Redding",
+                "birth_date": "19830707",
+                "application_id": "1234",
+            },
+        ]
+
+        file_contents = cra.write(
+            data,
+            today="20220516",
+            program_code="BCVR",
+            cra_env="A",
+            cra_sequence="00009",
+        )
+
+        cra_in_file_00009_filename = os.path.join(
+            os.path.dirname(__file__),
+            "cra_in_out",
+            "in",
+            "TO.ATO#@@00.R7005.IN.BCVR.A00009",
+        )
+
+        with open(cra_in_file_00009_filename, "r") as cra_in_file_00009:
+            file = cra_in_file_00009.read()
+
+            # Check file contents are exactly equal.
+            self.assertEqual(file_contents, file)
