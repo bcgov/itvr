@@ -1,6 +1,6 @@
 import requests
 import json
-import datetime
+from django.utils import timezone
 
 from django.conf import settings
 from email.header import Header
@@ -305,7 +305,7 @@ def send_not_approve(recipient_email, application_id, tax_year):
 # check for newly redeemed rebates
 # TODO schedule this task to automatically run.
 def check_rebates_redeemed_since(iso_ts=None):
-    ts = iso_ts if iso_ts else datetime.datetime.now().strftime("%Y-%m-%dT00:00:00Z")
+    ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
     print("check_rebate_status " + ts)
     ncda_ids = get_rebates_redeemed_since(ts)
     print(ncda_ids)
@@ -313,11 +313,11 @@ def check_rebates_redeemed_since(iso_ts=None):
     redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
 
     # mark redeemed
-    redeemed_rebates.update(redeemed=True, modified=datetime.datetime.now())
+    redeemed_rebates.update(redeemed=True, modified=timezone.now())
     # update application status
     GoElectricRebateApplication.objects.filter(
         pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
     ).update(
         status=GoElectricRebateApplication.Status.REDEEMED,
-        modified=datetime.datetime.now(),
+        modified=timezone.now(),
     )
