@@ -3,6 +3,9 @@
 }
 .primary-answer {
   color: $grey-dark;
+  display: inline-block;
+  width: 140px;
+  white-space: pre-wrap
 }
 .form-upload-instructions {
   h3 {
