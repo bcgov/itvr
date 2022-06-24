@@ -182,3 +182,161 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
     ncda_id = data["d"]["ID"]
 
     GoElectricRebate.objects.filter(pk=rebate_id).update(ncda_id=ncda_id)
+
+
+# iso_ts ex 2023-08-01T07:00:00Z
+def get_rebates_redeemed_since(iso_ts):
+    api_endpoint = settings.NCDA_SHAREPOINT_URL
+    access_token = get_ncda_service_token()
+
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose",
+    }
+
+    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
+
+    payload = {
+        "$select": "Id,Title,Modified,Status",
+        "$filter": "(Status eq 'Redeemed')and(Modified ge datetime'%s')" % iso_ts,
+    }
+
+    ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
+
+    ncda_rs.raise_for_status()
+
+    # {
+    #     "d": {
+    #         "results": [
+    #             {
+    #                 "__metadata": {
+    #                     "id": "a27d1060-03b2-4f1a-8006-0205c1ce6c43",
+    #                     "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)",
+    #                     "etag": '"3"',
+    #                     "type": "SP.Data.ITVREligibilityListItem",
+    #                 },
+    #                 "Id": 5,
+    #                 "ID": 5,
+    #                 "Title": "44444444",
+    #                 "Modified": "2022-06-09T06:01:10Z",
+    #                 "Status": "Redeemed",
+    #             }
+    #         ]
+    #     }
+    # }
+    data = ncda_rs.json()
+    items = data["d"]["results"]
+    ncda_ids = map(lambda item: item["ID"], items)
+    return list(ncda_ids)
+
+
+# https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
+
+
+# Example API response with one Sharepoint list item selecting all fields.
+# {
+#     "d": {
+#         "results": [
+#             {
+#                 "__metadata": {
+#                     "id": "e2356fcb-8649-4cc4-81b5-d16fa330244f",
+#                     "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)",
+#                     "etag": '"3"',
+#                     "type": "SP.Data.ITVREligibilityListItem",
+#                 },
+#                 "FirstUniqueAncestorSecurableObject": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/FirstUniqueAncestorSecurableObject"
+#                     }
+#                 },
+#                 "RoleAssignments": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/RoleAssignments"
+#                     }
+#                 },
+#                 "AttachmentFiles": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/AttachmentFiles"
+#                     }
+#                 },
+#                 "ContentType": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/ContentType"
+#                     }
+#                 },
+#                 "GetDlpPolicyTip": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/GetDlpPolicyTip"
+#                     }
+#                 },
+#                 "FieldValuesAsHtml": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/FieldValuesAsHtml"
+#                     }
+#                 },
+#                 "FieldValuesAsText": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/FieldValuesAsText"
+#                     }
+#                 },
+#                 "FieldValuesForEdit": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/FieldValuesForEdit"
+#                     }
+#                 },
+#                 "File": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/File"
+#                     }
+#                 },
+#                 "Folder": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/Folder"
+#                     }
+#                 },
+#                 "LikedByInformation": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/LikedByInformation"
+#                     }
+#                 },
+#                 "ParentList": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/ParentList"
+#                     }
+#                 },
+#                 "Properties": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/Properties"
+#                     }
+#                 },
+#                 "Versions": {
+#                     "__deferred": {
+#                         "uri": "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/Web/Lists(guid'7aea54d3-9935-40a4-88cd-3ddd74c7d270')/Items(5)/Versions"
+#                     }
+#                 },
+#                 "FileSystemObjectType": 0,
+#                 "Id": 5,
+#                 "ServerRedirectedEmbedUri": null,
+#                 "ServerRedirectedEmbedUrl": "",
+#                 "ID": 5,
+#                 "ContentTypeId": "0x01008074AAC5CAD1A241B1109194FE6D8D5D00747BB541D61F1F4CA7028C9C97E823CB",
+#                 "Title": "44444444",
+#                 "Modified": "2022-06-09T06:01:10Z",
+#                 "Created": "2022-06-07T16:22:31Z",
+#                 "AuthorId": 1073741822,
+#                 "EditorId": 1073741822,
+#                 "OData__UIVersionString": "3.0",
+#                 "Attachments": false,
+#                 "GUID": "cf205d6e-b0f1-481e-8988-4aa1119a4033",
+#                 "ComplianceAssetId": null,
+#                 "LastName": "Test4",
+#                 "ExpiryDT": "2023-08-01T07:00:00Z",
+#                 "MaxRebateAmt": 1500,
+#                 "Status": "Redeemed",
+#                 "ClaimType": null,
+#                 "OData__vti_ItemDeclaredRecord": null,
+#             }
+#         ]
+#     }
+# }

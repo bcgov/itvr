@@ -27,7 +27,7 @@ class GoElectricRebate(TimeStampedModel):
     redeemed = BooleanField(default=False)
     # sharepoint id. If something goes wrong with notification we can find
     # issued rebates with blank NCDA ids to try resending.
-    ncda_id = IntegerField(blank=True, null=True)
+    ncda_id = IntegerField(blank=True, null=True, db_index=True)
 
     def __str__(self):
         return "DL: " + self.drivers_licence + ", $" + str(self.rebate_max_amount)
