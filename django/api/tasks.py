@@ -303,6 +303,7 @@ def send_not_approve(recipient_email, application_id, tax_year):
 
 
 # check for newly redeemed rebates
+# TODO schedule this task to automatically run.
 def check_rebates_redeemed_since(iso_ts=None):
     ts = iso_ts if iso_ts else datetime.datetime.now().strftime("%Y-%m-%dT00:00:00Z")
     print("check_rebate_status " + ts)
