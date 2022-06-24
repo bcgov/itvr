@@ -313,8 +313,11 @@ def check_rebates_redeemed_since(iso_ts=None):
     redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
 
     # mark redeemed
-    redeemed_rebates.update(redeemed=True)
+    redeemed_rebates.update(redeemed=True, modified=datetime.datetime.now())
     # update application status
     GoElectricRebateApplication.objects.filter(
         pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
-    ).update(status=GoElectricRebateApplication.Status.REDEEMED)
+    ).update(
+        status=GoElectricRebateApplication.Status.REDEEMED,
+        modified=datetime.datetime.now(),
+    )
