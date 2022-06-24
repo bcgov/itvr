@@ -53,25 +53,24 @@ class GoElectricRebateApplication(TimeStampedModel):
         REDEEMED = ("redeemed", _("Redeemed"))
         EXPIRED = ("expired", _("Expired"))
 
-    user = ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=PROTECT,
-    )
+    user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=PROTECT, null=True)
     id = ShortUUIDField(length=16, primary_key=True, editable=False)
-    sin = EncryptedCharField(max_length=9, unique=False, validators=[validate_sin])
+    sin = EncryptedCharField(
+        max_length=9, unique=False, validators=[validate_sin], null=True
+    )
     status = CharField(max_length=250, choices=Status.choices, unique=False)
-    last_name = CharField(max_length=250, unique=False)
-    first_name = CharField(max_length=250, unique=False)
+    last_name = CharField(max_length=250, unique=False, null=True)
+    first_name = CharField(max_length=250, unique=False, null=True)
     middle_names = CharField(max_length=250, unique=False, blank=True, null=True)
-    email = EmailField(max_length=250, unique=False)
-    address = CharField(max_length=250, unique=False)
-    city = CharField(max_length=250, unique=False)
+    email = EmailField(max_length=250, unique=False, null=True)
+    address = CharField(max_length=250, unique=False, null=True)
+    city = CharField(max_length=250, unique=False, null=True)
     postal_code = CharField(max_length=6, unique=False, blank=True, null=True)
     drivers_licence = CharField(
         max_length=8, unique=False, validators=[MinLengthValidator(7)]
     )
-    date_of_birth = DateField(validators=[validate_driving_age])
-    tax_year = IntegerField()
+    date_of_birth = DateField(validators=[validate_driving_age], null=True)
+    tax_year = IntegerField(null=True)
     doc1 = ImageField(upload_to="docs", blank=True, null=True)
 
     def doc1_tag(self):
@@ -96,9 +95,10 @@ class GoElectricRebateApplication(TimeStampedModel):
     application_type = CharField(
         max_length=25,
         unique=False,
+        null=True,
     )
-    consent_personal = BooleanField(validators=[validate_consent])
-    consent_tax = BooleanField(validators=[validate_consent])
+    consent_personal = BooleanField(validators=[validate_consent], null=True)
+    consent_tax = BooleanField(validators=[validate_consent], null=True)
 
     def user_is_bcsc(self):
         if self.user.identity_provider == "bcsc":
