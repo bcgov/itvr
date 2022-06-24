@@ -13,11 +13,14 @@ def read(file):
                 results[current_application_id] = []
             current_application = results[current_application_id]
 
-        # CRA-NO-DATA-RESPONSE-0023
-        if subCode == "0023":
-            sin = line[4:13]
-            year = line[13:17]
-            current_application.append({"sin": sin, "year": year, "income": None})
+            # REQUEST-STATUS-CODE
+            status_code = line[25:27]
+            # 55 UNSUCCESSFUL-ACCT-NOT-AVAIL
+            # 59 UNSUCCESSFUL-REQUEST NO DATA
+            if status_code in ["59", "55"]:
+                sin = line[4:13]
+                year = line[13:17]
+                current_application.append({"sin": sin, "year": year, "income": None})
 
         # From Susan:
         # The business folks did flip flop on the net income
