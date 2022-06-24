@@ -59,8 +59,8 @@ def write(
     # Write the body
     for row in data:
         sin = row["sin"]
-        family_name = row["family_name"].ljust(30)
-        given_name = row["given_name"].ljust(30)
+        family_name = row["family_name"].ljust(30)[:30]
+        given_name = row["given_name"].ljust(30)[:30]
         tax_years = " ".join([str(year) for year in row["years"]]).ljust(20)
         birth_date = row["birth_date"]
         identifier = row["application_id"].ljust(30)
