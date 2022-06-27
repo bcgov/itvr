@@ -56,6 +56,9 @@ parameters:
     displayName: bucket name
     description: bucket name
     required: true 
+  - name: CRA_ENVIRONMENT
+    description: the environment for CRA, P for production, A for all other envs
+    required: true
 objects:
   - apiVersion: v1
     kind: Secret
@@ -372,6 +375,8 @@ objects:
                     secretKeyRef:
                       name: itvr-ncda
                       key: NCDA_SHAREPOINT_URL                                                        
+                - name: CRA_ENVIRONMENT
+                  value: ${CRA_ENVIRONMENT}                      
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
               livenessProbe:

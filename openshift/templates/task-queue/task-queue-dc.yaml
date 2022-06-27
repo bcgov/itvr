@@ -38,6 +38,9 @@ parameters:
   - name: DJANGO_DEBUG
     value: 'False'
     required: true
+  - name: CRA_ENVIRONMENT
+    description: the environment for CRA, P for production, A for all other envs
+    required: true    
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
@@ -199,7 +202,9 @@ objects:
                 - name: DJANGO_TASKS
                   value: 'true'
                 - name: CORS_ORIGIN_WHITELIST
-                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"                  
+                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"          
+                - name: CRA_ENVIRONMENT
+                  value: ${CRA_ENVIRONMENT}                                  
               readinessProbe:  
                 exec:
                   command:
