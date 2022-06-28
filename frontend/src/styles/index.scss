@@ -121,6 +121,7 @@ a {
   margin-bottom: 1rem;
   border-radius: 4px;
   border: 0 solid $button-blue;
+  cursor:pointer;
 
   &:disabled {
     color: $grey-dark;
