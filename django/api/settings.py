@@ -1,8 +1,8 @@
 import os
 import sys
 from pathlib import Path
-
 from . import email
+from . import messages_custom
 
 AUTH_USER_MODEL = "users.ITVRUser"
 
@@ -249,3 +249,5 @@ NCDA_SHAREPOINT_URL = os.getenv(
     "NCDA_SHAREPOINT_URL",
     "https://newcardealers.sharepoint.com/sites/ElectricVehicleRebateApplications/_api/web",
 )
+
+MESSAGE_TAGS = messages_custom.TAGS
