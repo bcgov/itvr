@@ -7,6 +7,7 @@ from psycopg2 import OperationalError, errorcodes, errors
 import sys
 from datetime import datetime
 import shortuuid
+import argparse
 
 # Connect to an existing database
 # engine = pg.connect(
@@ -49,18 +50,20 @@ df.drop(
 df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 df = df[df["BCDriverLicenseNo"].str.len() <= 8]
 df = df[pd.to_numeric(df["BCDriverLicenseNo"], errors="coerce").notnull()]
-df.rename(columns={"BCDriverLicenseNo": "drivers_licence"}, inplace=True)
 
 # convert statuses to uppercase and dropo
 df["Status"] = df["Status"].str.upper()
 df.drop(df[(df.Status == "Cancelled") | (df.Status == "CANCELLED")].index, inplace=True)
 df = df.assign(Status="redeemed")
 
+df.rename(columns={"BCDriverLicenseNo": "drivers_licence", "Status": "status"}, inplace=True)
+
+# drop duplicate drivers licenses
+df.drop_duplicates(subset="drivers_licence", keep="first", inplace=True)
+
 timestamp = datetime.now()
 df["created"] = timestamp
 df["modified"] = timestamp
-# drop duplicate drivers licenses
-df.drop_duplicates(subset=["BCDriverLicenseNo"], keep="first")
 
 for idx, row in df.iterrows():
     df.loc[idx, "id"] = shortuuid.ShortUUID().random(length=16)
