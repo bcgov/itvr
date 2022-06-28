@@ -13,6 +13,7 @@ from django.db.models import (
     Manager,
     Q,
     UniqueConstraint,
+    CheckConstraint,
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -55,6 +56,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=PROTECT, null=True)
     id = ShortUUIDField(length=16, primary_key=True, editable=False)
+    is_legacy = BooleanField(editable=False, default=False)
     sin = EncryptedCharField(
         max_length=9, unique=False, validators=[validate_sin], null=True
     )
@@ -125,7 +127,51 @@ class GoElectricRebateApplication(TimeStampedModel):
                     ]
                 ),
                 name="verify_rebate_status",
-            )
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(user__isnull=False),
+                name="user_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(sin__isnull=False),
+                name="sin_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(last_name__isnull=False),
+                name="last_name_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(first_name__isnull=False),
+                name="first_name_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(email__isnull=False),
+                name="email_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(address__isnull=False),
+                name="address_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(city__isnull=False),
+                name="city_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(date_of_birth__isnull=False),
+                name="date_of_birth_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(tax_year__isnull=False),
+                name="tax_year_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(consent_personal__isnull=False),
+                name="consent_personal_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(consent_tax__isnull=False),
+                name="consent_tax_null_constraint",
+            ),
         ]
 
 
