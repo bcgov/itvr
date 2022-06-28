@@ -14,9 +14,16 @@ import argparse
 #     "dbname='itvr' user='postgres' host='127.0.0.1' port='5432' password='admin@123'"
 # )
 
+parser = argparse.ArgumentParser()
+parser.add_argument("-H", "--host", help="hostname", default="localhost")
+parser.add_argument("-P", "--port", help="port", default="5432") 
+parser.add_argument("-F", "--file", help="Spreadsheet", default="") 
+ 
+args = parser.parse_args()
+
 conn_params = {
-    "host": "localhost",
-    "port": "5432",
+    "host": args.host,
+    "port": args.port,
     "database": "itvr",
     "user": "postgres",
     "password": "postgres",
@@ -37,7 +44,7 @@ def connect(conn_params):
     return conn
 
 
-excelfile = sys.argv[1]
+excelfile = args.file
 print("now processing: ", excelfile)
 df = pd.read_excel(excelfile)
 
