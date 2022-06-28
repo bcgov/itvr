@@ -16,7 +16,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import Upload from './upload/Upload';
 import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
-import BCSCInfo from './BCSCInfo';
+import InfoTable from './InfoTable';
 import { addTokenFields } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -135,28 +135,13 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           </h3>
           <span> secure form submission</span>
         </Box>
-        <p>
+        <p className="info-table-text">
           The address information below has been provided from your household
           application and must match your identification.
         </p>
-        <Box sx={{ maxWidth: '550px' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Street address:</span>
-            <span className="primary-answer">{address}</span>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>City:</span>
-            <span className="primary-answer">{city}</span>
-          </Box>
-          {postalCode && (
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Postal code:</span>
-              <span className="primary-answer">{postalCode}</span>
-            </Box>
-          )}
-        </Box>
+        <InfoTable householdInfo={data} />
         {kcToken.identity_provider === 'bcsc' ? (
-          <BCSCInfo kcToken={kcToken} />
+          <InfoTable kcToken={kcToken} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
