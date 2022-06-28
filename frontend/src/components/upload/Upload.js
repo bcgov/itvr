@@ -27,7 +27,7 @@ const Upload = (props) => {
           <a href="/identificationExamples" target="_blank">
           See examples of accepted ID 
           </a>
-         (Link opens in a new tab to prevent losing form data)
+         (link opens in a new tab to prevent losing form data)
         </p>
       </Box>
       {errors?.documents?.type === 'exactlyTwo' && (
