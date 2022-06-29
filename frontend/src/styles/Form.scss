@@ -1,12 +1,6 @@
 #form-submission-title {
   display: inline;
 }
-.primary-answer {
-  color: $grey-dark;
-  display: inline-block;
-  width: 140px;
-  white-space: pre-wrap
-}
 .form-upload-instructions {
   h3 {
     margin-bottom: 1rem;
@@ -24,4 +18,9 @@
 }
 #spouse-email-text {
   margin-bottom: 0.5rem;
+}
+
+.info-table-text {
+  margin-top: 1rem;
+  margin-bottom: 10px;
 }

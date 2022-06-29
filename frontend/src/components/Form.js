@@ -24,7 +24,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Upload from './upload/Upload';
 import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
-import BCSCInfo from './BCSCInfo';
+import InfoTable from './InfoTable';
 import { addTokenFields } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -202,7 +202,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           <span> secure form submission</span>
         </Box>
         {kcToken.identity_provider === 'bcsc' ? (
-          <BCSCInfo kcToken={kcToken} />
+          <InfoTable kcToken={kcToken} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
