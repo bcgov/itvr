@@ -9,6 +9,7 @@ from datetime import datetime
 import shortuuid
 import argparse
 
+# to run in terminal python3 import_redeemed_rebates.py -H localhost -P 5432 -F "filePath"
 # Connect to an existing database
 # engine = pg.connect(
 #     "dbname='itvr' user='postgres' host='127.0.0.1' port='5432' password='admin@123'"
@@ -16,9 +17,9 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-H", "--host", help="hostname", default="localhost")
-parser.add_argument("-P", "--port", help="port", default="5432") 
-parser.add_argument("-F", "--file", help="Spreadsheet", default="") 
- 
+parser.add_argument("-P", "--port", help="port", default="5432")
+parser.add_argument("-F", "--file", help="Spreadsheet", default="")
+
 args = parser.parse_args()
 
 conn_params = {
@@ -63,7 +64,9 @@ df["Status"] = df["Status"].str.upper()
 df.drop(df[(df.Status == "Cancelled") | (df.Status == "CANCELLED")].index, inplace=True)
 df = df.assign(Status="redeemed")
 
-df.rename(columns={"BCDriverLicenseNo": "drivers_licence", "Status": "status"}, inplace=True)
+df.rename(
+    columns={"BCDriverLicenseNo": "drivers_licence", "Status": "status"}, inplace=True
+)
 
 # drop duplicate drivers licenses
 df.drop_duplicates(subset="drivers_licence", keep="first", inplace=True)
@@ -72,31 +75,11 @@ timestamp = datetime.now()
 df["created"] = timestamp
 df["modified"] = timestamp
 
+df["is_legacy"] = True
+
 for idx, row in df.iterrows():
     df.loc[idx, "id"] = shortuuid.ShortUUID().random(length=16)
-### Method 1
-# def insert_records(conn, df, table):
 
-#     tuples = [tuple(x) for x in df.to_numpy()]
-
-#     cols = ','.join(list(df.columns))
-#     # SQL query to execute
-#     query = "INSERT INTO %s(%s) VALUES %%s" % (table, cols)
-#     cursor = conn.cursor()
-#     try:
-#         extras.insert_records(cursor, query, tuples)
-#         conn.commit()
-#     except (Exception, pg.DatabaseError) as error:
-#         print("Error: %s" % error)
-#         conn.rollback()
-#         cursor.close()
-#         # return 1
-#     print("inserted all records into the table")
-#     cursor.close()
-
-# insert_records(engine, df, 'go_electric_rebate_application')
-
-### Method 2
 
 # Define a function that handles and parses psycopg2 exceptions
 def show_psycopg2_exception(err):
@@ -128,7 +111,14 @@ def copy_from_dataFile_StringIO(conn, datafrm, table):
         cursor.copy_from(
             buffer,
             table,
-            columns=["drivers_licence", "status", "created", "modified", "id"],
+            columns=[
+                "drivers_licence",
+                "status",
+                "created",
+                "modified",
+                "is_legacy",
+                "id",
+            ],
             sep=",",
         )
         conn.commit()

@@ -110,7 +110,10 @@ class GoElectricRebateApplication(TimeStampedModel):
     user_is_bcsc.short_description = "Address is BCSC Verified"
 
     def __str__(self):
-        return self.last_name + ", " + self.first_name + ": " + str(self.id)
+        if self.is_legacy:
+            return "preITVR ", str(self.id)
+        else:
+            return self.last_name + ", " + self.first_name + ": " + str(self.id)
 
     class Meta:
         db_table = "go_electric_rebate_application"
