@@ -51,7 +51,6 @@ export const defaultValues = {
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
   const [DOB, setDOB] = useState(new Date());
-  const [submitStatus, setSubmitStatus] = useState(true);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
@@ -108,14 +107,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
 
   const checkDLStatus = (dl) => {
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
-    axiosInstance.current.get(detailUrl).then((response) => {
-      response.data.drivers_license_valid === 'false'
-        ? setSubmitStatus(false)
-        : setSubmitStatus(true);
-    });
+    return axiosInstance.current.get(detailUrl);
   };
 
   const onError = (errors) => {
+    setLoading(false);
     const numberOfErrors = Object.keys(errors).length;
     setNumberOfErrors(numberOfErrors);
     if (numberOfErrors > 0) {
@@ -425,14 +421,14 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           />
         </FormGroup>
         <FormGroup sx={{ mt: '20px' }}>
-          {errors?.drivers_licence?.type === 'validate' && (
+          {errors?.drivers_licence?.type === 'dlFormat' && (
             <p className="error">Not a valid B.C. Driver's Licence Number</p>
           )}
-          {!submitStatus && (
-            <span className="error">
-              Error: This driver's licence number has already been submitted or
-              issued a rebate.
-            </span>
+          {errors?.drivers_licence?.type === 'dlExists' && (
+            <p className="error">
+              This driver's licence number has already been submitted or issued
+              a rebate, or we cannot check your licence.
+            </p>
           )}
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
             BC Driver's Licence number (used for redeeming your rebate):
@@ -450,24 +446,36 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   <InputAdornment position="start">DL: </InputAdornment>
                 }
                 onChange={(e) => setValue('drivers_licence', e.target.value)}
-                onBlur={(e) => {
-                  checkDLStatus(e.target.value);
-                }}
               />
             )}
             rules={{
-              validate: (inputtedLicence) => {
-                if (
-                  !inputtedLicence ||
-                  (inputtedLicence.length !== 7 && inputtedLicence.length !== 8)
-                ) {
-                  return false;
+              validate: {
+                dlFormat: (inputtedLicence) => {
+                  if (
+                    !inputtedLicence ||
+                    (inputtedLicence.length !== 7 &&
+                      inputtedLicence.length !== 8)
+                  ) {
+                    return false;
+                  }
+                  const regex = /^\d+$/;
+                  if (!regex.test(inputtedLicence)) {
+                    return false;
+                  }
+                  return true;
+                },
+                dlExists: async (inputtedLicence) => {
+                  try {
+                    setLoading(true);
+                    const response = await checkDLStatus(inputtedLicence);
+                    if (response.data.drivers_license_valid === 'false') {
+                      return false;
+                    }
+                  } catch (error) {
+                    return false;
+                  }
+                  return true;
                 }
-                const regex = /^\d+$/;
-                if (!regex.test(inputtedLicence)) {
-                  return false;
-                }
-                return true;
               }
             }}
           />
@@ -496,7 +504,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading || !submitStatus}
+          disabled={loading}
         >
           Submit Application
         </Button>
