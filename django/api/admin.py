@@ -5,6 +5,8 @@ from .models.go_electric_rebate_application import (
 )
 from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
+from django.contrib import messages
+from . import messages_custom
 
 
 class HouseholdApplicationInline(admin.StackedInline):
@@ -57,6 +59,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "first_name",
         "middle_names",
         "email",
+        "user_is_bcsc",
         "address",
         "city",
         "postal_code",
@@ -93,6 +96,19 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             obj.status = GoElectricRebateApplication.Status.DECLINED
             obj.save(update_fields=["status"])
         return ret
+
+    def message_user(
+        self,
+        request,
+        message,
+        level=messages.INFO,
+        extra_tags="",
+        fail_silently=False,
+    ):
+        revised_level = level
+        if "reject_application" in request.POST:
+            revised_level = messages_custom.NEGATIVE_SUCCESS
+        super().message_user(request, message, revised_level, extra_tags, fail_silently)
 
 
 @admin.register(GoElectricRebate)

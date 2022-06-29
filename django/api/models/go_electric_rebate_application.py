@@ -25,6 +25,7 @@ from api.validators import (
 )
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
+from django.utils.functional import classproperty
 
 media_storage = get_storage_class()()
 
@@ -100,6 +101,13 @@ class GoElectricRebateApplication(TimeStampedModel):
     consent_personal = BooleanField(validators=[validate_consent])
     consent_tax = BooleanField(validators=[validate_consent])
 
+    def user_is_bcsc(self):
+        if self.user.identity_provider == "bcsc":
+            return True
+        return False
+
+    user_is_bcsc.short_description = "Address is BCSC Verified"
+
     def __str__(self):
         return self.last_name + ", " + self.first_name + ": " + str(self.id)
 
@@ -126,3 +134,11 @@ class GoElectricRebateApplication(TimeStampedModel):
 class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
         proxy = True
+
+    @classproperty
+    def admin_label(cls):
+        return "Review Applications"
+
+    @classproperty
+    def admin_display_change(cls):
+        return False

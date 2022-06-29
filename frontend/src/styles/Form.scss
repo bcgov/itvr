@@ -1,9 +1,6 @@
 #form-submission-title {
   display: inline;
 }
-.primary-answer {
-  color: $grey-dark;
-}
 .form-upload-instructions {
   h3 {
     margin-bottom: 1rem;
@@ -11,4 +8,19 @@
   h5 {
     margin-top: 0;
   }
+}
+.MuiFormHelperText-root {
+  color: $black !important;
+  font-size: 1rem !important;
+}
+.MuiInputLabel-root {
+  white-space: normal !important;
+}
+#spouse-email-text {
+  margin-bottom: 0.5rem;
+}
+
+.info-table-text {
+  margin-top: 1rem;
+  margin-bottom: 10px;
 }

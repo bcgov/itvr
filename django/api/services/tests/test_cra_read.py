@@ -52,3 +52,27 @@ class TestCraRead(SimpleTestCase):
                     ],
                 },
             )
+
+    # Test against response file 00009
+    def test_read_out_00009(self):
+        cra_out_file_00009_filename = os.path.join(
+            os.path.dirname(__file__),
+            "cra_in_out",
+            "out",
+            "ABCVR00009",
+        )
+
+        with open(cra_out_file_00009_filename, "r") as cra_out_file_00009:
+            data = cra.read(cra_out_file_00009.read())
+            self.assertDictEqual(
+                data,
+                {
+                    "FezRPbX9UGB5S9s2": [
+                        {"sin": "130692544", "year": "2020", "income": None}
+                    ],
+                    "5G7TgFfR2c9Gckur": [
+                        {"sin": "130692544", "year": "2020", "income": None},
+                        {"sin": "130692544", "year": "2020", "income": None},
+                    ],
+                },
+            )

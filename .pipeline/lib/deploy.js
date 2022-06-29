@@ -91,6 +91,7 @@ module.exports = settings => {
       'HEALTH_CHECK_DELAY': phases[phase].backendHealthCheckDelay,
       'REPLICAS':  phases[phase].backendReplicas,
       'DJANGO_DEBUG': phases[phase].backendDjangoDebug,
+      'CRA_ENVIRONMENT':  phases[phase].craEnvironment,       
       'BUCKET_NAME': phases[phase].bucketName
     }
   })) 
@@ -105,6 +106,7 @@ module.exports = settings => {
       'MEMORY_REQUEST': phases[phase].taskQueueMemoryRequest,
       'MEMORY_LIMIT': phases[phase].taskQueueMemoryLimit,
       'REPLICAS':  phases[phase].taskQueueReplicas,
+      'CRA_ENVIRONMENT':  phases[phase].craEnvironment, 
       'DJANGO_DEBUG': phases[phase].taskQueueDjangoDebug
     }
   })) 
