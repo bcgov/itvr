@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 
+
 class ApplicationFormCreateSerializer(ModelSerializer):
     parser_classes = (
         MultiPartParser,
@@ -15,7 +16,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     class Meta:
         model = GoElectricRebateApplication
-        exclude = ["user", "status", "tax_year"]
+        exclude = ["user", "status", "tax_year", "is_legacy"]
 
     def _get_tax_year(self):
         today = date.today()
