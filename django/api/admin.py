@@ -70,6 +70,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
+        "is_legacy",
     )
 
     def get_queryset(self, request):
