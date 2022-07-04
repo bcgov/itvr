@@ -42,7 +42,7 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    search_fields = ['drivers_licence', 'id']
+    search_fields = ['drivers_licence', 'id', 'status']
     # disable bulk actions
     actions = None
     exclude = (
