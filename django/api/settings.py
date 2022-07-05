@@ -251,3 +251,5 @@ NCDA_SHAREPOINT_URL = os.getenv(
 )
 
 MESSAGE_TAGS = messages_custom.TAGS
+
+RUN_JOBS = os.getenv("RUN_JOBS", False)

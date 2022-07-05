@@ -6,12 +6,13 @@ from django.conf import settings
 from email.header import Header
 from email.utils import formataddr
 from requests.auth import HTTPBasicAuth
-from django_q.tasks import schedule
 from api.services.ncda import get_rebates_redeemed_since
 from api.models.go_electric_rebate import GoElectricRebate
 from api.models.go_electric_rebate_application import (
     GoElectricRebateApplication,
 )
+from django_q.models import Schedule
+from datetime import timedelta
 
 
 def get_email_service_token() -> str:
@@ -303,9 +304,13 @@ def send_not_approve(recipient_email, application_id, tax_year):
 
 
 # check for newly redeemed rebates
-# TODO schedule this task to automatically run.
-def check_rebates_redeemed_since(iso_ts=None):
-    ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
+def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
+    ts = timezone.now().strftime("%Y-%m-%dT00:00:00Z")
+    if iso_ts:
+        ts = iso_ts
+    elif schedule_func_name:
+        schedule = Schedule.objects.get(func__exact=schedule_func_name)
+        ts = (schedule.next_run - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%SZ")
     print("check_rebate_status " + ts)
     ncda_ids = get_rebates_redeemed_since(ts)
     print(ncda_ids)
