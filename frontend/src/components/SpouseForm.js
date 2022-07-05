@@ -77,6 +77,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
       } else if (failureCount >= 2) {
         return false;
       }
+      return true;
     }
   });
 
