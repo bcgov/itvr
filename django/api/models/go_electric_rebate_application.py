@@ -114,7 +114,7 @@ class GoElectricRebateApplication(TimeStampedModel):
         if self.is_legacy:
             return "preITVR ", str(self.id)
         else:
-            return self.last_name + ", " + self.first_name + ": " + str(self.id)
+            return self.last_name + ", " + self.first_name + ": " + str(self.id) + ": " + self.status
 
     class Meta:
         db_table = "go_electric_rebate_application"
