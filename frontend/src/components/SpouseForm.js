@@ -21,6 +21,7 @@ import { addTokenFields } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import HouseholdLoginError from './HouseholdLoginError';
 
 export const defaultValues = {
   application: '',
@@ -62,10 +63,23 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
       .get(`/api/application-form/${id}/household`)
       .then((response) => response.data);
 
-  const { data, isLoading, isError, error } = useQuery(
-    ['spouse-application', id],
-    queryFn
-  );
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['spouse-application', id],
+    queryFn: queryFn,
+    retry: (failureCount, error) => {
+      const errorResponse = error.response;
+      if (
+        errorResponse &&
+        errorResponse.data &&
+        errorResponse.data.error === 'same_user'
+      ) {
+        return false;
+      } else if (failureCount >= 2) {
+        return false;
+      }
+      return true;
+    }
+  });
 
   const navigate = useNavigate();
   const mutation = useMutation((data) => {
@@ -121,6 +135,14 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     return <p>Loading...</p>;
   }
   if (isError) {
+    const errorResponse = error.response;
+    if (
+      errorResponse &&
+      errorResponse.data &&
+      errorResponse.data.error === 'same_user'
+    ) {
+      return <HouseholdLoginError id={id} />;
+    }
     return <p>{error.message}</p>;
   }
   const { address, city, postal_code: postalCode } = data;

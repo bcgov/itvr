@@ -18,10 +18,12 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
 
     @action(detail=True, methods=["GET"], url_path="household")
     def household(self, request, pk=None):
-        # not possible to restrict this endpoint to only the spouse because, at this point,
-        # no household_member record associated with the spouse has been created yet, and we're not storing the spouse email
-        # associated with household applications
         application = GoElectricRebateApplication.objects.get(pk=pk)
+        application_user_id = application.user.id
+        household_user_id = request.user.id
+        if application_user_id == household_user_id:
+            error = {"error": "same_user"}
+            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         serializer = ApplicationFormSpouseSerializer(application)
         return Response(serializer.data)
 
