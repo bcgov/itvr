@@ -40,6 +40,7 @@ export const defaultValues = {
 
 const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
+  const [applicationCancelled, setApplicationCancelled] = useState(false);
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
   const queryClient = useQueryClient();
@@ -72,6 +73,12 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
         errorResponse &&
         errorResponse.data &&
         errorResponse.data.error === 'same_user'
+      ) {
+        return false;
+      } else if (
+        errorResponse &&
+        errorResponse.data &&
+        errorResponse.data.error === 'application_cancelled'
       ) {
         return false;
       } else if (failureCount >= 2) {
@@ -131,8 +138,24 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     }
   };
 
+  const cancelApplication = () => {
+    setLoading(true);
+    axiosInstance.current
+      .get(`/api/application-form/${id}/cancel`)
+      .then((response) => {
+        setApplicationCancelled(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
+
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading open={true} />;
+  }
+  if (applicationCancelled) {
+    return <p>This application has been cancelled</p>;
   }
   if (isError) {
     const errorResponse = error.response;
@@ -142,10 +165,16 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
       errorResponse.data.error === 'same_user'
     ) {
       return <HouseholdLoginError id={id} />;
+    } else if (
+      errorResponse &&
+      errorResponse.data &&
+      errorResponse.data.error === 'application_cancelled'
+    ) {
+      setApplicationCancelled(true);
     }
     return <p>{error.message}</p>;
   }
-  const { address, city, postal_code: postalCode } = data;
+  const { address, city, postal_code: postalCode, status } = data;
   return (
     <FormProvider {...methods}>
       <Loading open={loading} />
@@ -311,6 +340,30 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           Submit Application
         </Button>
       </form>
+      {status === 'household_initiated' && (
+        <Box>
+          <p>
+            If you are unable to complete this application click Cancel
+            Application. This will notify the primary applicant and enable them
+            to start a new application.
+          </p>
+          <Button
+            variant="contained"
+            sx={{
+              fontSize: '1.35rem',
+              backgroundColor: 'white',
+              color: 'red',
+              border: '1px solid red',
+              paddingX: '30px',
+              paddingY: '10px'
+            }}
+            disabled={loading}
+            onClick={cancelApplication}
+          >
+            Cancel Application
+          </Button>
+        </Box>
+      )}
     </FormProvider>
   );
 };

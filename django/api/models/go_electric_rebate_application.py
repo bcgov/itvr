@@ -54,6 +54,7 @@ class GoElectricRebateApplication(TimeStampedModel):
         NOT_APPROVED = ("not_approved", _("Not Approved"))
         REDEEMED = ("redeemed", _("Redeemed"))
         EXPIRED = ("expired", _("Expired"))
+        CANCELLED = ("cancelled", _("Cancelled"))
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=PROTECT, null=True)
     id = ShortUUIDField(length=16, primary_key=True, editable=False)
@@ -114,7 +115,15 @@ class GoElectricRebateApplication(TimeStampedModel):
         if self.is_legacy:
             return "preITVR ", str(self.id)
         else:
-            return self.last_name + ", " + self.first_name + ": " + str(self.id) + ": " + self.status
+            return (
+                self.last_name
+                + ", "
+                + self.first_name
+                + ": "
+                + str(self.id)
+                + ": "
+                + self.status
+            )
 
     class Meta:
         db_table = "go_electric_rebate_application"

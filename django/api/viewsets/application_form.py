@@ -24,6 +24,9 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
         if application_user_id == household_user_id:
             error = {"error": "same_user"}
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+        if application.status == GoElectricRebateApplication.Status.CANCELLED:
+            error = {"error": "application_cancelled"}
+            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         serializer = ApplicationFormSpouseSerializer(application)
         return Response(serializer.data)
 
@@ -64,3 +67,13 @@ class ApplicationFormViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixi
         if dl_not_valid:
             return Response({"drivers_license_valid": "false"})
         return Response({"drivers_license_valid": "true"})
+
+    @action(detail=True, methods=["GET"], url_path="cancel")
+    def cancel(self, request, pk=None):
+        application = GoElectricRebateApplication.objects.get(pk=pk)
+        if application.status == GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED:
+            application.status = GoElectricRebateApplication.Status.CANCELLED
+            application.save(update_fields=["status"])
+            return Response(status=status.HTTP_200_OK)
+        error = {"error": "application_cannot_be_cancelled"}
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)

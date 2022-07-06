@@ -153,8 +153,4 @@ class ApplicationFormSerializer(ModelSerializer):
 class ApplicationFormSpouseSerializer(ModelSerializer):
     class Meta:
         model = GoElectricRebateApplication
-        fields = [
-            "address",
-            "city",
-            "postal_code",
-        ]
+        fields = ["address", "city", "postal_code", "status"]
