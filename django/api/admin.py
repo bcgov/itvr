@@ -7,6 +7,7 @@ from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
 from django.contrib import messages
 from . import messages_custom
+from django.db.models import Q
 
 
 class HouseholdApplicationInline(admin.StackedInline):
@@ -76,7 +77,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.filter(
-            status=GoElectricRebateApplication.Status.SUBMITTED
+           Q(status=GoElectricRebateApplication.Status.SUBMITTED) | Q(status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED)
         )
 
     def get_inlines(self, request, obj=None):
@@ -96,6 +97,9 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             obj.save(update_fields=["status"])
         if "reject_application" in request.POST:
             obj.status = GoElectricRebateApplication.Status.DECLINED
+            obj.save(update_fields=["status"])
+        if "cancel_application" in request.POST:
+            obj.status = GoElectricRebateApplication.Status.CANCELLED
             obj.save(update_fields=["status"])
         return ret
 
