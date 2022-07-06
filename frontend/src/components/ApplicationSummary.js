@@ -6,6 +6,7 @@ import DetailsTable from './DetailsTable';
 import { useKeycloak } from '@react-keycloak/web';
 import INeedHelp from './INeedHelp';
 import Loading from './Loading';
+import Button from '@mui/material/Button';
 
 const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
@@ -111,6 +112,21 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
           Return to the Go Electric site to learn about other rebate offers.
         </a>
       </p>
+      <Button
+        className="logout-button"
+        variant="contained"
+        sx={{
+          fontSize: '1.35rem',
+          backgroundColor: '#003154',
+          paddingX: '30px',
+          paddingY: '10px'
+        }}
+        onClick={() => {
+          keycloak.logout();
+        }}
+      >
+        Log out
+      </Button>
     </Box>
   );
 };
