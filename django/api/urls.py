@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-
+from api.viewsets.application_form_open import OpenApplicationFormViewset
 from api.viewsets.application_form import ApplicationFormViewset
 from api.viewsets.household_member import HouseholdMemberApplicationViewset
 
@@ -13,6 +13,8 @@ class OptionalSlashRouter(routers.DefaultRouter):
 
 
 ROUTER = OptionalSlashRouter()
+# uncomment the line below to expose the unrestricted endpoints in OpenApplicationFormViewset
+# ROUTER.register(r"open-application-form", OpenApplicationFormViewset)
 ROUTER.register(r"application-form", ApplicationFormViewset)
 ROUTER.register(r"spouse-application", HouseholdMemberApplicationViewset)
 

@@ -85,7 +85,8 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
         return false;
       }
       return true;
-    }
+    },
+    refetchOnWindowFocus: false
   });
 
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
   const cancelApplication = () => {
     setLoading(true);
     axiosInstance.current
-      .get(`/api/application-form/${id}/cancel`)
+      .patch(`/api/application-form/${id}`, { status: 'cancelled' })
       .then((response) => {
         setApplicationCancelled(true);
         setLoading(false);
