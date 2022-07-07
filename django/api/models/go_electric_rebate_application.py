@@ -113,7 +113,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     def __str__(self):
         if self.is_legacy:
-            return "preITVR ", str(self.id)
+            return "preITVR " + str(self.id)
         else:
             return (
                 self.last_name
