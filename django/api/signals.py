@@ -30,23 +30,24 @@ def after_household_member_save(sender, instance, created, **kwargs):
         application = instance.application
         primary_user = application.user
         secondary_user = instance.user
-        if (
-            primary_user.identity_provider == "bcsc"
-            and secondary_user.identity_provider == "bcsc"
-            and addresses_match(application, secondary_user)
-        ):
-            application.status = GoElectricRebateApplication.Status.VERIFIED
-            application.save()
-        else:
-            application.status = GoElectricRebateApplication.Status.SUBMITTED
-            application.save()
+        if application.status != GoElectricRebateApplication.Status.CANCELLED:
+            if (
+                primary_user.identity_provider == "bcsc"
+                and secondary_user.identity_provider == "bcsc"
+                and addresses_match(application, secondary_user)
+            ):
+                application.status = GoElectricRebateApplication.Status.VERIFIED
+                application.save()
+            else:
+                application.status = GoElectricRebateApplication.Status.SUBMITTED
+                application.save()
 
-        if settings.EMAIL["SEND_EMAIL"]:
-            async_task(
-                "api.tasks.send_household_confirm",
-                application.email,
-                application.id,
-            )
+            if settings.EMAIL["SEND_EMAIL"]:
+                async_task(
+                    "api.tasks.send_household_confirm",
+                    application.email,
+                    application.id,
+                )
 
 
 @receiver(post_save, sender=GoElectricRebateApplication)
@@ -76,6 +77,12 @@ def after_status_change(sender, instance, created, **kwargs):
                 instance.email,
                 instance.id,
                 instance.tax_year,
+            )
+        elif instance.status == GoElectricRebateApplication.Status.CANCELLED:
+            async_task(
+                "api.tasks.send_cancel",
+                instance.email,
+                instance.id,
             )
 
 
