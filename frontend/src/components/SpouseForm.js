@@ -21,7 +21,6 @@ import { addTokenFields } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import HouseholdLoginError from './HouseholdLoginError';
 
 export const defaultValues = {
   application: '',
@@ -38,7 +37,12 @@ export const defaultValues = {
   consent_tax: false
 };
 
-const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
+const SpouseForm = ({
+  id,
+  setNumberOfErrors,
+  setErrorsExistCounter,
+  setSameUser
+}) => {
   const [loading, setLoading] = useState(false);
   const [applicationCancelled, setApplicationCancelled] = useState(false);
   const { keycloak } = useKeycloak();
@@ -165,7 +169,10 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
       errorResponse.data &&
       errorResponse.data.error === 'same_user'
     ) {
-      return <HouseholdLoginError id={id} />;
+      setSameUser({
+        error: true,
+        logoutUri: `${window.location.origin}/household?q=${id}`
+      });
     } else if (
       errorResponse &&
       errorResponse.data &&
