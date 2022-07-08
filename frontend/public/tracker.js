@@ -35,6 +35,5 @@ if (window.itvr_config && window.itvr_config.REACT_APP_ENV === 'test') {
   });
   window.snowplow('enableActivityTracking', 30, 30); // Ping every 30 seconds after 30 seconds
   window.snowplow('enableLinkClickTracking');
-  window.snowplow('trackPageView');
   // <!-- Snowplow stops plowing -->
 }
