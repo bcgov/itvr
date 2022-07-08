@@ -204,7 +204,9 @@ objects:
                 - name: CORS_ORIGIN_WHITELIST
                   value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"          
                 - name: CRA_ENVIRONMENT
-                  value: ${CRA_ENVIRONMENT}                                  
+                  value: ${CRA_ENVIRONMENT}
+                - name: RUN_JOBS
+                  value: 'true'                                  
               readinessProbe:  
                 exec:
                   command:
