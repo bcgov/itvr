@@ -97,42 +97,35 @@ def show_psycopg2_exception(err):
     print("pgcode:", err.pgcode, "\n")
 
 
-# Define function using copy_from() with StringIO to insert the
-# dataframe
-def copy_from_dataFile_StringIO(conn, datafrm, table):
-
-    # save dataframe to an in memory buffer
-    buffer = StringIO()
-    datafrm.to_csv(buffer, header=False, index=False)
-    buffer.seek(0)
-
-    cursor = conn.cursor()
-    try:
-        cursor.copy_from(
-            buffer,
+def single_inserts(conn, df, table):
+    for i in df.index:
+        cols = ",".join(list(df.columns))
+        vals = [df.at[i, col] for col in list(df.columns)]
+        query = "INSERT INTO %s(%s) VALUES('%s','%s','%s','%s',%s, '%s')" % (
             table,
-            columns=[
-                "drivers_licence",
-                "status",
-                "created",
-                "modified",
-                "is_legacy",
-                "id",
-            ],
-            sep=",",
+            cols,
+            vals[0],
+            vals[1],
+            vals[2],
+            vals[3],
+            vals[4],
+            vals[5],
         )
-        conn.commit()
-        print("Data inserted using copy_from_datafile_StringIO() successfully....")
-
-    except (Exception, pg.DatabaseError) as err:
-        # pass exception to function
-        show_psycopg2_exception(err)
-        cursor.close()
-    cursor.close()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(query)
+            conn.commit()
+        except (Exception, pg.DatabaseError) as error:
+            print("Error:", error)
+            show_psycopg2_exception(error)
+            conn.rollback()
+            cursor.close()
+            # return 1
+    print("single_inserts() done")
 
 
 # Connect to the database
 conn = connect(conn_params)
 conn.autocommit = True
-# Run the copy_from_dataFile_StringIO() method
-copy_from_dataFile_StringIO(conn, df, "go_electric_rebate_application")
+
+single_inserts(conn, df, "go_electric_rebate_application")
