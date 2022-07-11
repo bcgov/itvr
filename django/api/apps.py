@@ -9,7 +9,7 @@ class ApiConfig(AppConfig):
     verbose_name = "Submitted Rebate Applications"
 
     def ready(self):
-        import api.signals
+        import api.signal_receivers
         from api.scheduled_jobs import schedule_get_ncda_redeemed_rebates
 
         if settings.RUN_JOBS and "qcluster" in sys.argv:

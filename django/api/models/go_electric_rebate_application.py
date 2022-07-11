@@ -27,6 +27,7 @@ from api.validators import (
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import classproperty
+from api.signals import household_application_saved
 
 media_storage = get_storage_class()()
 
@@ -34,11 +35,14 @@ media_storage = get_storage_class()()
 class ApplicationManager(Manager):
     def create(self, **kwargs):
         spouse_email = kwargs.pop("spouse_email", None)
-        obj = self.model(**kwargs)
-        self._for_write = True
+        obj = super().create(**kwargs)
         if spouse_email:
-            obj.spouse_email = spouse_email
-        obj.save(force_insert=True, using=self.db)
+            household_application_saved.send(
+                sender=GoElectricRebateApplication,
+                instance=obj,
+                created=True,
+                spouse_email=spouse_email,
+            )
         return obj
 
 
@@ -176,6 +180,10 @@ class GoElectricRebateApplication(TimeStampedModel):
             CheckConstraint(
                 check=Q(is_legacy__exact=True) | Q(tax_year__isnull=False),
                 name="tax_year_null_constraint",
+            ),
+            CheckConstraint(
+                check=Q(is_legacy__exact=True) | Q(application_type__isnull=False),
+                name="application_type_null_constraint",
             ),
             CheckConstraint(
                 check=Q(is_legacy__exact=True) | Q(consent_personal__isnull=False),
