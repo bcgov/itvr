@@ -13,8 +13,6 @@ class OptionalSlashRouter(routers.DefaultRouter):
 
 
 ROUTER = OptionalSlashRouter()
-# uncomment the line below to expose the unrestricted endpoints in OpenApplicationFormViewset
-# ROUTER.register(r"open-application-form", OpenApplicationFormViewset)
 ROUTER.register(r"application-form", ApplicationFormViewset)
 ROUTER.register(r"spouse-application", HouseholdMemberApplicationViewset)
 
