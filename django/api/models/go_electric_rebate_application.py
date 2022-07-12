@@ -208,3 +208,16 @@ class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
     @classproperty
     def admin_display_change(cls):
         return False
+
+
+class InitiatedGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+
+    @classproperty
+    def admin_label(cls):
+        return "Review Initiated Applications"
+
+    @classproperty
+    def admin_display_change(cls):
+        return False
