@@ -19,6 +19,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-H", "--host", help="hostname", default="localhost")
 parser.add_argument("-P", "--port", help="port", default="5432")
 parser.add_argument("-F", "--file", help="Spreadsheet", default="")
+parser.add_argument("-U", "--user", help="user", default="postgres")
+parser.add_argument("-PW", "--password", help="password", default="postgres")
 
 args = parser.parse_args()
 
@@ -26,9 +28,10 @@ conn_params = {
     "host": args.host,
     "port": args.port,
     "database": "itvr",
-    "user": "postgres",
-    "password": "postgres",
+    "user": args.user,
+    "password": args.password,
 }
+
 
 # Define a connect function for PostgreSQL database server
 def connect(conn_params):
