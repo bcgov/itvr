@@ -216,7 +216,7 @@ class InitiatedGoElectricRebateApplication(GoElectricRebateApplication):
 
     @classproperty
     def admin_label(cls):
-        return "Review Initiated Applications"
+        return "Cancel Applications"
 
     @classproperty
     def admin_display_change(cls):

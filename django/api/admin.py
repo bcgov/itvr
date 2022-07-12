@@ -158,13 +158,6 @@ class InitiatedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
         )
 
-    def get_inlines(self, request, obj=None):
-        # TODO update this to use the proper enum later.
-        if obj and obj.application_type == "household":
-            return [HouseholdApplicationInline]
-        else:
-            return []
-
     def has_delete_permission(self, request, obj=None):
         return False
 
@@ -184,6 +177,6 @@ class InitiatedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         fail_silently=False,
     ):
         revised_level = level
-        if "reject_application" in request.POST:
+        if "cancel_application" in request.POST:
             revised_level = messages_custom.NEGATIVE_SUCCESS
         super().message_user(request, message, revised_level, extra_tags, fail_silently)
