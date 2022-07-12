@@ -114,7 +114,15 @@ class GoElectricRebateApplication(TimeStampedModel):
         if self.is_legacy:
             return "preITVR ", str(self.id)
         else:
-            return self.last_name + ", " + self.first_name + ": " + str(self.id) + ": " + self.status
+            return (
+                self.last_name
+                + ", "
+                + self.first_name
+                + ": "
+                + str(self.id)
+                + ": "
+                + self.status
+            )
 
     class Meta:
         db_table = "go_electric_rebate_application"
@@ -187,6 +195,19 @@ class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
     @classproperty
     def admin_label(cls):
         return "Review Applications"
+
+    @classproperty
+    def admin_display_change(cls):
+        return False
+
+
+class InitiatedGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+
+    @classproperty
+    def admin_label(cls):
+        return "Review Initiated Applications"
 
     @classproperty
     def admin_display_change(cls):
