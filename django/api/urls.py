@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from api.viewsets.application_form_open import OpenApplicationFormViewset
 from api.viewsets.application_form import ApplicationFormViewset
 from api.viewsets.household_member import HouseholdMemberApplicationViewset
 
