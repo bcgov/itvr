@@ -1,8 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.household_member import HouseholdMember
 from rest_framework.parsers import FormParser, MultiPartParser
-from api.validators import validate_file_size
-from django.core.exceptions import ValidationError
 
 
 class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
@@ -19,13 +17,6 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
 class HouseholdMemberApplicationCreateSerializerDefault(
     HouseholdMemberApplicationCreateSerializer
 ):
-    def validate(self, data):
-        if data.get("doc1") is None or data.get("doc2") is None:
-            raise ValidationError("Missing required document.")
-        validate_file_size(data["doc1"])
-        validate_file_size(data["doc2"])
-        return data
-
     def create(self, validated_data):
         user = self.context["request"].user
 

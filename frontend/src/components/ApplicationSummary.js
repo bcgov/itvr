@@ -12,6 +12,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
   const { keycloak } = useKeycloak();
   const idp = keycloak.tokenParsed.identity_provider;
+  const displayName = keycloak.tokenParsed.display_name;
   const detailUrl =
     applicationType === 'household'
       ? `/api/spouse-application/${id}`
@@ -105,7 +106,7 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
         information you’ve submitted."
       />
       <h2>What you submitted</h2>
-      <DetailsTable data={{ ...data, idp }} />
+      <DetailsTable data={{ ...data, idp, displayName }} />
       <h2>Other rebate offers for you</h2>
       <p>
         <a href="https://goelectricbc.gov.bc.ca/">

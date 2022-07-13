@@ -10,7 +10,7 @@ function createData(name, answer) {
   return { name, answer };
 }
 
-function createConsentValue(consent, firstName, lastName, timestamp, idp) {
+function createConsentValue(consent, displayName, timestamp, idp) {
   const timestampSplit = timestamp.split('T');
   const date = timestampSplit[0];
   const time = timestampSplit[1].split('.')[0];
@@ -26,8 +26,7 @@ function createConsentValue(consent, firstName, lastName, timestamp, idp) {
     return (
       authType +
       '\\' +
-      firstName.charAt(0).toUpperCase() +
-      lastName.toUpperCase() +
+      displayName +
       ' ' +
       date +
       ' ' +
@@ -57,8 +56,7 @@ const DetailsTable = ({ data }) => {
       'Consent to Disclosure and Storage of, and Access to, Personal Information:',
       createConsentValue(
         data.consent_personal,
-        data.first_name,
-        data.last_name,
+        data.displayName,
         data.created,
         data.idp
       )
@@ -67,8 +65,7 @@ const DetailsTable = ({ data }) => {
       'Consent to Disclosure of Information from Income Tax Records:',
       createConsentValue(
         data.consent_tax,
-        data.first_name,
-        data.last_name,
+        data.displayName,
         data.created,
         data.idp
       )
