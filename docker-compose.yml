@@ -89,6 +89,7 @@ services:
       - CHES_EMAIL_URL
       - SEND_EMAIL
       - NCDA_CLIENT_SECRET
+      - RUN_JOBS=TRUE
     volumes:
       - ./django:/api
     depends_on:

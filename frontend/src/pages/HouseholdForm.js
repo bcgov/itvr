@@ -3,6 +3,7 @@ import SpouseForm from '../components/SpouseForm';
 import Layout from '../components/Layout';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import HouseholdLoginError from '../components/HouseholdLoginError';
 
 const HouseholdFormPage = () => {
   const [searchParams] = useSearchParams();
@@ -10,6 +11,7 @@ const HouseholdFormPage = () => {
   const [numberOfErrors, setNumberOfErrors] = useState(0);
   const [errorsExistCounter, setErrorsExistCounter] = useState(0);
   const errorMessageRef = useRef(null);
+  const [sameUser, setSameUser] = useState({ error: false });
 
   useEffect(() => {
     if (numberOfErrors > 0) {
@@ -24,17 +26,22 @@ const HouseholdFormPage = () => {
           Passenger Vehicle Rebate Application Form – CleanBC Go Electric
         </title>
       </Helmet>
-      <Layout>
+      <Layout logoutUri={sameUser.logoutUri}>
         {numberOfErrors > 0 && (
           <span className="error" ref={errorMessageRef}>
             Errors below, please ensure all fields are complete
           </span>
         )}
-        <SpouseForm
-          id={householdApplicationId}
-          setNumberOfErrors={setNumberOfErrors}
-          setErrorsExistCounter={setErrorsExistCounter}
-        />
+        {sameUser.error ? (
+          <HouseholdLoginError id={householdApplicationId} />
+        ) : (
+          <SpouseForm
+            id={householdApplicationId}
+            setNumberOfErrors={setNumberOfErrors}
+            setErrorsExistCounter={setErrorsExistCounter}
+            setSameUser={setSameUser}
+          />
+        )}
       </Layout>
     </div>
   );

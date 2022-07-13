@@ -203,8 +203,35 @@ objects:
                   value: 'true'
                 - name: CORS_ORIGIN_WHITELIST
                   value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"          
+                - name: NCDA_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef: 
+                      name: itvr-ncda
+                      key: NCDA_CLIENT_ID
+                - name: NCDA_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_CLIENT_SECRET
+                - name: NCDA_RESOURCE
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_RESOURCE
+                - name: NCDA_AUTH_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_AUTH_URL
+                - name: NCDA_SHAREPOINT_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-ncda
+                      key: NCDA_SHAREPOINT_URL                     
                 - name: CRA_ENVIRONMENT
-                  value: ${CRA_ENVIRONMENT}                                  
+                  value: ${CRA_ENVIRONMENT}
+                - name: RUN_JOBS
+                  value: 'true'                                  
               readinessProbe:  
                 exec:
                   command:

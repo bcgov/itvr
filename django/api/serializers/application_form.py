@@ -1,11 +1,10 @@
-from api.validators import validate_file_size
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from rest_framework.parsers import FormParser, MultiPartParser
 from datetime import date
-from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
+
 
 class ApplicationFormCreateSerializer(ModelSerializer):
     parser_classes = (
@@ -15,7 +14,7 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
     class Meta:
         model = GoElectricRebateApplication
-        exclude = ["user", "status", "tax_year"]
+        exclude = ["user", "status", "tax_year", "is_legacy"]
 
     def _get_tax_year(self):
         today = date.today()
@@ -27,13 +26,6 @@ class ApplicationFormCreateSerializer(ModelSerializer):
 
 
 class ApplicationFormCreateSerializerDefault(ApplicationFormCreateSerializer):
-    def validate(self, data):
-        if data.get("doc1") is None or data.get("doc2") is None:
-            raise ValidationError("Missing required document.")
-        validate_file_size(data["doc1"])
-        validate_file_size(data["doc2"])
-        return data
-
     def create(self, validated_data):
         request = self.context["request"]
         user = request.user
@@ -152,8 +144,4 @@ class ApplicationFormSerializer(ModelSerializer):
 class ApplicationFormSpouseSerializer(ModelSerializer):
     class Meta:
         model = GoElectricRebateApplication
-        fields = [
-            "address",
-            "city",
-            "postal_code",
-        ]
+        fields = ["address", "city", "postal_code", "status"]

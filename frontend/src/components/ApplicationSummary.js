@@ -6,11 +6,13 @@ import DetailsTable from './DetailsTable';
 import { useKeycloak } from '@react-keycloak/web';
 import INeedHelp from './INeedHelp';
 import Loading from './Loading';
+import Button from '@mui/material/Button';
 
 const ApplicationSummary = ({ id, applicationType = '' }) => {
   const axiosInstance = useAxios();
   const { keycloak } = useKeycloak();
   const idp = keycloak.tokenParsed.identity_provider;
+  const displayName = keycloak.tokenParsed.display_name;
   const detailUrl =
     applicationType === 'household'
       ? `/api/spouse-application/${id}`
@@ -104,13 +106,28 @@ const ApplicationSummary = ({ id, applicationType = '' }) => {
         information you’ve submitted."
       />
       <h2>What you submitted</h2>
-      <DetailsTable data={{ ...data, idp }} />
+      <DetailsTable data={{ ...data, idp, displayName }} />
       <h2>Other rebate offers for you</h2>
       <p>
         <a href="https://goelectricbc.gov.bc.ca/">
           Return to the Go Electric site to learn about other rebate offers.
         </a>
       </p>
+      <Button
+        className="logout-button"
+        variant="contained"
+        sx={{
+          fontSize: '1.35rem',
+          backgroundColor: '#003154',
+          paddingX: '30px',
+          paddingY: '10px'
+        }}
+        onClick={() => {
+          keycloak.logout();
+        }}
+      >
+        Log out
+      </Button>
     </Box>
   );
 };

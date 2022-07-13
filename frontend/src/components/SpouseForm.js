@@ -37,8 +37,14 @@ export const defaultValues = {
   consent_tax: false
 };
 
-const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
+const SpouseForm = ({
+  id,
+  setNumberOfErrors,
+  setErrorsExistCounter,
+  setSameUser
+}) => {
   const [loading, setLoading] = useState(false);
+  const [applicationCancelled, setApplicationCancelled] = useState(false);
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
   const queryClient = useQueryClient();
@@ -62,10 +68,30 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
       .get(`/api/application-form/${id}/household`)
       .then((response) => response.data);
 
-  const { data, isLoading, isError, error } = useQuery(
-    ['spouse-application', id],
-    queryFn
-  );
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['spouse-application', id],
+    queryFn: queryFn,
+    retry: (failureCount, error) => {
+      const errorResponse = error.response;
+      if (
+        errorResponse &&
+        errorResponse.data &&
+        errorResponse.data.error === 'same_user'
+      ) {
+        return false;
+      } else if (
+        errorResponse &&
+        errorResponse.data &&
+        errorResponse.data.error === 'application_cancelled'
+      ) {
+        return false;
+      } else if (failureCount >= 2) {
+        return false;
+      }
+      return true;
+    },
+    refetchOnWindowFocus: false
+  });
 
   const navigate = useNavigate();
   const mutation = useMutation((data) => {
@@ -117,13 +143,46 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
     }
   };
 
+  const cancelApplication = () => {
+    setLoading(true);
+    axiosInstance.current
+      .patch(`/api/application-form/${id}`, { status: 'cancelled' })
+      .then((response) => {
+        setApplicationCancelled(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
+
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading open={true} />;
+  }
+  if (applicationCancelled) {
+    return <p>This application has been cancelled</p>;
   }
   if (isError) {
+    const errorResponse = error.response;
+    if (
+      errorResponse &&
+      errorResponse.data &&
+      errorResponse.data.error === 'same_user'
+    ) {
+      setSameUser({
+        error: true,
+        logoutUri: `${window.location.origin}/household?q=${id}`
+      });
+    } else if (
+      errorResponse &&
+      errorResponse.data &&
+      errorResponse.data.error === 'application_cancelled'
+    ) {
+      setApplicationCancelled(true);
+    }
     return <p>{error.message}</p>;
   }
-  const { address, city, postal_code: postalCode } = data;
+  const { address, city, postal_code: postalCode, status } = data;
   return (
     <FormProvider {...methods}>
       <Loading open={loading} />
@@ -289,6 +348,30 @@ const SpouseForm = ({ id, setNumberOfErrors, setErrorsExistCounter }) => {
           Submit Application
         </Button>
       </form>
+      {status === 'household_initiated' && (
+        <Box>
+          <p>
+            If you are unable to complete this application click Cancel
+            Application. This will notify the primary applicant and enable them
+            to start a new application.
+          </p>
+          <Button
+            variant="contained"
+            sx={{
+              fontSize: '1.35rem',
+              backgroundColor: 'white',
+              color: 'red',
+              border: '1px solid red',
+              paddingX: '30px',
+              paddingY: '10px'
+            }}
+            disabled={loading}
+            onClick={cancelApplication}
+          >
+            Cancel Application
+          </Button>
+        </Box>
+      )}
     </FormProvider>
   );
 };

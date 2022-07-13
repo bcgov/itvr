@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../styles/images/BCID_H_rgb_rev.png';
 import Logout from './Logout';
 
-const Header = (props) => {
+const Header = ({ logoutUri }) => {
   return (
     <div className="page-header">
       <div className="cleanbc-banner">
@@ -23,7 +23,7 @@ const Header = (props) => {
           </a>
         </div>
         <div className="right">
-          <Logout />
+          <Logout logoutUri={logoutUri} />
         </div>
       </div>
       <div className="title">
