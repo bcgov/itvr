@@ -8,8 +8,10 @@ import TableRow from '@mui/material/TableRow';
 
 const InfoTable = ({ householdInfo = {}, kcToken = '' }) => {
   const [errors, seterrors] = useState(false);
+  const missingBcscfields = []
   function createData(name, answer) {
     if (answer === null) {
+      missingBcscfields.push(name)
       seterrors(true);
     }
     return { name, answer };
@@ -39,8 +41,7 @@ const InfoTable = ({ householdInfo = {}, kcToken = '' }) => {
           BC Services Card app.
         </p>
         {errors  === true && (
-            <p className="error">Your BC Services Card app has provided incomplete information. 
-            Please correct this with your BC Services Card app first before using this application form.</p>
+            <p className="error">Your BC Services Card app has provided incomplete information, the following field(s) are missing: {missingBcscfields.join(', ')}</p>
           )}
         </div>
 
