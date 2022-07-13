@@ -5,7 +5,6 @@ from django.db.models import (
     BooleanField,
     PROTECT,
     ForeignKey,
-    UUIDField,
 )
 
 from django.core.validators import MinLengthValidator
@@ -31,3 +30,6 @@ class GoElectricRebate(TimeStampedModel):
 
     def __str__(self):
         return "DL: " + self.drivers_licence + ", $" + str(self.rebate_max_amount)
+
+    class Meta:
+        db_table = "go_electric_rebate"

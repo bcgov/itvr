@@ -58,7 +58,8 @@ def validate_consent(has_consented):
 
 # uses max filesize of 5MB
 def validate_file_size(file):
-    max_size = 5242880
-    filesize = file.size
-    if filesize > max_size:
-        raise ValidationError("File too large.")
+    if file:
+        max_size = 5242880
+        filesize = file.size
+        if filesize > max_size:
+            raise ValidationError("File too large.")
