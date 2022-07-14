@@ -1,6 +1,8 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
+from api.services.clam_av import get_clamd_scanner
+from .settings import VIRUS_SCANNING_ENABLED
 
 
 def validate_driving_age(dob):
@@ -58,8 +60,18 @@ def validate_consent(has_consented):
 
 # uses max filesize of 5MB
 def validate_file_size(file):
-    if file:
-        max_size = 5242880
-        filesize = file.size
-        if filesize > max_size:
-            raise ValidationError("File too large.")
+    max_size = 5242880
+    filesize = file.size
+    if filesize > max_size:
+        raise ValidationError("File too large.")
+
+
+def validate_file_safe(file):
+    if VIRUS_SCANNING_ENABLED:
+        scanner = get_clamd_scanner()
+        try:
+            result = scanner.instream(file)
+        except Exception:
+            raise ValidationError("Cannot scan file.")
+        if result and result["stream"][0] == "FOUND":
+            raise ValidationError("File infected.")

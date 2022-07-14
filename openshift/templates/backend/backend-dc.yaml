@@ -6,7 +6,7 @@ metadata:
 parameters:
   - name: NAME
     displayName: null
-    description: 'the module name entered when run yo bcdk:pipeline, which is itvr'
+    description: "the module name entered when run yo bcdk:pipeline, which is itvr"
     required: true
   - name: SUFFIX
     displayName: null
@@ -19,12 +19,12 @@ parameters:
   - name: ENV_NAME
     value: dev
     displayName: Environment name
-    description: 'Environment name, dev, test and prod'
+    description: "Environment name, dev, test and prod"
     required: true
   - name: BACKEND_HOST_NAME
     displayName: Host name for route
     description: Host name for route
-    required: true    
+    required: true
   - name: CPU_REQUEST
     displayName: Requested CPU
     description: Requested CPU
@@ -42,20 +42,20 @@ parameters:
     description: Memory upper limit
     required: true
   - name: HEALTH_CHECK_DELAY
-    value: '150'
+    value: "150"
     displayName: Memory upper limit
     description: Memory upper limit
-    required: true    
+    required: true
   - name: REPLICAS
-    value: '1'
+    value: "1"
     required: true
   - name: DJANGO_DEBUG
-    value: 'False'
+    value: "False"
     required: true
   - name: BUCKET_NAME
     displayName: bucket name
     description: bucket name
-    required: true 
+    required: true
   - name: CRA_ENVIRONMENT
     description: the environment for CRA, P for production, A for all other envs
     required: true
@@ -78,24 +78,24 @@ objects:
       annotations:
         description: Keeps track of changes in the backend image
       labels:
-        shared: "true"        
+        shared: "true"
       creationTimestamp: null
-      name: '${NAME}-backend'
+      name: "${NAME}-backend"
     spec:
       lookupPolicy:
         local: false
     status:
-      dockerImageRepository: ''
+      dockerImageRepository: ""
   - apiVersion: v1
     kind: Service
     metadata:
       creationTimestamp: null
-      name: '${NAME}-backend${SUFFIX}'
-#      labels:
-#        name: backend
-#        app: itvr
-#        role: backend
-#        env: '${ENV_NAME}'
+      name: "${NAME}-backend${SUFFIX}"
+    #      labels:
+    #        name: backend
+    #        app: itvr
+    #        role: backend
+    #        env: '${ENV_NAME}'
     spec:
       ports:
         - name: backend
@@ -103,7 +103,7 @@ objects:
           protocol: TCP
           targetPort: 8080
       selector:
-        name: '${NAME}-backend${SUFFIX}'
+        name: "${NAME}-backend${SUFFIX}"
       sessionAffinity: None
       type: ClusterIP
     status:
@@ -111,10 +111,10 @@ objects:
   - apiVersion: route.openshift.io/v1
     kind: Route
     metadata:
-      creationTimestamp: 
-      annotations:      
-        haproxy.router.openshift.io/timeout: 1200s      
-        env: '${ENV_NAME}'
+      creationTimestamp:
+      annotations:
+        haproxy.router.openshift.io/timeout: 1200s
+        env: "${ENV_NAME}"
       name: ${NAME}-backend${SUFFIX}
     spec:
       host: ${BACKEND_HOST_NAME}
@@ -126,16 +126,16 @@ objects:
         termination: edge
       to:
         kind: Service
-        name: '${NAME}-backend${SUFFIX}'
+        name: "${NAME}-backend${SUFFIX}"
         weight: 100
       wildcardPolicy: None
   - apiVersion: route.openshift.io/v1
     kind: Route
     metadata:
-      creationTimestamp: 
-      annotations:      
-        haproxy.router.openshift.io/timeout: 1200s      
-        env: '${ENV_NAME}'
+      creationTimestamp:
+      annotations:
+        haproxy.router.openshift.io/timeout: 1200s
+        env: "${ENV_NAME}"
       name: ${NAME}-backend-admin${SUFFIX}
     spec:
       host: ${BACKEND_HOST_NAME}
@@ -147,16 +147,16 @@ objects:
         termination: edge
       to:
         kind: Service
-        name: '${NAME}-backend${SUFFIX}'
+        name: "${NAME}-backend${SUFFIX}"
         weight: 100
       wildcardPolicy: None
   - apiVersion: route.openshift.io/v1
     kind: Route
     metadata:
-      creationTimestamp: 
-      annotations:      
-        haproxy.router.openshift.io/timeout: 1200s      
-        env: '${ENV_NAME}'
+      creationTimestamp:
+      annotations:
+        haproxy.router.openshift.io/timeout: 1200s
+        env: "${ENV_NAME}"
       name: ${NAME}-backend-static${SUFFIX}
     spec:
       host: ${BACKEND_HOST_NAME}
@@ -168,31 +168,31 @@ objects:
         termination: edge
       to:
         kind: Service
-        name: '${NAME}-backend${SUFFIX}'
+        name: "${NAME}-backend${SUFFIX}"
         weight: 100
       wildcardPolicy: None
-#  - apiVersion: route.openshift.io/v1
-#    kind: Route
-#    metadata:
-#      creationTimestamp: null
-#      labels:
-#        name: backend
-#        app: itvr
-#        role: backend
-#        env: '${ENV_NAME}'
-#      name: '${NAME}-backend-health${SUFFIX}'
-#    spec:
-#      host: ${HOST_NAME}
-#      path: /health
-#      port:
-#        targetPort: backend
-#      tls:
-#        termination: edge
-#      to:
-#        kind: Service
-#        name: '${NAME}-backend${SUFFIX}'
-#        weight: 100
-#      wildcardPolicy: None
+  #  - apiVersion: route.openshift.io/v1
+  #    kind: Route
+  #    metadata:
+  #      creationTimestamp: null
+  #      labels:
+  #        name: backend
+  #        app: itvr
+  #        role: backend
+  #        env: '${ENV_NAME}'
+  #      name: '${NAME}-backend-health${SUFFIX}'
+  #    spec:
+  #      host: ${HOST_NAME}
+  #      path: /health
+  #      port:
+  #        targetPort: backend
+  #      tls:
+  #        termination: edge
+  #      to:
+  #        kind: Service
+  #        name: '${NAME}-backend${SUFFIX}'
+  #        weight: 100
+  #      wildcardPolicy: None
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
@@ -213,7 +213,7 @@ objects:
             execNewPod:
               command:
                 - /bin/sh
-                - '-c'
+                - "-c"
                 - |-
                   python ./manage.py migrate
                   python ./manage.py createcachetable
@@ -275,7 +275,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: itvr-keycloak
-                      key: BCSC_KEYCLOAK_URL           
+                      key: BCSC_KEYCLOAK_URL
                 - name: BCEID_KEYCLOAK_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
@@ -290,12 +290,12 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: itvr-keycloak
-                      key: BCEID_KEYCLOAK_URL                          
+                      key: BCEID_KEYCLOAK_URL
                 - name: DJANGO_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
                       name: itvr-django-secret${SUFFIX}
-                      key: DJANGO_SECRET_KEY      
+                      key: DJANGO_SECRET_KEY
                 - name: DJANGO_SALT_KEY
                   valueFrom:
                     secretKeyRef:
@@ -305,7 +305,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: itvr-email-service
-                      key: EMAIL_SERVICE_CLIENT_ID                      
+                      key: EMAIL_SERVICE_CLIENT_ID
                 - name: EMAIL_SERVICE_CLIENT_SECRET
                   valueFrom:
                     secretKeyRef:
@@ -315,7 +315,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: itvr-email-service
-                      key: CHES_AUTH_URL                      
+                      key: CHES_AUTH_URL
                 - name: CHES_EMAIL_URL
                   valueFrom:
                     secretKeyRef:
@@ -325,14 +325,14 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: itvr-email-service
-                      key: SENDER_EMAIL      
+                      key: SENDER_EMAIL
                 - name: SENDER_NAME
                   valueFrom:
                     secretKeyRef:
                       name: itvr-email-service
                       key: SENDER_NAME
                 - name: SEND_EMAIL
-                  value: 'True'
+                  value: "True"
                 - name: MINIO_ENDPOINT
                   valueFrom:
                     secretKeyRef:
@@ -347,12 +347,12 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: ${NAME}-object-storage
-                      key: root-password    
+                      key: root-password
                 - name: MINIO_BUCKET_NAME
-                  value: ${BUCKET_NAME}  
+                  value: ${BUCKET_NAME}
                 - name: NCDA_CLIENT_ID
                   valueFrom:
-                    secretKeyRef: 
+                    secretKeyRef:
                       name: itvr-ncda
                       key: NCDA_CLIENT_ID
                 - name: NCDA_CLIENT_SECRET
@@ -374,11 +374,17 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: itvr-ncda
-                      key: NCDA_SHAREPOINT_URL                                                        
+                      key: NCDA_SHAREPOINT_URL
                 - name: CRA_ENVIRONMENT
-                  value: ${CRA_ENVIRONMENT}                      
+                  value: ${CRA_ENVIRONMENT}
                 - name: DJANGO_DEBUG
                   value: ${DJANGO_DEBUG}
+                - name: VIRUS_SCANNING_ENABLED
+                  value: "True"
+                - name: CLAMD_HOST
+                  value: "itvr-clamav"
+                - name: CLAMD_PORT
+                  value: "3310"
               livenessProbe:
                 failureThreshold: 30
                 tcpSocket:
