@@ -24,6 +24,7 @@ from api.validators import (
     validate_sin,
     validate_consent,
     validate_file_size,
+    validate_file_safe,
 )
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
@@ -81,7 +82,10 @@ class GoElectricRebateApplication(TimeStampedModel):
     date_of_birth = DateField(validators=[validate_driving_age], null=True)
     tax_year = IntegerField(null=True)
     doc1 = ImageField(
-        upload_to="docs", blank=True, null=True, validators=[validate_file_size]
+        upload_to="docs",
+        blank=True,
+        null=True,
+        validators=[validate_file_size, validate_file_safe],
     )
 
     def doc1_tag(self):
@@ -93,7 +97,10 @@ class GoElectricRebateApplication(TimeStampedModel):
     doc1_tag.short_description = "First Uploaded Document"
 
     doc2 = ImageField(
-        upload_to="docs", blank=True, null=True, validators=[validate_file_size]
+        upload_to="docs",
+        blank=True,
+        null=True,
+        validators=[validate_file_size, validate_file_safe],
     )
 
     def doc2_tag(self):
