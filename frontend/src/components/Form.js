@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
@@ -51,9 +51,15 @@ export const defaultValues = {
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
   const [DOB, setDOB] = useState(new Date());
+  const [BcscFieldError, setBcscFieldError] = useState(false);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
+  useEffect(() => {
+    if (checkBCSC(kcToken).length > 0) {
+      setBcscFieldError(true)
+    }
+    }, [kcToken]);
   const methods = useForm({
     defaultValues
   });
@@ -504,7 +510,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || BcscFieldError}
         >
           Submit Application
         </Button>
