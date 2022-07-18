@@ -17,7 +17,7 @@ import Upload from './upload/Upload';
 import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import InfoTable from './InfoTable';
-import { addTokenFields } from '../keycloak';
+import { addTokenFields, checkBCSC } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -200,7 +200,7 @@ const SpouseForm = ({
         </p>
         <InfoTable householdInfo={data} />
         {kcToken.identity_provider === 'bcsc' ? (
-          <InfoTable kcToken={kcToken} />
+          <InfoTable kcToken={kcToken} bcerrors={checkBCSC(kcToken)} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
