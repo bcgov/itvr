@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="container">
         <ul>
           <li>
-            <a href="https://goelectricbc.gov.bc.ca/">Home</a>
+            <a href="http://www.gov.bc.ca">Home</a>
           </li>
           <li>
             <a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">

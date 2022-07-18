@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -44,7 +44,7 @@ const SpouseForm = ({
   setSameUser
 }) => {
   const [loading, setLoading] = useState(false);
-  const [applicationCancelled, setApplicationCancelled] = useState(false);
+  const [applicationBlocked, setApplicationBlocked] = useState(false);
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
   const queryClient = useQueryClient();
@@ -62,14 +62,10 @@ const SpouseForm = ({
   } = methods;
   const [DOB, setDOB] = useState(new Date());
   const axiosInstance = useAxios();
-
-  const [BcscFieldError, setBcscFieldError] = useState(false);
-  useEffect(() => {
-    if (checkBCSC(kcToken).length > 0) {
-      setBcscFieldError(true);
-    }
-  }, [kcToken]);
-
+  let bcscMissingFields = [];
+  if (kcToken.identity_provider === 'bcsc') {
+    bcscMissingFields = checkBCSC(kcToken);
+  }
   const queryFn = () =>
     axiosInstance.current
       .get(`/api/application-form/${id}/household`)
@@ -89,7 +85,7 @@ const SpouseForm = ({
       } else if (
         errorResponse &&
         errorResponse.data &&
-        errorResponse.data.error === 'application_cancelled'
+        errorResponse.data.error === 'application_advanced'
       ) {
         return false;
       } else if (failureCount >= 2) {
@@ -155,7 +151,7 @@ const SpouseForm = ({
     axiosInstance.current
       .patch(`/api/application-form/${id}`, { status: 'cancelled' })
       .then((response) => {
-        setApplicationCancelled(true);
+        setApplicationBlocked(true);
         setLoading(false);
       })
       .catch((error) => {
@@ -166,8 +162,12 @@ const SpouseForm = ({
   if (isLoading) {
     return <Loading open={true} />;
   }
-  if (applicationCancelled) {
-    return <p>This application has been cancelled</p>;
+  if (applicationBlocked) {
+    return (
+      <p>
+        This application has already been completed, or it has been cancelled.
+      </p>
+    );
   }
   if (isError) {
     const errorResponse = error.response;
@@ -183,9 +183,9 @@ const SpouseForm = ({
     } else if (
       errorResponse &&
       errorResponse.data &&
-      errorResponse.data.error === 'application_cancelled'
+      errorResponse.data.error === 'application_advanced'
     ) {
-      setApplicationCancelled(true);
+      setApplicationBlocked(true);
     }
     return <p>{error.message}</p>;
   }
@@ -207,7 +207,7 @@ const SpouseForm = ({
         </p>
         <InfoTable householdInfo={data} />
         {kcToken.identity_provider === 'bcsc' ? (
-          <InfoTable kcToken={kcToken} bcerrors={checkBCSC(kcToken)} />
+          <InfoTable kcToken={kcToken} bcscMissingFields={bcscMissingFields} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
@@ -350,7 +350,7 @@ const SpouseForm = ({
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading || BcscFieldError}
+          disabled={loading || bcscMissingFields.length > 0}
         >
           Submit Application
         </Button>

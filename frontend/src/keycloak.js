@@ -64,7 +64,7 @@ export const checkBCSC = (kcToken) => {
   return missingBcscfields;
 };
 
-export const checkField = (name, answer, missingBcscfields) => {
+const checkField = (name, answer, missingBcscfields) => {
   if (!answer) {
     missingBcscfields.push(name);
   }
