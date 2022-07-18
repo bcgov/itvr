@@ -57,9 +57,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const kcToken = keycloak.tokenParsed;
   useEffect(() => {
     if (checkBCSC(kcToken).length > 0) {
-      setBcscFieldError(true)
+      setBcscFieldError(true);
     }
-    }, [kcToken]);
+  }, [kcToken]);
   const methods = useForm({
     defaultValues
   });

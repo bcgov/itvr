@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -62,6 +62,13 @@ const SpouseForm = ({
   } = methods;
   const [DOB, setDOB] = useState(new Date());
   const axiosInstance = useAxios();
+
+  const [BcscFieldError, setBcscFieldError] = useState(false);
+  useEffect(() => {
+    if (checkBCSC(kcToken).length > 0) {
+      setBcscFieldError(true);
+    }
+  }, [kcToken]);
 
   const queryFn = () =>
     axiosInstance.current
@@ -343,7 +350,7 @@ const SpouseForm = ({
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || BcscFieldError}
         >
           Submit Application
         </Button>
