@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -17,7 +17,7 @@ import Upload from './upload/Upload';
 import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import InfoTable from './InfoTable';
-import { addTokenFields } from '../keycloak';
+import { addTokenFields, checkBCSC } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -62,6 +62,13 @@ const SpouseForm = ({
   } = methods;
   const [DOB, setDOB] = useState(new Date());
   const axiosInstance = useAxios();
+
+  const [BcscFieldError, setBcscFieldError] = useState(false);
+  useEffect(() => {
+    if (checkBCSC(kcToken).length > 0) {
+      setBcscFieldError(true);
+    }
+  }, [kcToken]);
 
   const queryFn = () =>
     axiosInstance.current
@@ -200,7 +207,7 @@ const SpouseForm = ({
         </p>
         <InfoTable householdInfo={data} />
         {kcToken.identity_provider === 'bcsc' ? (
-          <InfoTable kcToken={kcToken} />
+          <InfoTable kcToken={kcToken} bcerrors={checkBCSC(kcToken)} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
@@ -343,7 +350,7 @@ const SpouseForm = ({
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || BcscFieldError}
         >
           Submit Application
         </Button>
