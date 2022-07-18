@@ -7,18 +7,10 @@ const Header = ({ logoutUri }) => {
     <div className="page-header">
       <div className="cleanbc-banner">
         <div className="left">
-          <a
-            href="http://www.gov.bc.ca"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
+          <a href="http://www.gov.bc.ca" rel="noopener noreferrer">
             <img src={logo} alt="Government of B.C." />
           </a>
-          <a
-            href="https://goelectricbc.gov.bc.ca/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
+          <a href="https://goelectricbc.gov.bc.ca/" rel="noopener noreferrer">
             CleanBC Go Electric
           </a>
         </div>

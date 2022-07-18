@@ -51,8 +51,8 @@ class ApplicationFormViewset(
     @action(detail=True, methods=["GET"], url_path="household")
     def household(self, request, pk=None):
         application = GoElectricRebateApplication.objects.get(pk=pk)
-        if application.status == GoElectricRebateApplication.Status.CANCELLED:
-            error = {"error": "application_cancelled"}
+        if application.status != GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED:
+            error = {"error": "application_advanced"}
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         application_user_id = application.user.id
         household_user_id = request.user.id

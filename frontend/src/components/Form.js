@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
@@ -51,15 +51,13 @@ export const defaultValues = {
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
   const [DOB, setDOB] = useState(new Date());
-  const [BcscFieldError, setBcscFieldError] = useState(false);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
-  useEffect(() => {
-    if (checkBCSC(kcToken).length > 0) {
-      setBcscFieldError(true);
-    }
-  }, [kcToken]);
+  let bcscMissingFields = [];
+  if (kcToken.identity_provider === 'bcsc') {
+    bcscMissingFields = checkBCSC(kcToken);
+  }
   const methods = useForm({
     defaultValues
   });
@@ -204,7 +202,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           <span> secure form submission</span>
         </Box>
         {kcToken.identity_provider === 'bcsc' ? (
-          <InfoTable kcToken={kcToken} bcerrors={checkBCSC(kcToken)} />
+          <InfoTable kcToken={kcToken} bcscMissingFields={bcscMissingFields} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
@@ -428,7 +426,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         </FormGroup>
         <FormGroup sx={{ mt: '20px' }}>
           {errors?.drivers_licence?.type === 'dlFormat' && (
-            <p className="error">Not a valid B.C. Driver's Licence Number</p>
+            <p className="error">Not a valid BC Driver's Licence Number</p>
           )}
           {errors?.drivers_licence?.type === 'dlExists' && (
             <p className="error">
@@ -510,7 +508,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading || BcscFieldError}
+          disabled={loading || bcscMissingFields.length > 0}
         >
           Submit Application
         </Button>

@@ -50,7 +50,7 @@ const DetailsTable = ({ data }) => {
     createData('Postal Code:', data.postal_code),
     createData('Social Insurance Number (SIN):', data.sin),
     data.drivers_licence &&
-      createData("B.C. Driver's Licence number:", data.drivers_licence),
+      createData("BC Driver's Licence number:", data.drivers_licence),
     createData('Tax Year:', data.tax_year),
     createData(
       'Consent to Disclosure and Storage of, and Access to, Personal Information:',
