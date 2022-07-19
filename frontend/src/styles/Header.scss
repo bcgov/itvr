@@ -29,6 +29,10 @@
     font-size: 1rem;
     .logoutButton {
       cursor: pointer;
+      border: none;
+      background: none;
+      font: inherit;
+      color: inherit;
     }
   }
 }
