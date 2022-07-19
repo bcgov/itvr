@@ -362,3 +362,23 @@ def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
         status=GoElectricRebateApplication.Status.REDEEMED,
         modified=timezone.now(),
     )
+
+
+# Auto-Cancel "household" applications in "initiated" status for more than 28 days
+def cancel_household_applications_initiated_status():
+    # get all applications in "initiated" status
+    applications = GoElectricRebateApplication.objects.filter(
+        status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
+    )
+    # get all applications that are "household"
+    # household_applications = applications.filter(application_type=GoElectricRebateApplication.ApplicationType.HOUSEHOLD)
+
+    # get all applications that are "household" and "initiated" for more than 28 days
+    household_applications_initiated_28_days = applications.filter(
+        modified__lte=timezone.now() - timedelta(days=28)
+    )
+    # cancel all household applications that are "initiated" for more than 28 days
+    household_applications_initiated_28_days.update(
+        status=GoElectricRebateApplication.Status.CANCELLED,
+        modified=timezone.now(),
+    )

@@ -10,10 +10,14 @@ class ApiConfig(AppConfig):
 
     def ready(self):
         import api.signal_receivers
-        from api.scheduled_jobs import schedule_get_ncda_redeemed_rebates
+        from api.scheduled_jobs import (
+            schedule_get_ncda_redeemed_rebates,
+            schedule_cancel_initiated_household,
+        )
 
         if settings.RUN_JOBS and "qcluster" in sys.argv:
             schedule_get_ncda_redeemed_rebates()
+            schedule_cancel_initiated_household()
 
 
 class ITVRAdminConfig(AdminConfig):
