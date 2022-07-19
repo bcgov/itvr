@@ -122,6 +122,11 @@ a {
   font-size: 1.5rem;
   font-weight: normal;
 
+  &:focus {
+    outline: 4px solid #3b99fc;
+    outline-offset: 5px;
+  }
+
   &:disabled {
     color: $grey-dark;
     background-image: none;

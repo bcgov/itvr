@@ -8,7 +8,7 @@ const Logout = ({ logoutUri }) => {
     return (
       <div className="logout">
         <span>{'Logged in as: ' + kcToken.display_name + ' |'}</span>
-        <span
+        <button
           className="logoutButton"
           onClick={() => {
             if (logoutUri) {
@@ -18,8 +18,8 @@ const Logout = ({ logoutUri }) => {
             }
           }}
         >
-          &nbsp;Log out
-        </span>
+          Log out
+        </button>
       </div>
     );
   }
