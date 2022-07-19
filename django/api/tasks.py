@@ -13,6 +13,7 @@ from api.models.go_electric_rebate_application import (
 )
 from django_q.models import Schedule
 from datetime import timedelta
+from django_q.tasks import async_task
 
 
 def get_email_service_token() -> str:
@@ -304,6 +305,7 @@ def send_not_approve(recipient_email, application_id, tax_year):
 
 
 def send_cancel(recipient_email, application_id):
+    print("Sending cancel email to {}".format(recipient_email))
     message = """\
         <html>
         <body>
@@ -372,15 +374,28 @@ def cancel_household_applications_initiated_status():
     applications = GoElectricRebateApplication.objects.filter(
         status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
     )
-    # get all applications that are "household"
-    # household_applications = applications.filter(application_type=GoElectricRebateApplication.ApplicationType.HOUSEHOLD)
 
     # get all applications that are "household" and "initiated" for more than 28 days
     household_applications_initiated_28_days = applications.filter(
         modified__lte=timezone.now() - timedelta(days=28)
     )
+
+    # send email to all household applications that are "initiated" for more than 28 days
+    for application in household_applications_initiated_28_days:
+        print("Sending cancel email to {}".format(application.email))
+        send_cancel(application.email, application.id)
+        print("cancelled " + application.email)
+
     # cancel all household applications that are "initiated" for more than 28 days
     household_applications_initiated_28_days.update(
         status=GoElectricRebateApplication.Status.CANCELLED,
         modified=timezone.now(),
     )
+
+    # send email
+    # for application in household_applications_initiated_28_days:
+    #     async_task(
+    #         "api.tasks.send_cancel",
+    #         application.email,
+    #         application.id,
+    #     )
