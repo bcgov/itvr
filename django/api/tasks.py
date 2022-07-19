@@ -379,12 +379,16 @@ def cancel_household_applications_initiated_status():
         created__lte=timezone.now() - timedelta(days=28)
     )
 
-    # send email to all household applications that are "initiated" for more than 28 days
-    for application in household_applications_initiated_28_days:
-        post_save.send(
-            sender=GoElectricRebateApplication, instance=application, created=False
-        )
     # cancel all household applications that are "initiated" for more than 28 days
     household_applications_initiated_28_days.update(
         status=GoElectricRebateApplication.Status.CANCELLED,
     )
+
+    # send email to all household applications that are "initiated" for more than 28 days
+    for application in household_applications_initiated_28_days:
+        post_save.send(
+            sender=GoElectricRebateApplication,
+            instance=application,
+            created=False,
+            update_fields={"status"},
+        )
