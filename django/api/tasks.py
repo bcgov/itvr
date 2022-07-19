@@ -13,6 +13,7 @@ from api.models.go_electric_rebate_application import (
 )
 from django_q.models import Schedule
 from datetime import timedelta
+from django.db.models.signals import post_save
 
 
 def get_email_service_token() -> str:
@@ -324,6 +325,8 @@ def send_cancel(recipient_email, application_id):
             </li>
         </ul>
 
+        <p>You are encouraged to apply again as an individual if your spouse is unable to complete the household application.</p>
+
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
@@ -362,3 +365,33 @@ def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
         status=GoElectricRebateApplication.Status.REDEEMED,
         modified=timezone.now(),
     )
+
+
+# Auto-Cancel "household" applications in "initiated" status for more than 28 days
+def cancel_household_applications_initiated_status():
+
+    # get all applications in "initiated" status
+    applications = GoElectricRebateApplication.objects.filter(
+        status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
+    )
+
+    # get all applications that are "household" and "initiated" for more than 28 days
+    household_applications_initiated_28_days = applications.filter(
+        created__lte=timezone.now() - timedelta(days=28)
+    )
+
+    household_applications_list = list(household_applications_initiated_28_days)
+
+    # cancel all household applications that are "initiated" for more than 28 days
+    household_applications_initiated_28_days.update(
+        status=GoElectricRebateApplication.Status.CANCELLED,
+    )
+
+    # send email to all household applications that are "initiated" for more than 28 days
+    for application in household_applications_list:
+        post_save.send(
+            sender=GoElectricRebateApplication,
+            instance=application,
+            created=False,
+            update_fields={"status"},
+        )
