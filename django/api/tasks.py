@@ -324,6 +324,8 @@ def send_cancel(recipient_email, application_id):
             </li>
         </ul>
 
+        <p>You are encouraged to apply again as an individual if your spouse is unable to complete the household application.</p>
+
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
