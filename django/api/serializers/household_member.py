@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (
+    ModelSerializer,
+    SerializerMethodField,
+    ValidationError,
+)
 from api.models.household_member import HouseholdMember
 from rest_framework.parsers import FormParser, MultiPartParser
 
@@ -8,6 +12,13 @@ class HouseholdMemberApplicationCreateSerializer(ModelSerializer):
         MultiPartParser,
         FormParser,
     )
+
+    def validate(self, data):
+        user_id = self.context["request"].user.id
+        application_user_id = data["application"].user.id
+        if user_id == application_user_id:
+            raise ValidationError("spouse cannot be the same as the main applicant")
+        return data
 
     class Meta:
         model = HouseholdMember
