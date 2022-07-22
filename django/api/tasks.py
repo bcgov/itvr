@@ -11,7 +11,6 @@ from api.models.go_electric_rebate import GoElectricRebate
 from api.models.go_electric_rebate_application import (
     GoElectricRebateApplication,
 )
-from django_q.models import Schedule
 from datetime import timedelta
 from django.db.models.signals import post_save
 
@@ -343,13 +342,8 @@ def send_cancel(recipient_email, application_id):
 
 
 # check for newly redeemed rebates
-def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
-    ts = timezone.now().strftime("%Y-%m-%dT00:00:00Z")
-    if iso_ts:
-        ts = iso_ts
-    elif schedule_func_name:
-        schedule = Schedule.objects.get(func__exact=schedule_func_name)
-        ts = (schedule.next_run - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%SZ")
+def check_rebates_redeemed_since(iso_ts=None):
+    ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
     print("check_rebate_status " + ts)
     ncda_ids = get_rebates_redeemed_since(ts)
     print(ncda_ids)
@@ -367,28 +361,22 @@ def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
     )
 
 
-# Auto-Cancel "household" applications in "initiated" status for more than 28 days
-def cancel_household_applications_initiated_status():
+# cancels household_initiated applications with a created_time <= (current_time - 28 days)
+def cancel_untouched_household_applications():
 
-    # get all applications in "initiated" status
-    applications = GoElectricRebateApplication.objects.filter(
+    applications_qs = GoElectricRebateApplication.objects.filter(
         status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
-    )
+    ).filter(created__lte=timezone.now() - timedelta(days=28))
 
-    # get all applications that are "household" and "initiated" for more than 28 days
-    household_applications_initiated_28_days = applications.filter(
-        created__lte=timezone.now() - timedelta(days=28)
-    )
+    applications = list(applications_qs)
 
-    household_applications_list = list(household_applications_initiated_28_days)
-
-    # cancel all household applications that are "initiated" for more than 28 days
-    household_applications_initiated_28_days.update(
+    applications_qs.update(
         status=GoElectricRebateApplication.Status.CANCELLED,
+        modified=timezone.now(),
     )
 
-    # send email to all household applications that are "initiated" for more than 28 days
-    for application in household_applications_list:
+    for application in applications:
+        application.status = GoElectricRebateApplication.Status.CANCELLED
         post_save.send(
             sender=GoElectricRebateApplication,
             instance=application,

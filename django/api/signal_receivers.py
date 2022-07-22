@@ -20,13 +20,14 @@ def create_application(sender, instance, created, **kwargs):
 
 @receiver(household_application_saved, sender=GoElectricRebateApplication)
 def after_household_application_created(sender, instance, created, **kwargs):
-    spouse_email = kwargs.get("spouse_email")
-    async_task(
-        "api.tasks.send_spouse_initial_message",
-        spouse_email,
-        instance.id,
-        instance.email,
-    )
+    if settings.EMAIL["SEND_EMAIL"]:
+        spouse_email = kwargs.get("spouse_email")
+        async_task(
+            "api.tasks.send_spouse_initial_message",
+            spouse_email,
+            instance.id,
+            instance.email,
+        )
 
 
 @receiver(post_save, sender=HouseholdMember)
