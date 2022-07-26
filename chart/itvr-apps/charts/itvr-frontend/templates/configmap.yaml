@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: {{ include "itvr-frontend.configmapName" . }}
+    creationTimestamp:
+data:
+    features.js: "window.itvr_config = {\n  \"REACT_APP_BCSC_KEYCLOAK_CLIENT_ID\": \"{{ .Values.frontend.reactAppBCSCKeycloakClientId }}\",\n
+    \ \"REACT_APP_BCSC_KEYCLOAK_REALM\": \" {{ .Values.frontend.reactAppBCSCKeycloakRealm }}\",\n  \"REACT_APP_BCSC_KEYCLOAK_URL\":
+    \"{{ .Values.frontend.reactAppBCSCKeycloakUrl }}\",          \n  \"REACT_APP_BCEID_KEYCLOAK_CLIENT_ID\":
+    \"{{ .Values.frontend.reactAppBCeIDKeycloakClientId }}\",\n  \"REACT_APP_BCEID_KEYCLOAK_REALM\": \"{{ .Values.frontend.reactAppBCeIDKeycloakRealm }}\",\n
+    \ \"REACT_APP_BCEID_KEYCLOAK_URL\": \"{{ .Values.frontend.reactAppBCeIDKeycloakUrl }}\",\n  \"REACT_APP_API_BASE\":
+    \"{{ .Values.frontend.reactAppApiBase }}\",\n  \"REACT_APP_ENV\":
+    \"{{ .Values.envName }}\"\n};\n"

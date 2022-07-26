@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "itvr-frontend.serviceName" . }}
+  name: {{ include "itvr-backend.serviceName" . }}
   labels:
-    {{- include "itvr-frontend.labels" . | nindent 4 }}
+    {{- include "itvr-backend.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,5 +12,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "itvr-frontend.selectorLabels" . | nindent 4 }}
+    {{- include "itvr-backend.selectorLabels" . | nindent 4 }}
   sessionAffinity: None
