@@ -3,6 +3,7 @@ from api.models.go_electric_rebate import GoElectricRebate
 from datetime import date, timedelta
 from django.db.models.signals import post_save
 from api.services.calculate_rebate import RebateType
+from django.utils import timezone
 
 
 # gets applications from rebates
@@ -58,8 +59,11 @@ def update_application_statuses(rebates, applications):
                     application.status = GoElectricRebateApplication.Status.NOT_APPROVED
                 else:
                     application.status = GoElectricRebateApplication.Status.APPROVED
+                application.modified = timezone.now()
                 application_objs.append(application)
-        GoElectricRebateApplication.objects.bulk_update(application_objs, ["status"])
+        GoElectricRebateApplication.objects.bulk_update(
+            application_objs, ["status", "modified"]
+        )
         for application in application_objs:
             post_save.send(
                 sender=GoElectricRebateApplication,
