@@ -1,12 +1,29 @@
 from django_q.tasks import schedule
-from django_q.models import Schedule
+from django.db import IntegrityError
 
-
-def schedule_exists(func_name):
-    return Schedule.objects.filter(func__exact=func_name).exists()
+# trying to create a schedule with the same name as an already created schedule will raise an IntegrityError
 
 
 def schedule_get_ncda_redeemed_rebates():
-    task_name = "api.tasks.check_rebates_redeemed_since"
-    if not schedule_exists(task_name):
-        schedule(task_name, None, task_name, schedule_type="D")
+    try:
+        schedule(
+            "api.tasks.check_rebates_redeemed_since",
+            name="check_rebates_redeemed_since",
+            schedule_type="C",
+            cron="00 22 * * *",
+            include_scheduled_run_day_minus_one=True,
+        )
+    except IntegrityError:
+        pass
+
+
+def schedule_cancel_untouched_household_applications():
+    try:
+        schedule(
+            "api.tasks.cancel_untouched_household_applications",
+            name="cancel_untouched_household_applications",
+            schedule_type="C",
+            cron="30 22 * * *",
+        )
+    except IntegrityError:
+        pass

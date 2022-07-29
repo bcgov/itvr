@@ -6,7 +6,11 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 
-const InfoTable = ({ householdInfo = {}, kcToken = '' }) => {
+const InfoTable = ({
+  householdInfo = {},
+  kcToken = '',
+  bcscMissingFields = []
+}) => {
   function createData(name, answer) {
     return { name, answer };
   }
@@ -28,10 +32,18 @@ const InfoTable = ({ householdInfo = {}, kcToken = '' }) => {
   return (
     <>
       {kcToken && (
-        <p className="info-table-text">
-          Your name, date of birth and address below has been provided from your
-          BC Services Card app.
-        </p>
+        <div>
+          <p className="info-table-text">
+            Your name, date of birth and address below has been provided from
+            your BC Services Card app.
+          </p>
+          {bcscMissingFields.length > 0 && (
+            <p className="error">
+              Your BC Services Card app has provided incomplete information, the
+              following field(s) are missing: {bcscMissingFields.join(', ')}
+            </p>
+          )}
+        </div>
       )}
       <TableContainer>
         <Table sx={{ minWidth: 100, maxWidth: 700 }} aria-label="simple table">

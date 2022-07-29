@@ -253,3 +253,7 @@ NCDA_SHAREPOINT_URL = os.getenv(
 MESSAGE_TAGS = messages_custom.TAGS
 
 RUN_JOBS = os.getenv("RUN_JOBS", False)
+
+VIRUS_SCANNING_ENABLED = os.getenv("VIRUS_SCANNING_ENABLED", False)
+CLAMD_HOST = os.getenv("CLAMD_HOST", "clamav")
+CLAMD_PORT = int(os.getenv("CLAMD_PORT", 3310))

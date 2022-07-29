@@ -49,3 +49,23 @@ export const addTokenFields = (data, kcToken) => {
   }
   return data;
 };
+
+export const checkBCSC = (kcToken) => {
+  const missingBcscfields = [];
+  checkField(
+    'Your last name (surname)',
+    kcToken.family_name,
+    missingBcscfields
+  );
+  checkField('First name (given name)', kcToken.given_name, missingBcscfields);
+  checkField('Date of birth', kcToken.birthdate, missingBcscfields);
+  checkField('Street address', kcToken.street_address, missingBcscfields);
+  checkField('City', kcToken.locality, missingBcscfields);
+  return missingBcscfields;
+};
+
+const checkField = (name, answer, missingBcscfields) => {
+  if (!answer) {
+    missingBcscfields.push(name);
+  }
+};

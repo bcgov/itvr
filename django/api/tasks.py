@@ -11,8 +11,8 @@ from api.models.go_electric_rebate import GoElectricRebate
 from api.models.go_electric_rebate_application import (
     GoElectricRebateApplication,
 )
-from django_q.models import Schedule
 from datetime import timedelta
+from django.db.models.signals import post_save
 
 
 def get_email_service_token() -> str:
@@ -324,6 +324,8 @@ def send_cancel(recipient_email, application_id):
             </li>
         </ul>
 
+        <p>You are encouraged to apply again as an individual if your spouse is unable to complete the household application.</p>
+
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
@@ -340,13 +342,8 @@ def send_cancel(recipient_email, application_id):
 
 
 # check for newly redeemed rebates
-def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
-    ts = timezone.now().strftime("%Y-%m-%dT00:00:00Z")
-    if iso_ts:
-        ts = iso_ts
-    elif schedule_func_name:
-        schedule = Schedule.objects.get(func__exact=schedule_func_name)
-        ts = (schedule.next_run - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%SZ")
+def check_rebates_redeemed_since(iso_ts=None):
+    ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
     print("check_rebate_status " + ts)
     ncda_ids = get_rebates_redeemed_since(ts)
     print(ncda_ids)
@@ -362,3 +359,27 @@ def check_rebates_redeemed_since(iso_ts=None, schedule_func_name=None):
         status=GoElectricRebateApplication.Status.REDEEMED,
         modified=timezone.now(),
     )
+
+
+# cancels household_initiated applications with a created_time <= (current_time - 28 days)
+def cancel_untouched_household_applications():
+
+    applications_qs = GoElectricRebateApplication.objects.filter(
+        status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
+    ).filter(created__lte=timezone.now() - timedelta(days=28))
+
+    applications = list(applications_qs)
+
+    applications_qs.update(
+        status=GoElectricRebateApplication.Status.CANCELLED,
+        modified=timezone.now(),
+    )
+
+    for application in applications:
+        application.status = GoElectricRebateApplication.Status.CANCELLED
+        post_save.send(
+            sender=GoElectricRebateApplication,
+            instance=application,
+            created=False,
+            update_fields={"status"},
+        )

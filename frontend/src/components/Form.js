@@ -25,7 +25,7 @@ import Upload from './upload/Upload';
 import Loading from './Loading';
 import { useKeycloak } from '@react-keycloak/web';
 import InfoTable from './InfoTable';
-import { addTokenFields } from '../keycloak';
+import { addTokenFields, checkBCSC } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -54,6 +54,10 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
+  let bcscMissingFields = [];
+  if (kcToken.identity_provider === 'bcsc') {
+    bcscMissingFields = checkBCSC(kcToken);
+  }
   const methods = useForm({
     defaultValues
   });
@@ -198,7 +202,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           <span> secure form submission</span>
         </Box>
         {kcToken.identity_provider === 'bcsc' ? (
-          <InfoTable kcToken={kcToken} />
+          <InfoTable kcToken={kcToken} bcscMissingFields={bcscMissingFields} />
         ) : (
           <>
             <FormGroup sx={{ mt: '20px' }}>
@@ -422,7 +426,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
         </FormGroup>
         <FormGroup sx={{ mt: '20px' }}>
           {errors?.drivers_licence?.type === 'dlFormat' && (
-            <p className="error">Not a valid B.C. Driver's Licence Number</p>
+            <p className="error">Not a valid BC Driver's Licence Number</p>
           )}
           {errors?.drivers_licence?.type === 'dlExists' && (
             <p className="error">
@@ -504,7 +508,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             paddingX: '30px',
             paddingY: '10px'
           }}
-          disabled={loading}
+          disabled={loading || bcscMissingFields.length > 0}
         >
           Submit Application
         </Button>

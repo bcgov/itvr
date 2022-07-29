@@ -68,12 +68,12 @@ objects:
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-minio-accepts${SUFFIX}
+      name: allow-clamav-accepts${SUFFIX}
     spec:
       ## Allow minio to accept communication from backend
       podSelector:
         matchLabels:
-          app.kubernetes.io/instance: itvr-minio
+          app.kubernetes.io/instance: itvr-clamav
       ingress:
         - from:
             - podSelector:
@@ -81,4 +81,4 @@ objects:
                   name: itvr-backend${SUFFIX}
           ports:
             - protocol: TCP
-              port: 9000                  
+              port: 3310               

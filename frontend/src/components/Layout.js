@@ -7,6 +7,7 @@ const Layout = ({ children, logoutUri }) => {
   const location = useLocation();
   useEffect(() => {
     if (window.snowplow) {
+      window.snowplow('refreshLinkClickTracking');
       window.snowplow('trackPageView');
     }
   }, [location]);

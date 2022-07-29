@@ -10,10 +10,15 @@ class ApiConfig(AppConfig):
 
     def ready(self):
         import api.signal_receivers
-        from api.scheduled_jobs import schedule_get_ncda_redeemed_rebates
+        import api.monkey_patches.itvr_django_q.cluster
+        from api.scheduled_jobs import (
+            schedule_get_ncda_redeemed_rebates,
+            schedule_cancel_untouched_household_applications,
+        )
 
         if settings.RUN_JOBS and "qcluster" in sys.argv:
             schedule_get_ncda_redeemed_rebates()
+            schedule_cancel_untouched_household_applications()
 
 
 class ITVRAdminConfig(AdminConfig):

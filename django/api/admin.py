@@ -34,6 +34,7 @@ class HouseholdApplicationInline(admin.StackedInline):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    search_fields = ["drivers_licence", "id", "status"]
     pass
 
 
