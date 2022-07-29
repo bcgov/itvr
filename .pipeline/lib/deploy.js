@@ -92,7 +92,8 @@ module.exports = settings => {
       'REPLICAS':  phases[phase].backendReplicas,
       'DJANGO_DEBUG': phases[phase].backendDjangoDebug,
       'CRA_ENVIRONMENT':  phases[phase].craEnvironment,       
-      'BUCKET_NAME': phases[phase].bucketName
+      'BUCKET_NAME': phases[phase].bucketName,
+      'CORS_ORIGIN_WHITELIST': phases[phase].corsOriginWhitelist
     }
   })) 
 
@@ -107,7 +108,8 @@ module.exports = settings => {
       'MEMORY_LIMIT': phases[phase].taskQueueMemoryLimit,
       'REPLICAS':  phases[phase].taskQueueReplicas,
       'CRA_ENVIRONMENT':  phases[phase].craEnvironment, 
-      'DJANGO_DEBUG': phases[phase].taskQueueDjangoDebug
+      'DJANGO_DEBUG': phases[phase].taskQueueDjangoDebug,
+      'CORS_ORIGIN_WHITELIST': phases[phase].corsOriginWhitelist
     }
   })) 
 

@@ -59,6 +59,9 @@ parameters:
   - name: CRA_ENVIRONMENT
     description: the environment for CRA, P for production, A for all other envs
     required: true
+  - name: CORS_ORIGIN_WHITELIST
+    description: CORS_ORIGIN_WHITELIST
+    required: true    
 objects:
   - apiVersion: v1
     kind: Secret
@@ -236,7 +239,7 @@ objects:
                 - name: ALLOWED_HOSTS
                   value: ${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca
                 - name: CORS_ORIGIN_WHITELIST
-                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"
+                  value: ${CORS_ORIGIN_WHITELIST}
                 - name: BACKEND_ORIGIN
                   value: https://${NAME}-backend${SUFFIX}.apps.silver.devops.gov.bc.ca
                 - name: DB_ENGINE
