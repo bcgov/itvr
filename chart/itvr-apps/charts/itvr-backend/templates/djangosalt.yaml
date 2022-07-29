@@ -1,0 +1,9 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: {{ include "itvr-backend.django-salt" . }}
+  labels:
+    {{- include "itvr-backend.labels" . | nindent 4 }}  
+data:
+  DJANGO_SALT_KEY: {{ include "itvr-backend.djangoSaltKey" . }}
+type: Opaque

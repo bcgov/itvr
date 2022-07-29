@@ -4,31 +4,18 @@
 
 replicaCount: 1
 
-toolsNamespace: ac294c-tools
-envNamespace: ac294c-dev
-envName: dev
-
-# decide which image in tools project will be used
-imageTools:
-  repository: image-registry.openshift-image-registry.svc:5000
-  tag: itvr-frontend@sha256:40d75efd2f366efc04d251dbe14bcfcd05a66a93f8419968d72c0596a4965e23
+image:
+  repository: image-registry.openshift-image-registry.svc:5000/ac294c-tools/itvr-frontend
   pullPolicy: IfNotPresent
-
-# decide the imagestream will be created in env projects
-# for pr based, coulde user the value fpr 1.0.0-<pr number>
-imageEnv:
-  tag: 1.0.0
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "build-1.0.0-205"
 
 imagePullSecrets: []
 
 ## For ITVR Frontend App, set the following two, will result in 
 ## itvr-frontend.fullname and itvr-frontend.name are itve-frontend
-#nameOverride: "itvr-frontend"
-#fullnameOverride: "itvr-frontend"
-
 nameOverride: ""
 fullnameOverride: ""
-
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -78,11 +65,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 60m
-    memory: 60Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
-    cpu: 30m
-    memory: 30Mi
+    cpu: 100m
+    memory: 128Mi
 
 autoscaling:
   enabled: false
@@ -96,14 +83,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-frontend:
-  reactAppBCSCKeycloakClientId: itvr
-  reactAppBCSCKeycloakRealm: rzh2zkjq
-  reactAppBCSCKeycloakUrl: https://dev.oidc.gov.bc.ca/auth/
-  reactAppApiBase: https://itvr-backend-dev.apps.silver.devops.gov.bc.ca
-  reactAppBCeIDKeycloakClientId: itvr-2674
-  reactAppBCeIDKeycloakRealm: onestopauth-basic
-  reactAppBCeIDKeycloakUrl: https://dev.oidc.gov.bc.ca/auth/
-
-

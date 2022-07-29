@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "itvr-backend.routeName" . }}
+  annotations:
+    haproxy.router.openshift.io/timeout: 1500s
+  labels:
+    {{- include "itvr-backend.labels" . | nindent 4 }}
+spec:
+  host: {{ include "itvr-backend.fullname" . }}-{{ .Values.envName }}.apps.silver.devops.gov.bc.ca
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: {{ include "itvr-backend.fullname" . }}
+    weight: 100
+  wildcardPolicy: None

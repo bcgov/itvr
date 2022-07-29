@@ -1,0 +1,237 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    description: Defines how to deploy the backend application
+  name: {{ include "itvr-backend.deploymentconfigName" . }}
+  labels:
+    {{- include "itvr-backend.labels" . | nindent 4 }}
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+      timeoutSeconds: 600
+      mid:
+        failurePolicy: Retry
+        execNewPod:
+          command:
+            - /bin/sh
+            - '-c'
+            - |-
+              python ./manage.py migrate
+              python ./manage.py createcachetable      
+          containerName: backend
+    resources: {}
+    activeDeadlineSeconds: 800
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - backend
+        from:
+          kind: ImageStreamTag
+          namespace: {{ .Values.image.namespace }}
+          name: {{ include "itvr-backend.fullname" . }}:{{ .Values.imageEnv.tag }}
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    {{- include "itvr-backend.selectorLabels" . | nindent 4 }}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        {{- include "itvr-backend.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: 120m
+              memory: 300Mi
+            requests:
+              cpu: 60m
+              memory: 150Mi
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 15
+            successThreshold: 1
+            failureThreshold: 20
+          terminationMessagePath: /dev/termination-log
+          name: backend
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 15
+            successThreshold: 1
+            failureThreshold: 20
+          env:
+            - name: ALLOWED_HOSTS
+              value: {{ .Values.backend.allowedHost }}
+            - name: CORS_ORIGIN_WHITELIST
+              value: {{ .Values.backend.corsOriginWhitlist }}
+            - name: BACKEND_ORIGIN
+              value: {{ .Values.backend.backendOrigin }}
+            - name: DB_ENGINE
+              value: django.db.backends.postgresql
+            - name: DB_HOST
+              value: itvr-spilo
+            - name: DB_HOST_READONLY
+              value: itvr-spilo-readonly
+            - name: DB_NAME
+              value: itvr
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-patroni-app
+                  key: app-db-password
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-patroni-app
+                  key: app-db-username
+            - name: APP_CONFIG
+              value: /opt/app-root/src/gunicorn.cfg.py
+            - name: BCSC_KEYCLOAK_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-keycloak
+                  key: BCSC_KEYCLOAK_CLIENT_ID
+            - name: BCSC_KEYCLOAK_REALM
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-keycloak
+                  key: BCSC_KEYCLOAK_REALM
+            - name: BCSC_KEYCLOAK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-keycloak
+                  key: BCSC_KEYCLOAK_URL
+            - name: BCEID_KEYCLOAK_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-keycloak
+                  key: BCEID_KEYCLOAK_CLIENT_ID
+            - name: BCEID_KEYCLOAK_REALM
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-keycloak
+                  key: BCEID_KEYCLOAK_REALM
+            - name: BCEID_KEYCLOAK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-keycloak
+                  key: BCEID_KEYCLOAK_URL
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name:  {{ include "itvr-backend.django-secret" . }}
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_SALT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "itvr-backend.django-salt" . }}
+                  key: DJANGO_SALT_KEY
+            - name: EMAIL_SERVICE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: EMAIL_SERVICE_CLIENT_ID
+            - name: EMAIL_SERVICE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: EMAIL_SERVICE_CLIENT_SECRET
+            - name: CHES_AUTH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: CHES_AUTH_URL
+            - name: CHES_EMAIL_URL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: CHES_EMAIL_URL
+            - name: SENDER_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: SENDER_EMAIL
+            - name: SENDER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: SENDER_NAME
+            - name: SEND_EMAIL
+              value: '{{ .Values.backend.sendEmail }}'
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: server-url
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: root-password
+            - name: MINIO_BUCKET_NAME
+              value: {{ .Values.backend.minioBucketName }}
+            - name: NCDA_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-ncda
+                  key: NCDA_CLIENT_ID
+            - name: NCDA_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-ncda
+                  key: NCDA_CLIENT_SECRET
+            - name: NCDA_RESOURCE
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-ncda
+                  key: NCDA_RESOURCE
+            - name: NCDA_AUTH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-ncda
+                  key: NCDA_AUTH_URL
+            - name: NCDA_SHAREPOINT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-ncda
+                  key: NCDA_SHAREPOINT_URL
+            - name: CRA_ENVIRONMENT
+              value: {{ .Values.backend.craEnvrionment }}
+            - name: DJANGO_DEBUG
+              value: '{{ .Values.backend.djangoDebug }}'
+            - name: VIRUS_SCANNING_ENABLED
+              value: '{{ .Values.backend.virusScanEnabled }}'
+            - name: CLAMD_HOST
+              value: itvr-clamav
+            - name: CLAMD_PORT
+              value: '3310'            
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+
