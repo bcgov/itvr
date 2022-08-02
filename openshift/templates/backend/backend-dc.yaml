@@ -94,11 +94,6 @@ objects:
     metadata:
       creationTimestamp: null
       name: "${NAME}-backend${SUFFIX}"
-    #      labels:
-    #        name: backend
-    #        app: itvr
-    #        role: backend
-    #        env: '${ENV_NAME}'
     spec:
       ports:
         - name: backend
@@ -174,28 +169,6 @@ objects:
         name: "${NAME}-backend${SUFFIX}"
         weight: 100
       wildcardPolicy: None
-  #  - apiVersion: route.openshift.io/v1
-  #    kind: Route
-  #    metadata:
-  #      creationTimestamp: null
-  #      labels:
-  #        name: backend
-  #        app: itvr
-  #        role: backend
-  #        env: '${ENV_NAME}'
-  #      name: '${NAME}-backend-health${SUFFIX}'
-  #    spec:
-  #      host: ${HOST_NAME}
-  #      path: /health
-  #      port:
-  #        targetPort: backend
-  #      tls:
-  #        termination: edge
-  #      to:
-  #        kind: Service
-  #        name: '${NAME}-backend${SUFFIX}'
-  #        weight: 100
-  #      wildcardPolicy: None
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:

@@ -35,7 +35,33 @@ class HouseholdApplicationInline(admin.StackedInline):
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     search_fields = ["drivers_licence", "id", "status"]
-    pass
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+    )
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "status",
+        "email",
+        "user_is_bcsc",
+        "address",
+        "city",
+        "postal_code",
+        "drivers_licence",
+        "date_of_birth",
+        "tax_year",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "consent_personal",
+        "consent_tax",
+        "is_legacy",
+    )
 
 
 # The proxy model is used to avoid a Django limitation where a model can only
