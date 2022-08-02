@@ -41,6 +41,9 @@ parameters:
   - name: CRA_ENVIRONMENT
     description: the environment for CRA, P for production, A for all other envs
     required: true    
+  - name: CORS_ORIGIN_WHITELIST
+    description: CORS_ORIGIN_WHITELIST
+    required: true    
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
@@ -202,7 +205,7 @@ objects:
                 - name: DJANGO_TASKS
                   value: 'true'
                 - name: CORS_ORIGIN_WHITELIST
-                  value: "https://${NAME}${SUFFIX}.apps.silver.devops.gov.bc.ca"          
+                  value: ${CORS_ORIGIN_WHITELIST}      
                 - name: NCDA_CLIENT_ID
                   valueFrom:
                     secretKeyRef: 

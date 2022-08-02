@@ -126,30 +126,31 @@ objects:
       type: ClusterIP
     status:
       loadBalancer: {}
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      creationTimestamp: null
-      annotations:
-        haproxy.router.openshift.io/timeout: 1200s
-      labels:
-        name: frontend
-        app: zeva
-        role: frontend
-        env: ${ENV_NAME}
-      name: ${NAME}-frontend${SUFFIX}
-    spec:
-      host: ${HOST_NAME}
-      port:
-        targetPort: web
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      to:
-        kind: Service
-        name: ${NAME}-frontend${SUFFIX}
-        weight: 100
-      wildcardPolicy: None
+# Commented after ITVR goes live as the official route is enabled
+#  - apiVersion: route.openshift.io/v1
+#    kind: Route
+#    metadata:
+#      creationTimestamp: null
+#      annotations:
+#        haproxy.router.openshift.io/timeout: 1200s
+#      labels:
+#        name: frontend
+#        app: zeva
+#        role: frontend
+#        env: ${ENV_NAME}
+#      name: ${NAME}-frontend${SUFFIX}
+#    spec:
+#      host: ${HOST_NAME}
+#      port:
+#        targetPort: web
+#      tls:
+#        insecureEdgeTerminationPolicy: Redirect
+#        termination: edge
+#      to:
+#        kind: Service
+#        name: ${NAME}-frontend${SUFFIX}
+#        weight: 100
+#      wildcardPolicy: None
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
