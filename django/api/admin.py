@@ -35,6 +35,29 @@ class HouseholdApplicationInline(admin.StackedInline):
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     search_fields = ["drivers_licence", "id", "status"]
+    exclude = ("sin",)
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "email",
+        "user_is_bcsc",
+        "address",
+        "city",
+        "postal_code",
+        "drivers_licence",
+        "date_of_birth",
+        "tax_year",
+        "doc1",
+        "doc2",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "consent_personal",
+        "consent_tax",
+        "is_legacy",
+    )
     pass
 
 
@@ -117,6 +140,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(GoElectricRebate)
 class GoElectricRebateAdmin(admin.ModelAdmin):
+    exclude = ("sin",)
     pass
 
 
