@@ -39,12 +39,14 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "sin",
         "doc1",
         "doc2",
+        "user",
     )
     readonly_fields = (
         "id",
         "last_name",
         "first_name",
         "middle_names",
+        "status",
         "email",
         "user_is_bcsc",
         "address",
