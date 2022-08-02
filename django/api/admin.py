@@ -58,7 +58,6 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "consent_tax",
         "is_legacy",
     )
-    pass
 
 
 # The proxy model is used to avoid a Django limitation where a model can only
@@ -140,7 +139,6 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(GoElectricRebate)
 class GoElectricRebateAdmin(admin.ModelAdmin):
-    exclude = ("sin",)
     pass
 
 
