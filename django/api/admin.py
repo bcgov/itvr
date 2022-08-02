@@ -35,7 +35,11 @@ class HouseholdApplicationInline(admin.StackedInline):
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     search_fields = ["drivers_licence", "id", "status"]
-    exclude = ("sin",)
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+    )
     readonly_fields = (
         "id",
         "last_name",
@@ -49,8 +53,6 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "drivers_licence",
         "date_of_birth",
         "tax_year",
-        "doc1",
-        "doc2",
         "application_type",
         "doc1_tag",
         "doc2_tag",
