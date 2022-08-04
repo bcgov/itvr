@@ -1,9 +1,6 @@
 import pandas as pd
-import numpy as np
 import psycopg2 as pg
-from io import StringIO
-import psycopg2.extras as extras
-from psycopg2 import OperationalError, errorcodes, errors
+from psycopg2 import OperationalError
 import sys
 from datetime import datetime
 import shortuuid
@@ -21,6 +18,12 @@ parser.add_argument("-P", "--port", help="port", default="5432")
 parser.add_argument("-F", "--file", help="Spreadsheet", default="")
 parser.add_argument("-U", "--user", help="user", default="postgres")
 parser.add_argument("-PW", "--password", help="password", default="postgres")
+parser.add_argument(
+    "-SSR",
+    "--supersede_system_records",
+    help="in case of duplicates, cancels system records and imports from spreadsheet",
+    action="store_true",
+)
 
 args = parser.parse_args()
 
@@ -59,7 +62,7 @@ df.drop(
 
 # drop rows where drivers license is a string or greater than 8 characters
 df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-df = df[df["BCDriverLicenseNo"].str.len() <= 8]
+df = df[df["BCDriverLicenseNo"].astype(str).str.len() <= 8]
 df = df[pd.to_numeric(df["BCDriverLicenseNo"], errors="coerce").notnull()]
 
 # convert statuses to uppercase and dropo
@@ -74,7 +77,7 @@ df.rename(
 # drop duplicate drivers licenses
 df.drop_duplicates(subset="drivers_licence", keep="first", inplace=True)
 
-timestamp = datetime.now()
+timestamp = datetime.utcnow()
 df["created"] = timestamp
 df["modified"] = timestamp
 
@@ -100,23 +103,45 @@ def show_psycopg2_exception(err):
     print("pgcode:", err.pgcode, "\n")
 
 
-def single_inserts(conn, df, table):
-    for i in df.index:
-        cols = ",".join(list(df.columns))
-        vals = [df.at[i, col] for col in list(df.columns)]
-        query = "INSERT INTO %s(%s) VALUES('%s','%s','%s','%s',%s, '%s')" % (
+def get_insert_query_string(table, cols, vals):
+    return "INSERT INTO %s(%s) VALUES('%s','%s','%s','%s',%s, '%s')" % (
+        table,
+        cols,
+        vals[0],
+        vals[1],
+        vals[2],
+        vals[3],
+        vals[4],
+        vals[5],
+    )
+
+
+def get_update_query_string(table, modified, dl):
+    return (
+        "UPDATE %s SET status = 'cancelled', modified = '%s' WHERE drivers_licence = '%s' AND is_legacy = 'False' AND status IN ('household_initiated', 'submitted', 'verified')"
+        % (
             table,
-            cols,
-            vals[0],
-            vals[1],
-            vals[2],
-            vals[3],
-            vals[4],
-            vals[5],
+            modified,
+            dl,
         )
+    )
+
+
+def single_inserts(conn, df, table):
+    cols = ",".join(list(df.columns))
+    for i in df.index:
+        vals = [df.at[i, col] for col in list(df.columns)]
+        insert_query = get_insert_query_string(table, cols, vals)
+        update_query = None
+        if args.supersede_system_records:
+            dl = df.at[i, "drivers_licence"]
+            modified = df.at[i, "modified"]
+            update_query = get_update_query_string(table, modified, dl)
         cursor = conn.cursor()
         try:
-            cursor.execute(query)
+            if update_query:
+                cursor.execute(update_query)
+            cursor.execute(insert_query)
             conn.commit()
         except (Exception, pg.DatabaseError) as error:
             print("Error:", error)
