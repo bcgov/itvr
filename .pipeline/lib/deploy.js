@@ -73,7 +73,8 @@ module.exports = settings => {
       'REACT_APP_BCEID_KEYCLOAK_CLIENT_ID': phases[phase].reactAppBCeIDKeycloakClientId,
       'REACT_APP_BCEID_KEYCLOAK_REALM': phases[phase].reactAppBCeIDKeycloakRealm,
       'REACT_APP_BCEID_KEYCLOAK_URL': phases[phase].reactAppBCeIDKeycloakUrl,
-      'REACT_APP_API_BASE': phases[phase].reactAppApiBase
+      'REACT_APP_API_BASE': phases[phase].reactAppApiBase,
+      'SNOWPLOW_COLLECTOR': phases[phase].snowplowCollector
     }
   }))
   
