@@ -72,6 +72,10 @@ parameters:
     displayName: REACT_APP_API_BASE
     description: backend url
     required: true
+  - name: SNOWPLOW_COLLECTOR
+    displayName: SNOWPLOW_COLLECTOR
+    description: SNOWPLOW_COLLECTOR
+    required: true
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
@@ -102,7 +106,8 @@ objects:
           "REACT_APP_BCEID_KEYCLOAK_REALM": "${REACT_APP_BCEID_KEYCLOAK_REALM}",
           "REACT_APP_BCEID_KEYCLOAK_URL": "${REACT_APP_BCEID_KEYCLOAK_URL}",
           "REACT_APP_API_BASE": "${REACT_APP_API_BASE}",
-          "REACT_APP_ENV": "${ENV_NAME}"
+          "REACT_APP_ENV": "${ENV_NAME}",
+          "SNOWPLOW_COLLECTOR": "${SNOWPLOW_COLLECTOR}"
         };
   - apiVersion: v1
     kind: Service
