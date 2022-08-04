@@ -105,5 +105,6 @@ frontend:
   reactAppBCeIDKeycloakClientId: itvr-2674
   reactAppBCeIDKeycloakRealm: onestopauth-basic
   reactAppBCeIDKeycloakUrl: https://dev.oidc.gov.bc.ca/auth/
+  snowplowCollector: ""
 
 
