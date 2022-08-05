@@ -4,31 +4,18 @@
 
 replicaCount: 1
 
-toolsNamespace: ac294c-tools
-envNamespace: ac294c-dev
-envName: dev
-
-# decide which image in tools project will be used
-imageTools:
-  repository: image-registry.openshift-image-registry.svc:5000
-  tag: itvr-backend@sha256:02f9ffc40dc5ed1f17eb364676a9cf4c0ea111c060d0144a9df7d0c5e6211604
+image:
+  repository: image-registry.openshift-image-registry.svc:5000/ac294c-tools/itvr-backend
   pullPolicy: IfNotPresent
-
-# decide the imagestream will be created in env projects
-# for pr based, coulde user the value fpr 1.0.0-<pr number>
-imageEnv:
-  tag: 1.0.0
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "build-1.0.0-205"
 
 imagePullSecrets: []
 
-## For ITVR Baclend App, set the following two, will result in 
-## itvr-backend.fullname and itvr-backend.name are itve-backend
-nameOverride: "itvr-backend"
-fullnameOverride: "itvr-backend"
-
-#nameOverride: ""
-#fullnameOverride: ""
-
+## For ITVR Frontend App, set the following two, will result in 
+## itvr-backend.fullname and itvr-backend.name are itve-frontend
+nameOverride: ""
+fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -78,32 +65,21 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 60m
-    memory: 60Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
-    cpu: 30m
-    memory: 30Mi
+    cpu: 100m
+    memory: 128Mi
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
-  maxReplicas: 2
-  targetCPUUtilizationPercentage: 90
-  targetMemoryUtilizationPercentage: 90
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
-
-backend:
-  allowedHost: itvr-backend-test.apps.silver.devops.gov.bc.ca
-  corsOriginWhitlist: https://itvr-test.apps.silver.devops.gov.bc.ca
-  backendOrigin: https://itvr-backend-test.apps.silver.devops.gov.bc.ca
-  sendEmail: 'True'
-  minioBucketName: itvrdv
-  craEnvrionment: A
-  djangoDebug: 'False'
-  virusScanEnabled: 'True'
-
