@@ -1,4 +1,4 @@
-# Default values for itvr-backend.
+# Default values for itvr-taskq.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -11,7 +11,7 @@ envName: dev
 # decide which image in tools project will be used
 imageTools:
   repository: image-registry.openshift-image-registry.svc:5000
-  tag: itvr-backend@sha256:02f9ffc40dc5ed1f17eb364676a9cf4c0ea111c060d0144a9df7d0c5e6211604
+  tag: itvr-task-queue@sha256:d6a7444b87b553663daa9f1a61484d6d3f77875ae3523f3c8964c9d47735360d
   pullPolicy: IfNotPresent
 
 # decide the imagestream will be created in env projects
@@ -22,9 +22,9 @@ imageEnv:
 imagePullSecrets: []
 
 ## For ITVR Baclend App, set the following two, will result in 
-## itvr-backend.fullname and itvr-backend.name are itve-backend
-nameOverride: "itvr-backend"
-fullnameOverride: "itvr-backend"
+## itvr-taskq.fullname and itvr-taskq.name are itvr-taskq
+nameOverride: "itvr-taskq"
+fullnameOverride: "itvr-taskq"
 
 #nameOverride: ""
 #fullnameOverride: ""
@@ -97,13 +97,9 @@ tolerations: []
 
 affinity: {}
 
-backend:
-  allowedHost: itvr-backend-test.apps.silver.devops.gov.bc.ca
+taskq:
   corsOriginWhitlist: https://itvr-test.apps.silver.devops.gov.bc.ca
-  backendOrigin: https://itvr-backend-test.apps.silver.devops.gov.bc.ca
   sendEmail: 'True'
-  minioBucketName: itvrdv
   craEnvrionment: A
   djangoDebug: 'False'
-  virusScanEnabled: 'True'
 
