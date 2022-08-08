@@ -143,6 +143,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     class Meta:
         db_table = "go_electric_rebate_application"
+        ordering = ["-modified"]
         constraints = [
             UniqueConstraint(
                 fields=["drivers_licence"],
@@ -206,6 +207,14 @@ class GoElectricRebateApplication(TimeStampedModel):
                 name="consent_tax_null_constraint",
             ),
         ]
+
+    @classproperty
+    def admin_label(cls):
+        return "Search All Applications"
+
+    @classproperty
+    def admin_display_change(cls):
+        return False
 
 
 # This is for the admin panel
