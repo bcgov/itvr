@@ -26,8 +26,10 @@
     -->
     <title>Passenger Vehicle Rebate – CleanBC Go Electric</title>
     <!-- Load the Openshift variables at runtime into the window. -->
+    <% if (process.env.NODE_ENV === 'production') { %>
     <script src="%PUBLIC_URL%/static/js/config/features.js"></script>
     <script src="%PUBLIC_URL%/tracker.js"></script>
+    <% } %>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
