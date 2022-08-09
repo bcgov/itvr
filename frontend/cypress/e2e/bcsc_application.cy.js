@@ -1,6 +1,8 @@
 describe('submit bcsc application', () => {
-  beforeEach(() => {
+  before(() => {
     cy.visit('/');
+  });
+  beforeEach(() => {
     cy.login({
       root: Cypress.env('KEYCLOAK_URL'),
       realm: Cypress.env('KEYCLOAK_REALM'),
