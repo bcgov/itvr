@@ -63,6 +63,7 @@ const ConsentGeneral = ({
           <FormControlLabel
             control={
               <Checkbox
+                id={name}
                 checked={consent}
                 onChange={() => setValue(name, !consent)}
                 inputProps={{ 'aria-label': 'controlled' }}
