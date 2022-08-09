@@ -29,7 +29,6 @@ class ITVRAdminSite(AdminSite):
             ),
             path("cra-upload", self.admin_view(self.upload_file), name="cra-upload"),
         ]
-
         return custom_urls + urls
 
     # Create the filename for a CRA in file.
@@ -138,4 +137,10 @@ class ITVRAdminSite(AdminSite):
                 self.refine_app(app)
         return app_dict
 
-    # inline or attachment
+    def each_context(self, request):
+        context = super().each_context(request)
+        rebates = GoElectricRebateApplication.objects.filter(
+            status=GoElectricRebateApplication.Status.VERIFIED
+        )
+        context["verified_apps_count"] = rebates.count()
+        return context
