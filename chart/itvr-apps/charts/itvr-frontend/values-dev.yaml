@@ -102,9 +102,9 @@ frontend:
   reactAppBCSCKeycloakRealm: rzh2zkjq
   reactAppBCSCKeycloakUrl: https://dev.oidc.gov.bc.ca/auth/
   reactAppApiBase: https://itvr-backend-dev.apps.silver.devops.gov.bc.ca
-  reactAppBCeIDKeycloakClientId: itvr-2674
-  reactAppBCeIDKeycloakRealm: onestopauth-basic
-  reactAppBCeIDKeycloakUrl: https://dev.oidc.gov.bc.ca/auth/
+  reactAppBCeIDKeycloakClientId: itvr-on-gold-cluster-3972
+  reactAppBCeIDKeycloakRealm: standard
+  reactAppBCeIDKeycloakUrl: https://dev.loginproxy.gov.bc.ca/auth/
   snowplowCollector: ""
 
 
