@@ -143,7 +143,6 @@ class GoElectricRebateApplication(TimeStampedModel):
 
     class Meta:
         db_table = "go_electric_rebate_application"
-        ordering = ["-modified"]
         constraints = [
             UniqueConstraint(
                 fields=["drivers_licence"],
@@ -208,14 +207,6 @@ class GoElectricRebateApplication(TimeStampedModel):
             ),
         ]
 
-    @classproperty
-    def admin_label(cls):
-        return "Search All Applications"
-
-    @classproperty
-    def admin_display_change(cls):
-        return False
-
 
 # This is for the admin panel
 class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
@@ -227,11 +218,11 @@ class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
         return "Review Applications"
 
     @classproperty
-    def admin_display_change(cls):
-        return False
+    def admin_hide_view_change_buttons(cls):
+        return True
 
 
-class InitiatedGoElectricRebateApplication(GoElectricRebateApplication):
+class CancellableGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
         proxy = True
 
@@ -240,5 +231,19 @@ class InitiatedGoElectricRebateApplication(GoElectricRebateApplication):
         return "Cancel Applications"
 
     @classproperty
-    def admin_display_change(cls):
-        return False
+    def admin_hide_view_change_buttons(cls):
+        return True
+
+
+class SearchableGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-modified"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Search All Applications"
+
+    @classproperty
+    def admin_hide_view_change_buttons(cls):
+        return True

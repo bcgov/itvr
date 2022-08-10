@@ -1,8 +1,9 @@
 from django.contrib import admin
 from .models.go_electric_rebate_application import (
     GoElectricRebateApplication,
+    SearchableGoElectricRebateApplication,
     SubmittedGoElectricRebateApplication,
-    InitiatedGoElectricRebateApplication,
+    CancellableGoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
@@ -12,6 +13,7 @@ from . import messages_custom
 
 class HouseholdApplicationInline(admin.StackedInline):
     model = HouseholdMember
+    extra = 0
     exclude = ("sin", "doc1", "doc2", "user")
     readonly_fields = (
         "id",
@@ -32,35 +34,21 @@ class HouseholdApplicationInline(admin.StackedInline):
         return False
 
 
+def find_inlines(obj):
+    # TODO update this to use the proper enum later.
+    if obj and obj.application_type == "household":
+        return [HouseholdApplicationInline]
+    else:
+        return []
+
+
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    search_fields = ["drivers_licence", "id", "status"]
     exclude = (
         "sin",
         "doc1",
         "doc2",
         "user",
-    )
-    readonly_fields = (
-        "id",
-        "last_name",
-        "first_name",
-        "middle_names",
-        "status",
-        "email",
-        "user_is_bcsc",
-        "address",
-        "city",
-        "postal_code",
-        "drivers_licence",
-        "date_of_birth",
-        "tax_year",
-        "application_type",
-        "doc1_tag",
-        "doc2_tag",
-        "consent_personal",
-        "consent_tax",
-        "is_legacy",
     )
 
 
@@ -108,11 +96,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         )
 
     def get_inlines(self, request, obj=None):
-        # TODO update this to use the proper enum later.
-        if obj and obj.application_type == "household":
-            return [HouseholdApplicationInline]
-        else:
-            return []
+        return find_inlines(obj)
 
     def has_delete_permission(self, request, obj=None):
         return False
@@ -146,8 +130,8 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(InitiatedGoElectricRebateApplication)
-class InitiatedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+@admin.register(CancellableGoElectricRebateApplication)
+class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     search_fields = ["drivers_licence", "id", "status"]
     # disable bulk actions
     actions = None
@@ -207,3 +191,45 @@ class InitiatedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         if "cancel_application" in request.POST:
             revised_level = messages_custom.NEGATIVE_SUCCESS
         super().message_user(request, message, revised_level, extra_tags, fail_silently)
+
+
+@admin.register(SearchableGoElectricRebateApplication)
+class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    actions = None
+    search_fields = ["drivers_licence", "id", "status"]
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+    )
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "status",
+        "email",
+        "user_is_bcsc",
+        "address",
+        "city",
+        "postal_code",
+        "drivers_licence",
+        "date_of_birth",
+        "tax_year",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "consent_personal",
+        "consent_tax",
+        "is_legacy",
+    )
+
+    def get_queryset(self, request):
+        return GoElectricRebateApplication.objects.all()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_inlines(self, request, obj=None):
+        return find_inlines(obj)

@@ -1,6 +1,7 @@
 {% extends "admin/index.html" %}
 {% load i18n static jazzmin %}
 {% get_jazzmin_ui_tweaks as jazzmin_ui %}
+{% load api_extras %}
 
 {% block content %}
     {% get_side_menu using="app_list" as dashboard_list %}
@@ -30,9 +31,10 @@
                                                     <a href="{{ model.add_url }}" class="btn btn-sm {{ jazzmin_ui.button_classes.success }} btn-flat addlink">{% trans 'Add' %}</a>
                                                 {% endif %}
                                                 {% if model.url %}
-                                                    {% if model.view_only %}
+                                                    {% if model.admin_hide_view_change_buttons %}
+                                                    {% elif model.view_only %}
                                                         <a href="{{ model.url }}" class="btn btn-sm {{ jazzmin_ui.button_classes.info }} btn-flat viewlink">{% trans 'View' %}</a>
-                                                    {% elif model.admin_display_change %} 
+                                                    {% else %} 
                                                         <a href="{{ model.url }}" class="btn btn-sm {{ jazzmin_ui.button_classes.info }} btn-flat changelink">{% if model.custom %}{% trans 'Go' %}{% else %}{% trans 'Change' %}{% endif %}</a>
                                                     {% endif %}
                                                 {% endif %}
@@ -58,7 +60,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-6 col-12">
-                        <a href="{% url 'admin:cra-download' %}">Download CRA IN File ({{verified_apps_count}})</a>
+                        <a href="{% url 'admin:cra-download' %}">Download CRA IN File ({% get_verified_rebates_count %})</a>
                     </div>
                     <div class="col-lg-6 col-12">
                         <a href="{% url 'admin:cra-upload' %}">Upload CRA OUT File</a>
