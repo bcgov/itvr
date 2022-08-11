@@ -27,3 +27,15 @@ def schedule_cancel_untouched_household_applications():
         )
     except IntegrityError:
         pass
+
+
+def schedule_expire_expired_applications():
+    try:
+        schedule(
+            "api.tasks.expire_expired_applications",
+            name="expire_expired_applications",
+            schedule_type="C",
+            cron="00 23 * * *",
+        )
+    except IntegrityError:
+        pass
