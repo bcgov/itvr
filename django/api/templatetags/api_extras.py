@@ -5,7 +5,7 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_verified_rebates_count():
+def get_verified_applications_count():
     return GoElectricRebateApplication.objects.filter(
         status=GoElectricRebateApplication.Status.VERIFIED
     ).count()
