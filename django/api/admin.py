@@ -166,7 +166,9 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.filter(
-            status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
+            Q(status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED)
+            | Q(status=GoElectricRebateApplication.Status.SUBMITTED)
+            | Q(status=GoElectricRebateApplication.Status.APPROVED)
         )
 
     def has_delete_permission(self, request, obj=None):
