@@ -383,3 +383,19 @@ def cancel_untouched_household_applications():
             created=False,
             update_fields={"status"},
         )
+
+
+def expire_expired_applications():
+    expired_rebates = GoElectricRebate.objects.filter(redeemed=False).filter(
+        expiry_date__lte=timezone.now().date()
+    )
+
+    expired_application_ids = []
+    for rebate in expired_rebates:
+        if rebate.application:
+            expired_application_ids.append(rebate.application.id)
+
+    GoElectricRebateApplication.objects.filter(id__in=expired_application_ids).update(
+        status=GoElectricRebateApplication.Status.EXPIRED,
+        modified=timezone.now(),
+    )
