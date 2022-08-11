@@ -29,7 +29,6 @@ class ITVRAdminSite(AdminSite):
             ),
             path("cra-upload", self.admin_view(self.upload_file), name="cra-upload"),
         ]
-
         return custom_urls + urls
 
     # Create the filename for a CRA in file.
@@ -124,10 +123,12 @@ class ITVRAdminSite(AdminSite):
                     model["admin_label"] = model_cls.admin_label
                 else:
                     model["admin_label"] = model["name"]
-                    if hasattr(model_cls, "admin_display_change"):
-                        model["admin_display_change"] = model_cls.admin_display_change
-                    else:
-                        model["admin_display_change"] = True
+                if hasattr(model_cls, "admin_hide_view_change_buttons"):
+                    model[
+                        "admin_hide_view_change_buttons"
+                    ] = model_cls.admin_hide_view_change_buttons
+                else:
+                    model["admin_hide_view_change_buttons"] = False
 
     def _build_app_dict(self, request, label=None):
         app_dict = super()._build_app_dict(request, label)
@@ -137,5 +138,3 @@ class ITVRAdminSite(AdminSite):
             for app in app_dict.values():
                 self.refine_app(app)
         return app_dict
-
-    # inline or attachment

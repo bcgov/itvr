@@ -6,8 +6,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function createData(name, answer) {
-  return { name, answer };
+function createData(name, answer, elementId) {
+  return { name, answer, elementId };
 }
 
 function createConsentValue(consent, displayName, timestamp, idp) {
@@ -39,19 +39,27 @@ function createConsentValue(consent, displayName, timestamp, idp) {
 
 const DetailsTable = ({ data }) => {
   let rows = [
-    createData('Application ID:', data.application_id || data.id),
-    createData('Last name / surname:', data.last_name),
-    createData('First name / given name:', data.first_name),
-    createData('Middle name(s):', data.middle_names),
-    createData('Email address:', data.email),
-    createData('Date of birth:', data.date_of_birth),
-    createData('Street address:', data.address),
-    createData('City:', data.city),
-    createData('Postal Code:', data.postal_code),
-    createData('Social Insurance Number (SIN):', data.sin),
+    createData(
+      'Application ID:',
+      data.application_id || data.id,
+      'application_id'
+    ),
+    createData('Last name / surname:', data.last_name, 'last_name'),
+    createData('First name / given name:', data.first_name, 'first_name'),
+    createData('Middle name(s):', data.middle_names, 'middle_names'),
+    createData('Email address:', data.email, 'email'),
+    createData('Date of birth:', data.date_of_birth, 'date_of_birth'),
+    createData('Street address:', data.address, 'address'),
+    createData('City:', data.city, 'city'),
+    createData('Postal Code:', data.postal_code, 'postal_code'),
+    createData('Social Insurance Number (SIN):', data.sin, 'sin'),
     data.drivers_licence &&
-      createData("BC Driver's Licence number:", data.drivers_licence),
-    createData('Tax Year:', data.tax_year),
+      createData(
+        "BC Driver's Licence number:",
+        data.drivers_licence,
+        'drivers_licence'
+      ),
+    createData('Tax Year:', data.tax_year, 'tax_year'),
     createData(
       'Consent to Disclosure and Storage of, and Access to, Personal Information:',
       createConsentValue(
@@ -59,7 +67,8 @@ const DetailsTable = ({ data }) => {
         data.displayName,
         data.created,
         data.idp
-      )
+      ),
+      'consent_personal'
     ),
     createData(
       'Consent to Disclosure of Information from Income Tax Records:',
@@ -68,7 +77,8 @@ const DetailsTable = ({ data }) => {
         data.displayName,
         data.created,
         data.idp
-      )
+      ),
+      'consent_tax'
     )
   ];
   rows = rows.filter((r) => r);
@@ -95,6 +105,7 @@ const DetailsTable = ({ data }) => {
                     <b>{row.name}</b>
                   </TableCell>
                   <TableCell
+                    id={row.elementId}
                     align="left"
                     sx={{ border: 0, fontSize: { xs: '1rem', md: '1.35rem' } }}
                     className="application-details-table-answer"

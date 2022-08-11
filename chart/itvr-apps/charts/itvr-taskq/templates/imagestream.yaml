@@ -1,0 +1,19 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    {{- include "itvr-taskq.labels" . | nindent 4 }}  
+  creationTimestamp: null
+  name: {{ include "itvr-taskq.imagestreamName" . }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: {{ .Values.imageEnv.tag }}
+      from:
+        kind: ImageStreamImage
+        namespace: {{ .Values.toolsNamespace }}
+        name: {{ .Values.imageTools.tag }}
+      importPolicy: {}
+      referencePolicy:
+        type: Local

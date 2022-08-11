@@ -1,4 +1,4 @@
-if (window.itvr_config && window.itvr_config.REACT_APP_ENV === 'test') {
+if (window.itvr_config && window.itvr_config.SNOWPLOW_COLLECTOR) {
   // <!-- Snowplow starts plowing - Standalone vE.2.14.0 -->
   (function (p, l, o, w, i, n, g) {
     if (!p[i]) {
@@ -21,7 +21,7 @@ if (window.itvr_config && window.itvr_config.REACT_APP_ENV === 'test') {
     'https://www2.gov.bc.ca/StaticWebResources/static/sp/sp-2-14-0.js',
     'snowplow'
   );
-  var collector = 'spt.apps.gov.bc.ca';
+  var collector = window.itvr_config.SNOWPLOW_COLLECTOR;
   window.snowplow('newTracker', 'rt', collector, {
     appId: 'Snowplow_standalone',
     cookieLifetime: 86400 * 548,

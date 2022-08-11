@@ -287,7 +287,9 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                         setValue('date_of_birth', newDate);
                         setDOB(newDate);
                       }}
-                      renderInput={(params) => <TextField {...params} />}
+                      renderInput={(params) => (
+                        <TextField id="date_of_birth" {...params} />
+                      )}
                     />
                   </LocalizationProvider>
                 )}

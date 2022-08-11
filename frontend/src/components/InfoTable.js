@@ -1,5 +1,4 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,14 +19,17 @@ const InfoTable = ({
         createData('First name (given name):', kcToken.given_name),
         createData('Date of birth:', kcToken.birthdate),
         createData('Street address:', kcToken.street_address),
-        createData('City:', kcToken.locality),
-        kcToken.postal_code && createData('Postal code:', kcToken.postal_code)
+        createData('City:', kcToken.locality)
       ]
     : [
         createData('Street address:', householdInfo.address),
         createData('City:', householdInfo.city),
         createData('Postal Code:', householdInfo.postal_code)
       ];
+
+  if (kcToken && kcToken.postal_code) {
+    rows.push(createData('Postal code:', kcToken.postal_code));
+  }
 
   return (
     <>
