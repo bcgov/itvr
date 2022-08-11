@@ -9,6 +9,7 @@ from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
 from django.contrib import messages
 from . import messages_custom
+from django.db.models import Q
 
 
 class HouseholdApplicationInline(admin.StackedInline):
