@@ -185,7 +185,7 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount, rebate_id):
 
 
 # iso_ts ex 2023-08-01T07:00:00Z
-def get_rebates_redeemed_since(iso_ts):
+def get_rebates_redeemed_since(iso_ts, ncda_ids, next_url):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
 
@@ -195,14 +195,17 @@ def get_rebates_redeemed_since(iso_ts):
         "Content-Type": "application/json;odata=verbose",
     }
 
-    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
+    if next_url:
+        ncda_rs = requests.get(next_url, headers=headers, verify=True)
+    else:
+        url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
 
-    payload = {
-        "$select": "Id,Title,Modified,Status",
-        "$filter": "(Status eq 'Redeemed')and(Modified ge datetime'%s')" % iso_ts,
-    }
-
-    ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
+        payload = {
+            "$select": "Id,Title,Modified,Status",
+            "$filter": "(Status eq 'Redeemed')and(Modified ge datetime'%s')" % iso_ts,
+            "$top": 1000,
+        }
+        ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
 
     ncda_rs.raise_for_status()
 
@@ -227,8 +230,10 @@ def get_rebates_redeemed_since(iso_ts):
     # }
     data = ncda_rs.json()
     items = data["d"]["results"]
-    ncda_ids = map(lambda item: item["ID"], items)
-    return list(ncda_ids)
+    ncda_ids.extend(list(map(lambda item: item["ID"], items)))
+    next_url = (data["d"]).get("__next")
+    if next_url:
+        get_rebates_redeemed_since(iso_ts, ncda_ids, next_url)
 
 
 # https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
