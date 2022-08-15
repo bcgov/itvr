@@ -355,7 +355,8 @@ def send_cancel(recipient_email, application_id):
 def check_rebates_redeemed_since(iso_ts=None):
     ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
     print("check_rebate_status " + ts)
-    ncda_ids = get_rebates_redeemed_since(ts)
+    ncda_ids = []
+    get_rebates_redeemed_since(ts, ncda_ids, None)
     print(ncda_ids)
 
     redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
