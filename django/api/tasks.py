@@ -180,17 +180,27 @@ def send_reject(recipient_email, application_id):
 
         <p>Dear Applicant,</p>
 
-        <p>Your application has not been approved.</p>
+        <p>Your application cannot be approved due to problems with identity documents.</p>
 
         <p>Some examples of why this may have happened include:</p>
 
         <ul>
             <li>
-                Driver’s license/secondary piece of ID quality not sufficient, identification documents don’t match.
+                Driver’s license/secondary piece of ID quality not sufficient or illegible.
+            </li>
+            <li>
+                Secondary piece of ID doesn’t display full name and address or issue date exceeds 90 days.
+            <li/>
+            <li>
+                Both pieces of ID don’t match name and/or address.
             </li>
             <li>
                 Household application addresses are not the same
                 for applicant and spouse.
+            </li>
+            <li>
+                Date of birth provided on the application doesn’t match 
+                the date of birth on the driver’s license.
             </li>
         </ul>
 
