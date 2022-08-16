@@ -166,6 +166,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             Q(status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED)
             | Q(status=GoElectricRebateApplication.Status.SUBMITTED)
             | Q(status=GoElectricRebateApplication.Status.APPROVED)
+            | Q(status=GoElectricRebateApplication.Status.VERIFIED)
         )
 
     def has_delete_permission(self, request, obj=None):
