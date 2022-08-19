@@ -204,7 +204,7 @@ def send_reject(recipient_email, application_id):
             </li>
         </ul>
 
-        <p>You are encouraged to correct these issues and submit another application.</p>
+        <b>You are encouraged to correct these issues and submit another application.</b>
 
         <p>Questions?</p>
 
