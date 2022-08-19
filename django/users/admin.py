@@ -20,3 +20,8 @@ class CustomUserAdmin(UserAdmin):
         "is_staff",
         "is_superuser",
     ]
+
+    def get_queryset(self, request):
+        is_superuser = request.user.is_superuser
+        return super().get_queryset(request) if is_superuser else super().get_queryset(request).filter(is_staff=True)
+
