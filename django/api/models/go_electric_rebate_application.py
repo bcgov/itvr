@@ -212,6 +212,7 @@ class GoElectricRebateApplication(TimeStampedModel):
 class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
         proxy = True
+        ordering = ["-modified"]
 
     @classproperty
     def admin_label(cls):
@@ -225,6 +226,7 @@ class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
 class CancellableGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
         proxy = True
+        ordering = ["-modified"]
 
     @classproperty
     def admin_label(cls):
