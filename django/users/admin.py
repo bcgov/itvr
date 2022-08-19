@@ -22,4 +22,6 @@ class CustomUserAdmin(UserAdmin):
     ]
 
     def get_queryset(self, request):
-        return super().get_queryset(request).filter(is_staff=True)
+        is_superuser = request.user.is_superuser
+        return super().get_queryset(request) if is_superuser else super().get_queryset(request).filter(is_staff=True)
+
