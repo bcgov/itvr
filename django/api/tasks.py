@@ -190,7 +190,7 @@ def send_reject(recipient_email, application_id):
             </li>
             <li>
                 Secondary piece of ID doesn’t display full name and address or issue date exceeds 90 days.
-            <li/>
+            </li>
             <li>
                 Both pieces of ID don’t match name and/or address.
             </li>
@@ -217,7 +217,7 @@ def send_reject(recipient_email, application_id):
         application_id,
         message,
         cc_list=[],
-        optional_subject=" – Not Approved",
+        optional_subject=" – Identity cannot be verified",
     )
 
 
