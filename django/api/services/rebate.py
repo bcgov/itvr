@@ -39,12 +39,6 @@ def save_rebates(rebates, applications):
                     )
                     rebate_objs.append(rebate_obj)
         created_rebates = GoElectricRebate.objects.bulk_create(rebate_objs)
-        for rebate in created_rebates:
-            post_save.send(
-                sender=GoElectricRebate,
-                instance=rebate,
-                created=True,
-            )
     return created_rebates
 
 
@@ -70,5 +64,4 @@ def update_application_statuses(rebates, applications):
                 instance=application,
                 created=False,
                 update_fields={"status"},
-                rebate_amount=rebates.get(application.id),
             )
