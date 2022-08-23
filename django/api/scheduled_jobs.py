@@ -52,3 +52,15 @@ def schedule_expire_expired_applications():
         )
     except IntegrityError:
         pass
+
+
+def schedule_send_mass_approval_email_once():
+    try:
+        schedule(
+            "api.tasks.send_mass_approval_email_once",
+            name="send_mass_approval_email_once",
+            schedule_type="O",
+            repeats=1,
+        )
+    except IntegrityError:
+        pass
