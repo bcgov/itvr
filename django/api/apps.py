@@ -16,6 +16,7 @@ class ApiConfig(AppConfig):
             schedule_get_ncda_redeemed_rebates,
             schedule_cancel_untouched_household_applications,
             schedule_expire_expired_applications,
+            schedule_send_mass_approval_email_once,
         )
 
         if settings.RUN_JOBS and "qcluster" in sys.argv:
@@ -23,6 +24,7 @@ class ApiConfig(AppConfig):
             schedule_get_ncda_redeemed_rebates()
             schedule_cancel_untouched_household_applications()
             schedule_expire_expired_applications()
+            schedule_send_mass_approval_email_once()
 
 
 class ITVRAdminConfig(AdminConfig):
