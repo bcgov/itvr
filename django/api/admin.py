@@ -9,6 +9,7 @@ from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
 from django.contrib import messages
 from . import messages_custom
+from django.db.models import Q
 
 
 class HouseholdApplicationInline(admin.StackedInline):
@@ -34,7 +35,7 @@ class HouseholdApplicationInline(admin.StackedInline):
         return False
 
 
-def find_inlines(obj):
+def get_inlines(obj):
     # TODO update this to use the proper enum later.
     if obj and obj.application_type == "household":
         return [HouseholdApplicationInline]
@@ -44,12 +45,7 @@ def find_inlines(obj):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    exclude = (
-        "sin",
-        "doc1",
-        "doc2",
-        "user",
-    )
+    exclude = ("sin",)
 
 
 # The proxy model is used to avoid a Django limitation where a model can only
@@ -96,7 +92,7 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         )
 
     def get_inlines(self, request, obj=None):
-        return find_inlines(obj)
+        return get_inlines(obj)
 
     def has_delete_permission(self, request, obj=None):
         return False
@@ -156,6 +152,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "last_name",
         "first_name",
         "middle_names",
+        "status",
         "email",
         "user_is_bcsc",
         "drivers_licence",
@@ -166,7 +163,10 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.filter(
-            status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
+            Q(status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED)
+            | Q(status=GoElectricRebateApplication.Status.SUBMITTED)
+            | Q(status=GoElectricRebateApplication.Status.APPROVED)
+            | Q(status=GoElectricRebateApplication.Status.VERIFIED)
         )
 
     def has_delete_permission(self, request, obj=None):
@@ -232,4 +232,4 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         return False
 
     def get_inlines(self, request, obj=None):
-        return find_inlines(obj)
+        return get_inlines(obj)

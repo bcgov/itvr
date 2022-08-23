@@ -4,6 +4,19 @@ from django.db import IntegrityError
 # trying to create a schedule with the same name as an already created schedule will raise an IntegrityError
 
 
+def schedule_send_rebates_to_ncda():
+    try:
+        schedule(
+            "api.tasks.send_rebates_to_ncda",
+            100,
+            name="send_rebates_to_ncda",
+            schedule_type="C",
+            cron="15 * * * *",
+        )
+    except IntegrityError:
+        pass
+
+
 def schedule_get_ncda_redeemed_rebates():
     try:
         schedule(
@@ -24,6 +37,18 @@ def schedule_cancel_untouched_household_applications():
             name="cancel_untouched_household_applications",
             schedule_type="C",
             cron="30 22 * * *",
+        )
+    except IntegrityError:
+        pass
+
+
+def schedule_expire_expired_applications():
+    try:
+        schedule(
+            "api.tasks.expire_expired_applications",
+            name="expire_expired_applications",
+            schedule_type="C",
+            cron="00 23 * * *",
         )
     except IntegrityError:
         pass

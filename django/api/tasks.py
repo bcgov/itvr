@@ -13,6 +13,8 @@ from api.models.go_electric_rebate_application import (
 )
 from datetime import timedelta
 from django.db.models.signals import post_save
+from api.services.ncda import notify
+from django_q.tasks import async_task
 
 
 def get_email_service_token() -> str:
@@ -180,21 +182,31 @@ def send_reject(recipient_email, application_id):
 
         <p>Dear Applicant,</p>
 
-        <p>Your application has not been approved.</p>
+        <p>Your application cannot be approved due to problems with identity documents.</p>
 
         <p>Some examples of why this may have happened include:</p>
 
         <ul>
             <li>
-                Driver’s license/secondary piece of ID quality not sufficient, identification documents don’t match.
+                Driver’s license/secondary piece of ID quality not sufficient or illegible.
+            </li>
+            <li>
+                Secondary piece of ID doesn’t display full name and address or issue date exceeds 90 days.
+            </li>
+            <li>
+                Both pieces of ID don’t match name and/or address.
             </li>
             <li>
                 Household application addresses are not the same
                 for applicant and spouse.
             </li>
+            <li>
+                Date of birth provided on the application doesn’t match 
+                the date of birth on the driver’s license.
+            </li>
         </ul>
 
-        <p>You are encouraged to correct these issues and submit another application.</p>
+        <b>You are encouraged to correct these issues and submit another application.</b>
 
         <p>Questions?</p>
 
@@ -207,7 +219,7 @@ def send_reject(recipient_email, application_id):
         application_id,
         message,
         cc_list=[],
-        optional_subject=" – Not Approved",
+        optional_subject=" – Identity cannot be verified",
     )
 
 
@@ -341,11 +353,44 @@ def send_cancel(recipient_email, application_id):
     )
 
 
+def send_rebates_to_ncda(max_number_of_rebates=100):
+    rebates = GoElectricRebate.objects.filter(ncda_id__isnull=True)[
+        :max_number_of_rebates
+    ]
+    associated_applications = []
+    for rebate in rebates:
+        try:
+            notify(
+                rebate.drivers_licence,
+                rebate.last_name,
+                rebate.expiry_date.strftime("%m/%d/%Y"),
+                str(rebate.rebate_max_amount),
+                rebate.id,
+            )
+            application = rebate.application
+            if application and (
+                application.status == GoElectricRebateApplication.Status.APPROVED
+            ):
+                application.rebate_amount = rebate.rebate_max_amount
+                associated_applications.append(application)
+        except requests.HTTPError as ncda_error:
+            pass
+
+    for application in associated_applications:
+        async_task(
+            "api.tasks.send_approve",
+            application.email,
+            application.id,
+            application.rebate_amount,
+        )
+
+
 # check for newly redeemed rebates
 def check_rebates_redeemed_since(iso_ts=None):
     ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
     print("check_rebate_status " + ts)
-    ncda_ids = get_rebates_redeemed_since(ts)
+    ncda_ids = []
+    get_rebates_redeemed_since(ts, ncda_ids, None)
     print(ncda_ids)
 
     redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
@@ -383,3 +428,19 @@ def cancel_untouched_household_applications():
             created=False,
             update_fields={"status"},
         )
+
+
+def expire_expired_applications():
+    expired_rebates = GoElectricRebate.objects.filter(redeemed=False).filter(
+        expiry_date__lte=timezone.now().date()
+    )
+
+    expired_application_ids = []
+    for rebate in expired_rebates:
+        if rebate.application:
+            expired_application_ids.append(rebate.application.id)
+
+    GoElectricRebateApplication.objects.filter(id__in=expired_application_ids).update(
+        status=GoElectricRebateApplication.Status.EXPIRED,
+        modified=timezone.now(),
+    )

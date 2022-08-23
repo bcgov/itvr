@@ -3,7 +3,6 @@ from .models.go_electric_rebate_application import (
     GoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
-from .models.go_electric_rebate import GoElectricRebate
 from django.dispatch import receiver
 from django.conf import settings
 from api.models.household_member import HouseholdMember
@@ -70,12 +69,6 @@ def after_status_change(sender, instance, created, **kwargs):
                 instance.email,
                 instance.id,
             )
-        # if rebate is approved, send an email with amount
-        elif instance.status == GoElectricRebateApplication.Status.APPROVED:
-            rebate_amount = kwargs.get("rebate_amount")
-            async_task(
-                "api.tasks.send_approve", instance.email, instance.id, rebate_amount
-            )
         # if application is not approved due to cra:
         elif instance.status == GoElectricRebateApplication.Status.NOT_APPROVED:
             async_task(
@@ -90,16 +83,3 @@ def after_status_change(sender, instance, created, **kwargs):
                 instance.email,
                 instance.id,
             )
-
-
-@receiver(post_save, sender=GoElectricRebate)
-def after_rebate_issued(sender, instance, created, **kwargs):
-    if created:
-        async_task(
-            "api.services.ncda.notify",
-            instance.drivers_licence,
-            instance.last_name,
-            instance.expiry_date.strftime("%m/%d/%Y"),
-            str(instance.rebate_max_amount),
-            instance.id,
-        )
