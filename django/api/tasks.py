@@ -444,3 +444,23 @@ def expire_expired_applications():
         status=GoElectricRebateApplication.Status.EXPIRED,
         modified=timezone.now(),
     )
+
+
+def send_mass_approval_email_once():
+    rebates = GoElectricRebate.objects.filter(ncda_id__isnull=False)
+    approved_applications = []
+    for rebate in rebates:
+        application = rebate.application
+        if application and (
+            application.status == GoElectricRebateApplication.Status.APPROVED
+        ):
+            application.rebate_amount = rebate.rebate_max_amount
+            approved_applications.append(application)
+
+    for application in approved_applications:
+        async_task(
+            "api.tasks.send_approve",
+            application.email,
+            application.id,
+            application.rebate_amount,
+        )
