@@ -200,6 +200,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             Your application information <LockIcon />
           </h3>
           <span> secure form submission</span>
+          <p>
+            The information you enter (name, date of birth, address and BC 
+            Driver's Licence number) must exactly match the ID you upload or 
+            your application will be declined.
+          </p>
         </Box>
         {kcToken.identity_provider === 'bcsc' ? (
           <InfoTable kcToken={kcToken} bcscMissingFields={bcscMissingFields} />
