@@ -53,10 +53,11 @@ def update_application_statuses(rebates, applications):
                     application.status = GoElectricRebateApplication.Status.NOT_APPROVED
                 else:
                     application.status = GoElectricRebateApplication.Status.APPROVED
+                    application.approval_email_sent = False
                 application.modified = timezone.now()
                 application_objs.append(application)
         GoElectricRebateApplication.objects.bulk_update(
-            application_objs, ["status", "modified"]
+            application_objs, ["status", "approval_email_sent", "modified"]
         )
         for application in application_objs:
             post_save.send(

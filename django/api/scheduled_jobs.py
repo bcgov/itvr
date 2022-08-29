@@ -12,6 +12,7 @@ def schedule_send_rebates_to_ncda():
             name="send_rebates_to_ncda",
             schedule_type="C",
             cron="15 * * * *",
+            q_options={"timeout": 1200, "ack_failure": True},
         )
     except IntegrityError:
         pass

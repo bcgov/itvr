@@ -222,6 +222,7 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
+        "approval_email_sent",
         "is_legacy",
     )
 

@@ -15,6 +15,7 @@ from datetime import timedelta
 from django.db.models.signals import post_save
 from api.services.ncda import notify
 from django_q.tasks import async_task
+from func_timeout import func_timeout, FunctionTimedOut
 
 
 def get_email_service_token() -> str:
@@ -354,35 +355,40 @@ def send_cancel(recipient_email, application_id):
 
 
 def send_rebates_to_ncda(max_number_of_rebates=100):
-    rebates = GoElectricRebate.objects.filter(ncda_id__isnull=True)[
-        :max_number_of_rebates
-    ]
-    associated_applications = []
-    for rebate in rebates:
-        try:
-            notify(
-                rebate.drivers_licence,
-                rebate.last_name,
-                rebate.expiry_date.strftime("%m/%d/%Y"),
-                str(rebate.rebate_max_amount),
-                rebate.id,
-            )
-            application = rebate.application
-            if application and (
-                application.status == GoElectricRebateApplication.Status.APPROVED
-            ):
-                application.rebate_amount = rebate.rebate_max_amount
-                associated_applications.append(application)
-        except requests.HTTPError as ncda_error:
-            pass
+    def inner():
+        rebates = GoElectricRebate.objects.filter(ncda_id__isnull=True)[
+            :max_number_of_rebates
+        ]
+        for rebate in rebates:
+            try:
+                notify(
+                    rebate.drivers_licence,
+                    rebate.last_name,
+                    rebate.expiry_date.strftime("%m/%d/%Y"),
+                    str(rebate.rebate_max_amount),
+                    rebate.id,
+                )
+                application = rebate.application
+                if application and (
+                    application.status == GoElectricRebateApplication.Status.APPROVED
+                ):
+                    async_task(
+                        "api.tasks.send_approve",
+                        application.email,
+                        application.id,
+                        rebate.rebate_max_amount,
+                    )
+                    GoElectricRebateApplication.objects.filter(
+                        pk=application.id
+                    ).update(approval_email_sent=True)
+            except requests.HTTPError as ncda_error:
+                print("error posting rebate to ncda")
 
-    for application in associated_applications:
-        async_task(
-            "api.tasks.send_approve",
-            application.email,
-            application.id,
-            application.rebate_amount,
-        )
+    try:
+        func_timeout(900, inner)
+    except FunctionTimedOut:
+        print("send_rebates_to_ncda timed out")
+        raise Exception
 
 
 # check for newly redeemed rebates
