@@ -198,7 +198,7 @@ Q_CLUSTER = {
     "name": "ITVR",
     "workers": 4,
     "timeout": 90,
-    "retry": 120,
+    "retry": 1260,
     "queue_limit": 50,
     "bulk": 10,
     "orm": "default",

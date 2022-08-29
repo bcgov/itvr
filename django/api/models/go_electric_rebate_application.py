@@ -81,6 +81,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     )
     date_of_birth = DateField(validators=[validate_driving_age], null=True)
     tax_year = IntegerField(null=True)
+    approval_email_sent = BooleanField(null=True)
     doc1 = ImageField(
         upload_to="docs",
         blank=True,
