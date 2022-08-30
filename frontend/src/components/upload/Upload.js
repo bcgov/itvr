@@ -11,12 +11,14 @@ const Upload = (props) => {
         <h5>Take a picture of:</h5>
         <ul>
           <li>
-            The photo side of your BC Driver's Licence{' '}
+            The full image of the photo side of your BC Driver's Licence
             {applicationType === 'spouse' && ' or BC Services Card'}
+            . Name, address and date of birth must be visible.
           </li>
           <li>
             A secondary piece of ID like a financial statement or utility bill
-            that has been issued in the last 90 days
+            that has been issued in the last 90 days. Full name, 
+            address and issue date must be visible.
           </li>
         </ul>
         <p>
