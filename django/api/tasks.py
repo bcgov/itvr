@@ -14,7 +14,7 @@ from api.models.go_electric_rebate_application import (
 from datetime import timedelta
 from django.db.models.signals import post_save
 from api.services.ncda import notify
-from api.email import (
+from api.constants import (
     FOUR_THOUSAND_REBATE,
     ONE_THOUSAND_REBATE,
     TWO_THOUSAND_REBATE,
