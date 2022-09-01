@@ -24,4 +24,6 @@ jobs:
 
       - name: Run BCDK build
         run: |
-          echo "will run BCDK buid - TBD"
+          pwd
+          ls -la
+          ls -l .pipeline
