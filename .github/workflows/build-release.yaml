@@ -1,0 +1,27 @@
+name: build-release
+
+on:
+  push:
+    branches: [ github-action-1.10.0 ]
+  workflow_call:
+
+jobs:
+  build:
+    name: Build on Openshift through BCDK pipeline
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Check out repository
+        uses: action/checkout@v2
+
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ac294c-tools
+
+      - name: Run BCDK build
+        run: |
+          echo "will run BCDK buid - TBD"
