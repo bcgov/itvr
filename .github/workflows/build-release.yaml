@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+
+      ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
         uses: actions/checkout@v2
 
@@ -24,6 +26,4 @@ jobs:
 
       - name: Run BCDK build
         run: |
-          pwd
-          ls -la
-          ls -l .pipeline
+          npm run build -- --pr=270 --env=build
