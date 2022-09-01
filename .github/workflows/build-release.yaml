@@ -26,4 +26,5 @@ jobs:
 
       - name: Run BCDK build
         run: |
+          cd .pipeline
           npm run build -- --pr=270 --env=build
