@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: action/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Log in to OpenShift
         uses: redhat-actions/oc-login@v1
