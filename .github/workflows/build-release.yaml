@@ -30,6 +30,7 @@ jobs:
           git status
           git remote -v
           oc project
+          oc version
           which node
           node --version
           npm install
