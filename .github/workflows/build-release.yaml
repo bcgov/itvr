@@ -27,6 +27,7 @@ jobs:
       - name: Run BCDK build
         run: |
           cd .pipeline
+          oc project
           which node
           node --version
           npm install
