@@ -27,6 +27,7 @@ Set the limit as two times of request
 electric-vehicle-rebates.gov.bc.ca
 */
 options.git.owner='bcgov'
+options.git.repository='itvr'
 
 const phases = {
 
