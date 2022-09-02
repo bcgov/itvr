@@ -11,7 +11,7 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
-import { isAgeValid, isSINValid } from '../utility';
+import { getDateWithYearOffset, isSINValid } from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
 import Upload from './upload/Upload';
 import Loading from './Loading';
@@ -20,7 +20,10 @@ import InfoTable from './InfoTable';
 import { addTokenFields, checkBCSC } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import DateBoxes from './DateBoxes';
+
+const maxDate = getDateWithYearOffset(new Date(), -16);
+const minDate = getDateWithYearOffset(maxDate, -100);
 
 export const defaultValues = {
   application: '',
@@ -31,7 +34,7 @@ export const defaultValues = {
   address: '',
   city: '',
   postal_code: '',
-  date_of_birth: '',
+  date_of_birth: maxDate,
   documents: [],
   consent_personal: false,
   consent_tax: false
@@ -60,7 +63,7 @@ const SpouseForm = ({
     formState: { errors },
     setValue
   } = methods;
-  const [DOB, setDOB] = useState(new Date());
+  const [DOB, setDOB] = useState(maxDate);
   const axiosInstance = useAxios();
   let bcscMissingFields = [];
   if (kcToken.identity_provider === 'bcsc') {
@@ -112,6 +115,10 @@ const SpouseForm = ({
       headers: { 'Content-Type': 'multipart/form-data' }
     });
   });
+  const onDobChange = (dob) => {
+    setValue('date_of_birth', dob);
+    setDOB(dob);
+  };
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
@@ -268,13 +275,6 @@ const SpouseForm = ({
             </FormGroup>
 
             <FormGroup sx={{ mt: '20px' }}>
-              {errors?.date_of_birth?.type === 'validate' && (
-                <p className="error">
-                  Date of birth cannot be blank and you must be 16 years or
-                  older to request a rebate, please check the date of birth
-                  entered.
-                </p>
-              )}
               <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
                 Date of birth:
               </InputLabel>
@@ -283,25 +283,22 @@ const SpouseForm = ({
                 control={control}
                 render={({ field }) => (
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      disableFuture
-                      openTo="year"
-                      views={['year', 'month', 'day']}
-                      value={DOB}
-                      format="YYYY-MM-DD"
-                      onChange={(newDate) => {
-                        setValue('date_of_birth', newDate);
-                        setDOB(newDate);
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        paddingTop: '20px'
                       }}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
+                    >
+                      <DateBoxes
+                        maxDate={maxDate}
+                        minDate={minDate}
+                        value={DOB}
+                        onChange={onDobChange}
+                      />
+                    </Box>
                   </LocalizationProvider>
                 )}
-                rules={{
-                  validate: (inputtedDOB) => {
-                    return isAgeValid(inputtedDOB, 16);
-                  }
-                }}
               />
             </FormGroup>
           </>

@@ -17,7 +17,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Box from '@mui/material/Box';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import { isAgeValid, isSINValid } from '../utility';
+import { getDateWithYearOffset, isSINValid } from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -28,7 +28,10 @@ import InfoTable from './InfoTable';
 import { addTokenFields, checkBCSC } from '../keycloak';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import DateBoxes from './DateBoxes';
+
+const maxDate = getDateWithYearOffset(new Date(), -16);
+const minDate = getDateWithYearOffset(maxDate, -100);
 
 export const defaultValues = {
   sin: '',
@@ -39,7 +42,7 @@ export const defaultValues = {
   address: '',
   city: '',
   postal_code: '',
-  date_of_birth: '',
+  date_of_birth: maxDate,
   drivers_licence: '',
   documents: [],
   consent_personal: false,
@@ -50,7 +53,7 @@ export const defaultValues = {
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
   const [loading, setLoading] = useState(false);
-  const [DOB, setDOB] = useState(new Date());
+  const [DOB, setDOB] = useState(maxDate);
   const queryClient = useQueryClient();
   const { keycloak } = useKeycloak();
   const kcToken = keycloak.tokenParsed;
@@ -87,6 +90,10 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
   });
+  const onDobChange = (dob) => {
+    setValue('date_of_birth', dob);
+    setDOB(dob);
+  };
   const onSubmit = (data) => {
     setNumberOfErrors(0);
     setLoading(true);
@@ -201,8 +208,8 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           </h3>
           <span> secure form submission</span>
           <p>
-            The information you enter (name, date of birth, address and BC 
-            Driver's Licence number) must exactly match the ID you upload or 
+            The information you enter (name, date of birth, address and BC
+            Driver's Licence number) must exactly match the ID you upload or
             your application will be declined.
           </p>
         </Box>
@@ -267,13 +274,6 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
               />
             </FormGroup>
             <FormGroup sx={{ mt: '20px' }}>
-              {errors?.date_of_birth?.type === 'validate' && (
-                <p className="error">
-                  Date of birth cannot be blank and you must be 16 years or
-                  older to request a rebate, please check the date of birth
-                  entered.
-                </p>
-              )}
               <InputLabel htmlFor="date_of_birth" sx={{ color: 'black' }}>
                 Date of birth:
               </InputLabel>
@@ -282,27 +282,22 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                 control={control}
                 render={({ field }) => (
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      disableFuture
-                      openTo="year"
-                      views={['year', 'month', 'day']}
-                      value={DOB}
-                      format="YYYY-MM-DD"
-                      onChange={(newDate) => {
-                        setValue('date_of_birth', newDate);
-                        setDOB(newDate);
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        paddingTop: '20px'
                       }}
-                      renderInput={(params) => (
-                        <TextField id="date_of_birth" {...params} />
-                      )}
-                    />
+                    >
+                      <DateBoxes
+                        maxDate={maxDate}
+                        minDate={minDate}
+                        value={DOB}
+                        onChange={onDobChange}
+                      />
+                    </Box>
                   </LocalizationProvider>
                 )}
-                rules={{
-                  validate: (inputtedDOB) => {
-                    return isAgeValid(inputtedDOB, 16);
-                  }
-                }}
               />
             </FormGroup>
             <FormGroup sx={{ mt: '20px' }}>
