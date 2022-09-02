@@ -14,6 +14,11 @@ from api.models.go_electric_rebate_application import (
 from datetime import timedelta
 from django.db.models.signals import post_save
 from api.services.ncda import notify
+from api.constants import (
+    FOUR_THOUSAND_REBATE,
+    ONE_THOUSAND_REBATE,
+    TWO_THOUSAND_REBATE,
+)
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
 
@@ -224,7 +229,7 @@ def send_reject(recipient_email, application_id):
     )
 
 
-def send_approve(recipient_email, application_id, rebate_amount):
+def send_approve(recipient_email, application_id, rebate_amounts):
     message = """\
         <html>
         <body>
@@ -234,13 +239,35 @@ def send_approve(recipient_email, application_id, rebate_amount):
 
         <p>Dear Applicant,</p>
 
-        <p>
-        Your application has been approved for a rebate amount of up to ${rebate_amount}.
-        The full amount applies to purchases of battery electric and long-range plug-in hybrids.
-        For plug-in hybrids with ranges less than 85 km the rebate amount is half.
-        </p>
+        <p>Your application has been approved for a maximum rebate amount of up to ${zev_max}. </p>
 
-        <p>Your rebate will expire one year from today’s date.</p>
+        <p><b>${zev_max} rebate for long-range ZEV purchase</b> (BEV, FCEV, ER-EV, and PHEV with an electric range of 85 km or more)</p>
+        <ul>
+          <li>
+            ${zev_max} rebate for long-range ZEV 36-month or longer lease term
+          </li>
+          <li>
+            ${zev_mid} rebate for long-range ZEV 24-month lease term
+          </li>
+          <li>
+            ${zev_min} rebate for long-range ZEV 12-month lease term
+          </li>
+        </ul>
+
+        <p><b>${phev_max} rebate for short-range PHEV purchase</b> (PHEV with an electric range of less than 85 km)</p>
+        <ul>
+          <li>
+            ${phev_max} rebate for short-range PHEV 36-month or longer lease term
+          </li>
+          <li>
+            ${phev_mid} rebate for short-range PHEV 24-month lease term
+          </li>
+          <li>
+            ${phev_min} rebate for short-range PHEV 12-month lease term
+          </li>
+        </ul>
+
+        <p>This rebate approval will expire one year from today’s date.</p>
         
         <p>Next steps:</p>
         <ol>
@@ -262,7 +289,12 @@ def send_approve(recipient_email, application_id, rebate_amount):
         </body>
         </html>
          """.format(
-        rebate_amount=rebate_amount
+        zev_max=rebate_amounts.ZEV_MAX.value,
+        zev_mid=rebate_amounts.ZEV_MID.value,
+        zev_min=rebate_amounts.ZEV_MIN.value,
+        phev_max=rebate_amounts.PHEV_MAX.value,
+        phev_mid=rebate_amounts.PHEV_MID.value,
+        phev_min=rebate_amounts.PHEV_MIN.value,
     )
     send_email(
         recipient_email,
@@ -372,11 +404,17 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
                 if application and (
                     application.status == GoElectricRebateApplication.Status.APPROVED
                 ):
+                    if rebate.rebate_max_amount == 4000:
+                        rebate_amounts = FOUR_THOUSAND_REBATE
+                    elif rebate.rebate_max_amount == 2000:
+                        rebate_amounts = TWO_THOUSAND_REBATE
+                    else:
+                        rebate_amounts = ONE_THOUSAND_REBATE
                     async_task(
                         "api.tasks.send_approve",
                         application.email,
                         application.id,
-                        rebate.rebate_max_amount,
+                        rebate_amounts,
                     )
                     GoElectricRebateApplication.objects.filter(
                         pk=application.id
