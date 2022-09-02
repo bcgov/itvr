@@ -16,10 +16,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      ## install npm
-      - name: npm/yarn/pnpm install
-        uses: Jaid/action-npm-install@v1.2.4        
-
       - name: Log in to OpenShift
         uses: redhat-actions/oc-login@v1
         with:
@@ -31,5 +27,7 @@ jobs:
       - name: Run BCDK build
         run: |
           cd .pipeline
+          which node
+          node --version
           npm install
           npm run build -- --pr=270 --env=build
