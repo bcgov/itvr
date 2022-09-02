@@ -27,6 +27,8 @@ Set the limit as two times of request
 electric-vehicle-rebates.gov.bc.ca
 */
 options.git.owner='bcgov'
+//Have to set options.git.repository to be itvr otherwise an error will be thrown as the label github-repo 
+//will contain https://github.com/bcgov/itvr which is not allowed as a valid label
 options.git.repository='itvr'
 
 const phases = {
