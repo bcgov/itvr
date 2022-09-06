@@ -203,6 +203,7 @@ Q_CLUSTER = {
     "bulk": 10,
     "orm": "default",
     "save_limit": 20 if DEBUG else -1,
+    "max_attempts": 100,
 }
 
 CACHES = {

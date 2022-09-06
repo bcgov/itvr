@@ -14,7 +14,12 @@ from .signals import household_application_saved
 @receiver(post_save, sender=GoElectricRebateApplication)
 def create_application(sender, instance, created, **kwargs):
     if created and settings.EMAIL["SEND_EMAIL"]:
-        async_task("api.tasks.send_individual_confirm", instance.email, instance.id)
+        async_task(
+            "api.tasks.send_individual_confirm",
+            instance.email,
+            instance.id,
+            hook="api.hooks.set_email_status",
+        )
 
 
 @receiver(household_application_saved, sender=GoElectricRebateApplication)
@@ -26,6 +31,7 @@ def after_household_application_created(sender, instance, created, **kwargs):
             spouse_email,
             instance.id,
             instance.email,
+            hook="api.hooks.set_email_status",
         )
 
 
