@@ -6,7 +6,7 @@ env:
   RELEASE_BRANCH: release-1.10.0
 on:
   push:
-    branches: [ $RELEASE_BRANCH ]
+    branches: [ $env.RELEASE_BRANCH ]
   workflow_dispatch:
   workflow_call:
 
