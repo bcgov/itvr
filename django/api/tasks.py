@@ -395,7 +395,6 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
         ]
         for rebate in rebates:
             try:
-                """
                 notify(
                     rebate.drivers_licence,
                     rebate.last_name,
@@ -403,7 +402,6 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
                     str(rebate.rebate_max_amount),
                     rebate.id,
                 )
-                """
                 application = rebate.application
                 if application and (
                     application.status == GoElectricRebateApplication.Status.APPROVED
