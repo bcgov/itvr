@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models.go_electric_rebate_application import (
     GoElectricRebateApplication,
+    GoElectricRebateApplicationWithFailedEmail,
     SearchableGoElectricRebateApplication,
     SubmittedGoElectricRebateApplication,
     CancellableGoElectricRebateApplication,
@@ -84,6 +85,8 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "consent_personal",
         "consent_tax",
         "is_legacy",
+        "confirmation_email_success",
+        "spouse_email_success",
     )
 
     def get_queryset(self, request):
@@ -159,6 +162,8 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "date_of_birth",
         "tax_year",
         "is_legacy",
+        "confirmation_email_success",
+        "spouse_email_success",
     )
 
     def get_queryset(self, request):
@@ -222,8 +227,9 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
-        "approval_email_sent",
         "is_legacy",
+        "confirmation_email_success",
+        "spouse_email_success",
     )
 
     def get_queryset(self, request):
@@ -234,3 +240,46 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
     def get_inlines(self, request, obj=None):
         return get_inlines(obj)
+
+
+@admin.register(GoElectricRebateApplicationWithFailedEmail)
+class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
+    actions = None
+    search_fields = ["drivers_licence", "id", "status"]
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+        "tax_year",
+        "consent_personal",
+        "consent_tax",
+        "is_legacy",
+    )
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "status",
+        "email",
+        "user_is_bcsc",
+        "address",
+        "city",
+        "postal_code",
+        "drivers_licence",
+        "date_of_birth",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "confirmation_email_success",
+        "spouse_email_success",
+    )
+
+    def get_queryset(self, request):
+        return GoElectricRebateApplication.objects.filter(
+            Q(confirmation_email_success=False) | Q(spouse_email_success=False)
+        )
+
+    def has_delete_permission(self, request, obj=None):
+        return False

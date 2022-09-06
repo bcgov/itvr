@@ -34,3 +34,15 @@ def addresses_match(application, household_user):
         return False
 
     return True
+
+
+def get_applicant_full_name(application):
+    if application.middle_names:
+        return (
+            application.first_name
+            + " "
+            + application.middle_names
+            + " "
+            + application.last_name
+        )
+    return application.first_name + " " + application.last_name

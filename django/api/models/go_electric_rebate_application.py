@@ -81,7 +81,8 @@ class GoElectricRebateApplication(TimeStampedModel):
     )
     date_of_birth = DateField(validators=[validate_driving_age], null=True)
     tax_year = IntegerField(null=True)
-    approval_email_sent = BooleanField(null=True)
+    confirmation_email_success = BooleanField(null=True)
+    spouse_email_success = BooleanField(null=True)
     doc1 = ImageField(
         upload_to="docs",
         blank=True,
@@ -246,6 +247,20 @@ class SearchableGoElectricRebateApplication(GoElectricRebateApplication):
     @classproperty
     def admin_label(cls):
         return "Search All Applications"
+
+    @classproperty
+    def admin_hide_view_change_buttons(cls):
+        return True
+
+
+class GoElectricRebateApplicationWithFailedEmail(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-created"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Applications with failed emails"
 
     @classproperty
     def admin_hide_view_change_buttons(cls):
