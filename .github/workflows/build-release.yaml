@@ -4,6 +4,7 @@ on:
   push:
     branches: [ release-1.10.0 ]
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   build:
