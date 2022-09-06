@@ -1,16 +1,14 @@
 
 name: build-release
 
+env:
+  PR_NUMBER: 270
+  RELEASE_BRANCH: release-1.10.0
 on:
   push:
-    branches: [ release-1.10.0 ]
+    branches: [ $RELEASE_BRANCH ]
   workflow_dispatch:
   workflow_call:
-    inputs:
-      PR_NUMBER:
-        description: The pull request number to build
-        required: true
-        type: string
 
 jobs:
   build:
@@ -36,4 +34,4 @@ jobs:
         run: |
           cd .pipeline
           npm install
-          npm run build -- --pr=${{ inputs.PR_NUMBER }} --env=build 
+          npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
