@@ -1,9 +1,9 @@
 name: build-release
 
 on:
-  push:
-    branches: [ release-1.10.0 ]
-  workflow_call:
+  #push:
+  #  branches: [ GA-Dispatch-1.10.0 ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -26,6 +26,7 @@ jobs:
 
       - name: Run BCDK build
         run: |
-          cd .pipeline
-          npm install
-          npm run build -- --pr=270 --env=build 
+          echo "Run BCDK build"
+          #cd .pipeline
+          #npm install
+          #npm run build -- --pr=270 --env=build 
