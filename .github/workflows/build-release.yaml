@@ -3,10 +3,10 @@ name: build-release
 
 env:
   PR_NUMBER: 270
-  RELEASE_BRANCH: release-1.10.0
+
 on:
   push:
-    branches: [ $env.RELEASE_BRANCH ]
+    branches: [ release-1.10.0 ]
   workflow_dispatch:
   workflow_call:
 
