@@ -18,6 +18,15 @@ jobs:
 
     steps:
 
+      ## Ask for approval for deploying on ITVR Test
+      - name: Manual Workflow Approval
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: kuanfandevops
+          minimum-approvals: 1
+          issue-title: "Deploying release-1.10.0 to ITVR Test"
+
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
         uses: actions/checkout@v2
