@@ -2,7 +2,7 @@
 name: build-release
 
 env:
-  PR_NUMBER: 270
+  PR_NUMBER: 285
 
 on:
   push:
@@ -42,5 +42,5 @@ jobs:
       - name: Run BCDK build
         run: |
           cd .pipeline
-          npm install
-          npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
+          ## npm install
+          ## npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
