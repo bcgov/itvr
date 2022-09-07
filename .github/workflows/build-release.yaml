@@ -3,6 +3,8 @@ name: build-release
 
 env:
   PR_NUMBER: 285
+  BUILD_TIMEOUT_MINUTES: 60
+  APPROVAL_TIMEOUT_MINUTES: 45
 
 on:
   push:
@@ -11,21 +13,14 @@ on:
   workflow_call:
 
 jobs:
+
   build:
+
     name: Build on Openshift through BCDK pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: $BUILD_TIMEOUT_MINUTES
 
     steps:
-
-      ## Ask for approval for deploying on ITVR Test
-      - name: Manual Workflow Approval
-        uses: trstringer/manual-approval@v1.6.0
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: kuanfandevops
-          minimum-approvals: 1
-          issue-title: "Deploying GHA-manual-approval-1.10.0 to ITVR Test"
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
@@ -44,3 +39,20 @@ jobs:
           cd .pipeline
           ## npm install
           ## npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
+
+      ## Ask for approval for deploying on ITVR Test
+      - name: Manual Workflow Approval
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: kuanfandevops
+          minimum-approvals: 1
+          issue-title: "Deploying GHA-manual-approval-1.10.0 to ITVR Test"
+          timeout-minutes: $APPROVAL_TIMEOUT_MINUTES
+
+      - name: Run BCDK deployment on ITVR Test environment
+        run: |
+          cd .pipeline
+          echo "Deploying ob ITVR Test"
+          ## npm install
+          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test 
