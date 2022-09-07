@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: [ release-1.10.0 ]
+    branches: [ GHA-manual-approval-1.10.0 ]
   workflow_dispatch:
   workflow_call:
 
@@ -25,7 +25,7 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: kuanfandevops
           minimum-approvals: 1
-          issue-title: "Deploying release-1.10.0 to ITVR Test"
+          issue-title: "Deploying GHA-manual-approval-1.10.0 to ITVR Test"
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
