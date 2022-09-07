@@ -18,7 +18,7 @@ jobs:
 
     name: Build on Openshift through BCDK pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: $BUILD_TIMEOUT_MINUTES
+    timeout-minutes: ${{ env.BUILD_TIMEOUT_MINUTES }}
 
     steps:
 
