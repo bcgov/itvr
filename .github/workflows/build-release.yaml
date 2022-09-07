@@ -1,24 +1,24 @@
 
 name: build-release
 
-env:
-  PR_NUMBER: 285
-  BUILD_TIMEOUT_MINUTES: 60
-  APPROVAL_TIMEOUT_MINUTES: 45
-
 on:
   push:
     branches: [ GHA-manual-approval-1.10.0 ]
   workflow_dispatch:
   workflow_call:
 
+env:
+  PR_NUMBER: 285
+  BUILD_TIMEOUT_MINUTES: 60
+  APPROVAL_TIMEOUT_MINUTES: 45
+  
 jobs:
 
   build:
 
     name: Build on Openshift through BCDK pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ env.BUILD_TIMEOUT_MINUTES }}
+    timeout-minutes: ${{ fromJSON(env.BUILD_TIMEOUT_MINUTES) }}
 
     steps:
 
