@@ -22,8 +22,14 @@ describe('submit bceid application', () => {
   let applicationId = '';
   const last_name = 'Smith';
   const first_name = 'John';
-  const date_of_birth_in = '01/01/2000';
-  const date_of_birth_out = '2000-01-01';
+  const today = new Date();
+  const date_of_birth_out = new Date(
+    today.getFullYear() - 16,
+    today.getMonth(),
+    today.getDate()
+  )
+    .toISOString()
+    .split('T')[0];
   const address = '111 Cambie Street';
   const city = 'Vancouver';
   const postal_code = 'V1V1V1';
@@ -38,7 +44,6 @@ describe('submit bceid application', () => {
     cy.contains('Logged in as');
     cy.get('#last_name').type(last_name);
     cy.get('#first_name').type(first_name);
-    cy.get('#date_of_birth').clear().type(date_of_birth_in);
     cy.get('#address').type(address);
     cy.get('#city').type(city);
     cy.get('#postal_code').type(postal_code);
