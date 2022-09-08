@@ -1,6 +1,6 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: Build/Deploy GHA-manual-approval-1.10.0
+name: CI/CD ITVR GHA-manual-approval-1.10.0
 
 on:
   push:
@@ -12,13 +12,14 @@ env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   PR_NUMBER: 285
   APPROVAL_TIMEOUT_MINUTES: 60
+  RELEASE: GHA-manual-approval-1.10.0
 
 jobs:
 
   ## This is the CI job
   build:
 
-    name: Build ITVR on Openshift through BCDK pipeline
+    name: Build ITVR on Openshift
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -38,7 +39,7 @@ jobs:
           namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
 
       ## Run build on Openshift
-      - name: Run BCDK build
+      - name: Run build
         run: |
           cd .pipeline
           npm install
@@ -47,7 +48,7 @@ jobs:
   ## This is the CD job
   deploy:
 
-    name: Deploy ITVR on Openshift through BCDK pipeline
+    name: Deploy ITVR on Openshift
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
@@ -55,13 +56,13 @@ jobs:
     steps:
 
       ## Ask for approval for deploying on ITVR Test
-      - name: Manual Workflow Approval for deploying on Test environment
+      - name: Ask for approval for ITVR Test deployment
         uses: trstringer/manual-approval@v1.6.0
         with:
           secret: ${{ github.TOKEN }}
-          approvers: kuanfandevops
+          approvers: AlexZorkin,emi-hi,tim738745,vibhiquartech,kuanfandevops
           minimum-approvals: 1
-          issue-title: "Deploying to ITVR Test"
+          issue-title: "ITVR $RELEASE Test Deployment"
           timeout-minutes: $APPROVAL_TIMEOUT_MINUTES
 
       - name: Run BCDK deployment on ITVR Test environment
