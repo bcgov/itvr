@@ -1,8 +1,6 @@
+## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: build-release
-
-env:
-  PR_NUMBER: 270
+name: CI/CD ITVR release-1.10.0
 
 on:
   push:
@@ -10,11 +8,20 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  ## The pull request number of the Tracking pull request to merge the release branch to main
+  PR_NUMBER: 270
+  APPROVAL_TIMEOUT_MINUTES: 60
+  RELEASE_NAME: release-1.10.0
+
 jobs:
+
+  ## This is the CI job
   build:
-    name: Build on Openshift through BCDK pipeline
+
+    name: Build ITVR on Openshift
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
 
@@ -22,7 +29,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Log in to OpenShift
+      ## Log in to Openshift with a token of service account
+      - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
@@ -30,8 +38,53 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
 
-      - name: Run BCDK build
+      ## Run build on Openshift
+      - name: Run build
         run: |
           cd .pipeline
           npm install
           npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
+
+  ## This is the CD job
+  deploy:
+
+    name: Deploy ITVR on Openshift
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build
+
+    steps:
+
+      ## Ask for approval for deploying on ITVR Test
+      - name: Ask for approval for ITVR Test deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,vibhiquartech,kuanfandevops
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ env.RELEASE_NAME }} Test Deployment"
+          timeout-minutes: ${{ env.APPROVAL_TIMEOUT_MINUTES }}
+
+      - name: Run BCDK deployment on ITVR Test environment
+        run: |
+          cd .pipeline
+          echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Test"
+          ## npm install
+          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test
+
+      ## Ask for approval for deploying on ITVR Test
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,kuanfandevops
+          minimum-approvals: 2
+          issue-title: "ITVR ${{ env.RELEASE_NAME }} Prod Deployment"
+          timeout-minutes: ${{ env.APPROVAL_TIMEOUT_MINUTES }}
+
+      - name: Run BCDK deployment on ITVR Test environment
+        run: |
+          cd .pipeline
+          echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Prod"
+          ## npm install
+          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=prod          
