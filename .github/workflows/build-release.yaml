@@ -1,18 +1,18 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: CI/CD ITVR GHA-manual-approval-1.10.0
+name: CI/CD ITVR release-1.10.0
 
 on:
   push:
-    branches: [ GHA-manual-approval-1.10.0 ]
+    branches: [ release-1.10.0 ]
   workflow_dispatch:
   workflow_call:
 
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
-  PR_NUMBER: 285
+  PR_NUMBER: 270
   APPROVAL_TIMEOUT_MINUTES: 60
-  RELEASE: GHA-manual-approval-1.10.0
+  RELEASE_NAME: release-1.10.0
 
 jobs:
 
@@ -62,12 +62,29 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,emi-hi,tim738745,vibhiquartech,kuanfandevops
           minimum-approvals: 1
-          issue-title: "ITVR ${{ env.RELEASE }} Test Deployment"
+          issue-title: "ITVR ${{ env.RELEASE_NAME }} Test Deployment"
           timeout-minutes: ${{ env.APPROVAL_TIMEOUT_MINUTES }}
 
       - name: Run BCDK deployment on ITVR Test environment
         run: |
           cd .pipeline
-          echo "Deploying ob ITVR Test"
+          echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Test"
           ## npm install
-          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test     
+          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test
+
+      ## Ask for approval for deploying on ITVR Test
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,kuanfandevops
+          minimum-approvals: 2
+          issue-title: "ITVR ${{ env.RELEASE_NAME }} Prod Deployment"
+          timeout-minutes: ${{ env.APPROVAL_TIMEOUT_MINUTES }}
+
+      - name: Run BCDK deployment on ITVR Test environment
+        run: |
+          cd .pipeline
+          echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Prod"
+          ## npm install
+          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=prod          
