@@ -1,6 +1,6 @@
-name: build-release
+## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-## For each release, the value of branches and PR_NUMBER need to be adjusted accordingly
+name: Build/Deploy GHA-manual-approval-1.10.0
 
 on:
   push:
@@ -68,5 +68,5 @@ jobs:
         run: |
           cd .pipeline
           echo "Deploying ob ITVR Test"
-          npm install
-          npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test     
+          ## npm install
+          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test     
