@@ -1,5 +1,6 @@
-
 name: build-release
+
+## For each release, the value of branches and PR_NUMBER need to be adjusted accordingly
 
 on:
   push:
@@ -8,17 +9,18 @@ on:
   workflow_call:
 
 env:
+  ## The pull request number of the Tracking pull request to merge the release branch to main
   PR_NUMBER: 285
-  BUILD_TIMEOUT_MINUTES: 60
-  APPROVAL_TIMEOUT_MINUTES: 45
-  
+  APPROVAL_TIMEOUT_MINUTES: 60
+
 jobs:
 
+  ## This is the CI job
   build:
 
-    name: Build on Openshift through BCDK pipeline
+    name: Build ITVR on Openshift through BCDK pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ fromJSON(env.BUILD_TIMEOUT_MINUTES) }}
+    timeout-minutes: 20
 
     steps:
 
@@ -26,7 +28,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Log in to OpenShift
+      ## Log in to Openshift with a token of service account
+      - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
         with:
           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
@@ -34,25 +37,36 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
 
+      ## Run build on Openshift
       - name: Run BCDK build
         run: |
           cd .pipeline
-          ## npm install
-          ## npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
+          npm install
+          npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
+
+  ## This is the CD job
+  deploy:
+
+    name: Deploy ITVR on Openshift through BCDK pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build
+
+    steps:
 
       ## Ask for approval for deploying on ITVR Test
-      - name: Manual Workflow Approval
+      - name: Manual Workflow Approval for deploying on Test environment
         uses: trstringer/manual-approval@v1.6.0
         with:
           secret: ${{ github.TOKEN }}
           approvers: kuanfandevops
           minimum-approvals: 1
-          issue-title: "Deploying GHA-manual-approval-1.10.0 to ITVR Test"
+          issue-title: "Deploying to ITVR Test"
           timeout-minutes: $APPROVAL_TIMEOUT_MINUTES
 
       - name: Run BCDK deployment on ITVR Test environment
         run: |
           cd .pipeline
           echo "Deploying ob ITVR Test"
-          ## npm install
-          ## npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test 
+          npm install
+          npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test     
