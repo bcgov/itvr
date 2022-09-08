@@ -62,8 +62,8 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,emi-hi,tim738745,vibhiquartech,kuanfandevops
           minimum-approvals: 1
-          issue-title: "ITVR $RELEASE Test Deployment"
-          timeout-minutes: $APPROVAL_TIMEOUT_MINUTES
+          issue-title: "ITVR ${{ env.RELEASE }} Test Deployment"
+          timeout-minutes: ${{ env.APPROVAL_TIMEOUT_MINUTES }}
 
       - name: Run BCDK deployment on ITVR Test environment
         run: |
