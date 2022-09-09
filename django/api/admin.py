@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models.go_electric_rebate_application import (
     GoElectricRebateApplication,
-    GoElectricRebateApplicationWithFailedEmail111,
+    GoElectricRebateApplicationWithFailedEmail,
     SearchableGoElectricRebateApplication,
     SubmittedGoElectricRebateApplication,
     CancellableGoElectricRebateApplication,
