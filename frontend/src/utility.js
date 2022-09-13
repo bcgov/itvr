@@ -32,7 +32,7 @@ export const isAgeValid = (dob, lowerBound, upperBound) => {
   if (!dob) {
     return false;
   }
-  dob = dob.toISOString().slice(0,10)
+  dob = dob.toISOString().slice(0, 10);
   const dobSplit = dob.split('-');
   const dobYear = parseInt(dobSplit[0]);
   const dobMonthIndex = parseInt(dobSplit[1]) - 1;
@@ -52,4 +52,16 @@ export const isAgeValid = (dob, lowerBound, upperBound) => {
     return false;
   }
   return true;
+};
+
+export const getDateWithYearOffset = (date, offset) => {
+  return new Date(date.getFullYear() + offset, date.getMonth(), date.getDate());
+};
+
+export const getLastDayOfMonth = (date) => {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+};
+
+export const getFirstDayOfMonth = (date) => {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
 };

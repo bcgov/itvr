@@ -155,3 +155,7 @@ python manage.py test
 
 or to run specific test files, point to the folder or file
 python manage.py test api.services.tests.test_calculate_rebate
+
+### Scheduled Jobs
+
+Currently, when the task-queue application starts, it creates scheduled jobs only if those jobs don't already exist in the database. This means that if some aspects of a job are changed (e.g. its arguments concerning timeout time, etc), one has to delete the job first in the admin console before deploying, or update the job manually in the admin console after deploying. This is an open issue, see: https://apps.nrs.gov.bc.ca/int/jira/browse/ZELDA-436

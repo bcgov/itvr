@@ -197,12 +197,13 @@ EMAIL = email.config()
 Q_CLUSTER = {
     "name": "ITVR",
     "workers": 4,
-    "timeout": 1200,
+    "timeout": 90,
     "retry": 1260,
     "queue_limit": 50,
     "bulk": 10,
     "orm": "default",
     "save_limit": 20 if DEBUG else -1,
+    "max_attempts": 100,
 }
 
 CACHES = {

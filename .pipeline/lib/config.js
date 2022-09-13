@@ -1,7 +1,7 @@
 'use strict';
 const options= require('@bcgov/pipeline-cli').Util.parseArguments()
 const changeId = options.pr //aka pull-request
-const version = '1.0.0'
+const version = '1.10.0'
 const name = 'itvr'
 const ocpName = 'apps.silver.devops'
 
@@ -27,6 +27,9 @@ Set the limit as two times of request
 electric-vehicle-rebates.gov.bc.ca
 */
 options.git.owner='bcgov'
+//Have to set options.git.repository to be itvr otherwise an error will be thrown as the label github-repo 
+//will contain https://github.com/bcgov/itvr which is not allowed as a valid label
+options.git.repository='itvr'
 
 const phases = {
 

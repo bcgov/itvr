@@ -12,6 +12,7 @@ def schedule_send_rebates_to_ncda():
             name="send_rebates_to_ncda",
             schedule_type="C",
             cron="15 * * * *",
+            q_options={"timeout": 1200, "ack_failure": True},
         )
     except IntegrityError:
         pass
@@ -49,18 +50,6 @@ def schedule_expire_expired_applications():
             name="expire_expired_applications",
             schedule_type="C",
             cron="00 23 * * *",
-        )
-    except IntegrityError:
-        pass
-
-
-def schedule_send_mass_approval_email_once():
-    try:
-        schedule(
-            "api.tasks.send_mass_approval_email_once",
-            name="send_mass_approval_email_once",
-            schedule_type="O",
-            repeats=1,
         )
     except IntegrityError:
         pass
