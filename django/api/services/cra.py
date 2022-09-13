@@ -33,6 +33,8 @@ def read(file):
             sin = line[4:13]
             year = line[13:17]
             income = line[21:30].lstrip("0")
+            if income == "":
+                income = "0"
             current_application.append({"sin": sin, "year": year, "income": income})
     return results
 
