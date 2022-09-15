@@ -110,7 +110,9 @@ module.exports = settings => {
       'REPLICAS':  phases[phase].taskQueueReplicas,
       'CRA_ENVIRONMENT':  phases[phase].craEnvironment, 
       'DJANGO_DEBUG': phases[phase].taskQueueDjangoDebug,
-      'CORS_ORIGIN_WHITELIST': phases[phase].corsOriginWhitelist
+      'CORS_ORIGIN_WHITELIST': phases[phase].corsOriginWhitelist,
+      'BUCKET_NAME': phases[phase].bucketName,
+      'TASKQ_PVC_SIZE': phases[phase].taskQueuePVCSize
     }
   })) 
 

@@ -44,6 +44,14 @@ parameters:
   - name: CORS_ORIGIN_WHITELIST
     description: CORS_ORIGIN_WHITELIST
     required: true    
+  - name: BUCKET_NAME
+    displayName: bucket name
+    description: bucket name
+    required: true    
+  - name: TASKQ_PVC_SIZE
+    displayName: PVC size for the volume on taskq container
+    description: PVC size for the volume on taskq container
+    required: true    
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
@@ -96,6 +104,21 @@ objects:
 #        name: '${NAME}-task-queue${SUFFIX}'
 #        weight: 100
 #      wildcardPolicy: None
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: taskq-data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: netapp-file-standard
+        template.openshift.io.bcgov/create: 'true'
+      labels:
+        app: itvr
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: ${TASKQ_PVC_SIZE}
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
@@ -234,7 +257,24 @@ objects:
                 - name: CRA_ENVIRONMENT
                   value: ${CRA_ENVIRONMENT}
                 - name: RUN_JOBS
-                  value: 'true'                                  
+                  value: 'true'    
+                - name: MINIO_ENDPOINT
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-object-storage
+                      key: server-url
+                - name: MINIO_ROOT_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-object-storage
+                      key: root-user
+                - name: MINIO_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-object-storage
+                      key: root-password
+                - name: MINIO_BUCKET_NAME
+                  value: ${BUCKET_NAME}                                                
               readinessProbe:  
                 exec:
                   command:
@@ -246,14 +286,6 @@ objects:
                 periodSeconds: 10
                 successThreshold: 1
                 timeoutSeconds: 3
-#              readinessProbe:
-#                failureThreshold: 10
-#                tcpSocket:
-#                  port: 8080
-#                initialDelaySeconds: 30
-#                periodSeconds: 15
-#                successThreshold: 1
-#                timeoutSeconds: 3
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
@@ -263,11 +295,18 @@ objects:
                   memory: ${MEMORY_REQUEST}
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
+              volumeMounts:
+                - mountPath: /taskq-data
+                  name: taskq-data             
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler
           securityContext: {}
           terminationGracePeriodSeconds: 30
+          volumes:
+          - name: taskq-data
+            persistentVolumeClaim:
+              claimName: taskq-data          
       test: false
       triggers:
         - imageChangeParams:
