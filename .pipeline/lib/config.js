@@ -74,7 +74,7 @@ const phases = {
         host: `itvr-prod.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
         frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 2, frontendMinReplicas: 2, frontendMaxReplicas: 5, snowplowCollector: 'spt.apps.gov.bc.ca',
         reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
-        reactAppBCeIDKeycloakClientId: 'itvr-2674', reactAppBCeIDKeycloakRealm: 'onestopauth-basic', reactAppBCeIDKeycloakUrl: 'https://oidc.gov.bc.ca/auth/',
+        reactAppBCeIDKeycloakClientId: 'itvr-on-gold-cluster-3972', reactAppBCeIDKeycloakRealm: 'standard', reactAppBCeIDKeycloakUrl: 'https://loginproxy.gov.bc.ca/auth/',
         backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendReplicas: 3, backendMinReplicas: 3, backendMaxReplicas: 5, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrpr', craEnvironment: 'P', corsOriginWhitelist: 'https://electric-vehicle-rebates.gov.bc.ca', 
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
