@@ -93,7 +93,7 @@ jobs:
     name: Deploy ITVR on Prod Environment
     runs-on: ubuntu-latest
     timeout-minutes: 2880
-    needs: deploy-on-test
+    needs: deploy-on-dev-test
 
     steps:
 
