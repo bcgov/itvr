@@ -45,9 +45,9 @@ jobs:
           npm install
           npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
 
-  deploy-on-test:
+  deploy-on-dev-test:
 
-    name: Deploy ITVR on Test Environment
+    name: Deploy ITVR on Dev and Test Environment
     runs-on: ubuntu-latest
     timeout-minutes: 240
     needs: build
