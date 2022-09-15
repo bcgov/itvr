@@ -66,6 +66,13 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools    
 
+      - name: Run BCDK deployment on ITVR Dev environment
+        run: |
+          cd .pipeline
+          echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Dev"
+          npm install
+          npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=dev          
+
       - name: Ask for approval for ITVR Test deployment
         uses: trstringer/manual-approval@v1.6.0
         with:
@@ -77,9 +84,8 @@ jobs:
 
       - name: Run BCDK deployment on ITVR Test environment
         run: |
-          cd .pipeline
+          pwd
           echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Test"
-          npm install
           npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test
 
   deploy-on-prod:
