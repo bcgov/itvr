@@ -32,6 +32,9 @@ jobs:
       - name: Change working dir to django
         run: |
           cd django
+          ls -l /
+          ls -l /github
+          ls -l /github/workspace
 
       - name: Run backend unit test
         uses: UKnowWhoIm/django-test-action@v0.6.1
