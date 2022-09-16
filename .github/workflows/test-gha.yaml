@@ -32,30 +32,6 @@ jobs:
       - name: Change working dir to django
         run: |
           cd django
-          ls -l /
-          ls -l /github
-          ls -l /github/workspace
-
-      - name: Run backend unit test
-        uses: UKnowWhoIm/django-test-action@v0.6.1
-        with:
-          settings-dir-path: "django/api"
-          requirements-file: "django/requirements.txt"
-
-      ## Log in to Openshift with a token of service account
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
-
-      ## Run build on Openshift
-      - name: Run build
-        run: |
-          cd .pipeline
-          npm install
-          npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
-
-  
+          mkdir /github
+          mkdir /github/workspace
+          cp ./manage.py /github/workspace
