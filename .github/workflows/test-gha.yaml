@@ -36,8 +36,8 @@ jobs:
       - name: Run backend unit test
         uses: UKnowWhoIm/django-test-action@v0.6.1
         with:
-          settings-dir-path: "api"
-          requirements-file: "requirements.txt"
+          settings-dir-path: "django/api"
+          requirements-file: "django/requirements.txt"
 
       ## Log in to Openshift with a token of service account
       - name: Log in to Openshift
