@@ -1,18 +1,18 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: CI/CD ITVR GHA-django-unit-test-1.11.0
+name: CI/CD ITVR release-1.11.0
 
 on:
   push:
-    branches: [ GHA-django-unit-test-1.11.0 ]
+    branches: [ release-1.11.0 ]
   workflow_dispatch:
   workflow_call:
 
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   ## Also remember to update the version in .pipeline/lib/config.js
-  PR_NUMBER: 311
-  RELEASE_NAME: GHA-django-unit-test-1.11.0
+  PR_NUMBER: 303
+  RELEASE_NAME: release-1.11.0
 
 jobs:
 
@@ -28,12 +28,6 @@ jobs:
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
         uses: actions/checkout@v2
-
-      - name: Run backend unit test
-        uses: UKnowWhoIm/django-test-action@v0.6.1
-        with:
-          settings-dir-path: "django/api"
-          requirements-file: "django/requirements.txt"
 
       ## Log in to Openshift with a token of service account
       - name: Log in to Openshift
@@ -71,8 +65,6 @@ jobs:
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
           insecure_skip_tls_verify: true
           namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools    
-
-
 
       - name: Run BCDK deployment on ITVR Dev environment
         run: |
