@@ -84,7 +84,7 @@ jobs:
 
       - name: Run BCDK deployment on ITVR Test environment
         run: |
-          pwd
+          cd .pipeline
           echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Test"
           npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test
 
