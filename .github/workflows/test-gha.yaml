@@ -29,9 +29,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Change working dir to django
+      - name: cd django
         run: |
           cd django
-          mkdir /github
-          mkdir /github/workspace
-          cp ./manage.py /github/workspace
+
+      - name: Django Coverage action
+        uses: dc740/django-coveragepy-github-action@0.9
+        with:
+          django-app: 'itvr'
+          minimum-coverage: '86'
+
