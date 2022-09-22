@@ -32,10 +32,12 @@ jobs:
       - name: cd django
         run: |
           cd django
+          pwd
+          ls -l
+          echo ${GITHUB_WORKSPACE}
 
-      - name: Django Coverage action
-        uses: dc740/django-coveragepy-github-action@0.9
+      - name: Django Test CI
+        uses: UKnowWhoIm/django-test-action@v0.6.1
         with:
-          django-app: 'itvr'
-          minimum-coverage: '86'
+          settings-dir-path: api
 
