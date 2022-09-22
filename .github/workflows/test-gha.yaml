@@ -20,7 +20,7 @@ jobs:
   build:
 
     name: Build ITVR on Openshift
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     timeout-minutes: 60
 
     steps:
