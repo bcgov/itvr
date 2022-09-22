@@ -29,15 +29,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: cd django
-        run: |
-          cd django
-          pwd
-          ls -l
-          echo ${GITHUB_WORKSPACE}
-
       - name: Django Test CI
         uses: UKnowWhoIm/django-test-action@v0.6.1
         with:
-          settings-dir-path: api
+          settings-dir-path: "django/api"
+          requirements-file: "django/requirements.txt"
 
