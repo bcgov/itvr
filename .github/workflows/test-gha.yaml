@@ -32,7 +32,7 @@ jobs:
       - name: Django Test CI
         env:
           GITHUB_WORKSPACE: "/home/runner/work/itvr/itvr"
-        uses: kuanfandevops/django-test-action@v0.1
+        uses: kuanfandevops/django-test-action@v0.2
         with:
           settings-dir-path: "django/api"
           requirements-file: "django/requirements.txt"
