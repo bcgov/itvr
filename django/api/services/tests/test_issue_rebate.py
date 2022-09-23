@@ -59,28 +59,3 @@ class TestIssueRebate(TestRebate):
                 applications[application_id].drivers_licence,
             )
 
-    def test_update_application_statuses(self):
-        # updates n applications correctly if there are n rebates; correct parameters sent to post_save signal listener
-        not_approved_status = GoElectricRebateApplication.Status.NOT_APPROVED
-        approved_status = GoElectricRebateApplication.Status.APPROVED
-        not_approved_emails = set()
-        rebate_emails = {}
-
-        @receiver(post_save, sender=GoElectricRebateApplication)
-        def listener(sender, instance, created, **kwargs):
-            if (not created) and (kwargs.get("update_fields") == {"status"}):
-                if instance.status == not_approved_status:
-                    not_approved_emails.add(instance.id)
-                elif instance.status == approved_status:
-                    rebate_amount = kwargs.get("rebate_amount")
-                    rebate_emails[instance.id] = rebate_amount
-
-        applications = get_applications(self.rebates)
-        update_application_statuses(self.rebates, applications)
-        updated_applications = GoElectricRebateApplication.objects.filter(
-            id__in=list(applications)
-        ).filter(status__in=[not_approved_status, approved_status])
-
-        self.assertEqual(len(updated_applications), len(applications))
-        self.assertDictEqual(self.approved_rebates, rebate_emails)
-        self.assertSetEqual(self.not_approved_rebates, not_approved_emails)
