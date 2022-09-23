@@ -36,4 +36,5 @@ jobs:
         with:
           settings-dir-path: "django/api"
           requirements-file: "django/requirements.txt"
+          managepy-dir: django
 
