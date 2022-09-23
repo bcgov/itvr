@@ -29,6 +29,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
+      - name: Django Test CI
+        uses: kuanfandevops/django-test-action@main
+        with:
+          settings-dir-path: "django/api"
+          requirements-file: "django/requirements.txt"
+          managepy-dir: django
+
       ## Log in to Openshift with a token of service account
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
