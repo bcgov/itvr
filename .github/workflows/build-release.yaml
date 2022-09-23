@@ -29,7 +29,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Django Test CI
+      - name: Run coverage report for django tests 
         uses: kuanfandevops/django-test-action@main
         with:
           settings-dir-path: "django/api"
