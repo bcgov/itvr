@@ -180,6 +180,8 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         ret = super().response_change(request, obj)
         if "cancel_application" in request.POST:
+            dl = obj.drivers_licence
+            GoElectricRebate.objects.filter(drivers_licence=dl).delete()
             obj.status = GoElectricRebateApplication.Status.CANCELLED
             obj.save(update_fields=["status"])
         return ret
