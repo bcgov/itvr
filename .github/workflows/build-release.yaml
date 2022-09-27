@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run coverage report for django tests 
-        uses: kuanfandevops/django-test-action@main
+        uses: kuanfandevops/django-test-action@itvr-django-test
         with:
           settings-dir-path: "django/api"
           requirements-file: "django/requirements.txt"
