@@ -22,7 +22,13 @@ from api.constants import (
 from api.utility import get_applicant_full_name
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
-
+from sequences import get_next_value
+from .services import cra
+from datetime import date
+import boto3
+import botocore
+from .services.rebate import get_applications, save_rebates, update_application_statuses
+from .services.calculate_rebate import get_cra_results
 
 def get_email_service_token() -> str:
     client_id = settings.EMAIL["EMAIL_SERVICE_CLIENT_ID"]
@@ -488,3 +494,107 @@ def expire_expired_applications():
         status=GoElectricRebateApplication.Status.EXPIRED,
         modified=timezone.now(),
     )
+
+def upload_verified_applications_last_24hours_to_s3():
+    rebates =  GoElectricRebateApplication.objects.filter(
+        status=GoElectricRebateApplication.Status.VERIFIED,
+        created__gte=timezone.now() - timedelta(days=1),
+    )
+    
+    data = []
+    cra_env = settings.CRA_ENVIRONMENT
+    cra_sequence = get_next_value("cra_sequence")
+    program_code = "BCVR"
+
+    for rebate in rebates:
+        data.append(
+            {
+                "sin": rebate.sin,
+                "years": [rebate.tax_year],
+                "given_name": rebate.first_name,
+                "family_name": rebate.last_name,
+                "birth_date": rebate.date_of_birth.strftime("%Y%m%d"),
+                "application_id": rebate.id,
+            }
+        )
+
+        if rebate.application_type == "household":
+            household_member = rebate.householdmember
+            data.append(
+                {
+                    "sin": household_member.sin,
+                    "years": [rebate.tax_year],
+                    "given_name": household_member.first_name,
+                    "family_name": household_member.last_name,
+                    "birth_date": household_member.date_of_birth.strftime("%Y%m%d"),
+                    "application_id": rebate.id,
+                }
+            )
+
+    filename = get_cra_filename(program_code, cra_env, cra_sequence)
+    today = date.today().strftime("%Y%m%d")
+    
+    with open(filename, "w") as file:
+        res = cra.write(
+                data,
+                today=today,
+                program_code=program_code,
+                cra_env=cra_env,
+                cra_sequence=f"{cra_sequence:05}",
+            )
+        file.write(res)
+    upload_to_s3(filename)
+  
+
+def get_cra_filename(program_code="BCVR", cra_env="A", cra_sequence="00001"):
+    filename = "TO.{cra_env}TO#@@00.R7005.IN.{program_code}.{cra_env}{cra_sequence:05}".format(
+        cra_env=cra_env, cra_sequence=cra_sequence, program_code=program_code
+    )
+    return filename
+
+
+def upload_to_s3(file):
+
+    client = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_S3_ENDPOINT_URL,
+        endpoint_url=settings.AWS_SECRET_ACCESS_KEY
+    )
+
+    BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
+    UPLOAD_FOLDER_NAME = 'cra/encrypt'
+
+    client.upload_file(file, BUCKET_NAME, '%s/%s' % (UPLOAD_FOLDER_NAME, file))
+
+def update_applications_cra_response():
+
+    # read file contents from s3
+    resource = boto3.resource(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_S3_ENDPOINT_URL,
+        endpoint_url=settings.AWS_SECRET_ACCESS_KEY
+    )
+
+    BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
+    DOWNLOAD_FOLDER_NAME = 'cra/decrypt'
+
+    my_bucket = resource.Bucket(BUCKET_NAME)
+    files = my_bucket.objects.filter(Prefix=DOWNLOAD_FOLDER_NAME)
+    latest_object = [obj.key for obj in sorted(files, key=lambda x: x.last_modified,
+        reverse=True)][0]
+
+    try:
+        file = resource.Object(BUCKET_NAME, latest_object)
+        obj_body = file.get()['Body'].read().decode("utf-8")
+        data = cra.read(obj_body)
+        rebates = get_cra_results(data)
+        associated_applications = get_applications(rebates)
+        save_rebates(rebates, associated_applications)
+        update_application_statuses(rebates, associated_applications)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
