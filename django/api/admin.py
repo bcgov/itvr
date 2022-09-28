@@ -47,6 +47,7 @@ def get_inlines(obj):
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
     exclude = ("sin",)
+    readonly_fields = ("reason_for_decline",)
 
 
 # The proxy model is used to avoid a Django limitation where a model can only
@@ -149,6 +150,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
+        "reason_for_decline"
     )
     readonly_fields = (
         "id",
@@ -230,6 +232,7 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "reason_for_decline"
     )
 
     def get_queryset(self, request):
