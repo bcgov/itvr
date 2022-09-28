@@ -55,7 +55,7 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
     exclude = (
@@ -131,7 +131,7 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
 
 @admin.register(CancellableGoElectricRebateApplication)
 class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
     exclude = (
@@ -201,7 +201,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 @admin.register(SearchableGoElectricRebateApplication)
 class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     actions = None
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
         "doc1",
@@ -245,7 +245,7 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 @admin.register(GoElectricRebateApplicationWithFailedEmail)
 class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
     actions = None
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
         "doc1",
