@@ -11,3 +11,7 @@ def config():
         "SENDER_NAME": "CleanBC Go Electric",
         "SEND_EMAIL": os.getenv("SEND_EMAIL", "False") == "True",
     }
+
+
+ZEV_PROGRAMS_EMAIL = "ZEVPrograms@gov.bc.ca"
+UNDISCLOSED_RECIPIENTS_EMAIL = "Undisclosed recipients<donotreply@gov.bc.ca>"
