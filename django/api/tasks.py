@@ -20,7 +20,7 @@ from api.constants import (
     TWO_THOUSAND_REBATE,
 )
 from api.utility import get_applicant_full_name
-from django.api.email import ZEV_PROGRAMS_EMAIL
+from api.email import ZEV_PROGRAMS_EMAIL
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
 
