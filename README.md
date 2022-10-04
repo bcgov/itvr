@@ -1,6 +1,7 @@
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=bcgov_itvr)
 
 # itvr
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://goelectricbc.gov.bc.ca/)
 
 ## System
 
