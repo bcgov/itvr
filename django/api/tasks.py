@@ -20,6 +20,7 @@ from api.constants import (
     TWO_THOUSAND_REBATE,
 )
 from api.utility import get_applicant_full_name
+from api.email import ZEV_PROGRAMS_EMAIL
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
 
@@ -63,7 +64,7 @@ def send_email(
     sender_info = formataddr((str(Header(sender_name, "utf-8")), sender_email))
 
     data = {
-        # "bcc": [recipient_email],
+        "bcc": [ZEV_PROGRAMS_EMAIL],
         "bodyType": bodyType,
         "body": message,
         "cc": cc_list,
@@ -72,7 +73,6 @@ def send_email(
         "from": sender_info,
         "priority": "normal",
         "subject": subject,
-        # "to": ["Undisclosed recipients<donotreply@gov.bc.ca>"],
         "to": [recipient_email],
     }
 

@@ -55,7 +55,7 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
     exclude = (
@@ -131,7 +131,7 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
 
 @admin.register(CancellableGoElectricRebateApplication)
 class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
     exclude = (
@@ -181,6 +181,8 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         ret = super().response_change(request, obj)
         if "cancel_application" in request.POST:
+            dl = obj.drivers_licence
+            GoElectricRebate.objects.filter(drivers_licence=dl).delete()
             obj.status = GoElectricRebateApplication.Status.CANCELLED
             obj.save(update_fields=["status"])
         return ret
@@ -202,7 +204,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 @admin.register(SearchableGoElectricRebateApplication)
 class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     actions = None
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
         "doc1",
@@ -231,8 +233,14 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
-        "reason_for_decline"
+        "reason_for_decline",
+        "rebate_max_amount"
     )
+        
+    def rebate_max_amount(self, obj):
+        return GoElectricRebate.objects.get(application_id=obj.id).rebate_max_amount if obj.status == 'approved' else '-'
+    
+    rebate_max_amount.short_description = "Rebate Max Amount"
 
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.all()
@@ -247,7 +255,7 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 @admin.register(GoElectricRebateApplicationWithFailedEmail)
 class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
     actions = None
-    search_fields = ["drivers_licence", "id", "status"]
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
         "doc1",
