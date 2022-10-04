@@ -232,7 +232,13 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "rebate_max_amount"
     )
+        
+    def rebate_max_amount(self, obj):
+        return GoElectricRebate.objects.get(application_id=obj.id).rebate_max_amount if obj.status == 'approved' else '-'
+    
+    rebate_max_amount.short_description = "Rebate Max Amount"
 
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.all()
