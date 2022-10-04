@@ -179,7 +179,7 @@ def send_household_confirm(recipient_email, application_id):
     send_email(recipient_email, application_id, message, cc_list=[])
 
 
-def send_reject(recipient_email, application_id):
+def send_reject(recipient_email, application_id, reason_for_decline):
     message = """\
         <html>
         <body>
@@ -191,36 +191,17 @@ def send_reject(recipient_email, application_id):
 
         <p>Your application cannot be approved due to problems with identity documents.</p>
 
-        <p>Some examples of why this may have happened include:</p>
-
-        <ul>
-            <li>
-                Driver’s license/secondary piece of ID quality not sufficient or illegible.
-            </li>
-            <li>
-                Secondary piece of ID doesn’t display full name and address or issue date exceeds 90 days.
-            </li>
-            <li>
-                Both pieces of ID don’t match name and/or address.
-            </li>
-            <li>
-                Household application addresses are not the same
-                for applicant and spouse.
-            </li>
-            <li>
-                Date of birth provided on the application doesn’t match 
-                the date of birth on the driver’s license.
-            </li>
-        </ul>
-
-        <b>You are encouraged to correct these issues and submit another application.</b>
+        <p> {reason_for_decline} </p>
 
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
         </body>
         </html>
-         """
+         """.format(
+        reason_for_decline=reason_for_decline
+        )
+
     send_email(
         recipient_email,
         application_id,

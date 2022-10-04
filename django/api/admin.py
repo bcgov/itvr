@@ -149,6 +149,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
+        "reason_for_decline"
     )
     readonly_fields = (
         "id",
@@ -232,6 +233,7 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "reason_for_decline",
         "rebate_max_amount"
     )
         
@@ -282,6 +284,7 @@ class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
         "doc2_tag",
         "confirmation_email_success",
         "spouse_email_success",
+        "reason_for_decline"
     )
 
     def get_queryset(self, request):
