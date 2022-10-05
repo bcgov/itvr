@@ -9,14 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import useAxios from '../utils/axiosHook';
-import SpouseEmail from './SpouseEmail';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import Box from '@mui/material/Box';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 import { getDateWithYearOffset, isSINValid } from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -47,8 +40,7 @@ export const defaultValues = {
   documents: [],
   consent_personal: false,
   consent_tax: false,
-  application_type: 'individual',
-  spouse_email: ''
+  application_type: 'individual'
 };
 
 const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
@@ -136,72 +128,6 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     <FormProvider {...methods}>
       <Loading open={loading} />
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <h5>Application process for households</h5>
-        <p>
-          Your spouse will need to complete a part of the application.
-          Instructions will be sent to them by email after you complete your
-          part of the application below.
-        </p>
-        <p>
-          Your spouse will need their own BC Services Card app or Basic BCeID
-          account. Your ID will be used to confirm that you and your spouse live
-          at the same address.
-        </p>
-        <FormGroup>
-          <Box mb={5}>
-            <FormControl>
-              <FormLabel
-                className="label"
-                id="application_type"
-                sx={{ mb: 1 }}
-              ></FormLabel>
-              <RadioGroup
-                aria-labelledby="application_type"
-                name="application_type"
-                defaultValue={defaultValues.application_type}
-              >
-                <FormControlLabel
-                  sx={{ color: 'black' }}
-                  value="individual"
-                  control={
-                    <Radio
-                      name="application_type"
-                      {...register('application_type')}
-                    />
-                  }
-                  label={
-                    <Typography color="textPrimary" fontWeight="bold">
-                      {'Apply as an individual'}
-                    </Typography>
-                  }
-                />
-                <FormControlLabel
-                  value="household"
-                  control={
-                    <Radio
-                      name="application_type"
-                      {...register('application_type')}
-                    />
-                  }
-                  label={
-                    <Typography color="textPrimary">
-                      {
-                        <>
-                          {' '}
-                          <b>Apply as a household</b>
-                        </>
-                      }
-                    </Typography>
-                  }
-                />
-              </RadioGroup>
-            </FormControl>
-
-            {watch('application_type') === 'household' && (
-              <SpouseEmail name="spouse_email" />
-            )}
-          </Box>
-        </FormGroup>
         <Box sx={{ display: 'inline' }}>
           <h3 id="form-submission-title">
             Your application information <LockIcon />

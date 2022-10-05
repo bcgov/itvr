@@ -1,7 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import dl from '../styles/images/sample-dl.png';
-import bceid from '../styles/images/sample-bcsc.png';
 import bankStatement from '../styles/images/sample-bank-statement.png';
 import utility from '../styles/images/sample-utility-statement.png';
 
@@ -12,16 +11,12 @@ const IdentificationExamples = (props) => {
       <h3>Names and addresses must be the same</h3>
       <ul>
         <li>Both pieces of your ID must show the same name and address.</li>
-        <li>
-          Both pieces of ID from both members of a household must have the same
-          address.
-        </li>
       </ul>
       <h3>Primary identification</h3>
       <p>A passport cannot be used as ID as it doesn't show your address.</p>
       <h4>BC Driver's Licence</h4>
       <ul>
-        <li>An image of the primary applicant's BC Driver's Licence.</li>
+        <li>An image of the applicant's BC Driver's Licence.</li>
       </ul>
 
       <Box
@@ -32,21 +27,6 @@ const IdentificationExamples = (props) => {
           maxWidth: 400
         }}
         src={dl}
-      />
-      <h4>BC Services Card</h4>
-      <ul>
-        <li>
-          The spouse of a household application can use a BC Services Card or
-          driver's licence.
-        </li>
-      </ul>
-      <Box
-        component="img"
-        sx={{
-          maxWidth: 400
-        }}
-        alt="A photograph of the front of the spouse's BC Service Card clearly showing the photograph and address"
-        src={bceid}
       />
 
       <h3>Secondary Identification</h3>

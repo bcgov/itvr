@@ -24,13 +24,6 @@ const IndividualLogin = () => {
           </a>
           is the simplest method to log in and confirm your identity.
         </p>
-
-        <h3>Household applications</h3>
-        <p>
-          For a household application your spouse or common law partner will
-          also need to confirm their identity and provide CRA income disclosure
-          consent, they do not require a driver's licence.{' '}
-        </p>
       </div>
       <BottomBanner
         text="Log in to start your rebate pre-approval application"

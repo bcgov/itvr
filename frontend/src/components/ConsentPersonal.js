@@ -70,12 +70,6 @@ const ConsentPersonal = ({ name, required }) => {
             applicable.
           </li>
           <li>
-            If applying for a household rebate I also consent to the disclosure
-            of my personal information to my spouse who is applying. This
-            includes but is not limited to income information that has been used
-            to calculate the rebate amount.
-          </li>
-          <li>
             I consent to the verification of information provided regarding this
             application, or any subsequently provided information.
           </li>
