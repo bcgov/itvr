@@ -29,7 +29,6 @@ const FormPage = () => {
           </span>
         )}
         <h2>Apply for a passenger vehicle rebate pre-approval</h2>
-        <RebateTable />
         <Form
           setNumberOfErrors={setNumberOfErrors}
           setErrorsExistCounter={setErrorsExistCounter}
