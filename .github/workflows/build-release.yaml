@@ -114,6 +114,7 @@ jobs:
         run: |
           cd .pipeline
           echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Test"
+          npm install
           npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=test
 
   deploy-on-prod:
