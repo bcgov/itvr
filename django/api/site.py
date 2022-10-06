@@ -45,7 +45,7 @@ class ITVRAdminSite(AdminSite):
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 file = request.FILES["cra_response_file"]
-                file_contents = file.read().decode("utf-8")
+                file_contents = file.read().decode(encoding="utf-8", errors="replace")
                 data = cra.read(file_contents)
                 rebates = get_cra_results(data)
                 associated_applications = get_applications(rebates)
