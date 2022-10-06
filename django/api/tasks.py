@@ -540,8 +540,8 @@ def upload_to_s3(file):
     client = boto3.client(
         's3',
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_S3_ENDPOINT_URL,
-        endpoint_url=settings.AWS_SECRET_ACCESS_KEY
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        endpoint_url=settings.AWS_S3_ENDPOINT_URL
     )
 
     BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
@@ -555,8 +555,8 @@ def update_applications_cra_response():
     resource = boto3.resource(
         's3',
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_S3_ENDPOINT_URL,
-        endpoint_url=settings.AWS_SECRET_ACCESS_KEY
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        endpoint_url=settings.AWS_S3_ENDPOINT_URL
     )
 
     BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
