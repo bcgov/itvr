@@ -186,6 +186,7 @@ def send_household_confirm(recipient_email, application_id):
 
 
 def send_reject(recipient_email, application_id, reason_for_decline):
+    list_reasons = "<li>" + "</li><li>".join(reason_for_decline.split(";")) + "</li>"
     message = """\
         <html>
         <body>
@@ -195,18 +196,18 @@ def send_reject(recipient_email, application_id, reason_for_decline):
 
         <p>Dear Applicant,</p>
 
-        <p>Your application cannot be approved due to problems with identity documents.</p>
+        <p>Your application cannot be approved due to the following issues:</p>
 
-        <p> {reason_for_decline} </p>
-
+        <ul>
+        <li>reasons</li>
+        </ul>
+        
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
         </body>
         </html>
-         """.format(
-        reason_for_decline=reason_for_decline
-        )
+         """.replace("<li>reasons</li>", list_reasons)
 
     send_email(
         recipient_email,
