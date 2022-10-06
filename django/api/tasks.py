@@ -195,18 +195,23 @@ def send_reject(recipient_email, application_id, reason_for_decline):
 
         <p>Dear Applicant,</p>
 
-        <p>Your application cannot be approved due to problems with identity documents.</p>
+        <p>Your application cannot be approved due to the following issues:</p>
 
-        <p> {reason_for_decline} </p>
-
+        <ul>
+        {% for reason in reasons %}
+            <li>{{ reason }}</li>
+        {% endfor %}
+        </ul>
+        
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
         </body>
         </html>
          """.format(
-        reason_for_decline=reason_for_decline
+        reasons=reason_for_decline.split(";")
         )
+    print(message)
 
     send_email(
         recipient_email,
