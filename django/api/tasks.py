@@ -71,7 +71,7 @@ def send_email(
     sender_info = formataddr((str(Header(sender_name, "utf-8")), sender_email))
 
     data = {
-        # "bcc": [ZEV_PROGRAMS_EMAIL],
+        "bcc": [ZEV_PROGRAMS_EMAIL],
         "bodyType": bodyType,
         "body": message,
         "cc": cc_list,
