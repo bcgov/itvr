@@ -2,6 +2,12 @@
 {% load i18n admin_urls jazzmin %}
 {% get_jazzmin_ui_tweaks as jazzmin_ui %}
 {% block submit-row %}
+{% load static %}
+
+{% block admin_submit_line_document_ready %}
+{{ block.super }}
+<script src="{% static 'formset_handlers.js' %}"></script>
+
 <div class="card card-primary card-outline">
   <div class="card-header">
     <h3 class="card-title">
@@ -29,4 +35,5 @@
     </div>
   </div>
 </div>
+{% endblock %}
 {% endblock %}

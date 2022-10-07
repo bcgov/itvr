@@ -1,7 +1,7 @@
 'use strict';
 const options= require('@bcgov/pipeline-cli').Util.parseArguments()
 const changeId = options.pr //aka pull-request
-const version = '1.10.0'
+const version = '1.11.0'
 const name = 'itvr'
 const ocpName = 'apps.silver.devops'
 
@@ -42,7 +42,7 @@ const phases = {
         instance: `${name}-dev-${changeId}`  , version:`${version}-${changeId}`, tag:`dev-${version}-${changeId}`, 
         host: `itvr-dev-${changeId}.${ocpName}.gov.bc.ca`, djangoDebug: 'True', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
-        frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 1, snowplowCollector: '',
+        frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 1, snowplowCollector: 'spm.apps.gov.bc.ca',
         reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://dev.oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-dev-${changeId}.apps.silver.devops.gov.bc.ca`, 
         reactAppBCeIDKeycloakClientId: 'itvr-on-gold-cluster-3972', reactAppBCeIDKeycloakRealm: 'standard', reactAppBCeIDKeycloakUrl: 'https://dev.loginproxy.gov.bc.ca/auth/', 
         backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True', bucketName: 'itvrdv', craEnvironment: 'A', corsOriginWhitelist: 'https://itvr-dev.apps.silver.devops.gov.bc.ca', 
@@ -50,7 +50,7 @@ const phases = {
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '2G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True',},
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True', taskQueuePVCSize: '2Gi'},
 
   test: {namespace:'ac294c-test', name: `${name}`, ssoSuffix:'-test', 
         ssoName:'test.oidc.gov.bc.ca', phase: 'test'  ,  changeId:`${changeId}`, suffix: `-test`, 
@@ -65,7 +65,7 @@ const phases = {
         schemaspyCpuRequest: '20m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '700M', rabbitmqPvcSize: '1G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',},
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False', taskQueuePVCSize: '2Gi'},
 
   prod: {namespace:'ac294c-prod', name: `${name}`, ssoSuffix:'', 
         ssoName:'oidc.gov.bc.ca', phase: 'prod'  , changeId:`${changeId}`, suffix: `-prod`, 
@@ -80,7 +80,7 @@ const phases = {
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '5G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False',}
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False', taskQueuePVCSize: '400Mi'}
 
 };
 

@@ -1,17 +1,18 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: CI/CD ITVR release-1.10.0
+name: ITVR release-1.11.0
 
 on:
   push:
-    branches: [ release-1.10.0 ]
+    branches: [ release-1.11.0 ]
   workflow_dispatch:
   workflow_call:
 
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
-  PR_NUMBER: 270
-  RELEASE_NAME: release-1.10.0
+  ## Also remember to update the version in .pipeline/lib/config.js
+  PR_NUMBER: 303
+  RELEASE_NAME: release-1.11.0
 
 jobs:
 
@@ -27,6 +28,13 @@ jobs:
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
         uses: actions/checkout@v2
+
+      - name: Run coverage report for django tests 
+        uses: kuanfandevops/django-test-action@itvr-django-test
+        with:
+          settings-dir-path: "django/api"
+          requirements-file: "django/requirements.txt"
+          managepy-dir: django
 
       ## Log in to Openshift with a token of service account
       - name: Log in to Openshift
@@ -44,12 +52,40 @@ jobs:
           npm install
           npm run build -- --pr=${{ env.PR_NUMBER }} --env=build 
 
+  deploy-on-dev:
+
+    name: Deploy ITVR on Dev Environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    needs: build
+
+    steps:
+
+      ## it will checkout to /home/runner/work/itvr/itvr
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools    
+
+      - name: Run BCDK deployment on ITVR Dev environment
+        run: |
+          cd .pipeline
+          echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Dev"
+          npm install
+          npm run deploy -- --pr=${{ env.PR_NUMBER }} --env=dev          
+
   deploy-on-test:
 
     name: Deploy ITVR on Test Environment
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    needs: build
+    needs: deploy-on-dev
 
     steps:
 
@@ -111,7 +147,7 @@ jobs:
           issue-title: "ITVR ${{ env.RELEASE_NAME }} Prod Deployment"
           timeout-minutes: 2880
 
-      - name: Run BCDK deployment on ITVR Test environment
+      - name: Run BCDK deployment on ITVR Prod environment
         run: |
           cd .pipeline
           echo "Deploying ITVR ${{ env.RELEASE_NAME }} on Prod"

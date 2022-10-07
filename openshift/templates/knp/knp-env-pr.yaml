@@ -28,7 +28,7 @@ objects:
                   name: itvr-frontend${SUFFIX}
             - podSelector:
                 matchLabels:
-                  name: schemaspy-public
+                  name: schemaspy-public${SUFFIX}
           ports:
             - protocol: TCP
               port: 8080
@@ -61,7 +61,7 @@ objects:
                   name: itvr-task-queue${SUFFIX}
             - podSelector:
                 matchLabels:
-                  name: schemaspy-public
+                  name: schemaspy-public${SUFFIX}
           ports:
             - protocol: TCP
               port: 5432

@@ -121,6 +121,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     )
     consent_personal = BooleanField(validators=[validate_consent], null=True)
     consent_tax = BooleanField(validators=[validate_consent], null=True)
+    reason_for_decline = CharField(max_length=500, unique=False, blank=True, null=True)
 
     def user_is_bcsc(self):
         if self.user.identity_provider == "bcsc":

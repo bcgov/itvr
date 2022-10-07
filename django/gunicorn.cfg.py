@@ -44,6 +44,5 @@
 #
 
 workers = 2
-timeout = 20
-graceful_timeout = 20
-keepalive = 5
+timeout = 60
+graceful_timeout = 60

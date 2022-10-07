@@ -53,3 +53,27 @@ def schedule_expire_expired_applications():
         )
     except IntegrityError:
         pass
+
+
+def schedule_upload_verified_applications_last_24hours_to_s3():
+    try:
+        schedule(
+            "api.tasks.upload_verified_applications_last_24hours_to_s3",
+            name="upload_verified_applications_last_24hours_to_s3",
+            schedule_type="C",
+            cron="00 22 * * *",
+        )
+    except IntegrityError:
+        pass
+
+
+def schedule_update_applications_cra_response():
+    try:
+        schedule(
+            "api.tasks.update_applications_cra_response",
+            name="update_applications_cra_response",
+            schedule_type="C",
+            cron="00 21 * * *",
+        )
+    except IntegrityError:
+        pass
