@@ -80,7 +80,7 @@ const phases = {
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '5G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False', taskQueuePVCSize: '2Gi'}
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False', taskQueuePVCSize: '400Mi'}
 
 };
 
