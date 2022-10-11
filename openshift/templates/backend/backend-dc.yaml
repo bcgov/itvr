@@ -307,6 +307,11 @@ objects:
                     secretKeyRef:
                       name: itvr-email-service
                       key: SENDER_NAME
+                - name: BCC_EMAIL
+                  valueFrom:
+                    secretKeyRef:
+                      name: itvr-email-service
+                      key: BCC_EMAIL
                 - name: SEND_EMAIL
                   value: "True"
                 - name: MINIO_ENDPOINT

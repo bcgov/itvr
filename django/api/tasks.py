@@ -20,7 +20,6 @@ from api.constants import (
     TWO_THOUSAND_REBATE,
 )
 from api.utility import get_applicant_full_name
-from api.email import ZEV_PROGRAMS_EMAIL
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
 from sequences import get_next_value
@@ -60,6 +59,7 @@ def send_email(
     sender_email = settings.EMAIL["SENDER_EMAIL"]
     sender_name = settings.EMAIL["SENDER_NAME"]
     url = settings.EMAIL["CHES_EMAIL_URL"]
+    bcc_email = settings.EMAIL["BCC_EMAIL"]
 
     subject = (
         "CleanBC Go Electric - Application #{}".format(application_id)
@@ -71,7 +71,7 @@ def send_email(
     sender_info = formataddr((str(Header(sender_name, "utf-8")), sender_email))
 
     data = {
-        # "bcc": [ZEV_PROGRAMS_EMAIL],
+        "bcc": [bcc_email],
         "bodyType": bodyType,
         "body": message,
         "cc": cc_list,
