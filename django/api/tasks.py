@@ -203,6 +203,9 @@ def send_reject(recipient_email, application_id, reason_for_decline):
         <li>reasons</li>
         </ul>
         
+        <b>You are encouraged to correct these issues and submit another application.</b>
+        <p>https://goelectricbc.gov.bc.ca/</p>
+
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
