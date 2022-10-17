@@ -4,12 +4,23 @@ const ConsentTax = ({ name, required, applicationType }) => {
   const date = new Date();
 
   const currentYear = date.getFullYear();
-  const twoYearsAgo = date.getFullYear() - 2;
   const lastYear = date.getFullYear() - 1;
+  const twoYearsAgo = date.getFullYear() - 2;
+  const nextYear = date.getFullYear() + 1;
+
+  // check if date falls between july 1 and dec 31
+  const isBetweenJuly1AndDec31 = date.getMonth() >= 6 && date.getMonth() <= 11
+  //check if date falls between january 1 and june 30
+  const isBetweenJan1AndJune30 = date.getMonth() >= 0 && date.getMonth() <= 5
+
+  const mostRecent = isBetweenJuly1AndDec31 ? lastYear : isBetweenJan1AndJune30 ? twoYearsAgo : 'Error'
+  const future = isBetweenJuly1AndDec31 ? nextYear : isBetweenJan1AndJune30 ? currentYear : 'Error'
+  const modified = isBetweenJuly1AndDec31 ? currentYear : isBetweenJan1AndJune30 ? lastYear : 'Error'
+
   const subtitle = `You are required to provide consent that allows the Ministry of Energy, Mines and Low Carbon Innovation to access and 
-review tax information related to line 15000 ‘gross income’ of your most recent Notice of Assessment from the Canada 
-Revenue Agency for your application to the CleanBC Go Electric Passenger Vehicle Rebate program. Up until 
-June 30, ${currentYear}  your ${twoYearsAgo} NOA is considered your most recent, on July 1, ${currentYear} it will change to be your ${lastYear} NOA.`;
+  review tax information related to line 15000 ‘gross income’ of your most recent Notice of Assessment from the Canada 
+  Revenue Agency for your application to the CleanBC Go Electric Passenger Vehicle Rebate program. Currently your
+  ${mostRecent} NOA is considered your most recent, on July 1, ${future} it will change to be your ${modified} NOA.`;
 
   return (
     <ConsentGeneral
