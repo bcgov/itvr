@@ -10,8 +10,8 @@ def config():
         "SENDER_EMAIL": os.getenv("SENDER_EMAIL", "ZEVProgramsDoNotReply@gov.bc.ca"),
         "SENDER_NAME": "CleanBC Go Electric",
         "SEND_EMAIL": os.getenv("SEND_EMAIL", "False") == "True",
+        "BCC_EMAIL": os.getenv("BCC_EMAIL", ""),
     }
 
 
-ZEV_PROGRAMS_EMAIL = "ZEVPrograms@gov.bc.ca"
 UNDISCLOSED_RECIPIENTS_EMAIL = "Undisclosed recipients<donotreply@gov.bc.ca>"

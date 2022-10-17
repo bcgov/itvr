@@ -59,6 +59,7 @@ services:
       - CHES_AUTH_URL
       - CHES_EMAIL_URL
       - SEND_EMAIL
+      - BCC_EMAIL
       - BYPASS_AUTHENTICATION
       - NCDA_CLIENT_SECRET
       - VIRUS_SCANNING_ENABLED=True
@@ -91,6 +92,7 @@ services:
       - CHES_AUTH_URL
       - CHES_EMAIL_URL
       - SEND_EMAIL
+      - BCC_EMAIL
       - NCDA_CLIENT_SECRET
       - RUN_JOBS=True
     volumes:

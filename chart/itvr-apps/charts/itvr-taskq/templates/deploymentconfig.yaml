@@ -101,6 +101,11 @@ spec:
                 secretKeyRef:
                   name: itvr-email-service
                   key: SENDER_NAME
+            - name: BCC_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: BCC_EMAIL
             - name: SEND_EMAIL
               value: '{{ .Values.taskq.sendEmail }}'
             - name: DJANGO_DEBUG
