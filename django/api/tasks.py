@@ -30,7 +30,7 @@ import boto3
 import botocore
 from .services.rebate import get_applications, save_rebates, update_application_statuses
 from .services.calculate_rebate import get_cra_results
-
+import io
 
 def get_email_service_token() -> str:
     client_id = settings.EMAIL["EMAIL_SERVICE_CLIENT_ID"]
@@ -520,16 +520,18 @@ def upload_verified_applications_last_24hours_to_s3():
     filename = get_cra_filename(program_code, cra_env, cra_sequence)
     today = date.today().strftime("%Y%m%d")
 
-    with open(filename, "w") as file:
-        res = cra.write(
+    res = cra.write(
             data,
             today=today,
             program_code=program_code,
             cra_env=cra_env,
             cra_sequence=f"{cra_sequence:05}",
         )
-        file.write(res)
-    upload_to_s3(filename)
+
+    f = io.StringIO(res)
+    f.filename = filename
+    upload_to_s3(f)
+
 
 
 def get_cra_filename(program_code="BCVR", cra_env="A", cra_sequence="00001"):
@@ -541,7 +543,7 @@ def get_cra_filename(program_code="BCVR", cra_env="A", cra_sequence="00001"):
     return filename
 
 
-def upload_to_s3(file):
+def upload_to_s3(f):
 
     client = boto3.client(
         "s3",
@@ -551,9 +553,9 @@ def upload_to_s3(file):
     )
 
     BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
-    UPLOAD_FOLDER_NAME = "cra/encrypt"
-
-    client.upload_file(file, BUCKET_NAME, "%s/%s" % (UPLOAD_FOLDER_NAME, file))
+    # Add sub folder name
+    buffer_to_upload = io.BytesIO(f.getvalue().encode())
+    client.put_object(Body=buffer_to_upload, Bucket=BUCKET_NAME, Key=f.filename)
 
 
 def update_applications_cra_response():
