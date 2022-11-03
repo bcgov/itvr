@@ -27,7 +27,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run coverage report for django tests 
         uses: kuanfandevops/django-test-action@itvr-django-test
@@ -63,7 +63,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
@@ -91,7 +91,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
@@ -128,7 +128,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
