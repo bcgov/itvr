@@ -1,18 +1,18 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: ITVR release-1.11.0
+name: ITVR release-1.12.0
 
 on:
   push:
-    branches: [ release-1.11.0 ]
+    branches: [ release-1.12.0 ]
   workflow_dispatch:
   workflow_call:
 
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   ## Also remember to update the version in .pipeline/lib/config.js
-  PR_NUMBER: 303
-  RELEASE_NAME: release-1.11.0
+  PR_NUMBER: 357
+  RELEASE_NAME: release-1.12.0
 
 jobs:
 
@@ -27,7 +27,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run coverage report for django tests 
         uses: kuanfandevops/django-test-action@itvr-django-test
@@ -63,7 +63,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
@@ -91,7 +91,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1
@@ -128,7 +128,7 @@ jobs:
 
       ## it will checkout to /home/runner/work/itvr/itvr
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1

@@ -170,6 +170,11 @@ spec:
                 secretKeyRef:
                   name: itvr-email-service
                   key: SENDER_NAME
+            - name: BCC_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-email-service
+                  key: BCC_EMAIL
             - name: SEND_EMAIL
               value: '{{ .Values.backend.sendEmail }}'
             - name: MINIO_ENDPOINT

@@ -1,7 +1,7 @@
 'use strict';
 const options= require('@bcgov/pipeline-cli').Util.parseArguments()
 const changeId = options.pr //aka pull-request
-const version = '1.11.0'
+const version = '1.12.0'
 const name = 'itvr'
 const ocpName = 'apps.silver.devops'
 
@@ -37,15 +37,24 @@ const phases = {
           changeId:`${changeId}`, suffix: `-build-${changeId}`  , instance: `${name}-build-${changeId}`, 
           version:`${version}-${changeId}`, tag:`build-${version}-${changeId}`, ocpName: `${ocpName}`},
 
-  dev: {namespace:'ac294c-dev', transient:true, name: `${name}`, ssoSuffix:'-dev', 
-        ssoName:'dev.oidc.gov.bc.ca', phase: 'dev'  , changeId:`${changeId}`, suffix: `-dev-${changeId}`, 
-        instance: `${name}-dev-${changeId}`  , version:`${version}-${changeId}`, tag:`dev-${version}-${changeId}`, 
-        host: `itvr-dev-${changeId}.${ocpName}.gov.bc.ca`, djangoDebug: 'True', logoutHostName: 'logontest.gov.bc.ca',
+  //update dev from pr based to release based
+  //remove transient:true,
+  //change instance: `${name}-dev-${changeId}` to instance: `${name}-dev`
+  //change version:`${version}-${changeId}` to version:`${version}`
+  //change tag:`dev-${version}-${changeId}`,  to tag:`test-${version}`, 
+  //change suffix: `-dev-${changeId}`,  to suffix: `-dev`, 
+  //reactAppApiBase: `https://itvr-backend-dev-${changeId}.apps.silver.devops.gov.bc.ca`, 
+  //host: `itvr-dev-${changeId}.${ocpName}.gov.bc.ca`,
+  //backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`,
+  dev: {namespace:'ac294c-dev', name: `${name}`, ssoSuffix:'-dev', 
+        ssoName:'dev.oidc.gov.bc.ca', phase: 'dev'  , changeId:`${changeId}`, suffix: '-dev', 
+        instance: `${name}-dev`  , version:`${version}`, tag:`dev-${version}`, 
+        host: `itvr-dev.${ocpName}.gov.bc.ca`, djangoDebug: 'True', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
         frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 1, snowplowCollector: 'spm.apps.gov.bc.ca',
-        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://dev.oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-dev-${changeId}.apps.silver.devops.gov.bc.ca`, 
+        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'zelda', reactAppBCSCKeycloakUrl: 'https://dev.loginproxy.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-dev.apps.silver.devops.gov.bc.ca`, 
         reactAppBCeIDKeycloakClientId: 'itvr-on-gold-cluster-3972', reactAppBCeIDKeycloakRealm: 'standard', reactAppBCeIDKeycloakUrl: 'https://dev.loginproxy.gov.bc.ca/auth/', 
-        backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev-${changeId}.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True', bucketName: 'itvrdv', craEnvironment: 'A', corsOriginWhitelist: 'https://itvr-dev.apps.silver.devops.gov.bc.ca', 
+        backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendHost: `itvr-backend-dev.${ocpName}.gov.bc.ca`, backendReplicas: 1, backendDjangoDebug: 'True', bucketName: 'itvrdv', craEnvironment: 'A', corsOriginWhitelist: 'https://itvr-dev.apps.silver.devops.gov.bc.ca', 
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3Gi',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
@@ -58,7 +67,7 @@ const phases = {
         host: `itvr-test.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logontest.gov.bc.ca',
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
         frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 2, frontendMinReplicas: 1, frontendMaxReplicas: 3, snowplowCollector: 'spm.apps.gov.bc.ca',
-        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://test.oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-test.apps.silver.devops.gov.bc.ca`,
+        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'zelda', reactAppBCSCKeycloakUrl: 'https://test.loginproxy.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-test.apps.silver.devops.gov.bc.ca`,
         reactAppBCeIDKeycloakClientId: 'itvr-on-gold-cluster-3972', reactAppBCeIDKeycloakRealm: 'standard', reactAppBCeIDKeycloakUrl: 'https://test.loginproxy.gov.bc.ca/auth/',
         backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendReplicas: 2, backendMinReplicas: 1, backendMaxReplicas: 3, backendHost: `itvr-backend-test.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrts', craEnvironment: 'A', corsOriginWhitelist: 'https://itvr-test.apps.silver.devops.gov.bc.ca', 
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
@@ -74,7 +83,7 @@ const phases = {
         host: `itvr-prod.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
         frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 2, frontendMinReplicas: 2, frontendMaxReplicas: 5, snowplowCollector: 'spt.apps.gov.bc.ca',
         reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
-        reactAppBCeIDKeycloakClientId: 'itvr-2674', reactAppBCeIDKeycloakRealm: 'onestopauth-basic', reactAppBCeIDKeycloakUrl: 'https://oidc.gov.bc.ca/auth/',
+        reactAppBCeIDKeycloakClientId: 'itvr-on-gold-cluster-3972', reactAppBCeIDKeycloakRealm: 'standard', reactAppBCeIDKeycloakUrl: 'https://loginproxy.gov.bc.ca/auth/',
         backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendReplicas: 3, backendMinReplicas: 3, backendMaxReplicas: 5, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrpr', craEnvironment: 'P', corsOriginWhitelist: 'https://electric-vehicle-rebates.gov.bc.ca', 
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,

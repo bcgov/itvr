@@ -20,7 +20,6 @@ from api.constants import (
     TWO_THOUSAND_REBATE,
 )
 from api.utility import get_applicant_full_name
-from api.email import ZEV_PROGRAMS_EMAIL
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
 from sequences import get_next_value
@@ -30,7 +29,7 @@ import boto3
 import botocore
 from .services.rebate import get_applications, save_rebates, update_application_statuses
 from .services.calculate_rebate import get_cra_results
-
+import io
 
 def get_email_service_token() -> str:
     client_id = settings.EMAIL["EMAIL_SERVICE_CLIENT_ID"]
@@ -60,6 +59,7 @@ def send_email(
     sender_email = settings.EMAIL["SENDER_EMAIL"]
     sender_name = settings.EMAIL["SENDER_NAME"]
     url = settings.EMAIL["CHES_EMAIL_URL"]
+    bcc_email = settings.EMAIL["BCC_EMAIL"]
 
     subject = (
         "CleanBC Go Electric - Application #{}".format(application_id)
@@ -71,7 +71,7 @@ def send_email(
     sender_info = formataddr((str(Header(sender_name, "utf-8")), sender_email))
 
     data = {
-        # "bcc": [ZEV_PROGRAMS_EMAIL],
+        "bcc": [bcc_email],
         "bodyType": bodyType,
         "body": message,
         "cc": cc_list,
@@ -203,6 +203,9 @@ def send_reject(recipient_email, application_id, reason_for_decline):
         <li>reasons</li>
         </ul>
         
+        <b>You are encouraged to correct these issues and submit another application.</b>
+        <p>https://goelectricbc.gov.bc.ca/</p>
+
         <p>Questions?</p>
 
         <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
@@ -520,16 +523,18 @@ def upload_verified_applications_last_24hours_to_s3():
     filename = get_cra_filename(program_code, cra_env, cra_sequence)
     today = date.today().strftime("%Y%m%d")
 
-    with open(filename, "w") as file:
-        res = cra.write(
+    res = cra.write(
             data,
             today=today,
             program_code=program_code,
             cra_env=cra_env,
             cra_sequence=f"{cra_sequence:05}",
         )
-        file.write(res)
-    upload_to_s3(filename)
+
+    f = io.StringIO(res)
+    f.filename = filename
+    upload_to_s3(f)
+
 
 
 def get_cra_filename(program_code="BCVR", cra_env="A", cra_sequence="00001"):
@@ -541,7 +546,7 @@ def get_cra_filename(program_code="BCVR", cra_env="A", cra_sequence="00001"):
     return filename
 
 
-def upload_to_s3(file):
+def upload_to_s3(f):
 
     client = boto3.client(
         "s3",
@@ -551,9 +556,9 @@ def upload_to_s3(file):
     )
 
     BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
-    UPLOAD_FOLDER_NAME = "cra/encrypt"
-
-    client.upload_file(file, BUCKET_NAME, "%s/%s" % (UPLOAD_FOLDER_NAME, file))
+    # Add sub folder name
+    buffer_to_upload = io.BytesIO(f.getvalue().encode())
+    client.put_object(Body=buffer_to_upload, Bucket=BUCKET_NAME, Key=f.filename)
 
 
 def update_applications_cra_response():
