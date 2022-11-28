@@ -234,10 +234,13 @@ def send_approve(recipient_email, application_id, applicant_full_name, rebate_am
 
         <p>Dear {applicant_full_name},</p>
 
-        <p>Your application has been approved for a maximum rebate amount of up to ${zev_max}. </p>
+        <p>Your application has been approved for a maximum rebate amount of up to ${zev_max}. The rebate options available to you are listed below. </p>
 
-        <p><b>${zev_max} rebate for long-range ZEV purchase</b> (BEV, FCEV, ER-EV, and PHEV with an electric range of 85 km or more)</p>
+        <p><b>Rebates for long-range ZEVs</b> (BEV, FCEV, ER-EV, and PHEV with an electric range of 85 km or more):</p>
         <ul>
+        <li>
+            ${zev_max} rebate for long-range ZEV purchase
+          </li>
           <li>
             ${zev_max} rebate for long-range ZEV 36-month or longer lease term
           </li>
@@ -249,8 +252,11 @@ def send_approve(recipient_email, application_id, applicant_full_name, rebate_am
           </li>
         </ul>
 
-        <p><b>${phev_max} rebate for short-range PHEV purchase</b> (PHEV with an electric range of less than 85 km)</p>
+        <p><b>Rebates for short-range PHEVs</b> (PHEV with an electric range of less than 85 km):</p>
         <ul>
+        <li>
+            ${phev_max} rebate for short-range PHEV purchase
+          </li>
           <li>
             ${phev_max} rebate for short-range PHEV 36-month or longer lease term
           </li>
