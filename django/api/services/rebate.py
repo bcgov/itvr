@@ -26,7 +26,10 @@ def save_rebates(rebates, applications):
     if rebates is not None and applications is not None:
         rebate_objs = []
         for application_id, rebate_amount in rebates.items():
-            if rebate_amount != RebateType.D.value:
+            if (
+                rebate_amount != RebateType.D.value
+                and rebate_amount != RebateType.E.value
+            ):
                 application = applications.get(application_id)
                 if application is not None:
                     rebate_obj = GoElectricRebate(
@@ -51,6 +54,10 @@ def update_application_statuses(rebates, applications):
             if application is not None:
                 if rebate_amount == RebateType.D.value:
                     application.status = GoElectricRebateApplication.Status.NOT_APPROVED
+                elif rebate_amount == RebateType.E.value:
+                    application.status = (
+                        GoElectricRebateApplication.Status.NOT_APPROVED_SIN_MISMATCH
+                    )
                 else:
                     application.status = GoElectricRebateApplication.Status.APPROVED
                 application.modified = timezone.now()

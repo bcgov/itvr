@@ -74,10 +74,14 @@ def after_status_change(sender, instance, created, **kwargs):
                 "api.tasks.send_reject",
                 instance.email,
                 instance.id,
-                instance.reason_for_decline
+                instance.reason_for_decline,
             )
         # if application is not approved due to cra:
-        elif instance.status == GoElectricRebateApplication.Status.NOT_APPROVED:
+        elif (
+            instance.status == GoElectricRebateApplication.Status.NOT_APPROVED
+            or instance.status
+            == GoElectricRebateApplication.Status.NOT_APPROVED_SIN_MISMATCH
+        ):
             async_task(
                 "api.tasks.send_not_approve",
                 instance.email,
