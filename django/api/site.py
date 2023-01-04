@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 from .services.rebate import get_applications, save_rebates, update_application_statuses
-from .services.calculate_rebate import get_cra_results
+from .services.calculate_rebate import get_cra_results_individuals_only
 from sequences import get_next_value
 from django.conf import settings
 from django import forms
@@ -47,7 +47,7 @@ class ITVRAdminSite(AdminSite):
                 file = request.FILES["cra_response_file"]
                 file_contents = file.read().decode(encoding="utf-8", errors="replace")
                 data = cra.read(file_contents)
-                rebates = get_cra_results(data)
+                rebates = get_cra_results_individuals_only(data)
                 associated_applications = get_applications(rebates)
                 save_rebates(rebates, associated_applications)
                 update_application_statuses(rebates, associated_applications)

@@ -9,6 +9,7 @@ class RebateType(Enum):
     B = "B"
     C = "C"
     D = "Not Approved"
+    E = "Not Approved - SIN mismatch"
 
 
 def get_cra_results(cra_response):
@@ -22,6 +23,19 @@ def get_cra_results(cra_response):
         single_cra_response = cra_response.get(each.id)
         rebate = calculate_rebate_amount(single_cra_response, each)
         rebates[each.id] = rebate
+    return rebates
+
+
+def get_cra_results_individuals_only(cra_response):
+    applications = GoElectricRebateApplication.objects.filter(
+        id__in=list(cra_response.keys())
+    )
+    rebates = {}
+    for application in applications:
+        single_cra_response = cra_response.get(application.id)
+        rebate = calculate_individual_rebate_amount(single_cra_response, application)
+        if rebate is not None:
+            rebates[application.id] = rebate
     return rebates
 
 
@@ -43,6 +57,22 @@ def check_individual(primary_income):
         "individual_income"
     ):
         return RebateType.C.value
+
+
+def calculate_individual_rebate_amount(cra_response, application):
+    if len(cra_response) == 1:
+        cra_info = cra_response[0]
+        cra_sin = cra_info["sin"]
+        application_sin = application.sin
+        if cra_sin == application_sin or str(application_sin).startswith("9"):
+            income = cra_info["income"]
+            rebate_type = check_individual(income)
+            if rebate_type != RebateType.D.value:
+                return INCOME_REBATES.get(rebate_type).get("rebate")
+            return RebateType.D.value
+        else:
+            return RebateType.E.value
+    return None
 
 
 def check_household(primary_income, secondary_income):
