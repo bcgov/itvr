@@ -147,7 +147,7 @@ jobs:
         with:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,kuanfandevops,tim738745
-          minimum-approvals: 1
+          minimum-approvals: 2
           issue-title: "ITVR ${{ env.RELEASE_NAME }} Prod Deployment"
           timeout-minutes: 2880
 
