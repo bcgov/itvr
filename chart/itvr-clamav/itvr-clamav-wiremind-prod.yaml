@@ -230,7 +230,7 @@ persistentVolume:
 
   ## Persistent Volume Size
   ##
-  size: 590Mi
+  size: 900Mi
 
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
