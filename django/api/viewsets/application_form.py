@@ -84,3 +84,7 @@ class ApplicationFormViewset(
         if dl_not_valid:
             return Response({"drivers_license_valid": "false"})
         return Response({"drivers_license_valid": "true"})
+
+    @action(detail=False, methods=["GET"], url_path="check_accessible")
+    def check_accessible(self, request, pk=None):
+        return Response(status=status.HTTP_200_OK)
