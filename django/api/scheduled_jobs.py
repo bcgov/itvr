@@ -47,9 +47,11 @@ def schedule_expire_expired_applications():
     try:
         schedule(
             "api.tasks.expire_expired_applications",
+            50,
             name="expire_expired_applications",
             schedule_type="C",
             cron="00 23 * * *",
+            q_options={"timeout": 1200, "ack_failure": True},
         )
     except IntegrityError:
         pass
