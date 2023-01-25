@@ -30,6 +30,8 @@ class HouseholdApplicationInline(admin.StackedInline):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
+        "submission_date",
+        "modified_on",
     )
 
     def has_delete_permission(self, request, obj=None):
@@ -46,6 +48,14 @@ def get_inlines(obj):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "modified_on",
+    )
     exclude = ("sin",)
 
 
@@ -55,6 +65,14 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "modified_on",
+    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
@@ -87,6 +105,8 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "submission_date",
+        "modified_on",
     )
 
     def get_queryset(self, request):
@@ -131,6 +151,14 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
 
 @admin.register(CancellableGoElectricRebateApplication)
 class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "modified_on",
+    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
@@ -165,6 +193,8 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "submission_date",
+        "modified_on",
     )
 
     def get_queryset(self, request):
@@ -204,6 +234,14 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 @admin.register(SearchableGoElectricRebateApplication)
 class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     actions = None
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "modified_on",
+    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
@@ -234,7 +272,9 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "confirmation_email_success",
         "spouse_email_success",
         "reason_for_decline",
-        "rebate_max_amount"
+        "rebate_max_amount",
+        "submission_date",
+        "modified_on",
     )
         
     def rebate_max_amount(self, obj):
@@ -255,6 +295,14 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 @admin.register(GoElectricRebateApplicationWithFailedEmail)
 class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
     actions = None
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "modified_on",
+    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
@@ -284,7 +332,9 @@ class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
         "doc2_tag",
         "confirmation_email_success",
         "spouse_email_success",
-        "reason_for_decline"
+        "reason_for_decline",
+        "submission_date",
+        "modified_on",
     )
 
     def get_queryset(self, request):

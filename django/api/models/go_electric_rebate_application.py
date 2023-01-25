@@ -14,6 +14,7 @@ from django.db.models import (
     Q,
     UniqueConstraint,
     CheckConstraint,
+    DateTimeField
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -93,6 +94,8 @@ class GoElectricRebateApplication(TimeStampedModel):
         null=True,
         validators=[validate_file_size, validate_file_safe],
     )
+    submission_date = DateTimeField(auto_now_add=True, blank=True)
+    modified_on = DateTimeField(auto_now=True, blank=True)
 
     def doc1_tag(self):
         return mark_safe(
