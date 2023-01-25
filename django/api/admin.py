@@ -46,6 +46,15 @@ def get_inlines(obj):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "approved_on",
+        "not_approved_on",
+    )
     exclude = ("sin",)
 
 
@@ -55,6 +64,15 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "approved_on",
+        "not_approved_on",
+    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
@@ -131,6 +149,15 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
 
 @admin.register(CancellableGoElectricRebateApplication)
 class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "approved_on",
+        "not_approved_on",
+    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
@@ -203,6 +230,15 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(SearchableGoElectricRebateApplication)
 class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "approved_on",
+        "not_approved_on",
+    )
     actions = None
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
@@ -254,6 +290,15 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(GoElectricRebateApplicationWithFailedEmail)
 class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "status",
+        "submission_date",
+        "approved_on",
+        "not_approved_on",
+    )
     actions = None
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
