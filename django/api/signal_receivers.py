@@ -65,7 +65,10 @@ def after_household_member_save(sender, instance, created, **kwargs):
 def after_status_change(sender, instance, created, **kwargs):
     if (
         (not created)
-        and (kwargs.get("update_fields") == {"status"})
+        and (
+            kwargs.get("update_fields") == {"status"}
+            or kwargs.get("update_fields") == {"status", "modified"}
+        )
         and (settings.EMAIL["SEND_EMAIL"])
     ):
         # if identity is declined (eg id doesnt match address)
@@ -91,6 +94,12 @@ def after_status_change(sender, instance, created, **kwargs):
         elif instance.status == GoElectricRebateApplication.Status.CANCELLED:
             async_task(
                 "api.tasks.send_cancel",
+                instance.email,
+                instance.id,
+            )
+        elif instance.status == GoElectricRebateApplication.Status.EXPIRED:
+            async_task(
+                "api.tasks.send_expired",
                 instance.email,
                 instance.id,
             )

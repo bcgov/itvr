@@ -236,6 +236,47 @@ def get_rebates_redeemed_since(iso_ts, ncda_ids, next_url):
         get_rebates_redeemed_since(iso_ts, ncda_ids, next_url)
 
 
+def get_is_rebate_not_redeemed(ncda_id):
+    api_endpoint = settings.NCDA_SHAREPOINT_URL
+    access_token = get_ncda_service_token()
+
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose",
+    }
+
+    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
+
+    payload = {
+        "$select": "Id,Status",
+        "$filter": "(Status eq 'Not-Redeemed')and(Id eq %s)" % ncda_id,
+    }
+    ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
+    ncda_rs.raise_for_status()
+    data = ncda_rs.json()
+    items = data["d"]["results"]
+    if len(items) == 1:
+        return True
+    return False
+
+
+def delete_rebate(ncda_id):
+    api_endpoint = settings.NCDA_SHAREPOINT_URL
+    access_token = get_ncda_service_token()
+
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose",
+        "If-Match": "*",
+    }
+
+    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items(%s)" % ncda_id
+    ncda_rs = requests.delete(url, headers=headers, verify=True)
+    ncda_rs.raise_for_status()
+
+
 # https://support.shortpoint.com/support/solutions/articles/1000307202-shortpoint-rest-api-selecting-filtering-sorting-results-in-a-sharepoint-list
 
 

@@ -108,6 +108,11 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     });
   };
 
+  const checkBackendAccessible = () => {
+    const url = `/api/application-form/check_accessible`;
+    return axiosInstance.current.get(url);
+  };
+
   const checkDLStatus = (dl) => {
     const detailUrl = `/api/application-form/check_status/?drivers_license=${dl}`;
     return axiosInstance.current.get(detailUrl);
@@ -356,10 +361,16 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
           {errors?.drivers_licence?.type === 'dlFormat' && (
             <p className="error">Not a valid BC Driver's Licence Number</p>
           )}
+          {errors?.drivers_licence?.type === 'backendAccessible' && (
+            <p className="error">
+              We cannot check your licence as your session may have expired;
+              please log out and then log back in again.
+            </p>
+          )}
           {errors?.drivers_licence?.type === 'dlExists' && (
             <p className="error">
               This driver's licence number has already been submitted or issued
-              a rebate, or we cannot check your licence.
+              a rebate.
             </p>
           )}
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
@@ -396,9 +407,17 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
                   }
                   return true;
                 },
-                dlExists: async (inputtedLicence) => {
+                backendAccessible: async () => {
                   try {
                     setLoading(true);
+                    await checkBackendAccessible();
+                  } catch (error) {
+                    return false;
+                  }
+                  return true;
+                },
+                dlExists: async (inputtedLicence) => {
+                  try {
                     const response = await checkDLStatus(inputtedLicence);
                     if (response.data.drivers_license_valid === 'false') {
                       return false;
