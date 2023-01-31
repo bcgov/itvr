@@ -128,18 +128,8 @@ class GoElectricRebateApplication(TimeStampedModel):
     consent_personal = BooleanField(validators=[validate_consent], null=True)
     consent_tax = BooleanField(validators=[validate_consent], null=True)
     reason_for_decline = CharField(max_length=500, unique=False, blank=True, null=True)
-    submission_date = DateTimeField(auto_now_add=True, null=True)
-    approved_on = DateTimeField(null=True, editable=False)
-    not_approved_on = DateTimeField(null=True, editable=False)
-
-    def save(self, *args, **kwargs):
-        if self.status == 'approved':
-            self.approved_on = datetime.now()
-            self.not_approved_on = None
-        if self.status == 'not_approved' or self.status == 'not_approved_sin_mismatch':
-            self.not_approved_on = datetime.now()
-            self.approved_on = None
-        super().save(*args, **kwargs)
+    approved_on = DateTimeField(null=True, blank=True, editable=False)
+    not_approved_on = DateTimeField(null=True, blank=True, editable=False)
 
     def user_is_bcsc(self):
         if self.user.identity_provider == "bcsc":

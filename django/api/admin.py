@@ -46,16 +46,12 @@ def get_inlines(obj):
 
 @admin.register(GoElectricRebateApplication)
 class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "last_name",
-        "first_name",
-        "status",
-        "submission_date",
+    readonly_fields = (
+        "created",
         "approved_on",
         "not_approved_on",
     )
-    exclude = ("sin",)
+    exclude = ("sin", 'approved_on', 'not_approved_on', 'created')
 
 
 # The proxy model is used to avoid a Django limitation where a model can only
@@ -64,15 +60,6 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
 class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "last_name",
-        "first_name",
-        "status",
-        "submission_date",
-        "approved_on",
-        "not_approved_on",
-    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
@@ -105,6 +92,9 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
 
     def get_queryset(self, request):
@@ -149,15 +139,6 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
 
 @admin.register(CancellableGoElectricRebateApplication)
 class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "last_name",
-        "first_name",
-        "status",
-        "submission_date",
-        "approved_on",
-        "not_approved_on",
-    )
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     # disable bulk actions
     actions = None
@@ -176,7 +157,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "doc2_tag",
         "consent_personal",
         "consent_tax",
-        "reason_for_decline"
+        "reason_for_decline",
     )
     readonly_fields = (
         "id",
@@ -192,6 +173,9 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
 
     def get_queryset(self, request):
@@ -230,15 +214,6 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(SearchableGoElectricRebateApplication)
 class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "last_name",
-        "first_name",
-        "status",
-        "submission_date",
-        "approved_on",
-        "not_approved_on",
-    )
     actions = None
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
@@ -270,7 +245,10 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "confirmation_email_success",
         "spouse_email_success",
         "reason_for_decline",
-        "rebate_max_amount"
+        "rebate_max_amount",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
         
     def rebate_max_amount(self, obj):
@@ -290,15 +268,6 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(GoElectricRebateApplicationWithFailedEmail)
 class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "last_name",
-        "first_name",
-        "status",
-        "submission_date",
-        "approved_on",
-        "not_approved_on",
-    )
     actions = None
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
