@@ -87,6 +87,9 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
 
     def get_queryset(self, request):
@@ -165,6 +168,9 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "is_legacy",
         "confirmation_email_success",
         "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
 
     def get_queryset(self, request):
@@ -234,7 +240,10 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "confirmation_email_success",
         "spouse_email_success",
         "reason_for_decline",
-        "rebate_max_amount"
+        "rebate_max_amount",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
         
     def rebate_max_amount(self, obj):
@@ -284,7 +293,10 @@ class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
         "doc2_tag",
         "confirmation_email_success",
         "spouse_email_success",
-        "reason_for_decline"
+        "reason_for_decline",
+        "created",
+        "approved_on",
+        "not_approved_on"
     )
 
     def get_queryset(self, request):
