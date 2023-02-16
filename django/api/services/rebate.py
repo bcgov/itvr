@@ -54,16 +54,22 @@ def update_application_statuses(rebates, applications):
             if application is not None:
                 if rebate_amount == RebateType.D.value:
                     application.status = GoElectricRebateApplication.Status.NOT_APPROVED
+                    application.not_approved_on = timezone.now()
+                    application.approved_on = None
                 elif rebate_amount == RebateType.E.value:
                     application.status = (
                         GoElectricRebateApplication.Status.NOT_APPROVED_SIN_MISMATCH
                     )
+                    application.not_approved_on = timezone.now()
+                    application.approved_on = None
                 else:
                     application.status = GoElectricRebateApplication.Status.APPROVED
+                    application.approved_on = timezone.now()
+                    application.not_approved_on = None
                 application.modified = timezone.now()
                 application_objs.append(application)
         GoElectricRebateApplication.objects.bulk_update(
-            application_objs, ["status", "modified"]
+            application_objs, ["status", "modified", "approved_on", "not_approved_on"]
         )
         for application in application_objs:
             post_save.send(

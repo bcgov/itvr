@@ -1,7 +1,7 @@
 'use strict';
 const options= require('@bcgov/pipeline-cli').Util.parseArguments()
 const changeId = options.pr //aka pull-request
-const version = '1.13.0'
+const version = '1.14.0'
 const name = 'itvr'
 const ocpName = 'apps.silver.devops'
 
@@ -59,7 +59,7 @@ const phases = {
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '1G', rabbitmqReplica: 1, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '2G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True', taskQueuePVCSize: '2Gi'},
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'True'},
 
   test: {namespace:'ac294c-test', name: `${name}`, ssoSuffix:'-test', 
         ssoName:'test.oidc.gov.bc.ca', phase: 'test'  ,  changeId:`${changeId}`, suffix: `-test`, 
@@ -74,7 +74,7 @@ const phases = {
         schemaspyCpuRequest: '20m', schemaspyCpuLimit: '200m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '700M', rabbitmqPvcSize: '1G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 2, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False', taskQueuePVCSize: '2Gi'},
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False'},
 
   prod: {namespace:'ac294c-prod', name: `${name}`, ssoSuffix:'', 
         ssoName:'oidc.gov.bc.ca', phase: 'prod'  , changeId:`${changeId}`, suffix: `-prod`, 
@@ -82,14 +82,14 @@ const phases = {
         metabaseCpuRequest: '200m', metabaseCpuLimit: '300m', metabaseMemoryRequest: '500Mi', metabaseMemoryLimit: '2Gi', metabaseReplicas: 1,
         host: `itvr-prod.${ocpName}.gov.bc.ca`, djangoDebug: 'False', logoutHostName: 'logon7.gov.bc.ca',
         frontendCpuRequest: '30m', frontendCpuLimit: '60m', frontendMemoryRequest: '30Mi', frontendMemoryLimit: '60Mi', frontendReplicas: 2, frontendMinReplicas: 2, frontendMaxReplicas: 5, snowplowCollector: 'spt.apps.gov.bc.ca',
-        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'rzh2zkjq', reactAppBCSCKeycloakUrl: 'https://oidc.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
+        reactAppBCSCKeycloakClientId: 'itvr', reactAppBCSCKeycloakRealm: 'zelda', reactAppBCSCKeycloakUrl: 'https://loginproxy.gov.bc.ca/auth/', reactAppApiBase: `https://itvr-backend-prod.apps.silver.devops.gov.bc.ca`,
         reactAppBCeIDKeycloakClientId: 'itvr-on-gold-cluster-3972', reactAppBCeIDKeycloakRealm: 'standard', reactAppBCeIDKeycloakUrl: 'https://loginproxy.gov.bc.ca/auth/',
         backendCpuRequest: '60m', backendCpuLimit: '120m', backendMemoryRequest: '150Mi', backendMemoryLimit: '300Mi', backendHealthCheckDelay: 30, backendReplicas: 3, backendMinReplicas: 3, backendMaxReplicas: 5, backendHost: `itvr-backend-prod.${ocpName}.gov.bc.ca`, backendDjangoDebug: 'False', bucketName: 'itvrpr', craEnvironment: 'P', corsOriginWhitelist: 'https://electric-vehicle-rebates.gov.bc.ca', 
         minioCpuRequest: '30m', minioCpuLimit: '100m', minioMemoryRequest: '150Mi', minioMemoryLimit: '300Mi', minioPvcSize: '3G',
         schemaspyCpuRequest: '50m', schemaspyCpuLimit: '400m', schemaspyMemoryRequest: '150M', schemaspyMemoryLimit: '300M', schemaspyHealthCheckDelay: 160,
         rabbitmqCpuRequest: '250m', rabbitmqCpuLimit: '700m', rabbitmqMemoryRequest: '500M', rabbitmqMemoryLimit: '1G', rabbitmqPvcSize: '5G', rabbitmqReplica: 2, rabbitmqPostStartSleep: 120, storageClass: 'netapp-block-standard',
         patroniCpuRequest: '60m', patroniCpuLimit: '120m', patroniMemoryRequest: '200Mi', patroniMemoryLimit: '400Mi', patroniPvcSize: '5G', patroniReplica: 3, storageClass: 'netapp-block-standard', ocpName: `${ocpName}`,
-        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False', taskQueuePVCSize: '400Mi'}
+        taskQueueCpuRequest: '60m', taskQueueCpuLimit: '120m', taskQueueMemoryRequest: '200Mi', taskQueueMemoryLimit: '400Mi', taskQueueReplicas: 1, taskQueueDjangoDebug: 'False'}
 
 };
 

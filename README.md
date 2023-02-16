@@ -160,3 +160,26 @@ python manage.py test api.services.tests.test_calculate_rebate
 ### Scheduled Jobs
 
 Currently, when the task-queue application starts, it creates scheduled jobs only if those jobs don't already exist in the database. This means that if some aspects of a job are changed (e.g. its arguments concerning timeout time, etc), one has to delete the job first in the admin console before deploying, or update the job manually in the admin console after deploying. This is an open issue, see: https://apps.nrs.gov.bc.ca/int/jira/browse/ZELDA-436
+        
+
+# List of Dev Work | What to do before bringing in a new ticket into a Sprint
+
+This is a list that was created on 2023-02-01 with all Zelda Devs to provide alternative work instead of bringing in a new ticket.  
+
+**Team Rule* Do not bring in ticket After Friday 
+
+1. Help another Dev - see if other Devs need help to finish their ticket 
+
+2. PR Reviews – linked to the task above 
+
+3. Writing additional tests – for both tront and back end 
+
+4. Take a look at Tech Debt tickets - If we bring in tickets let's bring in Tech Debt first 
+
+5. Learning time: 
+
+- Take the opportunity to familiarize yourself with business logic, tech (anything around work we do) 
+
+- New learning and applying it to our work 
+
+- Innovation work 

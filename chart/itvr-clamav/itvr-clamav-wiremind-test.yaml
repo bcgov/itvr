@@ -180,16 +180,18 @@ tolerations: []
 affinity: {}
 
 livenessProbe:
-  initialDelaySeconds: 150
+  initialDelaySeconds: 270
   periodSeconds: 15
   failureThreshold: 10
-  timeoutSeconds: 1
+  timeoutSeconds: 3
+  successThreshold: 1
 
 readinessProbe:
-  initialDelaySeconds: 120
+  initialDelaySeconds: 240
   periodSeconds: 15
   failureThreshold: 10
-  timeoutSeconds: 1
+  timeoutSeconds: 3
+  successThreshold: 1
 
 hpa:
   enabled: false
