@@ -92,8 +92,11 @@ def after_status_change(sender, instance, created, **kwargs):
                 instance.tax_year,
             )
         elif instance.status == GoElectricRebateApplication.Status.CANCELLED:
+            send_cancel_task = "api.tasks.send_cancel"
+            if instance.application_type == "household":
+                send_cancel_task = "api.tasks.send_household_cancel"
             async_task(
-                "api.tasks.send_cancel",
+                send_cancel_task,
                 instance.email,
                 instance.id,
             )
