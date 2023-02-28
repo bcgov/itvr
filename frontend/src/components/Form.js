@@ -374,7 +374,13 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             </p>
           )}
           <InputLabel htmlFor="drivers_licence" sx={{ color: 'black' }}>
-            BC Driver's Licence number (used for redeeming your rebate):
+            BC Driver's Licence number (You will present your licence at the new
+            car dealership to redeem your rebate.
+          </InputLabel>
+          <InputLabel htmlFor="drivers_licence" sx={{ color: 'red' }}>
+            Please ensure this number matches your licence otherwise you will
+            not be able to claim your rebate
+            <span style={{ color: 'black' }}>):</span>
           </InputLabel>
           <Controller
             name="drivers_licence"
