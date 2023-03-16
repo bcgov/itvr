@@ -164,11 +164,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 280m
-    memory: 1800Mi
+    cpu: 800m
+    memory: 2Gi
   requests:
-    cpu: 140m
-    memory: 900Mi
+    cpu: 230m
+    memory: 1Gi
 
 # Additional pod labels
 podLabels: {}
@@ -180,16 +180,16 @@ tolerations: []
 affinity: {}
 
 livenessProbe:
-  initialDelaySeconds: 270
+  initialDelaySeconds: 210
   periodSeconds: 15
-  failureThreshold: 10
+  failureThreshold: 20
   timeoutSeconds: 3
   successThreshold: 1
 
 readinessProbe:
-  initialDelaySeconds: 240
+  initialDelaySeconds: 180
   periodSeconds: 15
-  failureThreshold: 10
+  failureThreshold: 20
   timeoutSeconds: 3
   successThreshold: 1
 

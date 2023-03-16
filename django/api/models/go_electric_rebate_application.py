@@ -14,7 +14,7 @@ from django.db.models import (
     Q,
     UniqueConstraint,
     CheckConstraint,
-    DateTimeField
+    DateTimeField,
 )
 from encrypted_fields.fields import EncryptedCharField
 from django.utils.html import mark_safe
@@ -270,6 +270,20 @@ class GoElectricRebateApplicationWithFailedEmail(GoElectricRebateApplication):
     @classproperty
     def admin_label(cls):
         return "Applications with failed emails"
+
+    @classproperty
+    def admin_hide_view_change_buttons(cls):
+        return True
+
+
+class DriverLicenceEditableGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-modified"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Edit DL#'s"
 
     @classproperty
     def admin_hide_view_change_buttons(cls):
