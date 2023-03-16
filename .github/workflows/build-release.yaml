@@ -1,18 +1,18 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: ITVR release-1.15.0
+name: ITVR release-1.16.0
 
 on:
   push:
-    branches: [ release-1.15.0 ]
+    branches: [ release-1.16.0 ]
   workflow_dispatch:
   workflow_call:
 
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   ## Also remember to update the version in .pipeline/lib/config.js
-  PR_NUMBER: 447
-  RELEASE_NAME: release-1.15.0
+  PR_NUMBER: 468
+  RELEASE_NAME: release-1.16.0
 
 jobs:
 
@@ -124,7 +124,7 @@ jobs:
 
     name: Deploy ITVR on Prod Environment
     runs-on: ubuntu-latest
-    timeout-minutes: 2880
+    timeout-minutes: 60
     needs: deploy-on-test
 
     steps:
@@ -149,7 +149,6 @@ jobs:
           approvers: AlexZorkin,kuanfandevops,tim738745
           minimum-approvals: 2
           issue-title: "ITVR ${{ env.RELEASE_NAME }} Prod Deployment"
-          timeout-minutes: 2880
 
       - name: Run BCDK deployment on ITVR Prod environment
         run: |
