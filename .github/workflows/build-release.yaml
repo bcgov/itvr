@@ -5,6 +5,9 @@ name: ITVR release-1.16.0
 on:
   push:
     branches: [ release-1.16.0 ]
+    paths:
+      - django/**
+      - backend/**
   workflow_dispatch:
   workflow_call:
 
