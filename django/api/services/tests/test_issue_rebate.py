@@ -25,12 +25,16 @@ class TestIssueRebate(TestRebate):
             "ctW8gU57YX4xfQ9o": 4000,
             "5BnGHti6RUaPsjiu": RebateType.D.value,
             "pbP0bxkXvww2H2U9": RebateType.E.value,
-            "Ka6ogsOCb9HS3B7C": RebateType.F.value
+            "Ka6ogsOCb9HS3B7C": RebateType.F.value,
         }
 
         self.approved_rebates = {}
         for id, amount in self.rebates.items():
-            if amount != RebateType.D.value and amount != RebateType.E.value and amount != RebateType.F.value:
+            if (
+                amount != RebateType.D.value
+                and amount != RebateType.E.value
+                and amount != RebateType.F.value
+            ):
                 self.approved_rebates[id] = amount
 
         self.not_approved_high_income_rebates = set()
@@ -74,9 +78,15 @@ class TestIssueRebate(TestRebate):
 
     def test_update_application_statuses(self):
         # updates n applications correctly if there are n rebates; correct parameters sent to post_save signal listener
-        not_approved_high_income_status = GoElectricRebateApplication.Status.NOT_APPROVED_HIGH_INCOME
-        not_approved_no_cra_info_status = GoElectricRebateApplication.Status.NOT_APPROVED_NO_CRA_INFO
-        not_approved_sin_mismatch_status = GoElectricRebateApplication.Status.NOT_APPROVED_SIN_MISMATCH
+        not_approved_high_income_status = (
+            GoElectricRebateApplication.Status.NOT_APPROVED_HIGH_INCOME
+        )
+        not_approved_no_cra_info_status = (
+            GoElectricRebateApplication.Status.NOT_APPROVED_NO_CRA_INFO
+        )
+        not_approved_sin_mismatch_status = (
+            GoElectricRebateApplication.Status.NOT_APPROVED_SIN_MISMATCH
+        )
         approved_status = GoElectricRebateApplication.Status.APPROVED
         approved_rebates = set()
         not_approved_high_income_rebates = set()
@@ -99,13 +109,26 @@ class TestIssueRebate(TestRebate):
         update_application_statuses(self.rebates, applications)
         updated_applications = GoElectricRebateApplication.objects.filter(
             id__in=list(applications)
-        ).filter(status__in=[approved_status, not_approved_high_income_status, not_approved_no_cra_info_status, not_approved_sin_mismatch_status])
+        ).filter(
+            status__in=[
+                approved_status,
+                not_approved_high_income_status,
+                not_approved_no_cra_info_status,
+                not_approved_sin_mismatch_status,
+            ]
+        )
 
         self.assertEqual(len(updated_applications), len(applications))
         self.assertSetEqual(
             self.approved_rebates.keys() & self.approved_rebates.keys(),
             approved_rebates,
         )
-        self.assertSetEqual(self.not_approved_high_income_rebates, not_approved_high_income_rebates)
-        self.assertSetEqual(self.not_approved_no_cra_info_rebates, not_approved_no_cra_info_rebates)
-        self.assertSetEqual(self.not_approved_sin_mismatch_rebates, not_approved_sin_mismtach_rebates)
+        self.assertSetEqual(
+            self.not_approved_high_income_rebates, not_approved_high_income_rebates
+        )
+        self.assertSetEqual(
+            self.not_approved_no_cra_info_rebates, not_approved_no_cra_info_rebates
+        )
+        self.assertSetEqual(
+            self.not_approved_sin_mismatch_rebates, not_approved_sin_mismtach_rebates
+        )

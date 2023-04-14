@@ -54,11 +54,15 @@ def update_application_statuses(rebates, applications):
             application = applications.get(application_id)
             if application is not None:
                 if rebate_amount == RebateType.D.value:
-                    application.status = GoElectricRebateApplication.Status.NOT_APPROVED_HIGH_INCOME
+                    application.status = (
+                        GoElectricRebateApplication.Status.NOT_APPROVED_HIGH_INCOME
+                    )
                     application.not_approved_on = timezone.now()
                     application.approved_on = None
                 elif rebate_amount == RebateType.E.value:
-                    application.status = GoElectricRebateApplication.Status.NOT_APPROVED_NO_CRA_INFO
+                    application.status = (
+                        GoElectricRebateApplication.Status.NOT_APPROVED_NO_CRA_INFO
+                    )
                     application.not_approved_on = timezone.now()
                     application.approved_on = None
                 elif rebate_amount == RebateType.F.value:
