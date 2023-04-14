@@ -22,7 +22,7 @@ class ApiConfig(AppConfig):
             schedule_send_rebates_to_ncda()
             schedule_get_ncda_redeemed_rebates()
             schedule_cancel_untouched_household_applications()
-            schedule_expire_expired_applications(),
+            schedule_expire_expired_applications()
 
 
 class ITVRAdminConfig(AdminConfig):
