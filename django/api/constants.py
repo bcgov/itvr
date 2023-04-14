@@ -26,3 +26,17 @@ class ONE_THOUSAND_REBATE(Enum):
     PHEV_MAX = 500
     PHEV_MID = 334
     PHEV_MIN = 167
+
+class RebateType(Enum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "Not Approved - High Income"
+    E = "Not Approved - No CRA Info"
+    F = "Not Approved - SIN mismatch"
+
+INCOME_REBATES = {
+    RebateType.C.value: {"individual_income": 100000, "household_income": 165000, "rebate": 1000},
+    RebateType.B.value: {"individual_income": 90000, "household_income": 145000, "rebate": 2000},
+    RebateType.A.value: {"individual_income": 80000, "household_income": 125000, "rebate": 4000},
+}
