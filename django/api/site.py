@@ -12,6 +12,7 @@ from django.conf import settings
 from django import forms
 from .models.go_electric_rebate_application import GoElectricRebateApplication
 from .services import cra
+from django.db import transaction
 
 
 class UploadFileForm(forms.Form):
@@ -40,6 +41,7 @@ class ITVRAdminSite(AdminSite):
         )
         return filename
 
+    @transaction.atomic
     def upload_file(self, request):
         if request.method == "POST":
             form = UploadFileForm(request.POST, request.FILES)

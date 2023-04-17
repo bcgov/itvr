@@ -59,7 +59,14 @@ class GoElectricRebateApplication(TimeStampedModel):
         VERIFIED = ("verified", _("Verified"))
         DECLINED = ("declined", _("Declined"))
         APPROVED = ("approved", _("Approved"))
-        NOT_APPROVED = ("not_approved", _("Not Approved"))
+        NOT_APPROVED_HIGH_INCOME = (
+            "not_approved_high_income",
+            _("Not Approved - High Income"),
+        )
+        NOT_APPROVED_NO_CRA_INFO = (
+            "not_approved_no_cra_info",
+            _("Not Approved - No CRA Info"),
+        )
         NOT_APPROVED_SIN_MISMATCH = (
             "not_approved_sin_mismatch",
             _("Not Approved - SIN Mismatch"),

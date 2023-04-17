@@ -2,8 +2,8 @@ from api.models.go_electric_rebate_application import GoElectricRebateApplicatio
 from api.models.go_electric_rebate import GoElectricRebate
 from datetime import date, timedelta
 from django.db.models.signals import post_save
-from api.services.calculate_rebate import RebateType
 from django.utils import timezone
+from ..constants import RebateType
 
 
 # gets applications from rebates
@@ -29,6 +29,7 @@ def save_rebates(rebates, applications):
             if (
                 rebate_amount != RebateType.D.value
                 and rebate_amount != RebateType.E.value
+                and rebate_amount != RebateType.F.value
             ):
                 application = applications.get(application_id)
                 if application is not None:
@@ -53,10 +54,18 @@ def update_application_statuses(rebates, applications):
             application = applications.get(application_id)
             if application is not None:
                 if rebate_amount == RebateType.D.value:
-                    application.status = GoElectricRebateApplication.Status.NOT_APPROVED
+                    application.status = (
+                        GoElectricRebateApplication.Status.NOT_APPROVED_HIGH_INCOME
+                    )
                     application.not_approved_on = timezone.now()
                     application.approved_on = None
                 elif rebate_amount == RebateType.E.value:
+                    application.status = (
+                        GoElectricRebateApplication.Status.NOT_APPROVED_NO_CRA_INFO
+                    )
+                    application.not_approved_on = timezone.now()
+                    application.approved_on = None
+                elif rebate_amount == RebateType.F.value:
                     application.status = (
                         GoElectricRebateApplication.Status.NOT_APPROVED_SIN_MISMATCH
                     )
