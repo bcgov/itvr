@@ -452,6 +452,7 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
                     rebate.expiry_date.strftime("%m/%d/%Y"),
                     str(rebate.rebate_max_amount),
                     rebate.id,
+                    rebate.application.id if rebate.application else None,
                 )
                 application = rebate.application
                 if application and (
