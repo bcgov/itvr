@@ -61,17 +61,15 @@ def itvr_scheduler(broker: Broker = None):
                     if type(args) != tuple:
                         args = (args,)
                 q_options = kwargs.get("q_options", {})
-                include_scheduled_run_day_minus_one = kwargs.pop(
-                    "include_scheduled_run_day_minus_one", False
+                include_scheduled_run_time = kwargs.pop(
+                    "include_scheduled_run_time", False
                 )
                 if s.hook:
                     q_options["hook"] = s.hook
                 # set up the next run time
                 if s.schedule_type != s.ONCE:
                     next_run = arrow.get(s.next_run)
-                    scheduled_run_day_minus_one = (
-                        next_run - timedelta(days=1)
-                    ).strftime("%Y-%m-%dT00:00:00Z")
+                    scheduled_run_time = (next_run).strftime("%Y-%m-%dT%H:%M:%SZ")
 
                     while True:
                         if s.schedule_type == s.MINUTES:
@@ -117,8 +115,8 @@ def itvr_scheduler(broker: Broker = None):
                 q_options["broker"] = scheduled_broker
                 q_options["group"] = q_options.get("group", s.name or s.id)
                 kwargs["q_options"] = q_options
-                if include_scheduled_run_day_minus_one:
-                    args = args + (scheduled_run_day_minus_one,)
+                if include_scheduled_run_time:
+                    args = args + (scheduled_run_time,)
                 s.task = django_q.tasks.async_task(s.func, *args, **kwargs)
                 # log it
                 if not s.task:

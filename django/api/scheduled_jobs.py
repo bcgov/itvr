@@ -1,5 +1,7 @@
 from django_q.tasks import schedule
 from django.db import IntegrityError
+from django.utils import timezone
+from datetime import timedelta
 
 # trying to create a schedule with the same name as an already created schedule will raise an IntegrityError
 
@@ -25,19 +27,8 @@ def schedule_get_ncda_redeemed_rebates():
             name="check_rebates_redeemed_since",
             schedule_type="C",
             cron="00 22 * * *",
-            include_scheduled_run_day_minus_one=True,
-        )
-    except IntegrityError:
-        pass
-
-
-def schedule_cancel_untouched_household_applications():
-    try:
-        schedule(
-            "api.tasks.cancel_untouched_household_applications",
-            name="cancel_untouched_household_applications",
-            schedule_type="C",
-            cron="30 22 * * *",
+            include_scheduled_run_time=True,
+            q_options={"timeout": 1200, "ack_failure": True},
         )
     except IntegrityError:
         pass
@@ -57,25 +48,16 @@ def schedule_expire_expired_applications():
         pass
 
 
-def schedule_upload_verified_applications_last_24hours_to_s3():
+def schedule_get_missing_redeemed_rebates():
     try:
         schedule(
-            "api.tasks.upload_verified_applications_last_24hours_to_s3",
-            name="upload_verified_applications_last_24hours_to_s3",
-            schedule_type="C",
-            cron="00 22 * * *",
-        )
-    except IntegrityError:
-        pass
-
-
-def schedule_update_applications_cra_response():
-    try:
-        schedule(
-            "api.tasks.update_applications_cra_response",
-            name="update_applications_cra_response",
-            schedule_type="C",
-            cron="00 21 * * *",
+            "api.tasks.get_missed_redeemed_rebates",
+            "2023-03-14T00:00:00Z",
+            name="get_missing_redeemed_rebates",
+            schedule_type="O",
+            repeats=1,
+            next_run=timezone.now() + timedelta(hours=1),
+            q_options={"timeout": 1200, "ack_failure": True},
         )
     except IntegrityError:
         pass
