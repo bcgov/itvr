@@ -160,7 +160,7 @@ def get_ncda_service_token() -> str:
 
 
 # Tell NCDA about a newly issued rebate.
-def notify(drivers_licence, last_name, expiry_date, rebate_amount):
+def notify(drivers_licence, last_name, expiry_date, rebate_amount, application_id):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
 
@@ -172,6 +172,7 @@ def notify(drivers_licence, last_name, expiry_date, rebate_amount):
             "ExpiryDT": expiry_date,
             "MaxRebateAmt": rebate_amount,
             "Status": "Not-Redeemed",
+            "ITVRApplicationId": application_id,
         }
     )
 

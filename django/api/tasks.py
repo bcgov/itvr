@@ -456,6 +456,7 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
                     rebate.last_name,
                     rebate.expiry_date.strftime("%m/%d/%Y"),
                     str(rebate.rebate_max_amount),
+                    rebate.application.id if rebate.application else None,
                 )
                 ncda_id = ncda_data["d"]["ID"]
                 GoElectricRebate.objects.filter(id=rebate.id).update(
