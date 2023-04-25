@@ -28,7 +28,7 @@ def schedule_get_ncda_redeemed_rebates():
             schedule_type="C",
             cron="00 22 * * *",
             include_scheduled_run_time=True,
-            q_options={"timeout": 1200, "ack_failure": True},
+            q_options={"timeout": 1200},
         )
     except IntegrityError:
         pass
