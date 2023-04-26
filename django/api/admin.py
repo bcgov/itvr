@@ -50,7 +50,7 @@ def get_inlines(obj):
 
 @admin.register(GoElectricRebate)
 class GoElectricRebateAdmin(admin.ModelAdmin):
-    search_fields = ["application__id", "drivers_licence", "last_name"]
+    search_fields = ["application__id", "drivers_licence", "last_name", "ncda_id"]
     actions = None
     exclude = ("application",)
     readonly_fields = (
