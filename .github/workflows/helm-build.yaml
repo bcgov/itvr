@@ -3,13 +3,7 @@
 name: helm-build
 
 on:
-  push:
-    branches: [ release-1.17.0 ]
-    paths:
-      - django/**
-      - backend/**
   workflow_dispatch:
-  workflow_call:
 
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
