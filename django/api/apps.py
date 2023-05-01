@@ -14,19 +14,15 @@ class ApiConfig(AppConfig):
         from api.scheduled_jobs import (
             schedule_send_rebates_to_ncda,
             schedule_get_ncda_redeemed_rebates,
-            schedule_cancel_untouched_household_applications,
             schedule_expire_expired_applications,
-            schedule_upload_verified_applications_last_24hours_to_s3,
-            schedule_update_applications_cra_response,
+            schedule_get_missing_redeemed_rebates,
         )
 
         if settings.RUN_JOBS and "qcluster" in sys.argv:
             schedule_send_rebates_to_ncda()
             schedule_get_ncda_redeemed_rebates()
-            schedule_cancel_untouched_household_applications()
-            schedule_expire_expired_applications(),
-            # schedule_upload_verified_applications_last_24hours_to_s3()
-            # schedule_update_applications_cra_response()
+            schedule_expire_expired_applications()
+            schedule_get_missing_redeemed_rebates()
 
 
 class ITVRAdminConfig(AdminConfig):

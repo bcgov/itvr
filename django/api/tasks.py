@@ -11,9 +11,13 @@ from api.models.go_electric_rebate import GoElectricRebate
 from api.models.go_electric_rebate_application import (
     GoElectricRebateApplication,
 )
-from datetime import timedelta
-from django.db.models.signals import post_save
-from api.services.ncda import notify, get_is_rebate_not_redeemed, delete_rebate
+from datetime import timedelta, datetime
+from api.services.ncda import (
+    notify,
+    get_is_rebate_not_redeemed,
+    delete_rebate,
+    get_all_rebates,
+)
 from api.constants import (
     FOUR_THOUSAND_REBATE,
     ONE_THOUSAND_REBATE,
@@ -22,14 +26,7 @@ from api.constants import (
 from api.utility import get_applicant_full_name
 from django_q.tasks import async_task
 from func_timeout import func_timeout, FunctionTimedOut
-from sequences import get_next_value
-from .services import cra
-from datetime import date
-import boto3
-import botocore
-from .services.rebate import get_applications, save_rebates, update_application_statuses
-from .services.calculate_rebate import get_cra_results
-import io
+from django.db import transaction
 
 
 def get_email_service_token() -> str:
@@ -454,12 +451,16 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
         ]
         for rebate in rebates:
             try:
-                notify(
+                ncda_data = notify(
                     rebate.drivers_licence,
                     rebate.last_name,
                     rebate.expiry_date.strftime("%m/%d/%Y"),
                     str(rebate.rebate_max_amount),
-                    rebate.id,
+                    rebate.application.id if rebate.application else None,
+                )
+                ncda_id = ncda_data["d"]["ID"]
+                GoElectricRebate.objects.filter(id=rebate.id).update(
+                    ncda_id=ncda_id, modified=timezone.now()
                 )
                 application = rebate.application
                 if application and (
@@ -478,8 +479,8 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
                         get_applicant_full_name(application),
                         rebate_amounts,
                     )
-            except requests.HTTPError as ncda_error:
-                print("error posting rebate to ncda")
+            except Exception:
+                print("error posting go_electric_rebate with id %s to ncda" % rebate.id)
 
     try:
         func_timeout(900, inner)
@@ -489,47 +490,31 @@ def send_rebates_to_ncda(max_number_of_rebates=100):
 
 
 # check for newly redeemed rebates
-def check_rebates_redeemed_since(iso_ts=None):
-    ts = iso_ts if iso_ts else timezone.now().strftime("%Y-%m-%dT00:00:00Z")
-    print("check_rebate_status " + ts)
-    ncda_ids = []
-    get_rebates_redeemed_since(ts, ncda_ids, None)
-    print(ncda_ids)
-
-    redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
-
-    # mark redeemed
-    redeemed_rebates.update(redeemed=True, modified=timezone.now())
-    # update application status
-    GoElectricRebateApplication.objects.filter(
-        pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
-    ).update(
-        status=GoElectricRebateApplication.Status.REDEEMED,
-        modified=timezone.now(),
-    )
-
-
-# cancels household_initiated applications with a created_time <= (current_time - 28 days)
-def cancel_untouched_household_applications():
-    applications_qs = GoElectricRebateApplication.objects.filter(
-        status=GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
-    ).filter(created__lte=timezone.now() - timedelta(days=28))
-
-    applications = list(applications_qs)
-
-    applications_qs.update(
-        status=GoElectricRebateApplication.Status.CANCELLED,
-        modified=timezone.now(),
-    )
-
-    for application in applications:
-        application.status = GoElectricRebateApplication.Status.CANCELLED
-        post_save.send(
-            sender=GoElectricRebateApplication,
-            instance=application,
-            created=False,
-            update_fields={"status"},
+def check_rebates_redeemed_since(iso_ts):
+    @transaction.atomic
+    def inner():
+        transformed_time = datetime.strptime(iso_ts, "%Y-%m-%dT%H:%M:%SZ") - timedelta(
+            days=1
         )
+        ts = transformed_time.strftime("%Y-%m-%dT00:00:00Z")
+        print("check_rebate_status " + ts)
+        ncda_ids = []
+        get_rebates_redeemed_since(ts, ncda_ids, None)
+        print(ncda_ids)
+        redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
+        redeemed_rebates.update(redeemed=True, modified=timezone.now())
+        GoElectricRebateApplication.objects.filter(
+            pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
+        ).update(
+            status=GoElectricRebateApplication.Status.REDEEMED,
+            modified=timezone.now(),
+        )
+
+    try:
+        func_timeout(900, inner)
+    except FunctionTimedOut:
+        print("check_rebates_redeemed_since job timed out")
+        raise Exception
 
 
 def expire_expired_applications(max_number_of_rebates=50):
@@ -551,8 +536,8 @@ def expire_expired_applications(max_number_of_rebates=50):
                     if application:
                         application.status = GoElectricRebateApplication.Status.EXPIRED
                         application.save(update_fields=["status", "modified"])
-            except requests.HTTPError as ncda_error:
-                print("when expiring rebates, error communicating with ncda")
+            except Exception:
+                print("error expiring go_electric_rebate with id %s" % rebate.id)
 
     try:
         func_timeout(900, inner)
@@ -561,109 +546,32 @@ def expire_expired_applications(max_number_of_rebates=50):
         raise Exception
 
 
-def upload_verified_applications_last_24hours_to_s3():
-    rebates = GoElectricRebateApplication.objects.filter(
-        status=GoElectricRebateApplication.Status.VERIFIED,
-        created__gte=timezone.now() - timedelta(days=1),
-    )
-
-    data = []
-    cra_env = settings.CRA_ENVIRONMENT
-    cra_sequence = get_next_value("cra_sequence")
-    program_code = "BCVR"
-
-    for rebate in rebates:
-        data.append(
-            {
-                "sin": rebate.sin,
-                "years": [rebate.tax_year],
-                "given_name": rebate.first_name,
-                "family_name": rebate.last_name,
-                "birth_date": rebate.date_of_birth.strftime("%Y%m%d"),
-                "application_id": rebate.id,
-            }
+def get_missed_redeemed_rebates(iso_ts):
+    @transaction.atomic
+    def inner():
+        rebates = []
+        get_all_rebates(rebates, None)
+        fixed_time = datetime.strptime(iso_ts, "%Y-%m-%dT%H:%M:%SZ")
+        ids_to_update = []
+        for rebate in rebates:
+            id = rebate["ID"]
+            status = rebate["Status"]
+            modified_ts = rebate["Modified"]
+            modified = datetime.strptime(modified_ts, "%Y-%m-%dT%H:%M:%SZ")
+            if status == "Redeemed" and modified >= fixed_time:
+                ids_to_update.append(id)
+        print("run_once redeemed rebate ids: %s" % ids_to_update)
+        redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ids_to_update)
+        redeemed_rebates.update(redeemed=True, modified=timezone.now())
+        GoElectricRebateApplication.objects.filter(
+            pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
+        ).update(
+            status=GoElectricRebateApplication.Status.REDEEMED,
+            modified=timezone.now(),
         )
-
-        if rebate.application_type == "household":
-            household_member = rebate.householdmember
-            data.append(
-                {
-                    "sin": household_member.sin,
-                    "years": [rebate.tax_year],
-                    "given_name": household_member.first_name,
-                    "family_name": household_member.last_name,
-                    "birth_date": household_member.date_of_birth.strftime("%Y%m%d"),
-                    "application_id": rebate.id,
-                }
-            )
-
-    filename = get_cra_filename(program_code, cra_env, cra_sequence)
-    today = date.today().strftime("%Y%m%d")
-
-    res = cra.write(
-        data,
-        today=today,
-        program_code=program_code,
-        cra_env=cra_env,
-        cra_sequence=f"{cra_sequence:05}",
-    )
-
-    f = io.StringIO(res)
-    f.filename = filename
-    upload_to_s3(f)
-
-
-def get_cra_filename(program_code="BCVR", cra_env="A", cra_sequence="00001"):
-    filename = (
-        "TO.{cra_env}TO#@@00.R7005.IN.{program_code}.{cra_env}{cra_sequence:05}".format(
-            cra_env=cra_env, cra_sequence=cra_sequence, program_code=program_code
-        )
-    )
-    return filename
-
-
-def upload_to_s3(f):
-    client = boto3.client(
-        "s3",
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        endpoint_url=settings.AWS_S3_ENDPOINT_URL,
-    )
-
-    BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
-    # Add sub folder name
-    buffer_to_upload = io.BytesIO(f.getvalue().encode())
-    client.put_object(Body=buffer_to_upload, Bucket=BUCKET_NAME, Key=f.filename)
-
-
-def update_applications_cra_response():
-    # read file contents from s3
-    resource = boto3.resource(
-        "s3",
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        endpoint_url=settings.AWS_S3_ENDPOINT_URL,
-    )
-
-    BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
-    DOWNLOAD_FOLDER_NAME = "cra/decrypt"
-
-    my_bucket = resource.Bucket(BUCKET_NAME)
-    files = my_bucket.objects.filter(Prefix=DOWNLOAD_FOLDER_NAME)
-    latest_object = [
-        obj.key for obj in sorted(files, key=lambda x: x.last_modified, reverse=True)
-    ][0]
 
     try:
-        file = resource.Object(BUCKET_NAME, latest_object)
-        obj_body = file.get()["Body"].read().decode("utf-8")
-        data = cra.read(obj_body)
-        rebates = get_cra_results(data)
-        associated_applications = get_applications(rebates)
-        save_rebates(rebates, associated_applications)
-        update_application_statuses(rebates, associated_applications)
-    except botocore.exceptions.ClientError as e:
-        if e.response["Error"]["Code"] == "404":
-            print("The object does not exist.")
-        else:
-            raise
+        func_timeout(900, inner)
+    except FunctionTimedOut:
+        print("get_missed_redeemed_rebates job timed out")
+        raise Exception
