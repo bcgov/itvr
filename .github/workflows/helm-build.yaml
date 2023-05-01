@@ -8,7 +8,7 @@ on:
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   ## Also remember to update the version in .pipeline/lib/config.js
-  PR_NUMBER: 494
+  PR_NUMBER: 497
   VERSION: 1.47.0
   GIT_URL: https://github.com/bcgov/itvr.git 
   TOOLS_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
