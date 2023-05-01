@@ -47,15 +47,18 @@ jobs:
         run: |
           cd openshift/templates/backend
           oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+          oc start-build --wait=true itvr-backend-build-${{ env.PR_NUMBER }}
 
       - name: Build ITVR Frontend
         run: |
           cd openshift/templates/frontend
           oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          
+          oc start-build --wait=true itvr-frontend-build-${{ env.PR_NUMBER }}
+
       - name: Build ITVR Taskq
         run: |
           cd openshift/templates/task-queue
           oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          
+          oc start-build --wait=true itvr-task-queue-build-${{ env.PR_NUMBER }}
+
 
