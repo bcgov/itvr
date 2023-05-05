@@ -1,67 +1,38 @@
 {{/*
-
-version: 1.0.0
-appVersion: "1.6.0"
-nameOverride: ""
-fullnameOverride: ""
-
-1. deploy PR based
-pr225 is the .Release.Name
-Set below to to be empty string in values file
-  nameOverride: ""
-  fullnameOverride: ""
-imageTools value should be the build PR image in tools project
-Run the below command
-helm template -f ./values-dev.yaml pr225 .
-  name: pr225-itvr-frontend
+The labels for all components:
   labels:
     helm.sh/chart: itvr-frontend-1.0.0
     app.kubernetes.io/name: itvr-frontend
-    app.kubernetes.io/instance: pr225
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/instance: itvr-frontend-dev-1977
+    app.kubernetes.io/version: "1.17.0"
     app.kubernetes.io/managed-by: Helm
 
-2. only build racking PR
-helm template -f ./values-dev.yaml itvr-frontend .
-  name: itvr-frontend
-  labels:
-    helm.sh/chart: itvr-frontend-1.0.0
+The selector lables:
+  selector:
     app.kubernetes.io/name: itvr-frontend
-    app.kubernetes.io/instance: itvr-frontend
-    app.kubernetes.io/version: "1.6.0"
-    app.kubernetes.io/managed-by: Helm
-
-it makes PR based pipeline possible for dev environment
-
-At this moment, when deploy on Dev, Test and Prod, set the value for nameOverride and fullnameOverride to be itvr-frontend
-
+    app.kubernetes.io/instance: itvr-frontend-dev-1977
 */}}
 
 
 {{/*
 Expand the name of the chart.
+set the value to be .Chart.NAme if Values.nameOverride is not given
+In values file, we don't provide nameOverride
+So finally: itvr-frontend.name=itve-frontend
 */}}
 {{- define "itvr-frontend.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-The .Release.Name is the first parameter of command helm install itvr-frontend
+.Release.Name is the one in the helm install command, it is one of the following:
+    itvr-frontend-dev
+    itvr-frontend-dev-<pr number>
+    itvr-frontend-test
+    itvr-frontend-prod 
 */}}
 {{- define "itvr-frontend.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
+{{- .Release.Name }}
 {{- end }}
 
 {{/*
@@ -107,7 +78,7 @@ Create the name of the service account to use
 Define the configmap name
 */}}
 {{- define "itvr-frontend.configmapName" -}}
-{{- include "itvr-frontend.fullname" . }}-features
+{{- include "itvr-frontend.fullname" . }}
 {{- end }}
 
 {{/*
@@ -121,7 +92,7 @@ Define the deploymentconfig name
 Define the deploymentconfig name
 */}}
 {{- define "itvr-frontend.imagestreamName" -}}
-{{- include "itvr-frontend.fullname" . }}
+{{- include "itvr-frontend.name" . }}
 {{- end }}
 
 {{/*

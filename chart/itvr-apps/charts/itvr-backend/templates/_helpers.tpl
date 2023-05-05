@@ -1,39 +1,17 @@
 {{/*
 
-version: 1.0.0
-appVersion: "1.6.0"
-nameOverride: ""
-fullnameOverride: ""
-
-1. deploy PR based
-pr225 is the .Release.Name
-Set below to to be empty string in values file
-  nameOverride: ""
-  fullnameOverride: ""
-imageTools value should be the build PR image in tools project
-Run the below command
-helm template -f ./values-dev.yaml pr225 .
-  name: pr225-itvr-backend
+The labels for all components:
   labels:
     helm.sh/chart: itvr-backend-1.0.0
     app.kubernetes.io/name: itvr-backend
-    app.kubernetes.io/instance: pr225
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/instance: itvr-backend-dev-1977
+    app.kubernetes.io/version: "1.17.0"
     app.kubernetes.io/managed-by: Helm
 
-2. only build racking PR
-helm template -f ./values-dev.yaml itvr-backend .
-  name: itvr-backend
-  labels:
-    helm.sh/chart: itvr-backend-1.0.0
+The selector lables:
+  selector:
     app.kubernetes.io/name: itvr-backend
-    app.kubernetes.io/instance: itvr-backend
-    app.kubernetes.io/version: "1.6.0"
-    app.kubernetes.io/managed-by: Helm
-
-it makes PR based pipeline possible for dev environment
-
-At this moment, when deploy on Dev, Test and Prod, set the value for nameOverride and fullnameOverride to be itvr-backend
+    app.kubernetes.io/instance: itvr-backend-dev-1977
 
 */}}
 
@@ -52,16 +30,7 @@ If release name contains chart name it will be used as a full name.
 The .Release.Name is the first parameter of command helm install itvr-backend
 */}}
 {{- define "itvr-backend.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
+{{- .Release.Name }}
 {{- end }}
 
 {{/*
@@ -115,10 +84,24 @@ Define the service name
 
 
 {{/*
-Define the route name
+Define the backend route name
 */}}
 {{- define "itvr-backend.routeName" -}}
 {{- include "itvr-backend.fullname" . }}
+{{- end }}
+
+{{/*
+Define the backend admin route name, used by taskq
+*/}}
+{{- define "itvr-backend.adminRouteName" -}}
+itvr-backend-admin{{ .Values.suffix }}
+{{- end }}
+
+{{/*
+Define the backend static route name, used by taskq
+*/}}
+{{- define "itvr-backend.staticRouteName" -}}
+itvr-backend-static{{ .Values.suffix }}
 {{- end }}
 
 {{/*
@@ -139,12 +122,12 @@ Define the djangoSaltKey
 Define the django-secret name
 */}}
 {{- define "itvr-backend.django-secret" -}}
-itvr-django-secret-{{ .Values.envName }}
+itvr-django-secret
 {{- end }}
 
 {{/*
 Define the django-salt name
 */}}
 {{- define "itvr-backend.django-salt" -}}
-itvr-django-salt-{{ .Values.envName }}
+itvr-django-salt
 {{- end }}

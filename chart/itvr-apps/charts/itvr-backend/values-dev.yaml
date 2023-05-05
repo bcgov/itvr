@@ -9,10 +9,10 @@ envNamespace: ac294c-dev
 envName: dev
 
 # decide which image in tools project will be used
-imageTools:
-  repository: image-registry.openshift-image-registry.svc:5000
-  tag: itvr-backend@sha256:02f9ffc40dc5ed1f17eb364676a9cf4c0ea111c060d0144a9df7d0c5e6211604
-  pullPolicy: IfNotPresent
+# imageTools:
+#   repository: image-registry.openshift-image-registry.svc:5000
+#   tag: itvr-backend@sha256:02f9ffc40dc5ed1f17eb364676a9cf4c0ea111c060d0144a9df7d0c5e6211604
+#   pullPolicy: IfNotPresent
 
 # decide the imagestream will be created in env projects
 # for pr based, coulde user the value fpr 1.0.0-<pr number>
@@ -54,7 +54,6 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8080
 
 ingress:
   enabled: false
@@ -85,9 +84,9 @@ resources:
     memory: 30Mi
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   targetCPUUtilizationPercentage: 90
   targetMemoryUtilizationPercentage: 90
 
@@ -98,12 +97,12 @@ tolerations: []
 affinity: {}
 
 backend:
-  allowedHost: itvr-backend-test.apps.silver.devops.gov.bc.ca
-  corsOriginWhitlist: https://itvr-test.apps.silver.devops.gov.bc.ca
-  backendOrigin: https://itvr-backend-test.apps.silver.devops.gov.bc.ca
   sendEmail: 'True'
   minioBucketName: itvrdv
   craEnvrionment: A
   djangoDebug: 'False'
   virusScanEnabled: 'True'
-
+  djangoSalt:
+    enabled: true
+  djangoSecret:
+    enabled: true

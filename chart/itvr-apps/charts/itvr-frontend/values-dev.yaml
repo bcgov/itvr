@@ -7,6 +7,7 @@ replicaCount: 1
 toolsNamespace: ac294c-tools
 envNamespace: ac294c-dev
 envName: dev
+suffix: -dev
 
 # decide which image in tools project will be used
 imageTools:
@@ -26,8 +27,8 @@ imagePullSecrets: []
 #nameOverride: "itvr-frontend"
 #fullnameOverride: "itvr-frontend"
 
-nameOverride: ""
-fullnameOverride: ""
+#nameOverride: ""
+#fullnameOverride: ""
 
 
 serviceAccount:
@@ -55,6 +56,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 8080
+  targetPort: 8080
 
 ingress:
   enabled: false
@@ -87,7 +89,7 @@ resources:
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 1
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
@@ -99,8 +101,8 @@ affinity: {}
 
 frontend:
   reactAppBCSCKeycloakClientId: itvr
-  reactAppBCSCKeycloakRealm: rzh2zkjq
-  reactAppBCSCKeycloakUrl: https://dev.oidc.gov.bc.ca/auth/
+  reactAppBCSCKeycloakRealm: zelda
+  reactAppBCSCKeycloakUrl: https://dev.loginproxy.gov.bc.ca/auth/
   reactAppApiBase: https://itvr-backend-dev.apps.silver.devops.gov.bc.ca
   reactAppBCeIDKeycloakClientId: itvr-on-gold-cluster-3972
   reactAppBCeIDKeycloakRealm: standard

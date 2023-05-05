@@ -32,7 +32,7 @@ spec:
         from:
           kind: ImageStreamTag
           namespace: {{ .Values.image.namespace }}
-          name: {{ include "itvr-backend.fullname" . }}:{{ .Values.imageEnv.tag }}
+          name: {{ include "itvr-backend.name" . }}:{{ .Values.backendImageTagName }}
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
@@ -73,17 +73,17 @@ spec:
             failureThreshold: 20
           env:
             - name: ALLOWED_HOSTS
-              value: {{ .Values.backend.allowedHost }}
+              value: {{ include "itvr-backend.fullname" . }}.apps.silver.devops.gov.bc.ca
             - name: CORS_ORIGIN_WHITELIST
-              value: {{ .Values.backend.corsOriginWhitlist }}
+              value: https://itvr-fronend{{ .Values.suffix }}.apps.silver.devops.gov.bc.ca
             - name: BACKEND_ORIGIN
-              value: {{ .Values.backend.backendOrigin }}
+              value: https://{{ include "itvr-backend.fullname" . }}.apps.silver.devops.gov.bc.ca
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: DB_HOST
-              value: itvr-spilo
+              value: itvr-spilo{{ .Values.suffix }}
             - name: DB_HOST_READONLY
-              value: itvr-spilo-readonly
+              value: itvr-spilo{{ .Values.suffix }}-readonly
             - name: DB_NAME
               value: itvr
             - name: DB_PASSWORD

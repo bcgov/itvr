@@ -1,4 +1,4 @@
-# Default values for itvr-taskq.
+# Default values for itvr-task-queue.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -22,9 +22,9 @@ imageEnv:
 imagePullSecrets: []
 
 ## For ITVR Baclend App, set the following two, will result in 
-## itvr-taskq.fullname and itvr-taskq.name are itvr-taskq
-nameOverride: "itvr-taskq"
-fullnameOverride: "itvr-taskq"
+## itvr-task-queue.fullname and itvr-task-queue.name are itvr-task-queue
+#nameOverride: "itvr-task-queue"
+#fullnameOverride: "itvr-task-queue"
 
 #nameOverride: ""
 #fullnameOverride: ""
@@ -87,7 +87,7 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   targetCPUUtilizationPercentage: 90
   targetMemoryUtilizationPercentage: 90
 
@@ -97,8 +97,7 @@ tolerations: []
 
 affinity: {}
 
-taskq:
-  corsOriginWhitlist: https://itvr-test.apps.silver.devops.gov.bc.ca
+taskQueue:
   sendEmail: 'True'
   craEnvrionment: A
   djangoDebug: 'False'
