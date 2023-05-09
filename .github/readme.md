@@ -14,5 +14,3 @@ After the release is deployed on Prod
 * Update frontend/package.json
     * version
 * Create the tracking pull request to merge the new release branch to master
-
-tbd
