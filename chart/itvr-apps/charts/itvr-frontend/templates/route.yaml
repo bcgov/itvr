@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "itvr-frontend.labels" . | nindent 4 }}
 spec:
-  host: {{ include "itvr-frontend.fullname" . }}-{{ .Values.envName }}.apps.silver.devops.gov.bc.ca
+  host: {{ include "itvr-frontend.fullname" . }}.apps.silver.devops.gov.bc.ca
   port:
     targetPort: http
   tls:

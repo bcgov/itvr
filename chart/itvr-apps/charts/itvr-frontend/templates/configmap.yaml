@@ -4,9 +4,14 @@ metadata:
     name: {{ include "itvr-frontend.configmapName" . }}
     creationTimestamp:
 data:
-    features.js: "window.itvr_config = {\n  \"REACT_APP_BCSC_KEYCLOAK_CLIENT_ID\": \"{{ .Values.frontend.reactAppBCSCKeycloakClientId }}\",\n
-    \ \"REACT_APP_BCSC_KEYCLOAK_REALM\": \" {{ .Values.frontend.reactAppBCSCKeycloakRealm }}\",\n  \"REACT_APP_BCSC_KEYCLOAK_URL\":
-    \"{{ .Values.frontend.reactAppBCSCKeycloakUrl }}\",          \n  \"REACT_APP_BCEID_KEYCLOAK_CLIENT_ID\":
-    \"{{ .Values.frontend.reactAppBCeIDKeycloakClientId }}\",\n  \"REACT_APP_BCEID_KEYCLOAK_REALM\": \"{{ .Values.frontend.reactAppBCeIDKeycloakRealm }}\",\n
-    \ \"REACT_APP_BCEID_KEYCLOAK_URL\": \"{{ .Values.frontend.reactAppBCeIDKeycloakUrl }}\",\n  \"REACT_APP_API_BASE\":
-    \"{{ .Values.frontend.reactAppApiBase }}\",\n  \"REACT_APP_ENV\": \"{{ .Values.envName }}\",\n  \"SNOWPLOW_COLLECTOR\": \"{{ .Values.snowplowCollector }}\"\n};\n"
+    features.js: |
+        window.itvr_config = {
+            "REACT_APP_BCSC_KEYCLOAK_CLIENT_ID": "{{ .Values.frontend.reactAppBCSCKeycloakClientId }}",
+            "REACT_APP_BCSC_KEYCLOAK_REALM": "{{ .Values.frontend.reactAppBCSCKeycloakRealm }}",
+            "REACT_APP_BCSC_KEYCLOAK_URL": "{{ .Values.frontend.reactAppBCSCKeycloakUrl }}",
+            "REACT_APP_BCEID_KEYCLOAK_CLIENT_ID": "{{ .Values.frontend.reactAppBCeIDKeycloakClientId }}",
+            "REACT_APP_BCEID_KEYCLOAK_REALM": "{{ .Values.frontend.reactAppBCeIDKeycloakRealm }}",
+            "REACT_APP_BCEID_KEYCLOAK_URL": "{{ .Values.frontend.reactAppBCeIDKeycloakUrl }}",
+            "REACT_APP_API_BASE": "https://itvr-backend{{ .Values.suffix }}.apps.silver.devops.gov.bc.ca"
+            "REACT_APP_ENV": "{{ .Values.envName }}",
+            "SNOWPLOW_COLLECTOR": "{{ .Values.snowplowCollector }}" };

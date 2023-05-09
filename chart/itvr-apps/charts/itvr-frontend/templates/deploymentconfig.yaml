@@ -22,7 +22,7 @@ spec:
         from:
           kind: ImageStreamTag
           namespace: {{ .Values.image.namespace }}
-          name: {{ include "itvr-frontend.fullname" . }}:{{ .Values.imageEnv.tag }}
+          name: {{ include "itvr-frontend.name" . }}:{{ .Values.frontendImageTagName }}
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
