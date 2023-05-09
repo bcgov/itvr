@@ -26,7 +26,7 @@ spec:
         from:
           kind: ImageStreamTag
           namespace: {{ .Values.image.namespace }}
-          name: {{ include "itvr-frontend.name" . }}:{{ .Values.frontendImageTagName }}
+          name: "{{ include "itvr-frontend.name" . }}:{{.Values.frontendImageTagName}}"
     - type: ConfigChange
   template:
     metadata:
