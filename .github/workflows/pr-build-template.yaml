@@ -1,0 +1,177 @@
+name: PR Build Template
+
+on:
+  workflow_call:
+    inputs:
+      pr-number:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+    secrets:
+      tools-namespace:
+        required: true
+      dev-namespace:
+        required: true
+      itvr-dev-username:
+        required: true
+      itvr-dev-password:
+        required: true       
+      openshift-server:
+         required: true 
+      openshift-token:   
+         required: true       
+        
+env:
+  GIT_URL: https://github.com/bcgov/itvr.git 
+  
+jobs:
+
+  database:
+
+    name: Start Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ inputs.pr-number }}/head
+
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.openshift-server }}
+          openshift_token: ${{ secrets.openshift-token }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.tools-namespace }}    
+
+      - name: Setup Database
+        shell: bash {0}
+        run: |
+          cd charts/itvr-spilo
+          helm status -n ${{ secrets.dev-namespace }} itvr-spilo-dev-${{ inputs.pr-number }}
+          if [ $? -eq 0 ]; then
+            echo "itvr-spilo-dev-${{ inputs.pr-number }} exists already"
+          else
+            echo "Installing itvr-spilo-dev-${{ inputs.pr-number }}"
+            helm install -n ${{ secrets.dev-namespace }} -f ./values-dev-pr.yaml --wait itvr-spilo-dev-${{ inputs.pr-number }} .
+            oc -n ${{ secrets.dev-namespace }} wait --for=condition=Ready pod/itvr-spilo-dev-${{ inputs.pr-number }}-0
+            oc -n ${{ secrets.dev-namespace }} exec itvr-spilo-dev-${{ inputs.pr-number }}-0 -- psql -c "create user ${{ secrets.itvr-dev-username }} WITH PASSWORD '${{ secrets.itvr-dev-password }}'" || true
+            oc -n ${{ secrets.dev-namespace }} exec itvr-spilo-dev-${{ inputs.pr-number }}-0 -- psql -c "create database itvr owner ${{ secrets.itvr-dev-username }} ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" || true
+          fi
+
+  build:
+
+    name: Build itvr on Openshift
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: database
+
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ inputs.pr-number }}/head
+
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.openshift-server }}
+          openshift_token: ${{ secrets.openshift-token }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.tools-namespace }}
+
+      - name: Build itvr Backend
+        run: |
+          cd openshift/templates/backend
+          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
+
+      - name: Build itvr Frontend
+        run: |
+          cd openshift/templates/frontend
+          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
+
+  deploy-on-dev:
+
+    name: Deploy itvr on Dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: build
+ 
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ inputs.pr-number }}/head
+
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.openshift-server }}
+          openshift_token: ${{ secrets.openshift-token }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.tools-namespace }}  
+      
+      - name: Tag Frontend Image from tools to dev
+        run: |
+          oc tag ${{ secrets.tools-namespace }}/itvr-frontend:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-frontend:dev-${{ inputs.version }}-${{ inputs.pr-number }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-backend:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-backend:dev-${{ inputs.version }}-${{ inputs.pr-number }}
+
+      - name: Deply itvr-frontend on Dev
+        shell: bash {0}
+        run: |
+          cd charts/itvr-apps/charts/itvr-frontend
+          helm status -n ${{ secrets.dev-namespace }} itvr-frontend-dev-${{ inputs.pr-number }}
+          if [ $? -eq 0 ]; then
+            echo "itvr-frontend-dev-${{ inputs.pr-number }} release exists already"
+            helm upgrade --set frontendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set openshiftLicensePlate=${{ secrets.OPENSHIFT_NAMESPACE_PLATE }} \
+              --set suffix=-dev-${{ inputs.pr-number }} \
+              --set frontendConfigMap.apiBase=https://itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca/api \
+              --set frontendConfigMap.keycloakCallbackUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca\
+              --set frontendConfigMap.keycloakPostLogoutUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca\
+              --set appConfigMap.backendHostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              --set appConfigMap.databaseServiceName=itvr-spilo-dev-${{ inputs.pr-number }} \
+              --set appConfigMap.hostName=itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend-dev-${{ inputs.pr-number }} .
+          else
+            echo "itvr-frontend-dev-${{ inputs.pr-number }} release does not exist"
+            helm install --set frontendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set openshiftLicensePlate=${{ secrets.OPENSHIFT_NAMESPACE_PLATE }} \
+              --set suffix=-dev-${{ inputs.pr-number }} \
+              --set frontendConfigMap.apiBase=https://itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca/api \
+              --set frontendConfigMap.keycloakCallbackUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              --set frontendConfigMap.keycloakPostLogoutUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              --set appConfigMap.backendHostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              --set appConfigMap.databaseServiceName=itvr-spilo-dev-${{ inputs.pr-number }} \
+              --set appConfigMap.hostName=itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend-dev-${{ inputs.pr-number }} .
+          fi
+          
+      - name: Deply itvr-backend on Dev
+        shell: bash {0}
+        run: |
+          cd charts/itvr-apps/charts/itvr-backend
+          helm status -n ${{ secrets.dev-namespace }} itvr-backend
+          if [ $? -eq 0 ]; then
+            echo "itvr-backend-dev-${{ inputs.pr-number }} release exists already"
+            helm upgrade --set backendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set suffix=-dev-${{ inputs.pr-number }} \
+              --set backendRoute.hostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
+          else
+            echo "itvr-backend-dev-${{ inputs.pr-number }} release does not exist"
+            helm install --set backendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set suffix=-dev-${{ inputs.pr-number }} \
+              --set backendRoute.hostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
+          fi
+          
