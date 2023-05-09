@@ -128,50 +128,52 @@ jobs:
       - name: Deply itvr-frontend on Dev
         shell: bash {0}
         run: |
-          cd charts/itvr-apps/charts/itvr-frontend
+          cd chart/itvr-apps/charts/itvr-frontend
           helm status -n ${{ secrets.dev-namespace }} itvr-frontend-dev-${{ inputs.pr-number }}
           if [ $? -eq 0 ]; then
             echo "itvr-frontend-dev-${{ inputs.pr-number }} release exists already"
             helm upgrade --set frontendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set openshiftLicensePlate=${{ secrets.OPENSHIFT_NAMESPACE_PLATE }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
-              --set frontendConfigMap.apiBase=https://itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca/api \
-              --set frontendConfigMap.keycloakCallbackUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca\
-              --set frontendConfigMap.keycloakPostLogoutUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca\
-              --set appConfigMap.backendHostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
-              --set appConfigMap.databaseServiceName=itvr-spilo-dev-${{ inputs.pr-number }} \
-              --set appConfigMap.hostName=itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend-dev-${{ inputs.pr-number }} .
           else
             echo "itvr-frontend-dev-${{ inputs.pr-number }} release does not exist"
             helm install --set frontendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set openshiftLicensePlate=${{ secrets.OPENSHIFT_NAMESPACE_PLATE }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
-              --set frontendConfigMap.apiBase=https://itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca/api \
-              --set frontendConfigMap.keycloakCallbackUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
-              --set frontendConfigMap.keycloakPostLogoutUrl=https://itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
-              --set appConfigMap.backendHostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
-              --set appConfigMap.databaseServiceName=itvr-spilo-dev-${{ inputs.pr-number }} \
-              --set appConfigMap.hostName=itvr-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend-dev-${{ inputs.pr-number }} .
           fi
           
-      - name: Deply itvr-backend on Dev
+      - name: Deploy itvr-backend on Dev
         shell: bash {0}
         run: |
-          cd charts/itvr-apps/charts/itvr-backend
-          helm status -n ${{ secrets.dev-namespace }} itvr-backend
+          cd chart/itvr-apps/charts/itvr-backend
+          helm status -n ${{ secrets.dev-namespace }} itvr-backend-dev-${{ inputs.pr-number }}
           if [ $? -eq 0 ]; then
             echo "itvr-backend-dev-${{ inputs.pr-number }} release exists already"
             helm upgrade --set backendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
-              --set backendRoute.hostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
           else
             echo "itvr-backend-dev-${{ inputs.pr-number }} release does not exist"
             helm install --set backendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
-              --set backendRoute.hostName=itvr-backend-dev-${{ inputs.pr-number }}.apps.silver.devops.gov.bc.ca \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
           fi
           
+      - name: Deploy itvr-task-queue on Dev
+        shell: bash {0}
+        run: |
+          cd chart/itvr-apps/charts/itvr-taskq
+          helm status -n ${{ secrets.dev-namespace }} itvr-task-queue-dev-${{ inputs.pr-number }}
+          if [ $? -eq 0 ]; then
+            echo "itvr-task-queue-dev-${{ inputs.pr-number }} release exists already"
+            helm upgrade --set taskQueueImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set suffix=-dev-${{ inputs.pr-number }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
+          else
+            echo "itvr-task-queue-dev-${{ inputs.pr-number }} release does not exist"
+            helm install --set backendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set suffix=-dev-${{ inputs.pr-number }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
+          fi
