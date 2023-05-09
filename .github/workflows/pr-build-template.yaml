@@ -85,16 +85,22 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ secrets.tools-namespace }}
 
-      - name: Build itvr Backend
-        run: |
-          cd openshift/templates/backend
-          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
-          oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
+      # - name: Build itvr Backend
+      #   run: |
+      #     cd openshift/templates/backend
+      #     oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+      #     oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
 
-      - name: Build itvr Frontend
+      # - name: Build itvr Frontend
+      #   run: |
+      #     cd openshift/templates/frontend
+      #     oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+      #     oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
+
+      - name: Build itvr task queue
         run: |
-          cd openshift/templates/frontend
-          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          cd openshift/templates/task-queue
+          oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
           oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
 
   deploy-on-dev:
@@ -119,10 +125,11 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ secrets.tools-namespace }}  
       
-      - name: Tag Frontend Image from tools to dev
+      - name: Tag Images from tools to dev
         run: |
           oc tag ${{ secrets.tools-namespace }}/itvr-frontend:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-frontend:dev-${{ inputs.version }}-${{ inputs.pr-number }}
           oc tag ${{ secrets.tools-namespace }}/itvr-backend:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-backend:dev-${{ inputs.version }}-${{ inputs.pr-number }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-task-queue:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-task-queue:dev-${{ inputs.version }}-${{ inputs.pr-number }}
 
       - name: Deply itvr-frontend on Dev
         shell: bash {0}
