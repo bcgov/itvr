@@ -140,7 +140,7 @@ jobs:
           if [ $? -eq 0 ]; then
             echo "itvr-frontend-dev-${{ inputs.pr-number }} release exists already"
             helm upgrade \
-              --set namespace=${{ secrets.dev-namespace }}  
+              --set namespace=${{ secrets.dev-namespace }} \
               --set frontendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set openshiftLicensePlate=${{ secrets.OPENSHIFT_NAMESPACE_PLATE }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
@@ -148,7 +148,7 @@ jobs:
           else
             echo "itvr-frontend-dev-${{ inputs.pr-number }} release does not exist"
             helm install \
-              --set namespace=${{ secrets.dev-namespace }} 
+              --set namespace=${{ secrets.dev-namespace }} \
               --set frontendImageTagname=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set openshiftLicensePlate=${{ secrets.OPENSHIFT_NAMESPACE_PLATE }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
