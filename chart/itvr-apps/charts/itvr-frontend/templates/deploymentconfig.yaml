@@ -26,7 +26,6 @@ spec:
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
-  test: false
   selector:
     {{- include "itvr-frontend.selectorLabels" . | nindent 4 }}
   template:
