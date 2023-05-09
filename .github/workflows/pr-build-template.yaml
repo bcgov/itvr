@@ -52,7 +52,7 @@ jobs:
       - name: Setup Database
         shell: bash {0}
         run: |
-          cd charts/itvr-spilo
+          cd chart/itvr-spilo
           helm status -n ${{ secrets.dev-namespace }} itvr-spilo-dev-${{ inputs.pr-number }}
           if [ $? -eq 0 ]; then
             echo "itvr-spilo-dev-${{ inputs.pr-number }} exists already"
