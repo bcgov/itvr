@@ -26,7 +26,7 @@ jobs:
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
-      zeva-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
-      zeva-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
+      itvr-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
+      itvr-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
