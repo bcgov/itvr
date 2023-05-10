@@ -31,7 +31,7 @@ spec:
           - backend
         from:
           kind: ImageStreamTag
-          namespace: {{ .Values.image.namespace }}
+          namespace: {{ .Values.namespace }}
           name: {{ include "itvr-backend.name" . }}:{{ .Values.backendImageTagName }}
     - type: ConfigChange
   replicas: 1

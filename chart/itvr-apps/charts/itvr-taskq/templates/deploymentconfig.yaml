@@ -176,7 +176,7 @@ spec:
           - task-queue
         from:
           kind: ImageStreamTag
-          namespace: {{ .Values.image.namespace }}
+          namespace: {{ .Values.namespace }}
           name: {{ include "itvr-task-queue.name" . }}:{{ .Values.taskQueueImageTagName }}
         lastTriggeredImage: null
       type: ImageChange
