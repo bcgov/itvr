@@ -91,14 +91,14 @@ Define the backend route name
 {{- end }}
 
 {{/*
-Define the backend admin route name, used by taskq
+Define the backend admin route name, used by task queue
 */}}
 {{- define "itvr-backend.adminRouteName" -}}
 itvr-backend-admin{{ .Values.suffix }}
 {{- end }}
 
 {{/*
-Define the backend static route name, used by taskq
+Define the backend static route name, used by task queue
 */}}
 {{- define "itvr-backend.staticRouteName" -}}
 itvr-backend-static{{ .Values.suffix }}

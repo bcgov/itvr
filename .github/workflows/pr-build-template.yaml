@@ -162,12 +162,16 @@ jobs:
           helm status -n ${{ secrets.dev-namespace }} itvr-backend-dev-${{ inputs.pr-number }}
           if [ $? -eq 0 ]; then
             echo "itvr-backend-dev-${{ inputs.pr-number }} release exists already"
-            helm upgrade --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+            helm upgrade \
+              --set namespace=${{ secrets.dev-namespace }} \
+              --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
           else
             echo "itvr-backend-dev-${{ inputs.pr-number }} release does not exist"
-            helm install --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+            helm install \
+              --set namespace=${{ secrets.dev-namespace }} \
+              --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
           fi
@@ -175,16 +179,20 @@ jobs:
       - name: Deploy itvr-task-queue on Dev
         shell: bash {0}
         run: |
-          cd chart/itvr-apps/charts/itvr-taskq
+          cd chart/itvr-apps/charts/itvr-task-queue
           helm status -n ${{ secrets.dev-namespace }} itvr-task-queue-dev-${{ inputs.pr-number }}
           if [ $? -eq 0 ]; then
             echo "itvr-task-queue-dev-${{ inputs.pr-number }} release exists already"
-            helm upgrade --set taskQueueImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+            helm upgrade \
+              --set namespace=${{ secrets.dev-namespace }} \
+              --set taskQueueImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
           else
             echo "itvr-task-queue-dev-${{ inputs.pr-number }} release does not exist"
-            helm install --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+            helm install \
+              --set namespace=${{ secrets.dev-namespace }} \
+              --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
           fi
