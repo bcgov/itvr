@@ -9,7 +9,7 @@ metadata:
 spec:
   host: {{ include "itvr-frontend.fullname" . }}.apps.silver.devops.gov.bc.ca
   port:
-    targetPort: http
+    targetPort: web
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
