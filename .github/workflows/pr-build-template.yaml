@@ -65,51 +65,51 @@ jobs:
             oc -n ${{ secrets.dev-namespace }} exec itvr-spilo-dev-${{ inputs.pr-number }}-0 -- psql -c "create database itvr owner ${{ secrets.itvr-dev-username }} ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" || true
           fi
 
-  # build:
+  build:
 
-  #   name: Build itvr on Openshift
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 60
+    name: Build itvr on Openshift
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
 
-  #   steps:
+    steps:
 
-  #     - name: Check out repository
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: refs/pull/${{ inputs.pr-number }}/head
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ inputs.pr-number }}/head
 
-  #     - name: Log in to Openshift
-  #       uses: redhat-actions/oc-login@v1.2
-  #       with:
-  #         openshift_server_url: ${{ secrets.openshift-server }}
-  #         openshift_token: ${{ secrets.openshift-token }}
-  #         insecure_skip_tls_verify: true
-  #         namespace: ${{ secrets.tools-namespace }}
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.openshift-server }}
+          openshift_token: ${{ secrets.openshift-token }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.tools-namespace }}
 
-      # - name: Build itvr Backend
-      #   run: |
-      #     cd openshift/templates/backend
-      #     oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
-      #     oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
+      - name: Build itvr Backend
+        run: |
+          cd openshift/templates/backend
+          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
 
-      # - name: Build itvr Frontend
-      #   run: |
-      #     cd openshift/templates/frontend
-      #     oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
-      #     oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
+      - name: Build itvr Frontend
+        run: |
+          cd openshift/templates/frontend
+          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
 
-      # - name: Build itvr task queue
-      #   run: |
-      #     cd openshift/templates/task-queue
-      #     oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
-      #     oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
+      - name: Build itvr task queue
+        run: |
+          cd openshift/templates/task-queue
+          oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
 
   deploy-on-dev:
 
     name: Deploy itvr on Dev
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: database
+    needs: [database, build]
  
     steps:
 
