@@ -192,7 +192,7 @@ jobs:
             echo "itvr-task-queue-dev-${{ inputs.pr-number }} release does not exist"
             helm install \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
+              --set taskQueueImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
               --set suffix=-dev-${{ inputs.pr-number }} \
               -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
           fi
