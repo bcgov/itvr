@@ -105,7 +105,7 @@ jobs:
           cd openshift/templates/task-queue
           oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
           oc cancel-build bc/itvr-task-queue-build-${{ inputs.pr-number }}
-          oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
+          oc start-build --wait=true itvr-task-queue-build-${{ inputs.pr-number }}
 
   deploy-on-dev:
 
