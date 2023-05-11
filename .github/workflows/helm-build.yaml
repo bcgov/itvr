@@ -28,7 +28,8 @@ jobs:
     name: Build ITVR on Openshift
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
+    env: 
+      SUFFIXSS: -build-${{ env.PR_NUMBER }}
     steps:
 
       ## it will checkout to /home/runner/work/itvr/itvr
@@ -47,15 +48,20 @@ jobs:
         run: |
           cd openshift/templates/backend
           oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+          oc cancel-build bc/itvr-backend-build-${{ inputs.pr-number }}
+          oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
 
       - name: Build ITVR Frontend
         run: |
           cd openshift/templates/frontend
           oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          
+          oc cancel-build bc/itvr-frontend-build-${{ inputs.pr-number }}
+          oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
+
       - name: Build ITVR Taskq
         run: |
           cd openshift/templates/task-queue
           oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          
+          oc cancel-build bc/itvr-task-queue-build-${{ inputs.pr-number }}
+          oc start-build --wait=true itvr-task-queue-build-${{ inputs.pr-number }}
 
