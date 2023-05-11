@@ -6,9 +6,15 @@ on:
       pr-number:
         required: true
         type: string
-      version:
+      suffix:
         required: true
-        type: string
+        type: string   
+      build-image-tag-name:
+        required: true
+        type: string      
+      dev-image-tag-name:
+        required: true
+        type: string     
     secrets:
       tools-namespace:
         required: true
@@ -54,15 +60,15 @@ jobs:
         run: |
           cd chart/itvr-spilo
           helm dependency build
-          helm status -n ${{ secrets.dev-namespace }} itvr-spilo-dev-${{ inputs.pr-number }}
+          helm status -n ${{ secrets.dev-namespace }} itvr-spilo${{ inputs.suffix }}
           if [ $? -eq 0 ]; then
-            echo "itvr-spilo-dev-${{ inputs.pr-number }} exists already"
+            echo "itvr-spilo${{ inputs.suffix }} exists already"
           else
-            echo "Installing itvr-spilo-dev-${{ inputs.pr-number }}"
-            helm install -n ${{ secrets.dev-namespace }} -f ./values-dev-pr.yaml --wait itvr-spilo-dev-${{ inputs.pr-number }} .
-            oc -n ${{ secrets.dev-namespace }} wait --for=condition=Ready pod/itvr-spilo-dev-${{ inputs.pr-number }}-0
-            oc -n ${{ secrets.dev-namespace }} exec itvr-spilo-dev-${{ inputs.pr-number }}-0 -- psql -c "create user ${{ secrets.itvr-dev-username }} WITH PASSWORD '${{ secrets.itvr-dev-password }}'" || true
-            oc -n ${{ secrets.dev-namespace }} exec itvr-spilo-dev-${{ inputs.pr-number }}-0 -- psql -c "create database itvr owner ${{ secrets.itvr-dev-username }} ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" || true
+            echo "Installing itvr-spilo${{ inputs.suffix }}"
+            helm install -n ${{ secrets.dev-namespace }} -f ./values-dev-pr.yaml --wait itvr-spilo${{ inputs.suffix }} .
+            oc -n ${{ secrets.dev-namespace }} wait --for=condition=Ready pod/itvr-spilo${{ inputs.suffix }}-0
+            oc -n ${{ secrets.dev-namespace }} exec itvr-spilo${{ inputs.suffix }}-0 -- psql -c "create user ${{ secrets.itvr-dev-username }} WITH PASSWORD '${{ secrets.itvr-dev-password }}'" || true
+            oc -n ${{ secrets.dev-namespace }} exec itvr-spilo${{ inputs.suffix }}-0 -- psql -c "create database itvr owner ${{ secrets.itvr-dev-username }} ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" || true
           fi
 
   build:
@@ -89,21 +95,21 @@ jobs:
       - name: Build itvr Backend
         run: |
           cd openshift/templates/backend
-          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=${{ inputs.build-image-tag-name }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
           oc cancel-build bc/itvr-backend-build-${{ inputs.pr-number }}
           oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
 
       - name: Build itvr Frontend
         run: |
           cd openshift/templates/frontend
-          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=${{ inputs.build-image-tag-name }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
           oc cancel-build bc/itvr-frontend-build-${{ inputs.pr-number }}
           oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
 
       - name: Build itvr task queue
         run: |
           cd openshift/templates/task-queue
-          oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=build-${{ inputs.version }}-${{ inputs.pr-number }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
+          oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ inputs.pr-number }} VERSION=${{ inputs.build-image-tag-name }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ inputs.pr-number }}/head | oc apply --wait=true -f - -n ${{ secrets.tools-namespace }}
           oc cancel-build bc/itvr-task-queue-build-${{ inputs.pr-number }}
           oc start-build --wait=true itvr-task-queue-build-${{ inputs.pr-number }}
 
@@ -131,69 +137,69 @@ jobs:
       
       - name: Tag Images from tools to dev
         run: |
-          oc tag ${{ secrets.tools-namespace }}/itvr-frontend:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-frontend:dev-${{ inputs.version }}-${{ inputs.pr-number }}
-          oc tag ${{ secrets.tools-namespace }}/itvr-backend:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-backend:dev-${{ inputs.version }}-${{ inputs.pr-number }}
-          oc tag ${{ secrets.tools-namespace }}/itvr-task-queue:build-${{ inputs.version }}-${{ inputs.pr-number }} ${{ secrets.dev-namespace }}/itvr-task-queue:dev-${{ inputs.version }}-${{ inputs.pr-number }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-frontend:${{ inputs.build-image-tag-name }} ${{ secrets.dev-namespace }}/itvr-frontend:${{ inputs.dev-image-tag-name }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-backend:${{ inputs.build-image-tag-name }} ${{ secrets.dev-namespace }}/itvr-backend:${{ inputs.dev-image-tag-name }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-task-queue:${{ inputs.build-image-tag-name }} ${{ secrets.dev-namespace }}/itvr-task-queue:${{ inputs.dev-image-tag-name }}
 
       - name: Deply itvr-frontend on Dev
         shell: bash {0}
         run: |
           cd chart/itvr-apps/charts/itvr-frontend
-          helm status -n ${{ secrets.dev-namespace }} itvr-frontend-dev-${{ inputs.pr-number }}
+          helm status -n ${{ secrets.dev-namespace }} itvr-frontend${{ inputs.suffix }}
           if [ $? -eq 0 ]; then
-            echo "itvr-frontend-dev-${{ inputs.pr-number }} release exists already"
+            echo "itvr-frontend${{ inputs.suffix }} release exists already"
             helm upgrade \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set frontendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
-              --set suffix=-dev-${{ inputs.pr-number }} \
-              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend-dev-${{ inputs.pr-number }} .
+              --set frontendImageTagName=${{ inputs.dev-image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend${{ inputs.suffix }} .
           else
-            echo "itvr-frontend-dev-${{ inputs.pr-number }} release does not exist"
+            echo "itvr-frontend${{ inputs.suffix }} release does not exist"
             helm install \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set frontendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
-              --set suffix=-dev-${{ inputs.pr-number }} \
-              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend-dev-${{ inputs.pr-number }} .
+              --set frontendImageTagName=${{ inputs.dev-image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-frontend${{ inputs.suffix }} .
           fi
           
       - name: Deploy itvr-backend on Dev
         shell: bash {0}
         run: |
           cd chart/itvr-apps/charts/itvr-backend
-          helm status -n ${{ secrets.dev-namespace }} itvr-backend-dev-${{ inputs.pr-number }}
+          helm status -n ${{ secrets.dev-namespace }} itvr-backend${{ inputs.suffix }}
           if [ $? -eq 0 ]; then
-            echo "itvr-backend-dev-${{ inputs.pr-number }} release exists already"
+            echo "itvr-backend${{ inputs.suffix }} release exists already"
             helm upgrade \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
-              --set suffix=-dev-${{ inputs.pr-number }} \
-              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
+              --set backendImageTagName=${{ inputs.dev-image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend${{ inputs.suffix }} .
           else
-            echo "itvr-backend-dev-${{ inputs.pr-number }} release does not exist"
+            echo "itvr-backend${{ inputs.suffix }} release does not exist"
             helm install \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set backendImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
-              --set suffix=-dev-${{ inputs.pr-number }} \
-              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend-dev-${{ inputs.pr-number }} .
+              --set backendImageTagName=${{ inputs.dev-image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-backend${{ inputs.suffix }} .
           fi
           
       - name: Deploy itvr-task-queue on Dev
         shell: bash {0}
         run: |
           cd chart/itvr-apps/charts/itvr-task-queue
-          helm status -n ${{ secrets.dev-namespace }} itvr-task-queue-dev-${{ inputs.pr-number }}
+          helm status -n ${{ secrets.dev-namespace }} itvr-task-queue${{ inputs.suffix }}
           if [ $? -eq 0 ]; then
-            echo "itvr-task-queue-dev-${{ inputs.pr-number }} release exists already"
+            echo "itvr-task-queue${{ inputs.suffix }} release exists already"
             helm upgrade \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set taskQueueImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
-              --set suffix=-dev-${{ inputs.pr-number }} \
-              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
+              --set taskQueueImageTagName=${{ inputs.dev-image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue${{ inputs.suffix }} .
           else
-            echo "itvr-task-queue-dev-${{ inputs.pr-number }} release does not exist"
+            echo "itvr-task-queue${{ inputs.suffix }} release does not exist"
             helm install \
               --set namespace=${{ secrets.dev-namespace }} \
-              --set taskQueueImageTagName=dev-${{ inputs.version }}-${{ inputs.pr-number }} \
-              --set suffix=-dev-${{ inputs.pr-number }} \
-              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue-dev-${{ inputs.pr-number }} .
+              --set taskQueueImageTagName=${{ inputs.dev-image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml itvr-task-queue${{ inputs.suffix }} .
           fi

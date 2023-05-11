@@ -23,7 +23,9 @@ jobs:
     uses: ./.github/workflows/pr-build-template.yaml
     with:
       pr-number: ${{ github.event.pull_request.number }}
-      version: ${{ github.event.pull_request.base.ref }}
+      suffix: -dev-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
+      dev-image-tag-name: dev-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
