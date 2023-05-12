@@ -7,7 +7,7 @@ on:
   pull_request:
     types: opened
     branches:
-      - 'release-*'
+      - 'release-**'
     paths:
       - frontend/**
       - backend/**
