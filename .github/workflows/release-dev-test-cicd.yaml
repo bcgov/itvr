@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened,edited,synchronize]
+    paths:
+      - frontend/**
+      - backend/**    
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,22 +29,22 @@ jobs:
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
-  # build-release:
-  #   if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
-  #   name: Build release
-  #   uses: ./.github/workflows/pr-build-template.yaml
-  #   with:
-  #     pr-number: ${{ github.event.pull_request.number }}
-  #     build-suffix: -build-${{ github.event.pull_request.number }}
-  #     build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
-  #   secrets:
-  #     tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
-  #     openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
-  #     openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  build-release:
+    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+    name: Build release
+    uses: ./.github/workflows/pr-build-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      build-suffix: -build-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
   approval-deploy-on-dev:
     name: Approval the deployment on Dev
-    needs: call-pr-dev-database-template
+    needs: [call-pr-dev-database-template,build-release]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -69,32 +72,33 @@ jobs:
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
   
-  # approval-deploy-on-test:
-  #   name: Approval the deployment on Test
-  #   needs: deploy-on-dev
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 240
-  #   steps:
-  #     - name: Ask for approval for ITVR Test deployment
-  #       uses: trstringer/manual-approval@v1.6.0
-  #       with:
-  #         secret: ${{ github.TOKEN }}
-  #         approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
-  #         minimum-approvals: 1
-  #         issue-title: "ITVR $VERSION Test Deployment"
-  #         timeout-minutes: 240
+  approval-deploy-on-test:
+  name: Approval the deployment on Test
+  needs: deploy-on-dev
+  runs-on: ubuntu-latest
+  timeout-minutes: 60
+  steps:
+    - name: Ask for approval for ITVR Test deployment
+      uses: trstringer/manual-approval@v1.6.0
+      with:
+        secret: ${{ github.TOKEN }}
+        approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+        minimum-approvals: 1
+        issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Test Deployment"
 
-  # deploy-on-test:
-  #   needs: approval-deploy-on-test
-  #   uses: ./.github/workflows/pr-deploy-template.yaml
-  #   with:
-  #     pr-number: $PR_NUMBER
-  #     suffix: -test
-  #     build-image-tag-name: build-$VERSION-$PR_NUMBER
-  #     image-tag-name: test-$VERSION-$PR_NUMBER
-  #     env-name: test
-  #   secrets:
-  #     tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
-  #     namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
-  #     openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
-  #     openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  deploy-on-Test: 
+    name: Deploy on Test
+    needs: approval-deploy-on-test
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -test
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: test-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: test
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
