@@ -9,7 +9,7 @@ env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   ## Also remember to update the version in .pipeline/lib/config.js
   PR_NUMBER: 497
-  VERSION: 1.17.0
+  VERSION: release-1.17.0
   GIT_URL: https://github.com/bcgov/itvr.git 
   TOOLS_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
   DEV_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
@@ -22,46 +22,75 @@ concurrency:
 
 jobs:
 
-  ## This is the CI job
-  build:
+  build-release:
+    name: Build release
+    uses: ./.github/workflows/pr-build-template.yaml
+    with:
+      pr-number: ${{ env.PR_NUMBER }}
+      build-suffix: -build-${{ env.PR_NUMBER }}
+      build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
-    name: Build ITVR on Openshift
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    env: 
-      SUFFIXSS: -build-${{ env.PR_NUMBER }}
+  approval-deploy-on-dev:
+    name: Approval the deployment on Dev
+    needs: build-release
+    timeout-minutes: 240
     steps:
-
-      ## it will checkout to /home/runner/work/itvr/itvr
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.2
+      - name: Ask for approval for ITVR Dev deployment
+        uses: trstringer/manual-approval@v1.6.0
         with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ env.VERSION }} Dev Deployment"
+          timeout-minutes: 240
 
-      - name: Build ITVR Backend
-        run: |
-          cd openshift/templates/backend
-          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc cancel-build bc/itvr-backend-build-${{ inputs.pr-number }}
-          oc start-build --wait=true itvr-backend-build-${{ inputs.pr-number }}
+  deploy-on-dev: 
+    name: Deploy on Dev
+    needs: approval-deploy-on-dev
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ env.PR_NUMBER  }}
+      build-suffix: -build-${{ env.PR_NUMBER  }}
+      suffix: -dev-${{ env.PR_NUMBER  }}
+      build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
+      image-tag-name: dev-${{ env.VERSION }}-${{env.PR_NUMBER }}
+      env-name: dev
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  
+  approval-deploy-on-test:
+    name: Approval the deployment on Test
+    needs: deploy-on-dev
+    timeout-minutes: 240
+    steps:
+      - name: Ask for approval for ITVR Test deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ env.VERSION }} Test Deployment"
+          timeout-minutes: 240
 
-      - name: Build ITVR Frontend
-        run: |
-          cd openshift/templates/frontend
-          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc cancel-build bc/itvr-frontend-build-${{ inputs.pr-number }}
-          oc start-build --wait=true itvr-frontend-build-${{ inputs.pr-number }}
-
-      - name: Build ITVR Taskq
-        run: |
-          cd openshift/templates/task-queue
-          oc process -f ./task-queue-bc.yaml NAME=itvr SUFFIX=-build-${{ env.PR_NUMBER }} VERSION=build-${{ env.VERSION }}-${{ env.PR_NUMBER }} GIT_URL=${{ env.GIT_URL }} GIT_REF=refs/pull/${{ env.PR_NUMBER }}/head | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc cancel-build bc/itvr-task-queue-build-${{ inputs.pr-number }}
-          oc start-build --wait=true itvr-task-queue-build-${{ inputs.pr-number }}
-
+  deploy-on-test:
+    needs: [approval-deploy-on-test]
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ env.PR_NUMBER  }}
+      build-suffix: -build-${{ env.PR_NUMBER  }}
+      suffix: -test-${{ env.PR_NUMBER  }}
+      build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
+      image-tag-name: test-${{ env.VERSION }}-${{env.PR_NUMBER }}
+      env-name: test
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}

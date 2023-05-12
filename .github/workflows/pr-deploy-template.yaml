@@ -30,9 +30,6 @@ on:
          required: true 
       openshift-token:   
          required: true       
-        
-env:
-  GIT_URL: https://github.com/bcgov/itvr.git 
   
 jobs:
 
