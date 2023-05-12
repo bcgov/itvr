@@ -27,8 +27,8 @@ jobs:
     uses: ./.github/workflows/pr-build-template.yaml
     with:
       pr-number: $PR_NUMBER
-      build-suffix: -build-${{ env.PR_NUMBER }}
-      build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
+      build-suffix: -build-$PR_NUMBER
+      build-image-tag-name: build-${{ env.VERSION }}-$PR_NUMBER
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
@@ -53,10 +53,10 @@ jobs:
     needs: approval-deploy-on-dev
     uses: ./.github/workflows/pr-deploy-template.yaml
     with:
-      pr-number: ${{ env.PR_NUMBER  }}
+      pr-number: $PR_NUMBER
       suffix: -dev
-      build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
-      image-tag-name: dev-${{ env.VERSION }}-${{env.PR_NUMBER }}
+      build-image-tag-name: build-${{ env.VERSION }}-$PR_NUMBER
+      image-tag-name: dev-${{ env.VERSION }}-$PR_NUMBER
       env-name: dev
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
@@ -82,10 +82,10 @@ jobs:
     needs: approval-deploy-on-test
     uses: ./.github/workflows/pr-deploy-template.yaml
     with:
-      pr-number: ${{ env.PR_NUMBER  }}
+      pr-number: $PR_NUMBER
       suffix: -test
-      build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
-      image-tag-name: test-${{ env.VERSION }}-${{env.PR_NUMBER }}
+      build-image-tag-name: build-${{ env.VERSION }}-$PR_NUMBER
+      image-tag-name: test-${{ env.VERSION }}-$PR_NUMBER
       env-name: test
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
