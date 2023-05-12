@@ -1,0 +1,93 @@
+## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
+
+name: Deploy release to dev and test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: opened
+    branches:
+      - 'release-*'
+    paths:
+      - django/**
+      - backend/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true  
+
+jobs:
+
+  build-release:
+    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+    name: Build release
+    uses: ./.github/workflows/pr-build-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      build-suffix: -build-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+  approval-deploy-on-dev:
+    name: Approval the deployment on Dev
+    needs: build-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Ask for approval for ITVR Dev deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ github.event.pull_request.base.ref }} Dev Deployment"
+          timeout-minutes: 240
+
+  deploy-on-dev: 
+    name: Deploy on Dev
+    needs: approval-deploy-on-dev
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -dev
+      build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: dev-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
+      env-name: dev
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  
+  # approval-deploy-on-test:
+  #   name: Approval the deployment on Test
+  #   needs: deploy-on-dev
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 240
+  #   steps:
+  #     - name: Ask for approval for ITVR Test deployment
+  #       uses: trstringer/manual-approval@v1.6.0
+  #       with:
+  #         secret: ${{ github.TOKEN }}
+  #         approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+  #         minimum-approvals: 1
+  #         issue-title: "ITVR $VERSION Test Deployment"
+  #         timeout-minutes: 240
+
+  # deploy-on-test:
+  #   needs: approval-deploy-on-test
+  #   uses: ./.github/workflows/pr-deploy-template.yaml
+  #   with:
+  #     pr-number: $PR_NUMBER
+  #     suffix: -test
+  #     build-image-tag-name: build-$VERSION-$PR_NUMBER
+  #     image-tag-name: test-$VERSION-$PR_NUMBER
+  #     env-name: test
+  #   secrets:
+  #     tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+  #     namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+  #     openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+  #     openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
