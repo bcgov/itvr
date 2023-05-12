@@ -37,6 +37,7 @@ jobs:
   approval-deploy-on-dev:
     name: Approval the deployment on Dev
     needs: build-release
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
       - name: Ask for approval for ITVR Dev deployment
@@ -67,6 +68,7 @@ jobs:
   approval-deploy-on-test:
     name: Approval the deployment on Test
     needs: deploy-on-dev
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
       - name: Ask for approval for ITVR Test deployment
