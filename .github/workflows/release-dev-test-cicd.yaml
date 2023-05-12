@@ -73,18 +73,18 @@ jobs:
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
   
   approval-deploy-on-test:
-  name: Approval the deployment on Test
-  needs: deploy-on-dev
-  runs-on: ubuntu-latest
-  timeout-minutes: 60
-  steps:
-    - name: Ask for approval for ITVR Test deployment
-      uses: trstringer/manual-approval@v1.6.0
-      with:
-        secret: ${{ github.TOKEN }}
-        approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
-        minimum-approvals: 1
-        issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Test Deployment"
+    name: Approval the deployment on Test
+    needs: deploy-on-dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Ask for approval for ITVR Test deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Test Deployment"
 
   deploy-on-Test: 
     name: Deploy on Test
