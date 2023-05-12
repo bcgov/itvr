@@ -1,0 +1,128 @@
+name: PR Deploy Template
+
+on:
+  workflow_call:
+    inputs:
+      pr-number:
+        required: true
+        type: string
+      build-suffix:
+        required: true
+        type: string   
+      suffix:
+        required: true
+        type: string   
+      build-image-tag-name:
+        required: true
+        type: string      
+      image-tag-name:
+        required: true
+        type: string     
+      env-name:
+        required: true
+        type: string            
+    secrets:
+      tools-namespace:
+        required: true
+      namespace:
+        required: true
+      openshift-server:
+         required: true 
+      openshift-token:   
+         required: true       
+        
+env:
+  GIT_URL: https://github.com/bcgov/itvr.git 
+  
+jobs:
+
+  deploy-on-dev:
+
+    name: Deploy itvr on Dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [database, build]
+ 
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ inputs.pr-number }}/head
+
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.2
+        with:
+          openshift_server_url: ${{ secrets.openshift-server }}
+          openshift_token: ${{ secrets.openshift-token }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ secrets.tools-namespace }}  
+      
+      - name: Tag Images from tools to dev
+        run: |
+          oc tag ${{ secrets.tools-namespace }}/itvr-frontend:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-frontend:${{ inputs.image-tag-name }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-backend:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-backend:${{ inputs.image-tag-name }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-task-queue:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-task-queue:${{ inputs.image-tag-name }}
+
+      - name: Deply itvr-frontend on Dev
+        shell: bash {0}
+        run: |
+          cd chart/itvr-apps/charts/itvr-frontend
+          helm status -n ${{ secrets.namespace }} itvr-frontend${{ inputs.suffix }}
+          if [ $? -eq 0 ]; then
+            echo "itvr-frontend${{ inputs.suffix }} release exists already"
+            helm upgrade \
+              --set namespace=${{ secrets.namespace }} \
+              --set frontendImageTagName=${{ inputs.image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-frontend${{ inputs.suffix }} .
+          else
+            echo "itvr-frontend${{ inputs.suffix }} release does not exist"
+            helm install \
+              --set namespace=${{ secrets.namespace }} \
+              --set frontendImageTagName=${{ inputs.image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-frontend${{ inputs.suffix }} .
+          fi
+          
+      - name: Deploy itvr-backend on Dev
+        shell: bash {0}
+        run: |
+          cd chart/itvr-apps/charts/itvr-backend
+          helm status -n ${{ secrets.namespace }} itvr-backend${{ inputs.suffix }}
+          if [ $? -eq 0 ]; then
+            echo "itvr-backend${{ inputs.suffix }} release exists already"
+            helm upgrade \
+              --set namespace=${{ secrets.namespace }} \
+              --set backendImageTagName=${{ inputs.image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-backend${{ inputs.suffix }} .
+          else
+            echo "itvr-backend${{ inputs.suffix }} release does not exist"
+            helm install \
+              --set namespace=${{ secrets.namespace }} \
+              --set backendImageTagName=${{ inputs.image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-backend${{ inputs.suffix }} .
+          fi
+          
+      - name: Deploy itvr-task-queue on Dev
+        shell: bash {0}
+        run: |
+          cd chart/itvr-apps/charts/itvr-task-queue
+          helm status -n ${{ secrets.namespace }} itvr-task-queue${{ inputs.suffix }}
+          if [ $? -eq 0 ]; then
+            echo "itvr-task-queue${{ inputs.suffix }} release exists already"
+            helm upgrade \
+              --set namespace=${{ secrets.namespace }} \
+              --set taskQueueImageTagName=${{ inputs.image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-task-queue${{ inputs.suffix }} .
+          else
+            echo "itvr-task-queue${{ inputs.suffix }} release does not exist"
+            helm install \
+              --set namespace=${{ secrets.namespace }} \
+              --set taskQueueImageTagName=${{ inputs.image-tag-name }} \
+              --set suffix=${{ inputs.suffix }} \
+              -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-task-queue${{ inputs.suffix }} .
+          fi
