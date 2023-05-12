@@ -28,7 +28,7 @@ jobs:
     with:
       pr-number: $PR_NUMBER
       build-suffix: -build-$PR_NUMBER
-      build-image-tag-name: build-${{ env.VERSION }}-$PR_NUMBER
+      build-image-tag-name: build-$VERSION-$PR_NUMBER
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
@@ -45,7 +45,7 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
           minimum-approvals: 1
-          issue-title: "ITVR ${{ env.VERSION }} Dev Deployment"
+          issue-title: "ITVR $VERSION Dev Deployment"
           timeout-minutes: 240
 
   deploy-on-dev: 
@@ -55,8 +55,8 @@ jobs:
     with:
       pr-number: $PR_NUMBER
       suffix: -dev
-      build-image-tag-name: build-${{ env.VERSION }}-$PR_NUMBER
-      image-tag-name: dev-${{ env.VERSION }}-$PR_NUMBER
+      build-image-tag-name: build-$VERSION-$PR_NUMBER
+      image-tag-name: dev-$VERSION-$PR_NUMBER
       env-name: dev
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
@@ -75,7 +75,7 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
           minimum-approvals: 1
-          issue-title: "ITVR ${{ env.VERSION }} Test Deployment"
+          issue-title: "ITVR $VERSION Test Deployment"
           timeout-minutes: 240
 
   deploy-on-test:
@@ -84,8 +84,8 @@ jobs:
     with:
       pr-number: $PR_NUMBER
       suffix: -test
-      build-image-tag-name: build-${{ env.VERSION }}-$PR_NUMBER
-      image-tag-name: test-${{ env.VERSION }}-$PR_NUMBER
+      build-image-tag-name: build-$VERSION-$PR_NUMBER
+      image-tag-name: test-$VERSION-$PR_NUMBER
       env-name: test
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
