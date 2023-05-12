@@ -20,7 +20,7 @@ jobs:
     with:
       pr-number: ${{ github.event.pull_request.number }}
       build-suffix: -build-${{ github.event.pull_request.number }}
-      build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
@@ -38,8 +38,7 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
           minimum-approvals: 1
-          issue-title: "ITVR ${{ github.event.pull_request.base.ref }} Dev Deployment"
-          timeout-minutes: 240
+          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Dev Deployment"
 
   deploy-on-dev: 
     name: Deploy on Dev
@@ -48,8 +47,8 @@ jobs:
     with:
       pr-number: ${{ github.event.pull_request.number }}
       suffix: -dev
-      build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
-      image-tag-name: dev-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: dev-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
       env-name: dev
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
