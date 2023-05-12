@@ -31,7 +31,6 @@ jobs:
 
   call-pr-dev-database-template:
     if: endsWith( github.event.pull_request.title, 'build-on-dev' )
-    needs: call-pr-build-template
     uses: ./.github/workflows/pr-dev-database-template.yaml
     with:
       pr-number: ${{ github.event.pull_request.number }}
