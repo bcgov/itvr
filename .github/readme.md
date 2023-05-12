@@ -14,3 +14,20 @@ After the release is deployed on Prod
 * Update frontend/package.json
     * version
 * Create the tracking pull request to merge the new release branch to master
+
+# Pre-required Secrets before running the pipeline
+itvr-keycloak
+itvr-django-secret
+itvr-django-salt
+itvr-email-service
+itvr-patroni-app
+itvr-patroni-admin
+itvr-object-storage
+itvr-ncda
+itvr-db-backup-s3
+
+# Pre-required Image Streams before running the pipeline
+itvr-frontend
+itvr-backend
+itvr-task-queue
+
