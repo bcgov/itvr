@@ -6,18 +6,19 @@ on:
       pr-number:
         required: true
         type: string
-      build-suffix:
-        required: true
-        type: string   
+      # suffix is in format of -dev-487, -dev, -test, -prod
       suffix:
         required: true
         type: string   
+      # build-image-tag-name is in format of build-release-1.17.0-487
       build-image-tag-name:
         required: true
-        type: string      
+        type: string  
+      # image-tag-name is in format of dev-release-1.17.0-487, test-release-1.17.0-487, prod-release-1.17.0-487
       image-tag-name:
         required: true
-        type: string     
+        type: string
+      # env-name is in format of dev, test, prod     
       env-name:
         required: true
         type: string            

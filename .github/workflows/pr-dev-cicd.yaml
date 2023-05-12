@@ -48,7 +48,6 @@ jobs:
     uses: ./.github/workflows/pr-deploy-template.yaml
     with:
       pr-number: ${{ github.event.pull_request.number }}
-      build-suffix: -build-${{ github.event.pull_request.number }}
       suffix: -dev-${{ github.event.pull_request.number }}
       build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
       image-tag-name: dev-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}

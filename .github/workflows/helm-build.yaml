@@ -8,7 +8,7 @@ on:
 env:
   ## The pull request number of the Tracking pull request to merge the release branch to main
   ## Also remember to update the version in .pipeline/lib/config.js
-  PR_NUMBER: 497
+  PR_NUMBER: 494
   VERSION: release-1.17.0
   GIT_URL: https://github.com/bcgov/itvr.git 
   TOOLS_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
@@ -54,8 +54,7 @@ jobs:
     uses: ./.github/workflows/pr-deploy-template.yaml
     with:
       pr-number: ${{ env.PR_NUMBER  }}
-      build-suffix: -build-${{ env.PR_NUMBER  }}
-      suffix: -dev-${{ env.PR_NUMBER  }}
+      suffix: -dev
       build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
       image-tag-name: dev-${{ env.VERSION }}-${{env.PR_NUMBER }}
       env-name: dev
@@ -80,12 +79,11 @@ jobs:
           timeout-minutes: 240
 
   deploy-on-test:
-    needs: [approval-deploy-on-test]
+    needs: approval-deploy-on-test
     uses: ./.github/workflows/pr-deploy-template.yaml
     with:
       pr-number: ${{ env.PR_NUMBER  }}
-      build-suffix: -build-${{ env.PR_NUMBER  }}
-      suffix: -test-${{ env.PR_NUMBER  }}
+      suffix: -test
       build-image-tag-name: build-${{ env.VERSION }}-${{ env.PR_NUMBER }}
       image-tag-name: test-${{ env.VERSION }}-${{env.PR_NUMBER }}
       env-name: test
