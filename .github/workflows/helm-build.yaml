@@ -26,9 +26,9 @@ jobs:
     name: Build release
     uses: ./.github/workflows/pr-build-template.yaml
     with:
-      pr-number: $PR_NUMBER
-      build-suffix: -build-$PR_NUMBER
-      build-image-tag-name: build-$VERSION-$PR_NUMBER
+      pr-number: ${{ PR_NUMBER }}
+      build-suffix: -build-${{ PR_NUMBER }}
+      build-image-tag-name: build-$VERSION-${{ PR_NUMBER }}
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
