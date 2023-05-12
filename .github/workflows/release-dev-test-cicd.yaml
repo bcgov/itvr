@@ -13,24 +13,37 @@ concurrency:
 
 jobs:
 
-  build-release:
+  call-pr-dev-database-template:
     if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
-    name: Build release
-    uses: ./.github/workflows/pr-build-template.yaml
+    uses: ./.github/workflows/pr-dev-database-template.yaml
     with:
       pr-number: ${{ github.event.pull_request.number }}
-      build-suffix: -build-${{ github.event.pull_request.number }}
-      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      dev-suffix: -dev
     secrets:
-      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      itvr-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
+      itvr-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
+  # build-release:
+  #   if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+  #   name: Build release
+  #   uses: ./.github/workflows/pr-build-template.yaml
+  #   with:
+  #     pr-number: ${{ github.event.pull_request.number }}
+  #     build-suffix: -build-${{ github.event.pull_request.number }}
+  #     build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+  #   secrets:
+  #     tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+  #     openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+  #     openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
   approval-deploy-on-dev:
     name: Approval the deployment on Dev
-    needs: build-release
+    needs: call-pr-dev-database-template
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 30
     steps:
       - name: Ask for approval for ITVR Dev deployment
         uses: trstringer/manual-approval@v1.6.0
