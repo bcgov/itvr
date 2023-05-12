@@ -5,11 +5,11 @@ name: Deploy release to dev and test
 on:
   workflow_dispatch:
   pull_request:
-    #types: opened
+    types: opened
     branches:
       - 'release-*'
     paths:
-      - django/**
+      - frontend/**
       - backend/**
 
 concurrency:
