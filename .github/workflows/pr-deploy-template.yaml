@@ -21,7 +21,11 @@ on:
       # env-name is in format of dev, test, prod     
       env-name:
         required: true
-        type: string            
+        type: string   
+      # sample host name itvr-frontend-dev.apps.silver.devops.gov.bc.ca, itvr-frontend-dev-494.apps.silver.devops.gov.bc.ca
+      frontend-route-host-name:
+        required: true
+        type: string     
     secrets:
       tools-namespace:
         required: true
@@ -73,6 +77,7 @@ jobs:
               --set frontendImageTagName=${{ inputs.image-tag-name }} \
               --set suffix=${{ inputs.suffix }} \
               --set envName=${{ inputs.env-name }} \
+              --set frontendRouteHostName=${{ inputs.frontend-route-host-name }} \
               -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-frontend${{ inputs.suffix }} .
           else
             echo "itvr-frontend${{ inputs.suffix }} release does not exist"
@@ -81,6 +86,7 @@ jobs:
               --set frontendImageTagName=${{ inputs.image-tag-name }} \
               --set suffix=${{ inputs.suffix }} \
               --set envName=${{ inputs.env-name }} \
+              --set frontendRouteHostName=${{ inputs.frontend-route-host-name }} \
               -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-frontend${{ inputs.suffix }} .
           fi
           

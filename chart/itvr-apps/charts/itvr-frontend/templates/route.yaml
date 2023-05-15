@@ -1,3 +1,4 @@
+{{- if .Values.frontend.createFrontendRoute }}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -7,7 +8,7 @@ metadata:
   labels:
     {{- include "itvr-frontend.labels" . | nindent 4 }}
 spec:
-  host: {{ include "itvr-frontend.fullname" . }}.apps.silver.devops.gov.bc.ca
+  host: {{ .Values.frontendRouteHostName }}
   port:
     targetPort: web
   tls:
@@ -18,3 +19,4 @@ spec:
     name: {{ include "itvr-frontend.fullname" . }}
     weight: 100
   wildcardPolicy: None
+  {{- end }}

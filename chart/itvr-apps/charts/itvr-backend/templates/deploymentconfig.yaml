@@ -75,7 +75,7 @@ spec:
             - name: ALLOWED_HOSTS
               value: {{ include "itvr-backend.fullname" . }}.apps.silver.devops.gov.bc.ca
             - name: CORS_ORIGIN_WHITELIST
-              value: https://itvr-fronend{{ .Values.suffix }}.apps.silver.devops.gov.bc.ca
+              value: https://{{ .Values.frontendRouteHostName }}
             - name: BACKEND_ORIGIN
               value: https://{{ include "itvr-backend.fullname" . }}.apps.silver.devops.gov.bc.ca
             - name: DB_ENGINE

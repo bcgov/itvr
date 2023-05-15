@@ -66,6 +66,7 @@ jobs:
       build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
       image-tag-name: dev-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
       env-name: dev
+      frontend-route-host-name: itvr-frontend-dev.apps.silver.devops.gov.bc.ca
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
@@ -96,6 +97,7 @@ jobs:
       build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
       image-tag-name: test-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
       env-name: test
+      frontend-route-host-name: itvr-frontend-test.apps.silver.devops.gov.bc.ca
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test

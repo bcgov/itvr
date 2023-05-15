@@ -52,6 +52,7 @@ jobs:
       build-image-tag-name: build-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
       image-tag-name: dev-${{ github.event.pull_request.base.ref }}-${{ github.event.pull_request.number }}
       env-name: dev
+      frontend-route-host-name: itvr-frontend-dev-${{ github.event.pull_request.number }}.apps.silver.devops.gov.bc.ca
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
       namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev

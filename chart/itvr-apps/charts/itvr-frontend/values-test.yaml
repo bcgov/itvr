@@ -32,5 +32,6 @@ frontend:
   reactAppBCeIDKeycloakRealm: standard
   reactAppBCeIDKeycloakUrl: https://dev.loginproxy.gov.bc.ca/auth/
   snowplowCollector: ""
+  createFrontendRoute: true
 
 
