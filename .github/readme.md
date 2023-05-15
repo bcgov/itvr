@@ -30,5 +30,3 @@ itvr-db-backup-s3
 itvr-frontend
 itvr-backend
 itvr-task-queue
-
-tbd
