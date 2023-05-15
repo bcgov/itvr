@@ -54,7 +54,7 @@ jobs:
             echo "itvr-spilo${{ inputs.dev-suffix }} exists already"
           else
             echo "Installing itvr-spilo${{ inputs.dev-suffix }}"
-            helm install -n ${{ secrets.dev-namespace }} -f ./values-dev-pr.yaml --wait itvr-spilo${{ inputs.dev-suffix }} .
+            helm install -n ${{ secrets.dev-namespace }} -f ./values-dev.yaml --wait itvr-spilo${{ inputs.dev-suffix }} .
             oc -n ${{ secrets.dev-namespace }} wait --for=condition=Ready pod/itvr-spilo${{ inputs.dev-suffix }}-0
             oc -n ${{ secrets.dev-namespace }} exec itvr-spilo${{ inputs.dev-suffix }}-0 -- psql -c "create user ${{ secrets.itvr-dev-username }} WITH PASSWORD '${{ secrets.itvr-dev-password }}'" || true
             oc -n ${{ secrets.dev-namespace }} exec itvr-spilo${{ inputs.dev-suffix }}-0 -- psql -c "create database itvr owner ${{ secrets.itvr-dev-username }} ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" || true
