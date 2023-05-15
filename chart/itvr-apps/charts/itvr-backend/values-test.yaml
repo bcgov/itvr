@@ -10,8 +10,6 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "build-1.0.0-205"
 
-imagePullSecrets: []
-
 ## For ITVR Frontend App, set the following two, will result in 
 ## itvr-backend.fullname and itvr-backend.name are itve-frontend
 nameOverride: ""

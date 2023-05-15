@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "itvr-backend.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
     - port: 8080
       targetPort: 8080
