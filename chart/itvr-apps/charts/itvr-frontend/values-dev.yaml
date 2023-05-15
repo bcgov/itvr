@@ -4,22 +4,6 @@
 
 replicaCount: 1
 
-toolsNamespace: ac294c-tools
-envNamespace: ac294c-dev
-envName: dev
-suffix: -dev
-
-# decide which image in tools project will be used
-imageTools:
-  repository: image-registry.openshift-image-registry.svc:5000
-  tag: itvr-frontend@sha256:40d75efd2f366efc04d251dbe14bcfcd05a66a93f8419968d72c0596a4965e23
-  pullPolicy: IfNotPresent
-
-# decide the imagestream will be created in env projects
-# for pr based, coulde user the value fpr 1.0.0-<pr number>
-imageEnv:
-  tag: 1.0.0
-
 imagePullSecrets: []
 
 ## For ITVR Frontend App, set the following two, will result in 
