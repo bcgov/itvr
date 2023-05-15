@@ -29,7 +29,4 @@ backend:
   craEnvrionment: A
   djangoDebug: 'False'
   virusScanEnabled: 'True'
-  djangoSalt:
-    enabled: true
-  djangoSecret:
-    enabled: true
+
