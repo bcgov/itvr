@@ -26,11 +26,11 @@ autoscaling:
 frontend:
   reactAppBCSCKeycloakClientId: itvr
   reactAppBCSCKeycloakRealm: zelda
-  reactAppBCSCKeycloakUrl: https://dev.loginproxy.gov.bc.ca/auth/
-  reactAppApiBase: https://itvr-backend-dev.apps.silver.devops.gov.bc.ca
+  reactAppBCSCKeycloakUrl: https://test.loginproxy.gov.bc.ca/auth/
+  reactAppApiBase: https://itvr-backend-test.apps.silver.devops.gov.bc.ca
   reactAppBCeIDKeycloakClientId: itvr-on-gold-cluster-3972
   reactAppBCeIDKeycloakRealm: standard
-  reactAppBCeIDKeycloakUrl: https://dev.loginproxy.gov.bc.ca/auth/
+  reactAppBCeIDKeycloakUrl: https://test.loginproxy.gov.bc.ca/auth/
   snowplowCollector: ""
   createFrontendRoute: true
 
