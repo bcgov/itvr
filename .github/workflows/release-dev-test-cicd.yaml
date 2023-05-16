@@ -42,23 +42,23 @@ jobs:
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
-  approval-deploy-on-dev:
-    name: Approval the deployment on Dev
-    needs: [call-pr-dev-database-template,build-release]
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Ask for approval for ITVR Dev deployment
-        uses: trstringer/manual-approval@v1.6.0
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
-          minimum-approvals: 1
-          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Dev Deployment"
+  # approval-deploy-on-dev:
+  #   name: Approval the deployment on Dev
+  #   needs: [call-pr-dev-database-template,build-release]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   steps:
+  #     - name: Ask for approval for ITVR Dev deployment
+  #       uses: trstringer/manual-approval@v1.6.0
+  #       with:
+  #         secret: ${{ github.TOKEN }}
+  #         approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+  #         minimum-approvals: 1
+  #         issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Dev Deployment"
 
   deploy-on-dev: 
     name: Deploy on Dev
-    needs: approval-deploy-on-dev
+    needs: build-release
     uses: ./.github/workflows/pr-deploy-template.yaml
     with:
       pr-number: ${{ github.event.pull_request.number }}

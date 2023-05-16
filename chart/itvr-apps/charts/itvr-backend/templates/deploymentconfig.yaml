@@ -81,9 +81,21 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: DB_HOST
+              {{ if eq .Values.suffix "-test" }}
+              value: itvr-spilo
+              {{ else if eq .Values.suffix "-prod" }}
+              value: itvr-spilo
+              {{ else }}
               value: itvr-spilo{{ .Values.suffix }}
+              {{ end }}
             - name: DB_HOST_READONLY
+              {{ if eq .Values.suffix "-test" }}
+              value: itvr-spilo-readonly
+              {{ else if eq .Values.suffix "-prod" }}
+              value: itvr-spilo-readonly
+              {{ else }}
               value: itvr-spilo{{ .Values.suffix }}-readonly
+              {{ end }}
             - name: DB_NAME
               value: itvr
             - name: DB_PASSWORD
