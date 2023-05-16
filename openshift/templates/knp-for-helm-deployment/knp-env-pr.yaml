@@ -1,0 +1,111 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: itvr-network-policy
+metadata:
+  name: itvr-network-policy
+parameters:
+  - name: SUFFIX
+    displayName: null
+    description: sample is -dev-97
+    required: true  
+  - name: ENVIRONMENT
+    displayName: null
+    description: such as dev, test or prod
+    required: true    
+objects:
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-backend-accepts${SUFFIX}
+    spec:
+      ## Allow backend to accept communication from frontend
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: itvr-backend${SUFFIX}
+          app.kubernetes.io/name: itvr-backend
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-frontend${SUFFIX}
+                  app.kubernetes.io/name: itvr-frontend
+          ports:
+            - protocol: TCP
+              port: 8080
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-spilo-accepts${SUFFIX}
+    spec:
+      ## Allow spilo to accept communications from backend
+      ## Allow spilo to accept communications from backend mid lifecycle pod
+      ## Allow spilo to accept communications from backup container
+      ## Allow spilo to accept communications from task-queue
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: itvr-spilo
+          app.kubernetes.io/name: spilo
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-backend${SUFFIX}
+                  app.kubernetes.io/name: itvr-backend
+            - podSelector:
+                matchLabels:
+                  openshift.io/deployer-pod.type: hook-mid
+            - podSelector:
+                matchLabels:
+                  name: patroni-backup
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-task-queue${SUFFIX}
+                  app.kubernetes.io/name: itvr-task-queue
+          ports:
+            - protocol: TCP
+              port: 5432
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-clamav-accepts${SUFFIX}
+    spec:
+      ## Allow clamav to accept communication from backend
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: itvr-clamav
+          app.kubernetes.io/name: clamav
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-backend${SUFFIX}
+                  app.kubernetes.io/name: itvr-backend
+          ports:
+            - protocol: TCP
+              port: 3310               
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-spilo-accepts-metabase
+    spec:
+      ## Allow spilo to accept communication from metabase
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: itvr-spilo
+          app.kubernetes.io/name: spilo
+      ingress:
+        - ports:
+            - protocol: TCP
+              port: 5432
+          from:
+            - namespaceSelector:
+                matchLabels:
+                  environment: ${ENVIRONMENT}
+                  name: 30b186
+            - podSelector:
+                matchLabels:
+                  app: metabase
+      policyTypes:
+        - Ingress              
