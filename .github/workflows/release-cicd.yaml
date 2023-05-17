@@ -1,9 +1,8 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: Deploy release to dev and test
+name: RITVR release-1.17.0 (HELM)
 
 on:
-  workflow_dispatch:
   pull_request:
     types: [opened,edited,synchronize]
     paths:
@@ -77,7 +76,7 @@ jobs:
     name: Approval the deployment on Test
     needs: deploy-on-dev
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 20
     steps:
       - name: Ask for approval for ITVR Test deployment
         uses: trstringer/manual-approval@v1.6.0
@@ -87,7 +86,7 @@ jobs:
           minimum-approvals: 1
           issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Test Deployment"
 
-  deploy-on-Test: 
+  deploy-on-test: 
     name: Deploy on Test
     needs: approval-deploy-on-test
     uses: ./.github/workflows/pr-deploy-template.yaml
@@ -104,3 +103,33 @@ jobs:
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
+  approval-deploy-on-prod:
+    name: Approval the deployment on Prod
+    needs: deploy-on-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Prod Deployment"
+
+  deploy-on-prod: 
+    name: Deploy on Prod
+    needs: approval-deploy-on-prod
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -prod
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: prod-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: prod
+      frontend-route-host-name: electric-vehicle-rebates.gov.bc.ca
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
