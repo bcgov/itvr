@@ -25,7 +25,7 @@ autoscaling:
 
 backend:
   sendEmail: 'True'
-  minioBucketName: itvrpr
+  minioBucketName: itvrts
   craEnvrionment: A
   djangoDebug: 'False'
   virusScanEnabled: 'True'
