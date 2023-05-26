@@ -40,7 +40,7 @@ objects:
       contextDir: "openshift/templates/maintenance-page"
       git:
         uri: https://github.com/bcgov/itvr.git
-        ref: master
+        ref: release-1.17.0
     strategy:
       dockerStrategy:
         env:
