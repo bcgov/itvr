@@ -1,6 +1,6 @@
 ---
 kind: Template
-apiVersion: image.openshift.io/v1
+apiVersion: template.openshift.io/v1
 metadata:
   name: maintenance-page-dc
 parameters:
@@ -99,7 +99,7 @@ objects:
     annotations:
       openshift.io/host.generated: 'true'
   spec:
-    host: maintenance-page-${ENV_NAME}.apps.silver.devops.gov.bc.ca
+    host: itvr-maintenance-page-${ENV_NAME}.apps.silver.devops.gov.bc.ca
     to:
       kind: Service
       name: maintenance-page
