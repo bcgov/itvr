@@ -37,7 +37,7 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: ac294c-tools
-          name: maintenance-page:prod
+          name: maintenance-page:latest
     replicas: 1
     revisionHistoryLimit: 10
     test: false
@@ -81,7 +81,7 @@ objects:
       app: maintenance-page
   spec:
     ports:
-    - name: 8080-tcp
+    - name: web
       protocol: TCP
       port: 8080
       targetPort: 8080
@@ -105,5 +105,5 @@ objects:
       name: maintenance-page
       weight: 100
     port:
-      targetPort: 8080-tcp
+      targetPort: web
     wildcardPolicy: None
