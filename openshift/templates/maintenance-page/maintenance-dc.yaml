@@ -106,4 +106,7 @@ objects:
       weight: 100
     port:
       targetPort: web
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect      
     wildcardPolicy: None
