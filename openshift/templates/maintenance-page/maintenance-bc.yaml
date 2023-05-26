@@ -1,0 +1,68 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: maintenance-page
+parameters:
+- name: NAME
+  displayName: Name
+  description: The suffix for all created objects
+  required: false
+  value: maintenance-page
+objects:
+- kind: ImageStream
+  apiVersion: image.openshift.io/v1
+  metadata:
+    name: maintenance-page
+    creationTimestamp:
+    labels:
+      app: maintenance-page
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ''
+- kind: BuildConfig
+  apiVersion: build.openshift.io/v1
+  metadata:
+    name: maintenance-page
+    creationTimestamp:
+    labels:
+      app: maintenance-page
+  spec:
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange: {}
+    runPolicy: SerialLatestOnly
+    source:
+      type: Git
+      contextDir: "openshift/templates/maintenance-page"
+      git:
+        uri: https://github.com/bcgov/itvr.git
+        ref: master
+    strategy:
+      dockerStrategy:
+        env:
+          - name: ARTIFACTORY_USER
+            valueFrom:
+              secretKeyRef:
+                name: artifacts-default-pwpgbz
+                key: username
+          - name: ARTIFACTORY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: artifacts-default-pwpgbz
+                key: password
+        forcePull: true
+        noCache: true
+      type: Docker
+    output:
+      to:
+        kind: ImageStreamTag
+        name: maintenance-page:latest
+    resources: {}
+    postCommit: {}
+    nodeSelector:
+    successfulBuildsHistoryLimit: 5
+    failedBuildsHistoryLimit: 5
