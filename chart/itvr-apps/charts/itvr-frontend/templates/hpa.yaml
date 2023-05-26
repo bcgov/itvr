@@ -7,8 +7,8 @@ metadata:
     {{- include "itvr-frontend.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
+    apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
     name: {{ include "itvr-frontend.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
