@@ -103,33 +103,33 @@ jobs:
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
-  # approval-deploy-on-prod:
-  #   name: Approval the deployment on Prod
-  #   needs: deploy-on-test
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-  #   steps:
-  #     - name: Ask for approval for ITVR Prod deployment
-  #       uses: trstringer/manual-approval@v1.6.0
-  #       with:
-  #         secret: ${{ github.TOKEN }}
-  #         approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
-  #         minimum-approvals: 2
-  #         issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Prod Deployment"
+  approval-deploy-on-prod:
+    name: Approval the deployment on Prod
+    needs: deploy-on-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 2
+          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Prod Deployment"
 
-  # deploy-on-prod: 
-  #   name: Deploy on Prod
-  #   needs: approval-deploy-on-prod
-  #   uses: ./.github/workflows/pr-deploy-template.yaml
-  #   with:
-  #     pr-number: ${{ github.event.pull_request.number }}
-  #     suffix: -prod
-  #     build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
-  #     image-tag-name: prod-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
-  #     env-name: prod
-  #     frontend-route-host-name: electric-vehicle-rebates.gov.bc.ca
-  #   secrets:
-  #     tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
-  #     namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
-  #     openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
-  #     openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  deploy-on-prod: 
+    name: Deploy on Prod
+    needs: approval-deploy-on-prod
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -prod
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: prod-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: prod
+      frontend-route-host-name: electric-vehicle-rebates.gov.bc.ca
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
