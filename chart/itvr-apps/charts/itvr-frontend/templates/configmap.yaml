@@ -15,4 +15,4 @@ data:
       "REACT_APP_BCEID_KEYCLOAK_URL": "{{ .Values.frontend.reactAppBCeIDKeycloakUrl }}",
       "REACT_APP_API_BASE": "https://itvr-backend{{ .Values.suffix }}.apps.silver.devops.gov.bc.ca",
       "REACT_APP_ENV": "{{ .Values.envName }}",
-      "SNOWPLOW_COLLECTOR": "{{ .Values.snowplowCollector }}" };
+      "SNOWPLOW_COLLECTOR": "{{ .Values.frontend.snowplowCollector }}" };

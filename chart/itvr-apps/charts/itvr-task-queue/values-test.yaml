@@ -20,3 +20,4 @@ taskQueue:
   sendEmail: 'True'
   craEnvrionment: A
   djangoDebug: 'False'
+  bucketName: itvrts

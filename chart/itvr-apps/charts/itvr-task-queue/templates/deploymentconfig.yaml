@@ -154,7 +154,24 @@ spec:
             - name: CRA_ENVIRONMENT
               value: {{ .Values.taskQueue.craEnvrionment }}
             - name: RUN_JOBS
-              value: 'true'                                  
+              value: 'true'      
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: server-url
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: root-password
+            - name: MINIO_BUCKET_NAME
+              value: {{ .Values.taskQueue.bucketName }}                                                
           readinessProbe:  
             exec:
               command:
