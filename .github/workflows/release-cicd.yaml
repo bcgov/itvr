@@ -1,6 +1,6 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: RITVR release-1.17.0 (HELM)
+name: RITVR release-1.18.0 (HELM)
 
 on:
   pull_request:
