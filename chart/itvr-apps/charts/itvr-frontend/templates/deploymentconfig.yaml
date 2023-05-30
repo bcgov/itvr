@@ -7,6 +7,10 @@ metadata:
   labels:
     {{- include "itvr-frontend.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    {{- include "itvr-frontend.selectorLabels" . | nindent 4 }}  
   strategy:
     type: Recreate
     recreateParams:
@@ -21,14 +25,9 @@ spec:
           - frontend
         from:
           kind: ImageStreamTag
-          namespace: {{ .Values.image.namespace }}
-          name: {{ include "itvr-frontend.fullname" . }}:{{ .Values.imageEnv.tag }}
+          namespace: {{ .Values.namespace }}
+          name: "{{ include "itvr-frontend.name" . }}:{{.Values.frontendImageTagName}}"
     - type: ConfigChange
-  replicas: 1
-  revisionHistoryLimit: 10
-  test: false
-  selector:
-    {{- include "itvr-frontend.selectorLabels" . | nindent 4 }}
   template:
     metadata:
       creationTimestamp: null

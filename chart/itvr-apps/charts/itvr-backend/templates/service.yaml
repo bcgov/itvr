@@ -5,12 +5,12 @@ metadata:
   labels:
     {{- include "itvr-backend.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: 8080
+      targetPort: 8080
       protocol: TCP
-      name: http
+      name: backend
   selector:
     {{- include "itvr-backend.selectorLabels" . | nindent 4 }}
   sessionAffinity: None

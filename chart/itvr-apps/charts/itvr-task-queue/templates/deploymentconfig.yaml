@@ -4,14 +4,14 @@ metadata:
   annotations:
     description: Defines how to deploy the application server
   creationTimestamp: null
-  name: {{ include "itvr-taskq.deploymentconfigName" . }}
+  name: {{ include "itvr-task-queue.fullname" . }}
   labels:
-    {{- include "itvr-taskq.labels" . | nindent 4 }}
+    {{- include "itvr-task-queue.labels" . | nindent 4 }}
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
-    {{- include "itvr-taskq.selectorLabels" . | nindent 4 }}
+    {{- include "itvr-task-queue.selectorLabels" . | nindent 4 }}
   strategy:
     activeDeadlineSeconds: 800
     recreateParams:
@@ -34,7 +34,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        {{- include "itvr-taskq.labels" . | nindent 8 }}
+        {{- include "itvr-task-queue.labels" . | nindent 8 }}
     spec:
       containers:
         - name: task-queue
@@ -44,9 +44,21 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: DB_HOST
+              {{ if eq .Values.suffix "-test" }}
               value: itvr-spilo
+              {{ else if eq .Values.suffix "-prod" }}
+              value: itvr-spilo
+              {{ else }}
+              value: itvr-spilo{{ .Values.suffix }}
+              {{ end }}
             - name: DB_HOST_READONLY
+              {{ if eq .Values.suffix "-test" }}
               value: itvr-spilo-readonly
+              {{ else if eq .Values.suffix "-prod" }}
+              value: itvr-spilo-readonly
+              {{ else }}
+              value: itvr-spilo{{ .Values.suffix }}-readonly
+              {{ end }}
             - name: DB_NAME
               value: itvr
             - name: DB_PASSWORD
@@ -64,12 +76,12 @@ spec:
             - name: DJANGO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "itvr-taskq.django-secret" . }}
+                  name: itvr-django-secret
                   key: DJANGO_SECRET_KEY      
             - name: DJANGO_SALT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "itvr-taskq.django-salt" . }}
+                  name: itvr-django-salt
                   key: DJANGO_SALT_KEY
             - name: EMAIL_SERVICE_CLIENT_ID
               valueFrom:
@@ -107,13 +119,13 @@ spec:
                   name: itvr-email-service
                   key: BCC_EMAIL
             - name: SEND_EMAIL
-              value: '{{ .Values.taskq.sendEmail }}'
+              value: '{{ .Values.taskQueue.sendEmail }}'
             - name: DJANGO_DEBUG
-              value: '{{ .Values.taskq.djangoDebug }}'
+              value: '{{ .Values.taskQueue.djangoDebug }}'
             - name: DJANGO_TASKS
               value: 'true'
             - name: CORS_ORIGIN_WHITELIST
-              value: {{ .Values.taskq.corsOriginWhitlist }}    
+              value: https://itvr-fronend{{ .Values.suffix }}.apps.silver.devops.gov.bc.ca
             - name: NCDA_CLIENT_ID
               valueFrom:
                 secretKeyRef: 
@@ -140,9 +152,26 @@ spec:
                   name: itvr-ncda
                   key: NCDA_SHAREPOINT_URL                     
             - name: CRA_ENVIRONMENT
-              value: {{ .Values.taskq.craEnvrionment }}
+              value: {{ .Values.taskQueue.craEnvrionment }}
             - name: RUN_JOBS
-              value: 'true'                                  
+              value: 'true'      
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: server-url
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-object-storage
+                  key: root-password
+            - name: MINIO_BUCKET_NAME
+              value: {{ .Values.taskQueue.bucketName }}                                                
           readinessProbe:  
             exec:
               command:
@@ -176,8 +205,8 @@ spec:
           - task-queue
         from:
           kind: ImageStreamTag
-          namespace: {{ .Values.image.namespace }}
-          name: {{ include "itvr-taskq.fullname" . }}:{{ .Values.imageEnv.tag }}
+          namespace: {{ .Values.namespace }}
+          name: {{ include "itvr-task-queue.name" . }}:{{ .Values.taskQueueImageTagName }}
         lastTriggeredImage: null
       type: ImageChange
     - type: ConfigChange

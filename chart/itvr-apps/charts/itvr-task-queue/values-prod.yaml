@@ -1,8 +1,8 @@
-# Default values for itvr-backend.
+# Default values for itvr-task-queue.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 3
+replicaCount: 1
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -10,23 +10,14 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 120m
-    memory: 400Mi
+    cpu: 500m
+    memory: 120Mi
   requests:
-    cpu: 60m
-    memory: 200Mi
+    cpu: 250m
+    memory: 60Mi
 
-autoscaling:
-  enabled: true
-  minReplicas: 3
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 90
-
-backend:
+taskQueue:
   sendEmail: 'True'
-  minioBucketName: itvrpr
   craEnvrionment: A
   djangoDebug: 'False'
-  virusScanEnabled: 'True'
-
+  bucketName: itvrpr

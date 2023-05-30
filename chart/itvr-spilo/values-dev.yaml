@@ -1,6 +1,6 @@
 spilo:
 
-  replicaCount: 2
+  replicaCount: 1
 
   credentials:
     useExistingSecret: true
@@ -11,7 +11,7 @@ spilo:
       standbyKey: password-standby
 
   continuousArchive:
-    enabled: true
+    enabled: false
     scheduleCronJob: "0 10 * * *"
     retainBackups: 3
     storage: s3
@@ -21,9 +21,6 @@ spilo:
 
   shipLogs:
     enabled: false
-#    s3:
-#      bucket: s3://itvrdv
-#      shipSchedule: 0 7 * * *
 
   persistentVolume:
     size: 2Gi

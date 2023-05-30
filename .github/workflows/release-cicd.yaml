@@ -1,0 +1,135 @@
+## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
+
+name: RITVR release-1.17.0 (HELM)
+
+on:
+  pull_request:
+    types: [opened,edited,synchronize]
+    paths:
+      - frontend/**
+      - backend/**    
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true  
+
+jobs:
+
+  call-pr-dev-database-template:
+    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+    uses: ./.github/workflows/pr-dev-database-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      dev-suffix: -dev
+    secrets:
+      dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      itvr-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
+      itvr-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+  build-release:
+    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+    name: Build release
+    uses: ./.github/workflows/pr-build-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      build-suffix: -build-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+  # approval-deploy-on-dev:
+  #   name: Approval the deployment on Dev
+  #   needs: [call-pr-dev-database-template,build-release]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   steps:
+  #     - name: Ask for approval for ITVR Dev deployment
+  #       uses: trstringer/manual-approval@v1.6.0
+  #       with:
+  #         secret: ${{ github.TOKEN }}
+  #         approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+  #         minimum-approvals: 1
+  #         issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Dev Deployment"
+
+  deploy-on-dev: 
+    name: Deploy on Dev
+    needs: build-release
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -dev
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: dev-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: dev
+      frontend-route-host-name: itvr-dev.apps.silver.devops.gov.bc.ca
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  
+  approval-deploy-on-test:
+    name: Approval the deployment on Test
+    needs: deploy-on-dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Ask for approval for ITVR Test deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Test Deployment"
+
+  deploy-on-test: 
+    name: Deploy on Test
+    needs: approval-deploy-on-test
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -test
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: test-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: test
+      frontend-route-host-name: itvr-test.apps.silver.devops.gov.bc.ca
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+  approval-deploy-on-prod:
+    name: Approval the deployment on Prod
+    needs: deploy-on-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Prod Deployment"
+
+  deploy-on-prod: 
+    name: Deploy on Prod
+    needs: approval-deploy-on-prod
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -prod
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: prod-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: prod
+      frontend-route-host-name: electric-vehicle-rebates.gov.bc.ca
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-prod
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}

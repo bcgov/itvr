@@ -31,8 +31,8 @@ spec:
           - backend
         from:
           kind: ImageStreamTag
-          namespace: {{ .Values.image.namespace }}
-          name: {{ include "itvr-backend.fullname" . }}:{{ .Values.imageEnv.tag }}
+          namespace: {{ .Values.namespace }}
+          name: {{ include "itvr-backend.name" . }}:{{ .Values.backendImageTagName }}
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
@@ -73,17 +73,29 @@ spec:
             failureThreshold: 20
           env:
             - name: ALLOWED_HOSTS
-              value: {{ .Values.backend.allowedHost }}
+              value: {{ include "itvr-backend.fullname" . }}.apps.silver.devops.gov.bc.ca
             - name: CORS_ORIGIN_WHITELIST
-              value: {{ .Values.backend.corsOriginWhitlist }}
+              value: https://{{ .Values.frontendRouteHostName }}
             - name: BACKEND_ORIGIN
-              value: {{ .Values.backend.backendOrigin }}
+              value: https://{{ include "itvr-backend.fullname" . }}.apps.silver.devops.gov.bc.ca
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: DB_HOST
+              {{ if eq .Values.suffix "-test" }}
               value: itvr-spilo
+              {{ else if eq .Values.suffix "-prod" }}
+              value: itvr-spilo
+              {{ else }}
+              value: itvr-spilo{{ .Values.suffix }}
+              {{ end }}
             - name: DB_HOST_READONLY
+              {{ if eq .Values.suffix "-test" }}
               value: itvr-spilo-readonly
+              {{ else if eq .Values.suffix "-prod" }}
+              value: itvr-spilo-readonly
+              {{ else }}
+              value: itvr-spilo{{ .Values.suffix }}-readonly
+              {{ end }}
             - name: DB_NAME
               value: itvr
             - name: DB_PASSWORD
