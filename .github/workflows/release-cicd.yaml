@@ -130,6 +130,6 @@ jobs:
       frontend-route-host-name: electric-vehicle-rebates.gov.bc.ca
     secrets:
       tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
-      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-prod
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
