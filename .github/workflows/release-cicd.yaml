@@ -114,7 +114,7 @@ jobs:
         with:
           secret: ${{ github.TOKEN }}
           approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
-          minimum-approvals: 1
+          minimum-approvals: 2
           issue-title: "ITVR ${{ github.event.pull_request.head.ref }} Prod Deployment"
 
   deploy-on-prod: 
