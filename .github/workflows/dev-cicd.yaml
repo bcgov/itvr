@@ -1,0 +1,60 @@
+## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
+
+name: ITVR Dev release-1.18.0 (HELM)
+
+on:
+  pull_request:
+    types: [opened,edited,synchronize]
+    paths:
+      - frontend/**
+      - backend/**    
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true  
+
+jobs:
+
+  call-pr-dev-database-template:
+    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+    uses: ./.github/workflows/pr-dev-database-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      dev-suffix: -dev
+    secrets:
+      dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      itvr-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
+      itvr-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+  build-release:
+    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+    name: Build release
+    uses: ./.github/workflows/pr-build-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      build-suffix: -build-${{ github.event.pull_request.number }}
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+  deploy-on-dev: 
+    name: Deploy on Dev
+    needs: build-release
+    uses: ./.github/workflows/pr-deploy-template.yaml
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      suffix: -dev
+      build-image-tag-name: build-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      image-tag-name: dev-${{ github.event.pull_request.head.ref }}-${{ github.event.pull_request.number }}
+      env-name: dev
+      frontend-route-host-name: itvr-dev.apps.silver.devops.gov.bc.ca
+    secrets:
+      tools-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-tools
+      namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  
