@@ -43,6 +43,7 @@ objects:
       ## Allow spilo to accept communications from backend mid lifecycle pod
       ## Allow spilo to accept communications from backup container
       ## Allow spilo to accept communications from task-queue
+      ## Allow spilo to accept communications from cron backup
       podSelector:
         matchLabels:
           app.kubernetes.io/instance: itvr-spilo
@@ -63,6 +64,9 @@ objects:
                 matchLabels:
                   app.kubernetes.io/instance: itvr-task-queue${SUFFIX}
                   app.kubernetes.io/name: itvr-task-queue
+            - podSelector:
+                matchLabels:
+                  cronjob: itvr-db-backup
           ports:
             - protocol: TCP
               port: 5432
@@ -84,7 +88,7 @@ objects:
                   app.kubernetes.io/name: itvr-backend
           ports:
             - protocol: TCP
-              port: 3310               
+              port: 3310     
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
@@ -109,3 +113,4 @@ objects:
                   app: metabase
       policyTypes:
         - Ingress              
+        
