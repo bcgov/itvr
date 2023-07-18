@@ -31,7 +31,6 @@ from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import classproperty
 from api.signals import household_application_saved
-from datetime import datetime
 
 media_storage = get_storage_class()()
 
@@ -225,6 +224,10 @@ class GoElectricRebateApplication(TimeStampedModel):
             ),
         ]
 
+    @classproperty
+    def admin_hide_view_change_buttons(cls):
+        return True
+
 
 # This is for the admin panel
 class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
@@ -236,10 +239,6 @@ class SubmittedGoElectricRebateApplication(GoElectricRebateApplication):
     def admin_label(cls):
         return "Review Applications"
 
-    @classproperty
-    def admin_hide_view_change_buttons(cls):
-        return True
-
 
 class CancellableGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
@@ -249,10 +248,6 @@ class CancellableGoElectricRebateApplication(GoElectricRebateApplication):
     @classproperty
     def admin_label(cls):
         return "Cancel Applications"
-
-    @classproperty
-    def admin_hide_view_change_buttons(cls):
-        return True
 
 
 class SearchableGoElectricRebateApplication(GoElectricRebateApplication):
@@ -264,10 +259,6 @@ class SearchableGoElectricRebateApplication(GoElectricRebateApplication):
     def admin_label(cls):
         return "Search All Applications"
 
-    @classproperty
-    def admin_hide_view_change_buttons(cls):
-        return True
-
 
 class GoElectricRebateApplicationWithFailedEmail(GoElectricRebateApplication):
     class Meta:
@@ -278,10 +269,6 @@ class GoElectricRebateApplicationWithFailedEmail(GoElectricRebateApplication):
     def admin_label(cls):
         return "Applications with failed emails"
 
-    @classproperty
-    def admin_hide_view_change_buttons(cls):
-        return True
-
 
 class DriverLicenceEditableGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
@@ -291,7 +278,3 @@ class DriverLicenceEditableGoElectricRebateApplication(GoElectricRebateApplicati
     @classproperty
     def admin_label(cls):
         return "Edit DL#'s"
-
-    @classproperty
-    def admin_hide_view_change_buttons(cls):
-        return True
