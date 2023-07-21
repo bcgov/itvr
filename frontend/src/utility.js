@@ -65,3 +65,16 @@ export const getLastDayOfMonth = (date) => {
 export const getFirstDayOfMonth = (date) => {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 };
+
+export const getISODateString = (dateObj) => {
+  const year = dateObj.getFullYear();
+  let month = dateObj.getMonth() + 1;
+  let date = dateObj.getDate();
+  if (month < 10) {
+    month = '0' + month;
+  }
+  if (date < 10) {
+    date = '0' + date;
+  }
+  return year + '-' + month + '-' + date;
+};
