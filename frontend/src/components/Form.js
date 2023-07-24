@@ -10,7 +10,11 @@ import ConsentPersonal from './ConsentPersonal';
 import ConsentTax from './ConsentTax';
 import useAxios from '../utils/axiosHook';
 import Box from '@mui/material/Box';
-import { getDateWithYearOffset, isSINValid } from '../utility';
+import {
+  getDateWithYearOffset,
+  getISODateString,
+  isSINValid
+} from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -92,7 +96,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
     if (kcToken.identity_provider !== 'bcsc') {
       data = {
         ...data,
-        date_of_birth: data.date_of_birth.toISOString().slice(0, 10)
+        date_of_birth: getISODateString(data.date_of_birth)
       };
     }
     mutation.mutate(data, {
