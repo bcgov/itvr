@@ -18,21 +18,22 @@ def get_cra_results_individuals_only(cra_response):
 def check_individual(primary_income):
     if primary_income is None:
         return RebateType.E.value
+
     primary_income = int(primary_income)
-    if primary_income > INCOME_REBATES.get(RebateType.C.value).get("individual_income"):
-        return RebateType.D.value
-    elif primary_income <= INCOME_REBATES.get(RebateType.A.value).get(
+    if primary_income <= INCOME_REBATES.get(RebateType.A.value).get(
         "individual_income"
     ):
         return RebateType.A.value
-    elif primary_income <= INCOME_REBATES.get(RebateType.B.value).get(
+    if primary_income <= INCOME_REBATES.get(RebateType.B.value).get(
         "individual_income"
     ):
         return RebateType.B.value
-    elif primary_income <= INCOME_REBATES.get(RebateType.C.value).get(
+    if primary_income <= INCOME_REBATES.get(RebateType.C.value).get(
         "individual_income"
     ):
         return RebateType.C.value
+
+    return RebateType.D.value
 
 
 def calculate_individual_rebate_amount(cra_response, application):

@@ -14,10 +14,39 @@ from django.contrib import messages
 from . import messages_custom
 from django.db.models import Q
 from django.db import transaction
-from django.utils import timezone
+from api.services.ncda import delete_rebate, update_rebate
+from django_q.tasks import async_task
 
 
-class HouseholdApplicationInline(admin.StackedInline):
+class ITVRModelAdmin(admin.ModelAdmin):
+    actions = None
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class ITVRModelAdminStringent(ITVRModelAdmin):
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class ITVRInlineAdmin(admin.StackedInline):
+    actions = None
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class HouseholdApplicationInline(ITVRInlineAdmin):
     model = HouseholdMember
     extra = 0
     exclude = ("sin", "doc1", "doc2", "user")
@@ -36,9 +65,6 @@ class HouseholdApplicationInline(admin.StackedInline):
         "consent_tax",
     )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 def get_inlines(obj):
     # TODO update this to use the proper enum later.
@@ -49,9 +75,8 @@ def get_inlines(obj):
 
 
 @admin.register(GoElectricRebate)
-class GoElectricRebateAdmin(admin.ModelAdmin):
+class GoElectricRebateAdmin(ITVRModelAdminStringent):
     search_fields = ["application__id", "drivers_licence", "last_name", "ncda_id"]
-    actions = None
     exclude = ("application",)
     readonly_fields = (
         "application_id",
@@ -65,14 +90,10 @@ class GoElectricRebateAdmin(admin.ModelAdmin):
         "modified",
     )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 @admin.register(DriverLicenceHistory)
-class DriverLicenceHistoryAdmin(admin.ModelAdmin):
+class DriverLicenceHistoryAdmin(ITVRModelAdminStringent):
     search_fields = ["application__id", "drivers_licence"]
-    actions = None
     exclude = ("application",)
     readonly_fields = (
         "application_id",
@@ -80,13 +101,10 @@ class DriverLicenceHistoryAdmin(admin.ModelAdmin):
         "created",
     )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 @admin.register(GoElectricRebateApplication)
-class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    exclude = ("sin",)
+class GoElectricRebateApplicationAdmin(ITVRModelAdminStringent):
+    exclude = ("sin", "user")
 
 
 # The proxy model is used to avoid a Django limitation where a model can only
@@ -94,10 +112,8 @@ class GoElectricRebateApplicationAdmin(admin.ModelAdmin):
 # by government staff to verify or decline submitted applications
 # by BCeID users.
 @admin.register(SubmittedGoElectricRebateApplication)
-class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+class SubmittedGoElectricRebateApplicationAdmin(ITVRModelAdmin):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
-    # disable bulk actions
-    actions = None
     exclude = (
         "sin",
         "doc1",
@@ -140,9 +156,6 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     def get_inlines(self, request, obj=None):
         return get_inlines(obj)
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
     def response_change(self, request, obj):
         ret = super().response_change(request, obj)
         if "approve_application" in request.POST:
@@ -168,10 +181,8 @@ class SubmittedGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 
 @admin.register(CancellableGoElectricRebateApplication)
-class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+class CancellableGoElectricRebateApplicationAdmin(ITVRModelAdmin):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
-    # disable bulk actions
-    actions = None
     exclude = (
         "sin",
         "doc1",
@@ -216,16 +227,27 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
             | Q(status=GoElectricRebateApplication.Status.VERIFIED)
         )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
     def response_change(self, request, obj):
         ret = super().response_change(request, obj)
         if "cancel_application" in request.POST:
             dl = obj.drivers_licence
-            GoElectricRebate.objects.filter(drivers_licence=dl).delete()
             obj.status = GoElectricRebateApplication.Status.CANCELLED
             obj.save(update_fields=["status"])
+            rebate = GoElectricRebate.objects.filter(drivers_licence=dl).first()
+            if rebate:
+                ncda_id = rebate.ncda_id
+                rebate.delete()
+                if ncda_id is not None:
+                    delete_rebate(ncda_id)
+            try:
+                async_task(
+                    "api.tasks.send_cancel",
+                    obj.email,
+                    obj.id,
+                )
+            except Exception:
+                pass
+
         return ret
 
     def message_user(
@@ -243,8 +265,7 @@ class CancellableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
 
 
 @admin.register(SearchableGoElectricRebateApplication)
-class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
-    actions = None
+class SearchableGoElectricRebateApplicationAdmin(ITVRModelAdminStringent):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
@@ -293,16 +314,12 @@ class SearchableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.all()
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
     def get_inlines(self, request, obj=None):
         return get_inlines(obj)
 
 
 @admin.register(GoElectricRebateApplicationWithFailedEmail)
-class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
-    actions = None
+class GoElectricRebateApplicationWithFailedEmailAdmin(ITVRModelAdminStringent):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
@@ -343,15 +360,10 @@ class GoElectricRebateApplicationWithFailedEmailAdmin(admin.ModelAdmin):
             Q(confirmation_email_success=False) | Q(spouse_email_success=False)
         )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 @admin.register(DriverLicenceEditableGoElectricRebateApplication)
-class DriverLicenceEditableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
+class DriverLicenceEditableGoElectricRebateApplicationAdmin(ITVRModelAdmin):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
-    # disable bulk actions
-    actions = None
     exclude = (
         "sin",
         "doc1",
@@ -388,9 +400,6 @@ class DriverLicenceEditableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
         "not_approved_on",
     )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
     def change_view(self, request, object_id, form_url="", extra_context=None):
         if "edit_drivers_licence" in request.POST:
             return self.edit_drivers_licence(
@@ -401,9 +410,16 @@ class DriverLicenceEditableGoElectricRebateApplicationAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         ret = super().response_change(request, obj)
         if "edit_drivers_licence" in request.POST:
-            GoElectricRebate.objects.filter(application__id=obj.id).update(
-                drivers_licence=obj.drivers_licence, modified=timezone.now()
-            )
+            rebates = list(GoElectricRebate.objects.filter(application__id=obj.id))
+            if len(rebates) == 1:
+                rebate = rebates[0]
+                ncda_id = rebate.ncda_id
+                rebate.drivers_licence = obj.drivers_licence
+                rebate.save()
+                if ncda_id is not None:
+                    update_rebate(ncda_id, {"Title": obj.drivers_licence})
+            elif len(rebates) > 1:
+                raise Exception
         return ret
 
     @transaction.atomic
