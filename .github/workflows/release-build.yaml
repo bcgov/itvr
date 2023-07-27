@@ -1,6 +1,6 @@
 #### back up od old pipeline
 
-name: ITVR release-1.18.0
+name: ITVR release-1.19.0
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
       release_branch:
         description: 'The name of the release branch'
         required: true
-        default: release-1.18.0 
+        default: release-1.19.0 
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

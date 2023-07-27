@@ -1,4 +1,4 @@
-name: PR Dev Database Template
+name: ITVR PR Dev Database Template
 
 on:
   workflow_call:
