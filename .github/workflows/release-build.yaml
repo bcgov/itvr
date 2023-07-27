@@ -8,7 +8,7 @@ on:
       pull_request:
         description: 'Tracking pull request number'
         required: true
-        default: 545
+        default: 573
       release_branch:
         description: 'The name of the release branch'
         required: true
