@@ -11,6 +11,7 @@ from django.core.validators import MinLengthValidator
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
+from django.utils.functional import classproperty
 
 
 class GoElectricRebate(TimeStampedModel):
@@ -33,3 +34,7 @@ class GoElectricRebate(TimeStampedModel):
 
     class Meta:
         db_table = "go_electric_rebate"
+
+    @classproperty
+    def admin_hide_view_change_buttons(cls):
+        return True

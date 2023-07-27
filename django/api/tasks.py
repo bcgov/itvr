@@ -6,7 +6,6 @@ from django.conf import settings
 from email.header import Header
 from email.utils import formataddr
 from requests.auth import HTTPBasicAuth
-from api.services.ncda import get_rebates_redeemed_since
 from api.models.go_electric_rebate import GoElectricRebate
 from api.models.go_electric_rebate_application import (
     GoElectricRebateApplication,
@@ -14,9 +13,9 @@ from api.models.go_electric_rebate_application import (
 from datetime import timedelta, datetime
 from api.services.ncda import (
     notify,
-    get_is_rebate_not_redeemed,
+    get_rebates_redeemed_since,
+    get_rebate,
     delete_rebate,
-    get_all_rebates,
 )
 from api.constants import (
     FOUR_THOUSAND_REBATE,
@@ -518,6 +517,28 @@ def check_rebates_redeemed_since(iso_ts):
 
 
 def expire_expired_applications(max_number_of_rebates=50):
+    expired_application_ids = []
+
+    @transaction.atomic
+    def expire_rebate(rebate):
+        ncda_id = rebate.ncda_id
+        ncda_rebates = get_rebate(ncda_id, ["Status"])
+        if len(ncda_rebates) == 1 and ncda_rebates[0]["Status"] == "Not-Redeemed":
+            application = rebate.application
+            if application:
+                application.status = GoElectricRebateApplication.Status.EXPIRED
+                application.save(update_fields=["status", "modified"])
+                delete_rebate(ncda_id)
+                try:
+                    async_task(
+                        "api.tasks.send_expired",
+                        application.email,
+                        application.id,
+                    )
+                except Exception:
+                    pass
+                expired_application_ids.append(application.id)
+
     def inner():
         expired_rebates = (
             GoElectricRebate.objects.filter(redeemed=False)
@@ -528,50 +549,14 @@ def expire_expired_applications(max_number_of_rebates=50):
 
         for rebate in expired_rebates:
             try:
-                ncda_id = rebate.ncda_id
-                ncda_rebate_not_redeemed = get_is_rebate_not_redeemed(ncda_id)
-                if ncda_rebate_not_redeemed:
-                    delete_rebate(ncda_id)
-                    application = rebate.application
-                    if application:
-                        application.status = GoElectricRebateApplication.Status.EXPIRED
-                        application.save(update_fields=["status", "modified"])
+                expire_rebate(rebate)
             except Exception:
                 print("error expiring go_electric_rebate with id %s" % rebate.id)
+
+        print("expired applications: %s" % expired_application_ids)
 
     try:
         func_timeout(900, inner)
     except FunctionTimedOut:
         print("expire applications job timed out")
-        raise Exception
-
-
-def get_missed_redeemed_rebates(iso_ts):
-    @transaction.atomic
-    def inner():
-        rebates = []
-        get_all_rebates(rebates, None)
-        fixed_time = datetime.strptime(iso_ts, "%Y-%m-%dT%H:%M:%SZ")
-        ids_to_update = []
-        for rebate in rebates:
-            id = rebate["ID"]
-            status = rebate["Status"]
-            modified_ts = rebate["Modified"]
-            modified = datetime.strptime(modified_ts, "%Y-%m-%dT%H:%M:%SZ")
-            if status == "Redeemed" and modified >= fixed_time:
-                ids_to_update.append(id)
-        print("run_once redeemed rebate ids: %s" % ids_to_update)
-        redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ids_to_update)
-        redeemed_rebates.update(redeemed=True, modified=timezone.now())
-        GoElectricRebateApplication.objects.filter(
-            pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
-        ).update(
-            status=GoElectricRebateApplication.Status.REDEEMED,
-            modified=timezone.now(),
-        )
-
-    try:
-        func_timeout(900, inner)
-    except FunctionTimedOut:
-        print("get_missed_redeemed_rebates job timed out")
         raise Exception

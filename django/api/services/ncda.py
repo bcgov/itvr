@@ -232,31 +232,6 @@ def get_rebates_redeemed_since(iso_ts, ncda_ids, next_url):
         get_rebates_redeemed_since(iso_ts, ncda_ids, next_url)
 
 
-def get_is_rebate_not_redeemed(ncda_id):
-    api_endpoint = settings.NCDA_SHAREPOINT_URL
-    access_token = get_ncda_service_token()
-
-    headers = {
-        "Authorization": "Bearer " + access_token,
-        "Accept": "application/json;odata=verbose",
-        "Content-Type": "application/json;odata=verbose",
-    }
-
-    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
-
-    payload = {
-        "$select": "Id,Status",
-        "$filter": "(Id eq %s)and(Status eq 'Not-Redeemed')" % ncda_id,
-    }
-    ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
-    ncda_rs.raise_for_status()
-    data = ncda_rs.json()
-    items = data["d"]["results"]
-    if len(items) == 1:
-        return True
-    return False
-
-
 def delete_rebate(ncda_id):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
@@ -273,7 +248,7 @@ def delete_rebate(ncda_id):
     ncda_rs.raise_for_status()
 
 
-def get_all_rebates(rebates, next_url):
+def get_rebate(ncda_id, fields):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
 
@@ -283,22 +258,43 @@ def get_all_rebates(rebates, next_url):
         "Content-Type": "application/json;odata=verbose",
     }
 
-    if next_url:
-        ncda_rs = requests.get(next_url, headers=headers, verify=True)
-    else:
-        url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
+    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
 
-        payload = {
-            "$select": "Id,Modified,Status",
-            "$top": 5000,
-        }
-        ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
-
+    select_fields = ",".join(fields)
+    payload = {
+        "$select": select_fields,
+        "$filter": "(Id eq %s)" % ncda_id,
+    }
+    ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
     ncda_rs.raise_for_status()
-
     data = ncda_rs.json()
     items = data["d"]["results"]
-    rebates.extend(items)
-    next_url = (data["d"]).get("__next")
-    if next_url:
-        get_all_rebates(rebates, next_url)
+
+    return items
+
+
+def update_rebate(ncda_id, updated_fields):
+    api_endpoint = settings.NCDA_SHAREPOINT_URL
+    access_token = get_ncda_service_token()
+
+    headers = {
+        "Authorization": "Bearer " + access_token,
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose",
+        "If-Match": "*",
+    }
+
+    url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items(%s)" % ncda_id
+
+    payload = json.dumps(
+        {"__metadata": {"type": "SP.Data.ITVREligibilityListItem"}} | updated_fields
+    )
+
+    ncda_rs = requests.patch(
+        url,
+        data=payload,
+        headers=headers,
+        verify=True,
+    )
+
+    ncda_rs.raise_for_status()
