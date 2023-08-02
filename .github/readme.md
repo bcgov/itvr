@@ -2,7 +2,7 @@
 # ITVR Post Release Work
 After the release is deployed on Prod
 * Merge the tracking pull request to master
-* Create the release from master amd make it as the lasted release 
+* Create the release from master amd make it as the lasted release  (this is done automatically by pipeline create-release.yaml)
 * Create the new release branch from master
 * Update the following fields .github/workflows/build-release.yaml
     * name
@@ -13,7 +13,7 @@ After the release is deployed on Prod
     * const version
 * Update frontend/package.json
     * version
-* Create the tracking pull request to merge the new release branch to master
+* Create the tracking pull request to merge the new release branch to master. Update the PR_NUMBER after the tracking pull request is created
 
 # ITVR Pipelines
 
