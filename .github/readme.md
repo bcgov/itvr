@@ -22,6 +22,7 @@ After the release is deployed on Prod
 * release-build.yaml (ITVR release-1.19.0): build release and deploy on test and prod
 * dev-cicd.yaml (ITVR Dev release-1.19.0): continuous to build teh tracking pull request and deploy on dev
 * pr-dev-cicd.yaml (ITVR PR Dev CICD): build pull request if it's title ends with build-on-dev
+* create-release.yaml (Create Release after merging to main): tag and create the release after merging release branch to main. The description of the tracking pull request becomes release notes
 
 ## Other Pipelines
 
