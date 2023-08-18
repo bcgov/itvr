@@ -528,6 +528,7 @@ def expire_expired_applications(max_number_of_rebates=50):
             if application:
                 application.status = GoElectricRebateApplication.Status.EXPIRED
                 application.save(update_fields=["status", "modified"])
+                rebate.delete()
                 delete_rebate(ncda_id)
                 try:
                     async_task(
@@ -535,9 +536,9 @@ def expire_expired_applications(max_number_of_rebates=50):
                         application.email,
                         application.id,
                     )
+                    expired_application_ids.append(application.id)
                 except Exception:
                     pass
-                expired_application_ids.append(application.id)
 
     def inner():
         expired_rebates = (
