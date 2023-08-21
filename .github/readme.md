@@ -33,16 +33,12 @@ The "Build PR on Dev" pipeline will be triggered when it identified pull request
 * Create the release on GitHub from main branch
 * Create the new release branch from main branch (this is done automatically by pipeline create-release.yaml)
 * Change the new release branch as the default branch in the repo and update the branch protection rules https://github.com/bcgov/itvr/settings/branches
-* Update the following fields .github/workflows/build-release.yaml
-    * name
-    * branches
-    * PR_NUMBER
-    * RELEASE_NAME
-* Update .pipeline/lib/config.js
-    * const version
+* Update the following fields .github/workflows/release-build.yaml
+    * on -> workflow_dispatch -> inputs -> pull_request -> default
+    * on -> workflow_dispatch -> inputs -> release_branch -> default
 * Update frontend/package.json
     * version
-* Create the tracking pull request to merge the new release branch to main. Update the PR_NUMBER after the tracking pull request is created
+* Create the tracking pull request to merge the new release branch to main. Update the pull_request in .github/workflows/release-build.yaml after the tracking pull request is created
 
 # ITVR Pipelines
 
