@@ -1,4 +1,4 @@
-name: PR Teardown on Dev
+name: ITVR PR DEV Teardown on Dev
 
 on:
   pull_request:

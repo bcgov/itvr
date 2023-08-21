@@ -34,7 +34,7 @@ spec:
           namespace: {{ .Values.namespace }}
           name: {{ include "itvr-backend.name" . }}:{{ .Values.backendImageTagName }}
     - type: ConfigChange
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 10
   test: false
   selector:

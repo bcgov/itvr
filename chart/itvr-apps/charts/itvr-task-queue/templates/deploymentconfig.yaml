@@ -8,7 +8,7 @@ metadata:
   labels:
     {{- include "itvr-task-queue.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 10
   selector:
     {{- include "itvr-task-queue.selectorLabels" . | nindent 4 }}

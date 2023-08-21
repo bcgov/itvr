@@ -1,6 +1,4 @@
-#### back up od old pipeline
-
-name: ITVR release-1.18.0
+name: ITVR release-1.19.0
 
 on:
   workflow_dispatch:
@@ -8,11 +6,11 @@ on:
       pull_request:
         description: 'Tracking pull request number'
         required: true
-        default: 545
+        default: 573
       release_branch:
         description: 'The name of the release branch'
         required: true
-        default: release-1.18.0 
+        default: release-1.19.0 
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -42,7 +40,7 @@ jobs:
         uses: trstringer/manual-approval@v1.6.0
         with:
           secret: ${{ github.TOKEN }}
-          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel,prv-proton
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel,prv-proton,JulianForeman
           minimum-approvals: 1
           issue-title: "ITVR ${{ github.event.inputs.release_branch }} Test Deployment"
 
@@ -73,7 +71,7 @@ jobs:
         uses: trstringer/manual-approval@v1.6.0
         with:
           secret: ${{ github.TOKEN }}
-          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel
+          approvers: AlexZorkin,emi-hi,tim738745,kuanfandevops,jig-patel,prv-proton,JulianForeman
           minimum-approvals: 2
           issue-title: "ITVR ${{ github.event.inputs.release_branch }} Prod Deployment"
 
