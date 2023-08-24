@@ -541,9 +541,10 @@ def expire_expired_applications(max_number_of_rebates=50):
                     pass
 
     def inner():
+        threshold = timezone.now().date() - timedelta(days=2)
         expired_rebates = (
             GoElectricRebate.objects.filter(redeemed=False)
-            .filter(expiry_date__lte=timezone.now().date())
+            .filter(expiry_date__lte=threshold)
             .filter(ncda_id__isnull=False)
             .filter(application__status=GoElectricRebateApplication.Status.APPROVED)
         )[:max_number_of_rebates]
