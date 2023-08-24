@@ -36,7 +36,7 @@ class ITVRModelAdminStringent(ITVRModelAdmin):
 class ITVRInlineAdmin(admin.StackedInline):
     actions = None
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj):
         return False
 
     def has_change_permission(self, request, obj=None):
