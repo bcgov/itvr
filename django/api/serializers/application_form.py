@@ -4,6 +4,8 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from datetime import date
 from rest_framework.response import Response
 from rest_framework import status
+from api.services.go_electric_rebate_application import equivalent_drivers_licence_number_found
+from rest_framework.serializers import ValidationError
 
 
 class ApplicationFormCreateSerializer(ModelSerializer):
@@ -23,6 +25,11 @@ class ApplicationFormCreateSerializer(ModelSerializer):
         if month < 7:
             return year - 2
         return year - 1
+    
+    def validate_drivers_licence(self, value):
+        if equivalent_drivers_licence_number_found(value):
+            raise ValidationError("Equivalent DL# exists.")
+        return value
 
 
 class ApplicationFormCreateSerializerDefault(ApplicationFormCreateSerializer):
