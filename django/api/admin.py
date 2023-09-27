@@ -16,6 +16,7 @@ from django.db.models import Q
 from django.db import transaction
 from api.services.ncda import delete_rebate, update_rebate
 from django_q.tasks import async_task
+from api.services.go_electric_rebate_application import equivalent_drivers_licence_number_found
 
 
 class ITVRModelAdmin(admin.ModelAdmin):
@@ -410,14 +411,17 @@ class DriverLicenceEditableGoElectricRebateApplicationAdmin(ITVRModelAdmin):
     def response_change(self, request, obj):
         ret = super().response_change(request, obj)
         if "edit_drivers_licence" in request.POST:
+            new_dl = obj.drivers_licence
+            if equivalent_drivers_licence_number_found(new_dl, obj.id):
+                raise Exception
             rebates = list(GoElectricRebate.objects.filter(application__id=obj.id))
             if len(rebates) == 1:
                 rebate = rebates[0]
                 ncda_id = rebate.ncda_id
-                rebate.drivers_licence = obj.drivers_licence
+                rebate.drivers_licence = new_dl
                 rebate.save()
                 if ncda_id is not None:
-                    update_rebate(ncda_id, {"Title": obj.drivers_licence})
+                    update_rebate(ncda_id, {"Title": new_dl})
             elif len(rebates) > 1:
                 raise Exception
         return ret
