@@ -31,7 +31,7 @@ frontend:
   reactAppBCeIDKeycloakClientId: itvr-on-gold-cluster-3972
   reactAppBCeIDKeycloakRealm: standard
   reactAppBCeIDKeycloakUrl: https://dev.loginproxy.gov.bc.ca/auth/
-  snowplowCollector: spm.apps.gov.bc.ca
+  snowplowCollector: 
   createFrontendRoute: true
 
 
