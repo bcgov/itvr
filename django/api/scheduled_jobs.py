@@ -37,6 +37,7 @@ def schedule_expire_expired_applications():
         schedule(
             "api.tasks.expire_expired_applications",
             50,
+            15,
             name="expire_expired_applications",
             schedule_type="C",
             cron="45 * * * *",

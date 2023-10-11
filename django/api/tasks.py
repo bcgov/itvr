@@ -516,7 +516,7 @@ def check_rebates_redeemed_since(iso_ts):
         raise Exception
 
 
-def expire_expired_applications(max_number_of_rebates=50):
+def expire_expired_applications(max_number_of_rebates=50, days_offset=15):
     expired_application_ids = []
 
     @transaction.atomic
@@ -531,17 +531,12 @@ def expire_expired_applications(max_number_of_rebates=50):
                 rebate.delete()
                 delete_rebate(ncda_id)
                 try:
-                    async_task(
-                        "api.tasks.send_expired",
-                        application.email,
-                        application.id,
-                    )
                     expired_application_ids.append(application.id)
                 except Exception:
                     pass
 
     def inner():
-        threshold = timezone.now().date() - timedelta(days=2)
+        threshold = timezone.now().date() - timedelta(days=days_offset)
         expired_rebates = (
             GoElectricRebate.objects.filter(redeemed=False)
             .filter(expiry_date__lte=threshold)
