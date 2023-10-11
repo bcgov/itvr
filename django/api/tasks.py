@@ -422,7 +422,7 @@ def send_expired(recipient_email, application_id):
         <p>You are receiving this email as it has been one year since you were approved for a Passenger Vehicle Rebate. 
         Your rebate approval has expired.</p>
 
-        <p>If you want to purchase an EV and receive a rebate over the next year, you will need to apply for a new rebate approval.</p>
+        <p>You can reapply for another rebate approval 15 days from today. If you want to reapply within the next 15 days, please contact ZEVPrograms@gov.bc.ca</p>
 
         <p>https://goelectricbc.gov.bc.ca/</p>
 
