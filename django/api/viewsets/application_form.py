@@ -11,6 +11,7 @@ from api.serializers.application_form import (
     ApplicationFormSpouseSerializer,
 )
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
+from api.services.go_electric_rebate_application import equivalent_drivers_licence_number_found
 
 
 class ApplicationFormViewset(
@@ -65,21 +66,7 @@ class ApplicationFormViewset(
     @action(detail=False, methods=["GET"], url_path="check_status")
     def check_status(self, request, pk=None):
         drivers_licence = request.query_params.get("drivers_license", None)
-        dl_not_valid = (
-            GoElectricRebateApplication.objects.filter(
-                drivers_licence__exact=drivers_licence
-            )
-            .filter(
-                status__in=[
-                    GoElectricRebateApplication.Status.SUBMITTED,
-                    GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED,
-                    GoElectricRebateApplication.Status.VERIFIED,
-                    GoElectricRebateApplication.Status.APPROVED,
-                    GoElectricRebateApplication.Status.REDEEMED,
-                ]
-            )
-            .exists()
-        )
+        dl_not_valid = equivalent_drivers_licence_number_found(drivers_licence)
 
         if dl_not_valid:
             return Response({"drivers_license_valid": "false"})
