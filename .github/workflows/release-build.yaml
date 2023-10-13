@@ -1,4 +1,4 @@
-name: ITVR release-1.21.0
+name: ITVR release-1.22.0
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       release_branch:
         description: 'The name of the release branch'
         required: true
-        default: release-1.21.0 
+        default: release-1.22.0 
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
