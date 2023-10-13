@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-spilo-accepts-metabase
+spec:
+  ## Allow spilo to accept communication from metabase
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: itvr-spilo-dev
+      app.kubernetes.io/name: spilo
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 5432
+      from:
+        - namespaceSelector:
+            matchLabels:
+              environment: dev
+              name: 30b186
+        - podSelector:
+            matchLabels:
+              app: metabase
+  policyTypes:
+    - Ingress              
+      
