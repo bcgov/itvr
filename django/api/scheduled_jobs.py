@@ -45,3 +45,17 @@ def schedule_expire_expired_applications():
         )
     except IntegrityError:
         pass
+
+
+def schedule_send_expiry_emails():
+    try:
+        schedule(
+            "api.tasks.send_expiry_emails",
+            14,
+            name="send_expiry_emails",
+            schedule_type="C",
+            cron="00 15 * * *",
+            q_options={"timeout": 1200, "ack_failure": True},
+        )
+    except IntegrityError:
+        pass
