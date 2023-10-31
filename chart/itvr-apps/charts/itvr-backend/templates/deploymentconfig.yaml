@@ -84,7 +84,7 @@ spec:
               {{ if eq .Values.suffix "-dev" }}
               value: itvr-crunchy-dev-pgbouncer
               {{ else if eq .Values.suffix "-test" }}
-              value: itvr-spilo
+              value: itvr-crunchy-test-pgbouncer
               {{ else if eq .Values.suffix "-prod" }}
               value: itvr-spilo
               {{ else }}
@@ -94,7 +94,7 @@ spec:
               {{ if eq .Values.suffix "-dev" }}
               value: itvr-crunchy-dev-replicas
               {{ else if eq .Values.suffix "-test" }}
-              value: itvr-spilo-readonly
+              value: itvr-crunchy-test-replicas
               {{ else if eq .Values.suffix "-prod" }}
               value: itvr-spilo-readonly
               {{ else }}
