@@ -8,6 +8,12 @@ on:
     paths:
       - frontend/**
       - backend/**    
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: 'Tracking pull request number'
+        required: true
+        default: 608
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
