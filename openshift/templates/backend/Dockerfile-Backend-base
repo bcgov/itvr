@@ -2,11 +2,11 @@ FROM registry.access.redhat.com/ubi9/python-311:1-41
 
 USER root
 
-RUN subscription-manager status
+RUN subscription-manager status || true
 
-RUN subscription-manager register
+RUN subscription-manager register || true 
 
-RUN subscription-manager attach --auto
+RUN subscription-manager attach --auto || true
 
 RUN yum clean all && \
     yum makecache
