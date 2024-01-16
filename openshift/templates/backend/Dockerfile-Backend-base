@@ -2,6 +2,15 @@ FROM registry.access.redhat.com/ubi9/python-311:1-41
 
 USER root
 
+RUN subscription-manager status
+
+RUN subscription-manager register
+
+RUN subscription-manager attach --auto
+
+RUN yum clean all && \
+    yum makecache
+
 RUN yum upgrade libnghttp2.x86_64
 
 USER 1001
