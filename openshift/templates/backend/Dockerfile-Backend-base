@@ -2,6 +2,6 @@ FROM registry.access.redhat.com/ubi9/python-311:1-41
 
 USER root
 
-RUN yum install libnghttp2-1.45.1
+RUN yum upgrade libnghttp2.x86_64
 
 USER 1001
