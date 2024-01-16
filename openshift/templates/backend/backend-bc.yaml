@@ -84,7 +84,7 @@ objects:
               value: 'true'
           from:
             kind: ImageStreamTag
-            name: python-311:1-41
+            name: python-311:1-43
           forcePull: true
           noCache: true            
         type: Source
