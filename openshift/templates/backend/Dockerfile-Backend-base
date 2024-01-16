@@ -9,4 +9,6 @@ RUN INSTALL_PKGS="libnghttp2.x86_64" && \
     rpm -V $INSTALL_PKGS && \
     dnf -y clean all --enablerepo='*'
 
+RUN dnf list | grep libnghttp2
+
 USER 1001
