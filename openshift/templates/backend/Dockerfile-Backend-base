@@ -5,7 +5,7 @@ USER root
 # Install some packages and clean up
 RUN INSTALL_PKGS="libnghttp2.x86_64" && \
     dnf repolist --disablerepo='*' && \
-    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    dnf upgrade -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     dnf -y clean all --enablerepo='*'
 
