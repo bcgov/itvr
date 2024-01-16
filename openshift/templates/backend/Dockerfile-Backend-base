@@ -1,0 +1,6 @@
+FROM registry.access.redhat.com/ubi9/python-311:1-41
+
+RUN yum upgrade --cve CVE-2023-44487 nodejs && \  
+    yum upgrade --cve CVE-2023-44487 nodejs-docs && \
+    yum upgrade --cve CVE-2023-44487 nodejs-full-i18n && \
+    yum upgrade --cve CVE-2023-44487 npm 

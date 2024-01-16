@@ -104,11 +104,6 @@ if [[ -f setup.py && -z "$DISABLE_SETUP_PY_PROCESSING" ]]; then
   pip install .
 fi
 
-yum upgrade --cve CVE-2023-44487 nodejs
-yum upgrade --cve CVE-2023-44487 nodejs-docs
-yum upgrade --cve CVE-2023-44487 nodejs-full-i18n
-yum upgrade --cve CVE-2023-44487 npm 
-
 if should_collectstatic; then
   (
     echo "---> Collecting Django static files ..."
