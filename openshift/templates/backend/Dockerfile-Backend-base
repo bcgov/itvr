@@ -2,15 +2,11 @@ FROM registry.access.redhat.com/ubi9/python-311:1-41
 
 USER root
 
-RUN subscription-manager status || true
-
-RUN subscription-manager register || true 
-
-RUN subscription-manager attach --auto || true
-
-RUN yum clean all && \
-    yum makecache
-
-RUN yum upgrade libnghttp2.x86_64
+# Install some packages and clean up
+RUN INSTALL_PKGS="libnghttp2.x86_64" && \
+    dnf repolist --disablerepo='*' && \
+    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    dnf -y clean all --enablerepo='*'
 
 USER 1001
