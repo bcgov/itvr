@@ -2,7 +2,8 @@ FROM registry.access.redhat.com/ubi9/python-311:1-41
 
 USER root
 
-RUN rm /etc/rhsm-host
+RUN dnf search kernel-devel --showduplicates && \
+        dnf install -y kernel-devel
 
 # Install some packages and clean up
 RUN INSTALL_PKGS="libnghttp2.x86_64" && \
