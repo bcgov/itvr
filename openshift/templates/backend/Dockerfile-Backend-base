@@ -1,5 +1,5 @@
-FROM registry.access.redhat.com/ubi9/python-311:1-41
-
+#FROM registry.access.redhat.com/ubi9/python-311:1-41
+FROM registry.redhat.io/ubi9/ubi:latest
 USER root
 
 RUN dnf search kernel-devel --showduplicates && \
