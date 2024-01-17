@@ -40,7 +40,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: itvr-clamav:0.105_base
+        name: itvr-clamav:1.2_base
     resources:
         limits:
             cpu: 1500m

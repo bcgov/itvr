@@ -1,4 +1,4 @@
-FROM artifacts.developer.gov.bc.ca/docker-remote/clamav/clamav:0.105_base
+FROM artifacts.developer.gov.bc.ca/docker-remote/clamav/clamav:1.2_base
 RUN mkdir /run/clamav && \
     chown clamav:clamav /run/clamav && \
     chmod 750 /run/clamav 
