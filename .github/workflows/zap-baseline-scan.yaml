@@ -1,0 +1,23 @@
+name: ZAP Baseline Scan
+on:
+  workflow_dispatch:
+    inputs:
+      envname:
+        description: 'dev or test'
+        required: true
+        default: 15
+jobs:
+
+  zap-baseline-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Full Scan on Frontend
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          target: "https://itvr-${{ github.event.inputs.envname }}.apps.silver.devops.gov.bc.ca"
+          issue_title: "ZAP ${{ github.event.inputs.envname }} Frontend Baseline Scan Report"
+      - name: ZAP Full Scan on Backend
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          target: 'https://itvr-backend-${{ github.event.inputs.envname }}.apps.silver.devops.gov.bc.ca'
+          issue_title: "ZAP ${{ github.event.inputs.envname }} Backend Baseline Scan Report"
