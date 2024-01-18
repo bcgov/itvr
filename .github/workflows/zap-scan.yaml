@@ -1,4 +1,4 @@
-name: Cleanup old workflow runs
+name: Penetration Test
 on:
   workflow_dispatch:
 jobs:
