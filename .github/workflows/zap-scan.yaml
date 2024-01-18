@@ -1,11 +1,30 @@
-name: Penetration Test
+name: ZAP Full Scan
 on:
   workflow_dispatch:
 jobs:
-  scan:
+
+  approval-zap-full-scan:
+    name: Approve the ZAP Full Scan on Test URLS
     runs-on: ubuntu-latest
+    timeout-minutes: 60 
     steps:
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.10.0
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
         with:
-          target: 'https://itvr-dev.apps.silver.devops.gov.bc.ca'
+          secret: ${{ github.TOKEN }}
+          approvers: emi-hi,tim738745,kuanfandevops,JulianForeman
+          minimum-approvals: 1
+          issue-title: "Please communicate with Platform Team for Zap Full Scan for the ITVR Test URLs and approve this request"
+
+  zap-full-scan:
+    runs-on: ubuntu-latest
+    needs: approval-zap-full-scan
+    steps:
+      - name: ZAP Full Scan on Frontend
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          target: 'https://itvr-test.apps.silver.devops.gov.bc.ca'
+      - name: ZAP Full Scan on Backend
+        uses: zaproxy/action-full-scan@v0.8.0
+        with:
+          target: 'https://itvr-backend-test.apps.silver.devops.gov.bc.ca'
