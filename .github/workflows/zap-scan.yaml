@@ -1,0 +1,11 @@
+name: Cleanup old workflow runs
+on:
+  workflow_dispatch:
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'https://itvr-dev.apps.silver.devops.gov.bc.ca'
