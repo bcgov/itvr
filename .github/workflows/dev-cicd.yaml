@@ -13,7 +13,7 @@ on:
       pull_request:
         description: 'Tracking pull request number'
         required: true
-        default: 608
+        default: 632
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
