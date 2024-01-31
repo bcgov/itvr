@@ -1,6 +1,6 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: ITVR Dev release-1.21.0
+name: ITVR Dev release-1.22.0
 
 on:
   pull_request:
@@ -8,6 +8,12 @@ on:
     paths:
       - frontend/**
       - backend/**    
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: 'Tracking pull request number'
+        required: true
+        default: 608
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -58,3 +64,20 @@ jobs:
       openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
       openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
   
+  zap-frontend-baseline-scan:
+    runs-on: ubuntu-latest
+    needs: deploy-on-dev
+    steps:
+      - name: Frontend Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'https://itvr-dev.apps.silver.devops.gov.bc.ca'
+
+  zap-backend-baseline-scan:
+    runs-on: ubuntu-latest
+    needs: deploy-on-dev
+    steps:
+      - name: Backend Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'https://itvr-backend-dev.apps.silver.devops.gov.bc.ca'

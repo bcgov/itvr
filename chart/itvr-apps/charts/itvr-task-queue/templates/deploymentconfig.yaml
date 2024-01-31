@@ -44,16 +44,20 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: DB_HOST
-              {{ if eq .Values.suffix "-test" }}
-              value: itvr-spilo
+              {{ if eq .Values.suffix "-dev" }}
+              value: itvr-crunchy-dev-pgbouncer
+              {{ else if eq .Values.suffix "-test" }}
+              value: itvr-crunchy-test-pgbouncer
               {{ else if eq .Values.suffix "-prod" }}
               value: itvr-spilo
               {{ else }}
               value: itvr-spilo{{ .Values.suffix }}
               {{ end }}
             - name: DB_HOST_READONLY
-              {{ if eq .Values.suffix "-test" }}
-              value: itvr-spilo-readonly
+              {{ if eq .Values.suffix "-dev" }}
+              value: itvr-crunchy-dev-replicas
+              {{ else if eq .Values.suffix "-test" }}
+              value: itvr-crunchy-test-replicas
               {{ else if eq .Values.suffix "-prod" }}
               value: itvr-spilo-readonly
               {{ else }}

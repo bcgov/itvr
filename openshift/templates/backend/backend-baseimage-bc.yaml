@@ -1,0 +1,50 @@
+
+apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      description: Defines how to build the application
+    creationTimestamp: null
+    name: itvr-backend-base
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: backend-base:ubi9-python-311-1-41
+    postCommit: {}
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: openshift/templates/backend
+      git:
+        uri: https://github.com/bcgov/itvr.git
+        ref: release-1.22.0
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath: ./Dockerfile-Backend-base
+        env:
+          - name: ARTIFACTORY_USER
+            valueFrom:
+              secretKeyRef:
+                name: artifacts-default-pwpgbz
+                key: username
+          - name: ARTIFACTORY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: artifacts-default-pwpgbz
+                key: password
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    lastVersion: 0

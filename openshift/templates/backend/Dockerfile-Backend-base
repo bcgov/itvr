@@ -1,0 +1,17 @@
+#FROM registry.access.redhat.com/ubi9/python-311:1-41
+FROM registry.redhat.io/ubi9/ubi:latest
+USER root
+
+RUN dnf search kernel-devel --showduplicates && \
+        dnf install -y kernel-devel
+
+# Install some packages and clean up
+RUN INSTALL_PKGS="libnghttp2.x86_64" && \
+    dnf repolist --disablerepo='*' && \
+    dnf upgrade -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    dnf -y clean all --enablerepo='*'
+
+RUN dnf list | grep libnghttp2
+
+USER 1001

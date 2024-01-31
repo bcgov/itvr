@@ -1,7 +1,22 @@
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=bcgov_itvr)
 
-# itvr
+# ITVR
 [![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://goelectricbc.gov.bc.ca/)
+
+## Project description 
+
+The Clean Transportation Branch within the Ministry of Energy, Mines and Low Carbon Innovation instructed the build of the ITVR application. The instruction was to build an online portal to allow the public to apply for pre-approval, based on their income level, to receive a provincial rebate on the purchase of a new zero-emission vehicle. The application was launched to the public in August 2022. 
+
+The provincial program providing rebates has been running for several years and was open to anyone regardless of income. Changes to means-test the program created the need for a pre-approval process where applicants identities are verified, and their incomes checked with Canada Revenue Agency (CRA). 
+
+The program is managed by a government appointed delivery agent, the New Car Dealers Association (NCDA). They are responsible for working with car dealerships to provide the actual vehicle rebates to the public.  
+
+The ITVR application consists of these main elements: 
+* Online public application form, accessed using BCeID or Services Card app 
+* Internal console for government to search, review and process applications 
+* Ability to send/receive applicant data with CRA to check incomes (using FTP) 
+* Ability to send/receive income approved applicant data with NCDA (using API) 
+* Automated email functionality to provide applicants with information on their application 
 
 ## System
 
