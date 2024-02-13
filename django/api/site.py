@@ -47,8 +47,11 @@ class ITVRAdminSite(AdminSite):
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 file = request.FILES["cra_response_file"]
-                file_contents = file.read().decode(encoding="utf-8", errors="replace")
-                data = cra.read(file_contents)
+                if settings.USE_CRYPTO_SERVICE and file.name.endswith(".p7m"):
+                    content = cra.decrypt_file(file)
+                else:
+                    content = file.read()
+                data = content.decode(encoding="utf-8", errors="replace")
                 rebates = get_cra_results_individuals_only(data)
                 associated_applications = get_applications(rebates)
                 save_rebates(rebates, associated_applications)
@@ -61,6 +64,7 @@ class ITVRAdminSite(AdminSite):
             form = UploadFileForm()
         return render(request, "upload.html", {"form": form})
 
+    @transaction.atomic
     def download_file(self, request):
         rebates = GoElectricRebateApplication.objects.filter(
             status=GoElectricRebateApplication.Status.VERIFIED
@@ -103,16 +107,23 @@ class ITVRAdminSite(AdminSite):
 
         filename = self.get_cra_filename(program_code, cra_env, cra_sequence)
         today = date.today().strftime("%Y%m%d")
-        response = HttpResponse(
-            cra.write(
-                data,
-                today=today,
-                program_code=program_code,
-                cra_env=cra_env,
-                cra_sequence=f"{cra_sequence:05}",
-            ),
-            content_type="text/plain",
+        content = cra.write(
+            data,
+            today=today,
+            program_code=program_code,
+            cra_env=cra_env,
+            cra_sequence=f"{cra_sequence:05}",
         )
+
+        if settings.USE_CRYPTO_SERVICE:
+            filename = filename + ".p7m"
+            encrypted_content = cra.encrypt(content)
+            response = HttpResponse(
+                encrypted_content, content_type="application/octet-stream"
+            )
+        else:
+            response = HttpResponse(content, content_type="text/plain")
+
         response["Content-Disposition"] = "attachment; filename=" + filename
         return response
 
@@ -126,9 +137,9 @@ class ITVRAdminSite(AdminSite):
                 else:
                     model["admin_label"] = model["name"]
                 if hasattr(model_cls, "admin_hide_view_change_buttons"):
-                    model[
-                        "admin_hide_view_change_buttons"
-                    ] = model_cls.admin_hide_view_change_buttons
+                    model["admin_hide_view_change_buttons"] = (
+                        model_cls.admin_hide_view_change_buttons
+                    )
                 else:
                     model["admin_hide_view_change_buttons"] = False
 
