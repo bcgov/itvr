@@ -16,8 +16,9 @@ from django.db import transaction
 
 
 class UploadFileForm(forms.Form):
+    adjective = "encrypted" if settings.USE_CRYPTO_SERVICE else "decrypted"
     cra_response_file = forms.FileField(
-        help_text="Please upload the CRA OUT file."
+        help_text="Please upload the {adjective} CRA OUT file.".format(adjective=adjective)
     )
 
 
