@@ -28,7 +28,7 @@ public class MainController {
     public ResponseEntity<byte[]> encrypt(@RequestBody Map<String, String> data) {
         try {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            X509Certificate cert = encryptService.getEncryptionCert(data.get("certificate"));
+            X509Certificate cert = encryptService.getEncryptionCert(data.get("certificate"), data.get("crlDN"));
             byte[] encryptedData = encryptService.encrypt(user, cert, data.get("toEncrypt"));
             return new ResponseEntity<byte[]>(encryptedData, HttpStatus.OK);
         } catch (Exception e) {

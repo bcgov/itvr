@@ -9,7 +9,7 @@ import com.entrust.toolkit.util.ManagerTransport;
 import com.entrust.toolkit.util.SecureStringBuffer;
 import com.entrust.toolkit.x509.directory.JNDIDirectory;
 
-// Usage: java -classpath ../../../../../../libs/enttoolkit.jar --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED UpdateEPFKeys.java <manager IP> <manager port> <directory IP> <directory port> <name of epf file> <password>
+// Usage: java -classpath ../../../../../../libs/enttoolkit.jar --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED UpdateEPFKeys.java <manager IP> <manager port> <directory IP> <directory port> <name of epf file> <password> <name of new epf file>
 public class UpdateEPFKeys {
     public static void main(String[] args) {
         try {
@@ -19,6 +19,7 @@ public class UpdateEPFKeys {
             int directoryPort = Integer.parseInt(args[3]);
             String filename = args[4];
             String password = args[5];
+            String newFilename = args[6];
 
             User user = new User();
             JNDIDirectory directory = new JNDIDirectory(directoryIP, directoryPort);
@@ -26,7 +27,7 @@ public class UpdateEPFKeys {
             user.setConnections(directory, transport);
             SecureStringBuffer securePassword = new SecureStringBuffer(new StringBuffer(password));
             CredentialReader credentialReader = new FilenameProfileReader(filename);
-            CredentialWriter credentialWriter = new FilenameProfileWriter(filename);
+            CredentialWriter credentialWriter = new FilenameProfileWriter(newFilename);
             user.setCredentialWriter(credentialWriter);
             user.login(credentialReader, securePassword);
             user.updateAllKeys();

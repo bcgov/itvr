@@ -71,6 +71,7 @@ services:
       - USE_CRYPTO_SERVICE
       - CRYPTO_SERVICE_URL
       - CRA_CERTIFICATE
+      - CRA_CERTIFICATE_CRL_DN
       - EPF_FILENAME
       - EPF_PASSWORD
     volumes:
@@ -122,6 +123,8 @@ services:
       - "8080:8080"
     environment:
       - SERVER_PORT=8080
+      - DIRECTORY_IP=localhost
+      - DIRECTORY_PORT=389
     env_file:
       - minio.env
     volumes:

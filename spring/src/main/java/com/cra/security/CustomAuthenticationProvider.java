@@ -32,7 +32,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             User user = new User();
             user.login(credentialReader, securePassword);
             is.close();
-            // todo: check user certificates against CRLs
             return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
         } catch (Exception ex) {
             ex.printStackTrace();

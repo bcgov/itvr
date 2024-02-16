@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
 import com.entrust.toolkit.User;
 import com.entrust.toolkit.KeyAndCertificateSource;
 import com.entrust.toolkit.PKCS7EncodeStream;
+
 import iaik.x509.X509Certificate;
 
 @Service
 public class EncryptService {
     @Autowired
     MinioService minioService;
+
+    @Autowired
+    CertificateService certificateService;
 
     public byte[] encrypt(User user, X509Certificate cert, String data) throws Exception {
         KeyAndCertificateSource kcs = new KeyAndCertificateSource();
@@ -31,11 +35,14 @@ public class EncryptService {
         return outputStream.toByteArray();
     }
 
-    public X509Certificate getEncryptionCert(String certName) throws Exception {
-        // todo: check cert against CRLs
+    public X509Certificate getEncryptionCert(String certName, String crlDN) throws Exception {
         InputStream is = minioService.getObject(certName);
         X509Certificate cert = new X509Certificate(is);
         is.close();
+        cert.checkValidity();
+        if (crlDN != null) {
+            certificateService.checkIfCertIsRevoked(cert, crlDN);
+        }
         return cert;
     }
 
