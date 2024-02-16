@@ -7,7 +7,7 @@ metadata:
     {{- include "itvr-backend.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
+    apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     name: {{ include "itvr-backend.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
