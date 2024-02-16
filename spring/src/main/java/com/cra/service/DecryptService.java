@@ -28,6 +28,7 @@ public class DecryptService {
         
         // the line below reads the signature part from the message into a SMimeSigned object:
         SMimeSigned signed = new SMimeSigned(contentStream);
+        System.out.println("number of signers associated with file we're decrypting: " + signed.getSignerInfos().length);
         //todo: see if there are signers using "signed.getSignerInfos().length"; if so, check the signature
 
         // now we take the unread part of content:

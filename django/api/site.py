@@ -17,7 +17,7 @@ from django.db import transaction
 
 class UploadFileForm(forms.Form):
     cra_response_file = forms.FileField(
-        help_text="Please upload the decoded CRA OUT file."
+        help_text="Please upload the CRA OUT file."
     )
 
 
@@ -50,8 +50,8 @@ class ITVRAdminSite(AdminSite):
                 if settings.USE_CRYPTO_SERVICE and file.name.endswith(".p7m"):
                     content = cra.decrypt_file(file)
                 else:
-                    content = file.read()
-                data = content.decode(encoding="utf-8", errors="replace")
+                    content = file.read().decode(encoding="utf-8", errors="replace")
+                data = cra.read(content)
                 rebates = get_cra_results_individuals_only(data)
                 associated_applications = get_applications(rebates)
                 save_rebates(rebates, associated_applications)
