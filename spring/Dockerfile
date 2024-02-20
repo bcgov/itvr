@@ -11,4 +11,4 @@ RUN ./mvnw dependency:resolve
 
 COPY src ./src
 
-CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]
+CMD ["./mvnw", "-Denvironment=localDev", "spring-boot:run", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]

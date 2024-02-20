@@ -31,8 +31,8 @@ public class MainController {
             X509Certificate cert = encryptService.getEncryptionCert(data.get("certificate"), data.get("crlDN"));
             byte[] encryptedData = encryptService.encrypt(user, cert, data.get("toEncrypt"));
             return new ResponseEntity<byte[]>(encryptedData, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -43,8 +43,8 @@ public class MainController {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String decryptedData = decryptService.decrypt(user, data);
             return new ResponseEntity<String>(decryptedData, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
