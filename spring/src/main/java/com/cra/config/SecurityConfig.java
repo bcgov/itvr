@@ -18,6 +18,7 @@ import com.cra.security.CustomAuthenticationProvider;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
         httpSecurity.httpBasic(Customizer.withDefaults());
 		return httpSecurity.build();
     }
