@@ -24,18 +24,18 @@ public class MinioService {
 
     private MinioClient getClient() {
         return MinioClient.builder()
-        .endpoint(url)
-        .credentials(accessKeyId, secretAccessKey)
-        .build();
+                .endpoint(url)
+                .credentials(accessKeyId, secretAccessKey)
+                .build();
     }
 
     public InputStream getObject(String objectName) throws Exception {
         MinioClient client = getClient();
         return client.getObject(
-            GetObjectArgs.builder()
-            .bucket(bucketName)
-            .object(objectName)
-            .build());
+                GetObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(objectName)
+                        .build());
     }
-    
+
 }

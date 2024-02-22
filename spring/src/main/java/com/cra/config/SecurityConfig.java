@@ -20,14 +20,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
         httpSecurity.httpBasic(Customizer.withDefaults());
-		return httpSecurity.build();
+        return httpSecurity.build();
     }
 
     @Autowired
     CustomAuthenticationProvider authenticationProvider;
 
     @Autowired
-	public void configure(AuthenticationManagerBuilder builder) {
-		builder.authenticationProvider(authenticationProvider);
-	}
+    public void configure(AuthenticationManagerBuilder builder) {
+        builder.authenticationProvider(authenticationProvider);
+    }
 }

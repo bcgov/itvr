@@ -30,7 +30,8 @@ public class EncryptService {
         PKCS7EncodeStream encoder = new PKCS7EncodeStream(kcs, outputStream, PKCS7EncodeStream.SIGN_AND_ENCRYPT);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data.getBytes());
         IOUtils.copy(inputStream, encoder);
-        // must call close() on the encoder in order for the data to actually be written to the outputstream!
+        // must call close() on the encoder in order for the data to actually be written
+        // to the outputstream!
         encoder.close();
         return outputStream.toByteArray();
     }

@@ -24,20 +24,20 @@ public class CreateOrRecoverCredential {
             String epf = args[6];
             SecureStringBuffer securePassword = new SecureStringBuffer(new StringBuffer(args[7]));
 
-            // Create a user object that has a connection to both the Security 
+            // Create a user object that has a connection to both the Security
             // Manager and the Directory
             User user = new User();
             ManagerTransport transport = new ManagerTransport(managerIP, managerPort);
             JNDIDirectory directory = new JNDIDirectory(directoryIP, directoryPort);
             user.setConnections(directory, transport);
 
-            // Set-up the user with a credential-writer that is used to write the 
-            // user's Digital Identity to an Entrust file-based Digital Identity 
+            // Set-up the user with a credential-writer that is used to write the
+            // user's Digital Identity to an Entrust file-based Digital Identity
             // store
             CredentialWriter credentialWriter = new FilenameProfileWriter(epf);
             user.setCredentialWriter(credentialWriter);
 
-            // Log-in the user with credential-reader that is used to create or recover the 
+            // Log-in the user with credential-reader that is used to create or recover the
             // user's Digital Identity in software
             CredentialReader credentialReader = new CredentialCreatorOrRecoverer(secureRefNum, secureAuthCode);
             user.login(credentialReader, securePassword);

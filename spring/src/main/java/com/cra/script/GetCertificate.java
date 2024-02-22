@@ -20,7 +20,7 @@ public class GetCertificate {
             String ldapDN = args[2];
             String ldapAttribute = args[3];
             String filename = args[4];
-    
+
             JNDIDirectory directory = new JNDIDirectory(directoryIP, directoryPort);
             directory.connect();
             byte[][] certs = directory.getAttr(ldapDN, ldapAttribute);
@@ -29,7 +29,7 @@ public class GetCertificate {
 
             FileOutputStream fos = new FileOutputStream(filename);
             x509Cert.writeTo(fos);
-            directory.close();            
+            directory.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

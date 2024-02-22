@@ -24,7 +24,7 @@ public class PrintCertificateInfo {
             System.out.println("Not before: " + cert.getNotBefore());
             System.out.println("Not after: " + cert.getNotAfter());
             Iterator<?> extensions = cert.listExtensions().asIterator();
-            while(extensions.hasNext()) {
+            while (extensions.hasNext()) {
                 V3Extension extension = (V3Extension) extensions.next();
                 System.out.println(extension.toString());
             }

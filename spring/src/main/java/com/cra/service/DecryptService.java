@@ -25,11 +25,14 @@ public class DecryptService {
 
         Part p = (Part) new MimeBodyPart(sMimeEncrypted.getInputStream());
         InputStream contentStream = (InputStream) p.getContent();
-        
-        // the line below reads the signature part from the message into a SMimeSigned object:
+
+        // the line below reads the signature part from the message into a SMimeSigned
+        // object:
         SMimeSigned signed = new SMimeSigned(contentStream);
-        System.out.println("number of signers associated with file we're decrypting: " + signed.getSignerInfos().length);
-        //todo: see if there are signers using "signed.getSignerInfos().length"; if so, check the signature
+        System.out
+                .println("number of signers associated with file we're decrypting: " + signed.getSignerInfos().length);
+        // todo: see if there are signers using "signed.getSignerInfos().length"; if so,
+        // check the signature
 
         // now we take the unread part of content:
         Part q = (Part) new MimeBodyPart(contentStream);
@@ -45,18 +48,19 @@ public class DecryptService {
         if (dis.nextTag() == 4) {
             dis.readOctetString();
         }
-            
+
         // SMimeCompressed reads from dis where we left off, which is the sequence
         SMimeCompressed sMimeCompressed = new SMimeCompressed(dis);
 
-        // if we write SMimeCompressed to a file right now, we get the headers at the top, e.g.:
+        // if we write SMimeCompressed to a file right now, we get the headers at the
+        // top, e.g.:
         // MIME-Version: 1.0
         // Content-Type: text/plain;
-        // 	charset="US-ASCII";
-        // 	name=ABCVR00085
+        // charset="US-ASCII";
+        // name=ABCVR00085
         // Content-Transfer-Encoding: 7bit
         // Content-Disposition: attachment;
-        // 	filename=ABCVR00085
+        // filename=ABCVR00085
 
         // have to find a way to remove this...
         // try:
