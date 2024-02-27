@@ -105,13 +105,18 @@ def send_individual_confirm(recipient_email, application_id):
         <p>
         We have received your application for a rebate under the CleanBC Go
         Electric Passenger Vehicle Rebate program. You can expect to get an email reply with the result of your application within 3 weeks.
+        We are unable to speed up the application process as our screening is automated.
         </p>
 
         <p>Please keep this e-mail for your records.</p>
 
         <p>Questions?</p>
 
-        <p>Please feel free to contact us at ZEVPrograms@gov.bc.ca</p>
+        <p>
+        Please feel free to contact us at ZEVPrograms@gov.bc.ca.
+        Emails asking about the status of your application will not be responded if it has not been 3 weeks since your application was submitted.
+        Please check your junk/spam folder for any missed emails.
+        </p>
         </body>
         </html>
         """
