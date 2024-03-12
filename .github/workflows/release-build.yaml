@@ -6,7 +6,7 @@ on:
       pull_request:
         description: "Tracking pull request number"
         required: true
-        default: 632
+        default: 650
       release_branch:
         description: "The name of the release branch"
         required: true
