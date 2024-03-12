@@ -1,23 +1,22 @@
-name: ITVR release-1.23.0
+name: ITVR release-1.24.0
 
 on:
   workflow_dispatch:
     inputs:
       pull_request:
-        description: 'Tracking pull request number'
+        description: "Tracking pull request number"
         required: true
         default: 632
       release_branch:
-        description: 'The name of the release branch'
+        description: "The name of the release branch"
         required: true
-        default: release-1.23.0 
+        default: release-1.24.0
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true  
+  cancel-in-progress: true
 
 jobs:
-
   build-release:
     name: Build release
     uses: ./.github/workflows/pr-build-template.yaml
@@ -44,7 +43,7 @@ jobs:
           minimum-approvals: 1
           issue-title: "ITVR ${{ github.event.inputs.release_branch }} Test Deployment"
 
-  deploy-on-test: 
+  deploy-on-test:
     name: Deploy on Test
     needs: approval-deploy-on-test
     uses: ./.github/workflows/pr-deploy-template.yaml
@@ -75,7 +74,7 @@ jobs:
           minimum-approvals: 2
           issue-title: "ITVR ${{ github.event.inputs.release_branch }} Prod Deployment"
 
-  deploy-on-prod: 
+  deploy-on-prod:
     name: Deploy on Prod
     needs: approval-deploy-on-prod
     uses: ./.github/workflows/pr-deploy-template.yaml
