@@ -241,13 +241,13 @@ def send_approve(recipient_email, application_id, applicant_full_name, rebate_am
             ${zev_max} rebate for long-range ZEV purchase
           </li>
           <li>
-            ${zev_max} rebate for long-range ZEV 36-month or longer lease term
+            ${zev_max} rebate for long-range ZEV with a minimum of 36-month or longer lease term
           </li>
           <li>
-            ${zev_mid} rebate for long-range ZEV 24-month lease term
+            ${zev_mid} rebate for long-range ZEV with a minimum of 24-month lease term
           </li>
           <li>
-            ${zev_min} rebate for long-range ZEV 12-month lease term
+            ${zev_min} rebate for long-range ZEV with a minimum of 12-month lease term
           </li>
         </ul>
 
@@ -257,13 +257,13 @@ def send_approve(recipient_email, application_id, applicant_full_name, rebate_am
             ${phev_max} rebate for short-range PHEV purchase
           </li>
           <li>
-            ${phev_max} rebate for short-range PHEV 36-month or longer lease term
+            ${phev_max} rebate for short-range PHEV with a minimum of 36-month or longer lease term
           </li>
           <li>
-            ${phev_mid} rebate for short-range PHEV 24-month lease term
+            ${phev_mid} rebate for short-range PHEV with a minimum of 24-month lease term
           </li>
           <li>
-            ${phev_min} rebate for short-range PHEV 12-month lease term
+            ${phev_min} rebate for short-range PHEV with a minimum of 12-month lease term
           </li>
         </ul>
 
