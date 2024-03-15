@@ -267,6 +267,10 @@ def send_approve(recipient_email, application_id, applicant_full_name, rebate_am
           </li>
         </ul>
 
+        <p>Lease terms that fall between the above-mentioned range will be rounded 
+        <b>down</b> to the closest standard term (e.g., a 35-month lease will be considered 
+        as a 24-month lease for the purposes of rebate amount determination)</p>
+
         <p>This rebate approval will expire one year from today’s date.</p>
         
         <p>Next steps:</p>
