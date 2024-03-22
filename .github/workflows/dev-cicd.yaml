@@ -1,6 +1,6 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: ITVR Dev release-1.24.0
+name: ITVR Dev release-1.25.0
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ on:
       pull_request:
         description: "Tracking pull request number"
         required: true
-        default: 650
+        default: 659
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
