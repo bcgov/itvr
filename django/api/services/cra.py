@@ -1,4 +1,7 @@
+import requests
+import json
 from unidecode import unidecode
+from django.conf import settings
 
 
 def read(file):
@@ -90,3 +93,34 @@ def write(
     file += "0"  # terminating character
 
     return file
+
+
+def decrypt_file(file):
+    url = settings.CRYPTO_SERVICE_URL + "/decrypt"
+    data = file.read()
+    response = requests.get(
+        url,
+        data=data,
+        auth=(settings.EPF_FILENAME, settings.EPF_PASSWORD),
+        verify=True,
+    )
+    response.raise_for_status()
+    return response.text
+
+
+def encrypt(to_encrypt):
+    url = settings.CRYPTO_SERVICE_URL + "/encrypt"
+    payload = {"certificate": settings.CRA_CERTIFICATE, "toEncrypt": to_encrypt}
+    if settings.CRA_CERTIFICATE_CRL_DN:
+        payload["crlDN"] = settings.CRA_CERTIFICATE_CRL_DN
+    payload_json = json.dumps(payload)
+    headers = {"content-type": "application/json"}
+    response = requests.get(
+        url,
+        data=payload_json,
+        headers=headers,
+        auth=(settings.EPF_FILENAME, settings.EPF_PASSWORD),
+        verify=True,
+    )
+    response.raise_for_status()
+    return response.content

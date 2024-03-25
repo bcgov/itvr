@@ -1,4 +1,4 @@
-FROM python:3.9.1
+FROM --platform=linux/amd64 python:3.9.1
 
 ENV PYTHONUNBUFFERED=1
 
