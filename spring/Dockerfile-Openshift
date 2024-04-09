@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM --platform=linux/amd64 eclipse-temurin:17-jdk-jammy
+FROM --platform=linux/amd64 artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
