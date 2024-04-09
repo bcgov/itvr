@@ -59,7 +59,7 @@ objects:
           cpu: 750m
           memory: 650Mi
       source:
-        contextDir: cra
+        contextDir: spring
         git:
           uri: ${GIT_URL}
           ref: ${GIT_REF}
