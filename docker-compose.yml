@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   db:
+    platform: linux/amd64
     image: postgres:14
     environment:
       - POSTGRES_DB=itvr
@@ -15,6 +16,7 @@ services:
       timeout: 5s
       retries: 5
   minio:
+    platform: linux/amd64
     image: minio/minio
     hostname: "minio"
     volumes:
@@ -26,6 +28,7 @@ services:
       - 9000:9000
       - 9001:9001
   createbuckets:
+    platform: linux/amd64
     image: minio/mc
     depends_on:
       - minio
@@ -65,6 +68,12 @@ services:
       - VIRUS_SCANNING_ENABLED=True
       - CLAMD_HOST=clamav
       - CLAMD_PORT=3310
+      - USE_CRYPTO_SERVICE
+      - CRYPTO_SERVICE_URL
+      - CRA_CERTIFICATE
+      - CRA_CERTIFICATE_CRL_DN
+      - EPF_FILENAME
+      - EPF_PASSWORD
     volumes:
       - ./django:/api
     ports:
@@ -100,5 +109,26 @@ services:
     depends_on:
       - db
       - api
+  web:
+    build: ./frontend
+    command: npm run start
+    volumes:
+      - ./frontend:/web
+      - /web/node_modules
+    ports:
+      - 3000:3000
+  spring:
+    build: ./spring
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - DIRECTORY_IP=localhost
+      - DIRECTORY_PORT=389
+    env_file:
+      - minio.env
+    volumes:
+      - ./spring:/app
   clamav:
+    platform: linux/amd64
     image: clamav/clamav
