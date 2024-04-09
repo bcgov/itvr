@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: frontend
+  name: cra
 parameters:
   - name: NAME
     displayName:
@@ -42,15 +42,15 @@ objects:
   - apiVersion: build.openshift.io/v1
     kind: BuildConfig
     metadata:
-      name: ${NAME}-frontend${SUFFIX}
+      name: ${NAME}-cra${SUFFIX}
       creationTimestamp:
       annotations:
-        description: Defines how to build the frontend image in docker
+        description: Defines how to build the cra image in docker
     spec:
       output:
         to:
           kind: ImageStreamTag
-          name: ${NAME}-frontend:${VERSION}
+          name: ${NAME}-cra:${VERSION}
       resources:
         limits:
           cpu: 1500m
