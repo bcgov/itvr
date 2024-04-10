@@ -7,6 +7,9 @@ WORKDIR /app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 COPY libs ./libs
+RUN mkdir .m2 && \
+    chgrp -R root .m2 && \
+    chmod -R g+rw .m2 
 RUN ./mvnw dependency:resolve
 
 COPY src ./src
