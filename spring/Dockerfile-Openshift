@@ -9,7 +9,9 @@ COPY mvnw pom.xml ./
 COPY libs ./libs
 RUN mkdir /.m2 && \
     chgrp -R root /.m2 && \
-    chmod -R g+rw /.m2 
+    chmod -R g+rw /.m2 && \
+    chgrp -R root /app && \
+    chmod -R g+rw /app
 RUN ./mvnw dependency:resolve
 
 COPY src ./src
