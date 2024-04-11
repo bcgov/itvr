@@ -24,9 +24,11 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 90
 
 backend:
-  sendEmail: 'True'
+  sendEmail: "True"
   minioBucketName: itvrdv
   craEnvrionment: A
-  djangoDebug: 'False'
-  virusScanEnabled: 'True'
-
+  djangoDebug: "False"
+  virusScanEnabled: "True"
+  cryptoServiceUrl: "https://itvr-cra-dev.apps.silver.devops.gov.bc.ca"
+  craCertificate: cra/cra_test_public_key.der
+  epfFilename: cra/BCVRTEST.epf
