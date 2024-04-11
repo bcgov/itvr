@@ -246,7 +246,7 @@ spec:
             - name: CLAMD_PORT
               value: '3310'         
             - name: USE_CRYPTO_SERVICE
-              value: true
+              value: "True"
             - name: CRYPTO_SERVICE_URL
               value: {{ .Values.backend.cryptoServiceUrl }}
             - name: CRA_CERTIFICATE
