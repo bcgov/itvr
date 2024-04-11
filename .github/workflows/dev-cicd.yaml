@@ -21,18 +21,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  call-pr-dev-database-template:
-    if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
-    uses: ./.github/workflows/pr-dev-database-template.yaml
-    with:
-      pr-number: ${{ github.event.pull_request.number }}
-      dev-suffix: -dev
-    secrets:
-      dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
-      itvr-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
-      itvr-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
-      openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
-      openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
+  # call-pr-dev-database-template:
+  #   if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
+  #   uses: ./.github/workflows/pr-dev-database-template.yaml
+  #   with:
+  #     pr-number: ${{ github.event.pull_request.number }}
+  #     dev-suffix: -dev
+  #   secrets:
+  #     dev-namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-dev
+  #     itvr-dev-username: ${{ secrets.ITVR_DEV_USERNAME }}
+  #     itvr-dev-password: ${{ secrets.ITVR_DEV_PASSWORD }}
+  #     openshift-server: ${{ secrets.OPENSHIFT_SERVER }}
+  #     openshift-token: ${{ secrets.OPENSHIFT_TOKEN }}
 
   build-release:
     if: startsWith( github.event.pull_request.title, 'Tracking pull request' )
