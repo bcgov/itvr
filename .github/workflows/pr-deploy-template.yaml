@@ -64,6 +64,7 @@ jobs:
           oc tag ${{ secrets.tools-namespace }}/itvr-frontend:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-frontend:${{ inputs.image-tag-name }}
           oc tag ${{ secrets.tools-namespace }}/itvr-backend:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-backend:${{ inputs.image-tag-name }}
           oc tag ${{ secrets.tools-namespace }}/itvr-task-queue:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-task-queue:${{ inputs.image-tag-name }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-cra:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-cra:${{ inputs.image-tag-name }}
 
       - name: Deploy itvr-frontend
         shell: bash {0}
