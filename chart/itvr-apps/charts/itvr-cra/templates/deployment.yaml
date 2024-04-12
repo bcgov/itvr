@@ -11,6 +11,11 @@ spec:
   selector:
     matchLabels:
       {{- include "itvr-cra.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   template:
     metadata:
       {{- with .Values.podAnnotations }}
