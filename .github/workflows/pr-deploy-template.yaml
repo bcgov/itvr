@@ -52,7 +52,8 @@ jobs:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
+        # uses: redhat-actions/oc-login@v1.3
+        uses: smlgbl/oc-login@main
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}
@@ -107,3 +108,4 @@ jobs:
           helm upgrade --install \
             --set craImageTagName=${{ inputs.image-tag-name }} \
             -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-cra${{ inputs.suffix }} .
+          oc -n ${{ secrets.namespace }} rollout restart deployment/itvr-cra${{ inputs.suffix }}

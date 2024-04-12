@@ -31,7 +31,8 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        # uses: actions/checkout@v3
+        uses: smlgbl/oc-login@main
         with:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
@@ -62,7 +63,8 @@ jobs:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
+        # uses: redhat-actions/oc-login@v1.3
+        uses: smlgbl/oc-login@main
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}
@@ -88,7 +90,8 @@ jobs:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
+        # uses: redhat-actions/oc-login@v1.3
+        uses: smlgbl/oc-login@main
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}
@@ -114,7 +117,8 @@ jobs:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
+        # uses: redhat-actions/oc-login@v1.3
+        uses: smlgbl/oc-login@main
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}
