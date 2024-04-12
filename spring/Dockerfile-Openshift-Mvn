@@ -29,6 +29,7 @@ WORKDIR /app
 
 # Copy the built JAR file from the builder stage
 COPY --from=builder /app/target/spring-cra-1.0.jar ./spring-cra-1.0.jar
+COPY --from=builder /app/libs ./libs
 
 # Expose the port your application runs on
 EXPOSE 8080
