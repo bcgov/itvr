@@ -28,10 +28,10 @@ FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 # Copy the built JAR file from the builder stage
-COPY --from=builder /app/target/your-application.jar ./app.jar
+COPY --from=builder /app/target/spring-cra-1.0.jar ./spring-cra-1.0.jar
 
 # Expose the port your application runs on
 EXPOSE 8080
 
 # Run the JAR file
-CMD ["java", "-jar", "app.jar", "-Denvironment=production", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]
+CMD ["java", "-jar", "spring-cra-1.0.jar", "-Denvironment=production", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]
