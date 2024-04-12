@@ -31,6 +31,8 @@ WORKDIR /app
 COPY --from=builder /app/target/spring-cra-1.0.jar ./spring-cra-1.0.jar
 COPY --from=builder /app/libs ./libs
 
+ENV CLASSPATH=.:/app/lib/enttoolkit.jar
+
 # Expose the port your application runs on
 EXPOSE 8080
 
