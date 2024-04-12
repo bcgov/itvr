@@ -29,6 +29,6 @@ backend:
   craEnvrionment: A
   djangoDebug: "False"
   virusScanEnabled: "True"
-  cryptoServiceUrl: "https://itvr-cra-dev.apps.silver.devops.gov.bc.ca"
+  cryptoServiceUrl: "http://itvr-cra-dev.ac294c-dev.svc.cluster.local:8080"
   craCertificate: cra/cra_test_public_key.der
   epfFilename: cra/BCVRTEST.epf
