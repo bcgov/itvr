@@ -37,8 +37,6 @@
       <groupId>entrust</groupId>
       <artifactId>toolkit</artifactId>
       <version>1.0</version>
-      <!-- scope>system</scope>
-      <systemPath>${basedir}/libs/enttoolkit.jar</systemPath -->
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
