@@ -20,7 +20,8 @@ RUN mvn dependency:resolve
 COPY src ./src
 
 # Build the application
-RUN mvn package
+RUN mvn package \
+  ls -l /app/target
 
 # Start a new stage to reduce the size of the final image
 FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
@@ -31,7 +32,7 @@ WORKDIR /app
 COPY --from=builder /app/target/spring-cra-1.0.jar ./spring-cra-1.0.jar
 COPY --from=builder /app/libs ./libs
 
-ENV CLASSPATH=.:/app/lib/enttoolkit.jar
+ENV CLASSPATH=.:/app/libs/enttoolkit.jar
 
 # Expose the port your application runs on
 EXPOSE 8080
