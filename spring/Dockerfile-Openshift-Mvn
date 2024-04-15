@@ -29,7 +29,7 @@ FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 # Copy the built JAR file from the builder stage
-COPY --from=builder /app/target/ /app
+COPY --from=builder /app/target/ /app/
 RUN ls -l /app && \
     ls -l /app/classes
 # COPY --from=builder /app/libs ./libs
