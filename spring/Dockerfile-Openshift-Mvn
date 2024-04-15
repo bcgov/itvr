@@ -32,7 +32,7 @@ WORKDIR /app
 COPY --from=builder /app/target/ /app/
 RUN ls -l /app && \
     ls -l /app/classes
-# COPY --from=builder /app/libs ./libs
+COPY --from=builder /app/libs ./libs
 
 # ENV CLASSPATH=.:/app/libs/enttoolkit.jar
 
@@ -40,4 +40,4 @@ RUN ls -l /app && \
 EXPOSE 8080
 
 # Run the JAR file
-CMD ["java", "-jar", "spring-cra-1.0.jar", "-Denvironment=production", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]
+CMD ["java", "-cp", "/app/libs/enttoolkit.jar", "-jar", "spring-cra-1.0.jar", "-Denvironment=production", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]
