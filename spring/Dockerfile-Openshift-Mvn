@@ -20,8 +20,8 @@ RUN mvn dependency:resolve
 COPY src ./src
 
 # Build the application
-RUN mvn package \
-  ls -l /app/target
+RUN mvn package && \
+    ls -l /app/target
 
 # Start a new stage to reduce the size of the final image
 FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
