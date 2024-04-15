@@ -5,16 +5,6 @@ name: ITVR Dev release-1.25.0
 on:
   pull_request:
     types: [opened, edited, synchronize]
-    paths:
-      - frontend/**
-      - backend/**
-      - spring/**
-  workflow_dispatch:
-    inputs:
-      pull_request:
-        description: "Tracking pull request number"
-        required: true
-        default: 659
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

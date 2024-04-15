@@ -107,7 +107,7 @@ tolerations: []
 affinity: {}
 
 route:
-  create: true
+  create: false
 
 env:
   - name: SERVER_PORT
