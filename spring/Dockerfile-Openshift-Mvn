@@ -29,10 +29,12 @@ FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 # Copy the built JAR file from the builder stage
-COPY --from=builder /app/target/spring-cra-1.0.jar ./spring-cra-1.0.jar
-COPY --from=builder /app/libs ./libs
+COPY --from=builder /app/target/ /app
+RUN ls -l /app && \
+    ls -l /app/classes
+# COPY --from=builder /app/libs ./libs
 
-ENV CLASSPATH=.:/app/libs/enttoolkit.jar
+# ENV CLASSPATH=.:/app/libs/enttoolkit.jar
 
 # Expose the port your application runs on
 EXPOSE 8080
