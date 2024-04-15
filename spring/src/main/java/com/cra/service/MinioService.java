@@ -8,6 +8,8 @@ import java.io.InputStream;
 import io.minio.MinioClient;
 import io.minio.GetObjectArgs;
 
+import com.cra.utility.SecurityProviderUtil;
+
 @Service
 public class MinioService {
     @Value("${MINIO_ENDPOINT}")
@@ -30,12 +32,15 @@ public class MinioService {
     }
 
     public InputStream getObject(String objectName) throws Exception {
+        SecurityProviderUtil.removeCustomSecurityProviders();
         MinioClient client = getClient();
-        return client.getObject(
+        InputStream result = client.getObject(
                 GetObjectArgs.builder()
                         .bucket(bucketName)
                         .object(objectName)
                         .build());
+        SecurityProviderUtil.addCustomSecurityProviders();
+        return result;
     }
 
 }
