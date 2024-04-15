@@ -15,8 +15,6 @@ RUN mkdir /.m2 && \
 
 RUN mvn install:install-file -Dfile=./libs/enttoolkit.jar -DgroupId=entrust -DartifactId=toolkit -Dversion=1.0 -Dpackaging=jar
 
-RUN mvn clean install
-
 # Resolve project dependencies
 RUN mvn dependency:resolve
 
