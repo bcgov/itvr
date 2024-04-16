@@ -29,7 +29,7 @@ COPY src ./src
 RUN mvn package
 
 # Start a new stage to reduce the size of the final image
-FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
+FROM artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:22_36-jre
 
 WORKDIR /app
 
