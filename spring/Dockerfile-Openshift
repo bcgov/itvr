@@ -15,9 +15,9 @@ RUN mkdir /.m2 && \
 
 RUN mvn install:install-file -Dfile=./libs/enttoolkit.jar -DgroupId=entrust -DartifactId=toolkit -Dversion=1.0 -Dpackaging=jar
 
-RUN curl -o ./entrustcodesignca.cer https://web.entrust.com/root-certificates/CSBR1.cer?_ga=2.238222531.2119537634.1657895221-140272303.1651182067
+# RUN curl -o ./entrustcodesignca.cer https://web.entrust.com/root-certificates/CSBR1.cer?_ga=2.238222531.2119537634.1657895221-140272303.1651182067
 
-RUN keytool -importcert -file entrustcodesignca.cer -keystore /opt/java/openjdk/lib/security/cacerts -alias "entrustcodesignca" -storepass changeit
+# RUN keytool -importcert -file entrustcodesignca.cer -keystore /opt/java/openjdk/lib/security/cacerts -alias "entrustcodesignca" -storepass changeit
 
 # Resolve project dependencies
 RUN mvn dependency:resolve
@@ -35,6 +35,8 @@ WORKDIR /app
 
 # Copy the built JAR file from the builder stage
 COPY --from=builder /app/target/spring-cra-1.0.jar /app/spring-cra-1.0.jar
+
+RUN echo "\ngrant codeBase \"file:/app/spring-cra-1.0.jar\" { \n\tpermission java.security.AllPermission;\n};" >> /opt/java/openjdk/lib/security/default.policy
 
 # Expose the port your application runs on
 EXPOSE 8080
