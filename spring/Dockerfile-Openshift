@@ -17,7 +17,7 @@ RUN mvn install:install-file -Dfile=./libs/enttoolkit.jar -DgroupId=entrust -Dar
 
 RUN curl -o ./entrustcodesignca.cer https://web.entrust.com/root-certificates/CSBR1.cer?_ga=2.238222531.2119537634.1657895221-140272303.1651182067
 
-RUN keytool -importcert -file entrustcodesignca.cer -keystore /opt/java/openjdk/lib/security/cacerts -alias "entrustcodesignca"
+RUN keytool -importcert -file entrustcodesignca.cer -keystore /opt/java/openjdk/lib/security/cacerts -alias "entrustcodesignca" -storepass changeit
 
 # Resolve project dependencies
 RUN mvn dependency:resolve
