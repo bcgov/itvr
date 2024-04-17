@@ -43,7 +43,6 @@ RUN keytool -importcert -file ./codesigncerts/entrustca.pem -keystore /opt/java/
 
 RUN echo "\ngrant codeBase \"file:/app/spring-cra-1.0.jar\" { \n\tpermission java.security.AllPermission;\n};" >> /opt/java/openjdk/lib/security/default.policy
 
-RUN 
 # Expose the port your application runs on
 EXPOSE 8080
 
