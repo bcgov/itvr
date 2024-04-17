@@ -38,11 +38,11 @@ COPY --from=builder /app/target/spring-cra-1.0.jar /app/spring-cra-1.0.jar
 
 COPY codesigncerts ./codesigncerts
 
-RUN keytool -importcert -file ./codesigncerts/entrustca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustcodesign -noprompt && \
-    keytool -importcert -file ./codesigncerts/jceca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias jcecodesign -noprompt && \
-    keytool -importcert -file ./codesigncerts/entrustt1.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustt1 -noprompt && \
-    keytool -importcert -file ./codesigncerts/entrustt2.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustt2 -noprompt && \
-    keytool -importcert -file ./codesigncerts/entrustt3.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustt3 -noprompt
+RUN keytool -importcert -file ./codesigncerts/entrustca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustcodesign -cacerts -noprompt && \
+    keytool -importcert -file ./codesigncerts/jceca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias jcecodesign -cacerts -noprompt && \
+    keytool -importcert -file ./codesigncerts/entrustt1.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustt1 -cacerts -noprompt && \
+    keytool -importcert -file ./codesigncerts/entrustt2.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustt2 -cacerts -noprompt && \
+    keytool -importcert -file ./codesigncerts/entrustt3.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustt3 -cacerts -noprompt
 
 RUN echo "\ngrant codeBase \"file:/app/spring-cra-1.0.jar\" { \n\tpermission java.security.AllPermission;\n};" >> /opt/java/openjdk/lib/security/default.policy
 
