@@ -38,8 +38,8 @@ COPY --from=builder /app/target/spring-cra-1.0.jar /app/spring-cra-1.0.jar
 
 COPY codesigncerts ./codesigncerts
 
-RUN keytool -importcert -file .codesigncerts/entrustca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustcodesign && \
-    keytool -importcert -file .codesigncerts/jceca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias jcecodesign
+RUN keytool -importcert -file ./codesigncerts/entrustca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias entrustcodesign && \
+    keytool -importcert -file ./codesigncerts/jceca.pem -keystore /opt/java/openjdk/lib/security/cacerts -storepass changeit -alias jcecodesign
 
 RUN echo "\ngrant codeBase \"file:/app/spring-cra-1.0.jar\" { \n\tpermission java.security.AllPermission;\n};" >> /opt/java/openjdk/lib/security/default.policy
 
