@@ -113,7 +113,7 @@ auth:
   rootPassword: ""
   ## @param auth.existingSecret Use existing secret for credentials details (`auth.rootUser` and `auth.rootPassword` will be ignored and picked up from this secret). The secret has to contain the keys `root-user` and `root-password`)
   ##
-  existingSecret: "itvr-minio-dev"
+  existingSecret: ""
   ## @param auth.forcePassword Force users to specify required passwords
   ##
   forcePassword: false
@@ -212,7 +212,7 @@ statefulset:
   podManagementPolicy: Parallel
   ## @param statefulset.replicaCount Number of pods per zone (only for MinIO&reg; distributed mode). Should be even and `>= 4`
   ##
-  replicaCount: 1
+  replicaCount: 4
   ## @param statefulset.zones Number of zones (only for MinIO&reg; distributed mode)
   ##
   zones: 1
@@ -409,7 +409,7 @@ provisioning:
   ## @param provisioning.podSecurityContext.fsGroup Group ID for the container
   ##
   podSecurityContext:
-    enabled: false
+    enabled: true
     fsGroupChangePolicy: Always
     sysctls: []
     supplementalGroups: []
@@ -428,7 +428,7 @@ provisioning:
   ## @param provisioning.containerSecurityContext.seccompProfile.type Set container's Security Context seccomp profile
   ##
   containerSecurityContext:
-    enabled: false
+    enabled: true
     seLinuxOptions: {}
     runAsUser: 1001
     runAsGroup: 1001
@@ -454,7 +454,7 @@ provisioning:
   networkPolicy:
     ## @param provisioning.networkPolicy.enabled Enable creation of NetworkPolicy resources
     ##
-    enabled: false
+    enabled: true
     ## @param provisioning.networkPolicy.allowExternalEgress Allow the pod to access any range of port and all destinations.
     ##
     allowExternalEgress: true
@@ -517,7 +517,7 @@ containerPorts:
 ## @param podSecurityContext.fsGroupChangePolicy When K8s should preform chown on attached volumes
 ##
 podSecurityContext:
-  enabled: false
+  enabled: true
   sysctls: []
   supplementalGroups: []
   fsGroup: 1001
@@ -536,7 +536,7 @@ podSecurityContext:
 ## @param containerSecurityContext.seccompProfile.type Set container's Security Context seccomp profile
 ##
 containerSecurityContext:
-  enabled: false
+  enabled: true
   seLinuxOptions: {}
   runAsUser: 1001
   runAsGroup: 1001
@@ -616,7 +616,7 @@ runtimeClassName: ""
 ## @param resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production).
 ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
 ##
-resourcesPreset: "none"
+resourcesPreset: "micro"
 ## @param resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
 ## Example:
 ## resources:
@@ -627,13 +627,7 @@ resourcesPreset: "none"
 ##     cpu: 3
 ##     memory: 1024Mi
 ##
-resources:
-  requests:
-    cpu: 50m
-    memory: 150Mi
-  limits:
-    cpu: 100m
-    memory: 300Mi
+resources: {}
 ## Configure extra options for liveness probe
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
 ## @param livenessProbe.enabled Enable livenessProbe
@@ -645,7 +639,7 @@ resources:
 ##
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 30
+  initialDelaySeconds: 5
   periodSeconds: 5
   timeoutSeconds: 5
   successThreshold: 1
@@ -661,7 +655,7 @@ livenessProbe:
 ##
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 20
+  initialDelaySeconds: 5
   periodSeconds: 5
   timeoutSeconds: 1
   successThreshold: 1
@@ -1073,7 +1067,7 @@ persistence:
     - ReadWriteOnce
   ## @param persistence.size PVC Storage Request for MinIO&reg; data volume
   ##
-  size: 30Mi
+  size: 8Gi
   ## @param persistence.annotations Annotations for the PVC
   ##
   annotations: {}
@@ -1147,7 +1141,7 @@ volumePermissions:
 serviceAccount:
   ## @param serviceAccount.create Enable the creation of a ServiceAccount for MinIO&reg; pods
   ##
-  create: false
+  create: true
   ## @param serviceAccount.name Name of the created ServiceAccount
   ## If not set and create is true, a name is generated using the common.names.fullname template
   ##
