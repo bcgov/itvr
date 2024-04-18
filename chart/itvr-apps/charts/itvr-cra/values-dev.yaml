@@ -117,19 +117,16 @@ env:
   - name: DIRECTORY_PORT
     value: "389"
   - name: MINIO_ENDPOINT
-    valueFrom:
-      secretKeyRef:
-        name: itvr-object-storage
-        key: server-url
+    value: https://itvr-minio-dev.apps.silver.devops.gov.bc.ca
   - name: MINIO_ROOT_USER
     valueFrom:
       secretKeyRef:
-        name: itvr-object-storage
+        name: itvr-minio-dev
         key: root-user
   - name: MINIO_ROOT_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: itvr-object-storage
+        name: itvr-minio-dev
         key: root-password
   - name: MINIO_BUCKET_NAME
-    value: itvrdv
+    value: cra
