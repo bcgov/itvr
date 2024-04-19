@@ -1,0 +1,79 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: allow-crunchy-accepts
+parameters:
+  - name: ENV
+    displayName: null
+    description: such as dev, test or prod
+    required: true
+objects:
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: allow-crunchy-accepts-${ENV}
+    spec:
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: itvr-crunchy-${ENV}
+          app.kubernetes.io/name: crunchy-postgres
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-crunchy-${ENV}
+                  app.kubernetes.io/name: crunchy-postgres
+        - ports:
+            - protocol: TCP
+              port: 5432
+          from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-backend-${ENV}
+                  app.kubernetes.io/name: itvr-backend
+        - ports:
+            - protocol: TCP
+              port: 5432
+          from:
+            - podSelector:
+                matchLabels:
+                  openshift.io/deployer-pod.type: hook-mid
+        - ports:
+            - protocol: TCP
+              port: 5432
+          from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: itvr-task-queue-${ENV}
+                  app.kubernetes.io/name: crunchy-postgres
+        - ports:
+            - protocol: TCP
+              port: 5432
+          from:
+            - podSelector:
+                matchLabels:
+                  cronjob: itvr-db-backup
+        - ports:
+            - protocol: TCP
+              port: 5432
+          from:
+            - namespaceSelector:
+                matchLabels:
+                  environment: ${ENV}
+                  name: 30b186
+            - podSelector:
+                matchLabels:
+                  app: metabase
+        - ports:
+            - protocol: TCP
+              port: 9187
+          from:
+            - namespaceSelector:
+                matchLabels:
+                  environment: tools
+                  name: 0ab226
+            - podSelector:
+                matchLabels:
+                  name: crunchy-prometheus
+      policyTypes:
+        - Ingress
