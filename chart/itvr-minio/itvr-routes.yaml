@@ -1,0 +1,45 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: itvr-minio-route
+parameters:
+  - name: ENV
+    displayName: null
+    description: dev, test or prod
+    required: true
+objects:
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: itvr-minio-console-${ENV}
+    spec:
+      host: itvr-minio-console-${ENV}.apps.silver.devops.gov.bc.ca
+      path: /
+      port:
+        targetPort: 9001
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: itvr-minio-${ENV}
+        weight: 100
+      wildcardPolicy: None
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: itvr-minio-${ENV}
+    spec:
+      host: itvr-minio-${ENV}.apps.silver.devops.gov.bc.ca
+      path: /
+      port:
+        targetPort: 9000
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: itvr-minio-${ENV}
+        weight: 100
+      wildcardPolicy: None
