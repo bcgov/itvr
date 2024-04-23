@@ -117,7 +117,7 @@ env:
   - name: DIRECTORY_PORT
     value: "389"
   - name: MINIO_ENDPOINT
-    value: https://itvr-minio-test.apps.silver.devops.gov.bc.ca
+    value: http://itvr-minio-test.ac294c-test.svc.cluster.local:9000
   - name: MINIO_ROOT_USER
     valueFrom:
       secretKeyRef:
