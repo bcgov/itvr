@@ -1,0 +1,105 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: itvr-cleanup
+parameters:
+  - name: LICENSE_PLATE
+    description: license plate for the projec
+    required: true
+  - name: LOGIN_TOKEN_SECRET
+    description: The secret having the login token
+    required: true
+objects:
+  - kind: CronJob
+    apiVersion: batch/v1
+    metadata:
+      name: itvr-cleanup
+    spec:
+      schedule: 0 7 * * *
+      concurrencyPolicy: Forbid
+      suspend: false
+      jobTemplate:
+        metadata:
+          creationTimestamp: null
+        spec:
+          template:
+            metadata:
+              creationTimestamp: null
+            spec:
+              containers:
+                - resources:
+                    limits:
+                      cpu: 100m
+                      memory: 100Mi
+                    requests:
+                      cpu: 50m
+                      memory: 50Mi
+                  terminationMessagePath: /dev/termination-log
+                  name: oc
+                  command:
+                    - /bin/sh
+                    - "-c"
+                  env:
+                    - name: LOGIN_TOKEN
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${LOGIN_TOKEN_SECRET}
+                          key: token
+                  imagePullPolicy: Always
+                  terminationMessagePolicy: File
+                  image: >-
+                    image-registry.openshift-image-registry.svc:5000/${LICENSE_PLATE}-tools/itvr-cleanup:prod
+                  args:
+                    - >
+                      date
+
+                      oc login --token=$(LOGIN_TOKEN) --server=https://api.silver.devops.gov.bc.ca:6443
+
+                      oc version
+
+                      echo "====> Cleaning up builds under ${LICENSE_PLATE}-tools" 
+
+                      oc -n ${LICENSE_PLATE}-tools get builds | grep -E "Complete|Failed|Cancelled" | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-tools delete build || true
+
+                      namespaces=("${LICENSE_PLATE}-tools" "${LICENSE_PLATE}-dev" "${LICENSE_PLATE}-test")
+
+                      for namespace in "${namespaces[@]}"; do
+
+                          echo "====> Cleaning up pods under $namespace"
+
+                          oc -n "$namespace" get pods | grep -E "Completed|Error|ContainerStatusUnknown" | grep -v crunchy | grep -v spilo | awk '{print $1}' | xargs oc -n "$namespace" delete pod || true
+
+                      done
+
+                      envs=("dev" "test")
+
+                      for env in "${envs[@]}"; do
+
+                        runningBackendImageTag=$(oc -n ${LICENSE_PLATE}-$env describe dc/itvr-backend-$env | grep Triggers | grep itvr-backend | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
+                        
+                        echo "====> Cleaning up unused backend image tags on ${LICENSE_PLATE}-$env"
+                        
+                        oc -n ${LICENSE_PLATE}-$env get imagetags | grep itvr-backend | grep -v $runningBackendImageTag | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-$env delete imagetag || true
+
+                        runningFrontendImageTag=$(oc -n ${LICENSE_PLATE}-$env describe dc/itvr-frontend-$env | grep Triggers | grep itvr-frontend | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
+                        
+                        echo "====> Cleaning up unused frontend image tags on ${LICENSE_PLATE}-$env"
+                        
+                        oc -n ${LICENSE_PLATE}-$env get imagetags | grep itvr-frontend | grep -v $runningFrontendImageTag | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-$env delete imagetag || true
+
+                        runningTaskQueueImageTag=$(oc -n ${LICENSE_PLATE}-$env describe dc/itvr-task-queue-$env | grep Triggers | grep itvr-task-queue | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
+                        
+                        echo "====> Cleaning up unused task-queue image tags on ${LICENSE_PLATE}-$env"
+                        
+                        oc -n ${LICENSE_PLATE}-$env get imagetags | grep itvr-task-queue | grep -v $runningTaskQueueImageTag | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-$env delete imagetag || true
+
+                      done
+
+              restartPolicy: OnFailure
+              terminationGracePeriodSeconds: 30
+              dnsPolicy: ClusterFirst
+              securityContext: {}
+              schedulerName: default-scheduler
+      successfulJobsHistoryLimit: 3
+      failedJobsHistoryLimit: 1
