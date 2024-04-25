@@ -1,23 +1,17 @@
 import Box from '@mui/material/Box';
 import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
-import { BCEID_KEYCLOAK_REALM, BCSC_KEYCLOAK_REALM } from '../config';
+import { BCSC_KEYCLOAK_REALM } from '../config';
 import { keycloakInitOptions, keycloaks } from '../keycloak';
 const BottomBanner = (props) => {
-  const { text = '', type = '', householdApplicationId = '' } = props;
+  const { text = ''} = props;
   const { keycloak } = useKeycloak();
-  const redirectUri = householdApplicationId
-    ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
-    : `${window.location.origin}/form`;
+  const redirectUri = `${window.location.origin}/form`;
 
   return (
     <>
       <div
-        className={
-          type === 'individual'
-            ? 'start-application-individual'
-            : 'start-application-spouse'
-        }
+        className={'start-application-individual'}
       >
         <h1 id="start-text">{text}</h1>
         <Box sx={{ flexWrap: 'wrap', flexDirection: 'row' }}>

@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import FileDropArea from './FileDropArea';
 
 const Upload = (props) => {
-  const { errors, applicationType } = props;
+  const { errors } = props;
   return (
     <>
       <Box className="form-upload-instructions">
@@ -12,7 +12,6 @@ const Upload = (props) => {
         <ul>
           <li>
             The full image of the photo side of your BC Driver's Licence
-            {applicationType === 'spouse' && ' or BC Services Card'}
             . Name, address and date of birth must be visible.
           </li>
           <li>

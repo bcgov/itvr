@@ -50,7 +50,6 @@ export function scenario_1() {
       formData.append('consent_personal', 'true')
       formData.append('consent_tax', 'true')
       formData.append('application_type', 'individual')
-      formData.append('spouse_email', '')
 
       response = http.post(
         'https://itvr-backend-dev-150.apps.silver.devops.gov.bc.ca/api/application-form',

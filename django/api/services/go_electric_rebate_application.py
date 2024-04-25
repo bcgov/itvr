@@ -21,7 +21,6 @@ def equivalent_drivers_licence_number_found(
         .filter(
             status__in=[
                 GoElectricRebateApplication.Status.SUBMITTED,
-                GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED,
                 GoElectricRebateApplication.Status.VERIFIED,
                 GoElectricRebateApplication.Status.APPROVED,
                 GoElectricRebateApplication.Status.REDEEMED,

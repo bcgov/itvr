@@ -6,25 +6,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 
 const InfoTable = ({
-  householdInfo = {},
   kcToken = '',
   bcscMissingFields = []
 }) => {
   function createData(name, answer) {
     return { name, answer };
   }
-  const rows = kcToken
-    ? [
+  const rows = [
         createData('Your last name (surname):', kcToken.family_name),
         createData('First name (given name):', kcToken.given_name),
         createData('Date of birth:', kcToken.birthdate),
         createData('Street address:', kcToken.street_address),
         createData('City:', kcToken.locality)
-      ]
-    : [
-        createData('Street address:', householdInfo.address),
-        createData('City:', householdInfo.city),
-        createData('Postal Code:', householdInfo.postal_code)
       ];
 
   if (kcToken && kcToken.postal_code) {

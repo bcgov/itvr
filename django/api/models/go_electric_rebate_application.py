@@ -30,28 +30,12 @@ from api.validators import (
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import classproperty
-from api.signals import household_application_saved
 
 media_storage = get_storage_class()()
 
 
-class ApplicationManager(Manager):
-    def create(self, **kwargs):
-        spouse_email = kwargs.pop("spouse_email", None)
-        obj = super().create(**kwargs)
-        if spouse_email:
-            household_application_saved.send(
-                sender=GoElectricRebateApplication,
-                instance=obj,
-                created=True,
-                spouse_email=spouse_email,
-            )
-        return obj
-
 
 class GoElectricRebateApplication(TimeStampedModel):
-    objects = ApplicationManager()
-
     class Status(TextChoices):
         HOUSEHOLD_INITIATED = ("household_initiated", _("Household Initiated"))
         SUBMITTED = ("submitted", _("Submitted"))

@@ -10,32 +10,21 @@
   margin: 0 3rem 2rem 3rem;
 }
 
-.whats-needed {
-  &-individual,
-  &-spouse {
-    margin-top: 2rem;
-  }
-  &-individual {
-    background: $background-grey-light;
-  }
-  &-spouse {
-    background: $white;
-  }
+.whats-needed-individual {
+  margin-top: 2rem;
+  background: $background-grey-light;
 }
 
-.start-application {
-  &-individual,
-  &-spouse {
-    margin-top: -2rem;
-    background-image: url('./images/body-graphic.svg');
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: cover;
-    padding-left: 6rem;
-    padding-top: 6rem;
-    min-height: 55vh;
-    background-color: $white;
-  }
+.start-application-individual {
+  margin-top: -2rem;
+  background-image: url('./images/body-graphic.svg');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  padding-left: 6rem;
+  padding-top: 6rem;
+  min-height: 55vh;
+  background-color: $white;
 }
 
 #start-text {
@@ -45,28 +34,22 @@
   color: $white;
 }
 @media (max-width: 820px) {
-  .whats-needed {
-    &-individual,
-    &-spouse {
+  .whats-needed-individual {
       padding: 0;
       margin-top: 2rem;
-    }
   }
-  .start-application {
-    &-individual,
-    &-spouse {
-      background-image: none;
-      margin: 0;
-      padding: 0.5rem 0 0.5rem;
-      min-height: 30vh;
-      #start-text {
-        margin-top: 0;
-        color: $black;
-        font-size: 1.5rem;
-      }
-      a {
-        font-size: 1rem;
-      }
+  .start-application-individual {
+    background-image: none;
+    margin: 0;
+    padding: 0.5rem 0 0.5rem;
+    min-height: 30vh;
+    #start-text {
+      margin-top: 0;
+      color: $black;
+      font-size: 1.5rem;
+    }
+    a {
+      font-size: 1rem;
     }
   }
   #bceid-login-button {

@@ -12,7 +12,3 @@ def set_email_status(task):
         GoElectricRebateApplication.objects.filter(pk=application_id).update(
             confirmation_email_success=email_successful
         )
-    elif task.func == "api.tasks.send_spouse_initial_message":
-        GoElectricRebateApplication.objects.filter(pk=application_id).update(
-            spouse_email_success=email_successful
-        )
