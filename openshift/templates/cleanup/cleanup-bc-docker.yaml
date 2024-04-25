@@ -1,0 +1,53 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: frontend
+parameters:
+  - name: GIT_URL
+    displayName:
+    description: itvr repo
+    required: true
+  - name: GIT_REF
+    displayName:
+    description: itvr branch name of the pr
+    required: true
+objects:
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        description: cleanup
+      creationTimestamp: null
+      name: itvr-cleanup
+    spec:
+      lookupPolicy:
+        local: false
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: itvr-cleanup
+      creationTimestamp:
+    spec:
+      output:
+        to:
+          kind: ImageStreamTag
+          name: itvr-cleanup:prod
+      resources:
+        limits:
+          cpu: 1500m
+          memory: 1300Mi
+        requests:
+          cpu: 750m
+          memory: 650Mi
+      source:
+        contextDir: openshift/templates/cleanup
+        git:
+          uri: ${GIT_URL}
+          ref: ${GIT_REF}
+        type: Git
+      strategy:
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+        pullSecret:
+          name: 11454579-kuan.fan-pull-secret
