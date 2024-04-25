@@ -47,7 +47,6 @@ objects:
           ref: ${GIT_REF}
         type: Git
       strategy:
+        type: Docker
         dockerStrategy:
           dockerfilePath: Dockerfile
-        pullSecret:
-          name: 11454579-kuan.fan-pull-secret
