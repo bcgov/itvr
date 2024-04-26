@@ -58,41 +58,49 @@ objects:
 
                       oc version
 
-                      echo "====> Cleaning up builds under ${LICENSE_PLATE}-tools" 
+                      echo ""
+
+                      echo "====> Cleaning up ${LICENSE_PLATE}-tools" 
+
+                      echo "==========> Removing expired builds"
 
                       oc -n ${LICENSE_PLATE}-tools get builds | grep -E "Complete|Failed|Cancelled" | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-tools delete build || true
 
-                      namespaces=("${LICENSE_PLATE}-tools" "${LICENSE_PLATE}-dev" "${LICENSE_PLATE}-test")
+                      echo "==========> Removing expired pods"
+
+                      oc -n ${LICENSE_PLATE}-tools get pods | grep -E "Completed|Error|ContainerStatusUnknown" | grep -v crunchy | grep -v spilo | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-tools delete pod || true
+
+                      namespaces=("${LICENSE_PLATE}-dev" "${LICENSE_PLATE}-test")
 
                       for namespace in "${namespaces[@]}"; do
 
-                          echo "====> Cleaning up pods under $namespace"
+                          echo ""
 
-                          oc -n "$namespace" get pods | grep -E "Completed|Error|ContainerStatusUnknown" | grep -v crunchy | grep -v spilo | awk '{print $1}' | xargs oc -n "$namespace" delete pod || true
+                          echo "====> Cleaning up $namespace"
 
-                      done
+                          echo "==========> Removing expired pods"
 
-                      envs=("dev" "test")
+                          oc -n $namespace get pods | grep -E "Completed|Error|ContainerStatusUnknown" | grep -v crunchy | grep -v spilo | awk '{print $1}' | xargs oc -n $namespace delete pod || true
 
-                      for env in "${envs[@]}"; do
+                          env=$(echo $namespace | awk -F '-' '{print $NF}')
 
-                        runningBackendImageTag=$(oc -n ${LICENSE_PLATE}-$env describe dc/itvr-backend-$env | grep Triggers | grep itvr-backend | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
-                        
-                        echo "====> Cleaning up unused backend image tags on ${LICENSE_PLATE}-$env"
-                        
-                        oc -n ${LICENSE_PLATE}-$env get imagetags | grep itvr-backend | grep -v $runningBackendImageTag | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-$env delete imagetag || true
+                          echo "==========> Removing expired backend images"
 
-                        runningFrontendImageTag=$(oc -n ${LICENSE_PLATE}-$env describe dc/itvr-frontend-$env | grep Triggers | grep itvr-frontend | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
-                        
-                        echo "====> Cleaning up unused frontend image tags on ${LICENSE_PLATE}-$env"
-                        
-                        oc -n ${LICENSE_PLATE}-$env get imagetags | grep itvr-frontend | grep -v $runningFrontendImageTag | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-$env delete imagetag || true
+                          runningBackendImageTag=$(oc -n $namespace describe dc/itvr-backend-$env | grep Triggers | grep itvr-backend | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
+                          
+                          oc -n $namespace get imagetags | grep itvr-backend | grep -v $runningBackendImageTag | awk '{print $1}' | xargs oc -n $namespace delete imagetag || true
 
-                        runningTaskQueueImageTag=$(oc -n ${LICENSE_PLATE}-$env describe dc/itvr-task-queue-$env | grep Triggers | grep itvr-task-queue | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
-                        
-                        echo "====> Cleaning up unused task-queue image tags on ${LICENSE_PLATE}-$env"
-                        
-                        oc -n ${LICENSE_PLATE}-$env get imagetags | grep itvr-task-queue | grep -v $runningTaskQueueImageTag | awk '{print $1}' | xargs oc -n ${LICENSE_PLATE}-$env delete imagetag || true
+                          echo "==========> Removing expired frontend images"
+
+                          runningFrontendImageTag=$(oc -n $namespace describe dc/itvr-frontend-$env | grep Triggers | grep itvr-frontend | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
+                          
+                          oc -n $namespace get imagetags | grep itvr-frontend | grep -v $runningFrontendImageTag | awk '{print $1}' | xargs oc -n $namespace delete imagetag || true
+
+                          echo "==========> Removing expired task-queue images"
+
+                          runningTaskQueueImageTag=$(oc -n $namespace describe dc/itvr-task-queue-$env | grep Triggers | grep itvr-task-queue | awk -F '@' '{print $2}' | awk -F ',' '{print $1}') || true
+                          
+                          oc -n $namespace get imagetags | grep itvr-task-queue | grep -v $runningTaskQueueImageTag | awk '{print $1}' | xargs oc -n $namespace delete imagetag || true
 
                       done
 
