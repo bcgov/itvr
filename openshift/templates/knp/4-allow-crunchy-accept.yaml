@@ -45,7 +45,7 @@ objects:
             - podSelector:
                 matchLabels:
                   app.kubernetes.io/instance: itvr-task-queue-${ENV}
-                  app.kubernetes.io/name: crunchy-postgres
+                  app.kubernetes.io/name: itvr-task-queue
         - ports:
             - protocol: TCP
               port: 5432
