@@ -52,8 +52,7 @@ jobs:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        # uses: redhat-actions/oc-login@v1.3
-        uses: smlgbl/oc-login@main
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}

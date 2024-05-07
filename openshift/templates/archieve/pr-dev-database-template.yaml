@@ -8,42 +8,38 @@ on:
         type: string
       dev-suffix:
         required: true
-        type: string        
+        type: string
     secrets:
       dev-namespace:
         required: true
       itvr-dev-username:
         required: true
       itvr-dev-password:
-        required: true       
+        required: true
       openshift-server:
-         required: true 
-      openshift-token:   
-         required: true       
-  
+        required: true
+      openshift-token:
+        required: true
+
 jobs:
-
   database:
-
     name: Start Database
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
     steps:
-
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        # uses: redhat-actions/oc-login@v1.3
-        uses: smlgbl/oc-login@main
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}
           insecure_skip_tls_verify: true
-          namespace: ${{ secrets.dev-namespace }}    
+          namespace: ${{ secrets.dev-namespace }}
 
       - name: Setup Database
         shell: bash {0}
@@ -65,4 +61,3 @@ jobs:
             oc -n ${{ secrets.dev-namespace }} exec itvr-spilo${{ inputs.dev-suffix }}-0 -- psql -c "ALTER SYSTEM SET log_checkpoints='off'" || true
             oc -n ${{ secrets.dev-namespace }} exec itvr-spilo${{ inputs.dev-suffix }}-0 -- psql -c "select pg_reload_conf()" || true
           fi
-
