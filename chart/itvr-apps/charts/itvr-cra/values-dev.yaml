@@ -113,9 +113,15 @@ env:
   - name: SERVER_PORT
     value: "8080"
   - name: DIRECTORY_IP
-    value: "198.103.185.198"
+    valueFrom:
+      secretKeyRef:
+        name: itvr-cra-dev
+        key: DIRECTORY_IP
   - name: DIRECTORY_PORT
-    value: "389"
+    valueFrom:
+      secretKeyRef:
+        name: itvr-cra-dev
+        key: DIRECTORY_PORT
   - name: MINIO_ENDPOINT
     value: http://itvr-minio-dev.ac294c-dev.svc.cluster.local:9000
   - name: MINIO_ROOT_USER

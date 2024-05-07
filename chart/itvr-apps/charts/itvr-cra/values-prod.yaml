@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: image-registry.openshift-image-registry.svc:5000/ac294c-test/itvr-cra
+  repository: image-registry.openshift-image-registry.svc:5000/ac294c-prod/itvr-cra
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -115,24 +115,24 @@ env:
   - name: DIRECTORY_IP
     valueFrom:
       secretKeyRef:
-        name: itvr-cra-test
+        name: itvr-cra-prod
         key: DIRECTORY_IP
   - name: DIRECTORY_PORT
     valueFrom:
       secretKeyRef:
-        name: itvr-cra-test
+        name: itvr-cra-prod
         key: DIRECTORY_PORT
   - name: MINIO_ENDPOINT
-    value: http://itvr-minio-test.ac294c-test.svc.cluster.local:9000
+    value: http://itvr-minio-prod.ac294c-prod.svc.cluster.local:9000
   - name: MINIO_ROOT_USER
     valueFrom:
       secretKeyRef:
-        name: itvr-minio-test
+        name: itvr-minio-prod
         key: root-user
   - name: MINIO_ROOT_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: itvr-minio-test
+        name: itvr-minio-prod
         key: root-password
   - name: MINIO_BUCKET_NAME
     value: cra

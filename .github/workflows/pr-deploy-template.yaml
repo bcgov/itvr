@@ -87,6 +87,7 @@ jobs:
             --set namespace=${{ secrets.namespace }} \
             --set backendImageTagName=${{ inputs.image-tag-name }} \
             --set suffix=${{ inputs.suffix }} \
+            --set envName=${{ inputs.env-name }} \
             --set frontendRouteHostName=${{ inputs.frontend-route-host-name }} \
             -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-backend${{ inputs.suffix }} .
           

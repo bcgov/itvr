@@ -30,5 +30,3 @@ backend:
   djangoDebug: "False"
   virusScanEnabled: "True"
   cryptoServiceUrl: "http://itvr-cra-test.ac294c-test.svc.cluster.local:8080"
-  craCertificate: cra_test_public_key.der
-  epfFilename: BCVRTEST.epf

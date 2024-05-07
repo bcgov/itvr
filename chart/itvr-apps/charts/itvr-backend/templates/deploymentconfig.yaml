@@ -250,15 +250,24 @@ spec:
             - name: CRYPTO_SERVICE_URL
               value: {{ .Values.backend.cryptoServiceUrl }}
             - name: CRA_CERTIFICATE
-              value: {{ .Values.backend.craCertificate }}
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: CRA_CERTIFICATE              
             - name: CRA_CERTIFICATE_CRL_DN
-              value: 'cn=CRL5,ou=EXTTESTCA,ou=Extern,ou=cra-arc,o=GC,c=CA'
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: CRA_CERTIFICATE_CRL_DN   
             - name: EPF_FILENAME
-              value: {{ .Values.backend.epfFilename }}
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: EPF_FILENAME   
             - name: EPF_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: itvr-cra-secret
+                  name: itvr-cra-{{ .Values.envName }}
                   key: EPF_PASSWORD
           ports:
             - containerPort: 8080
