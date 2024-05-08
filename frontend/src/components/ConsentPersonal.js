@@ -37,8 +37,8 @@ const ConsentPersonal = ({ name, required }) => {
             Any misinformation or errors in information can result in the
             Ministry of Energy, Mines and Low Carbon Innovation and any other
             ministry, agency or contractor of the Government of British Columbia
-            requiring the return of the money I and my spouse (if applicable)
-            received, which will be due and payable upon demand.
+            requiring the return of the money I received, which will be due and
+            payable upon demand.
           </li>
           <li>
             I understand that the personal information I provide on this form is
@@ -64,10 +64,7 @@ const ConsentPersonal = ({ name, required }) => {
             British Columbia as a result of incorrect information provided in
             this application. I also agree that information about me that I
             provide to any person referred to above may be provided to any other
-            person referred to above and used for these same purposes. Finally,
-            I agree that information about me that I provide to the CleanBC Go
-            Electric Vehicle Rebate program may be disclosed to my spouse if
-            applicable.
+            person referred to above and used for these same purposes.
           </li>
           <li>
             I consent to the verification of information provided regarding this

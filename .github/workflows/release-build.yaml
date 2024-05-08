@@ -1,4 +1,4 @@
-name: ITVR release-1.24.0
+name: ITVR release-1.25.0
 
 on:
   workflow_dispatch:
@@ -6,11 +6,11 @@ on:
       pull_request:
         description: "Tracking pull request number"
         required: true
-        default: 650
+        default: 659
       release_branch:
         description: "The name of the release branch"
         required: true
-        default: release-1.24.0
+        default: release-1.25.0
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

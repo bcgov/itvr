@@ -47,12 +47,12 @@ jobs:
     steps:
 
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: refs/pull/${{ inputs.pr-number }}/head
 
       - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.2
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{ secrets.openshift-server }}
           openshift_token: ${{ secrets.openshift-token }}
@@ -64,6 +64,7 @@ jobs:
           oc tag ${{ secrets.tools-namespace }}/itvr-frontend:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-frontend:${{ inputs.image-tag-name }}
           oc tag ${{ secrets.tools-namespace }}/itvr-backend:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-backend:${{ inputs.image-tag-name }}
           oc tag ${{ secrets.tools-namespace }}/itvr-task-queue:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-task-queue:${{ inputs.image-tag-name }}
+          oc tag ${{ secrets.tools-namespace }}/itvr-cra:${{ inputs.build-image-tag-name }} ${{ secrets.namespace }}/itvr-cra:${{ inputs.image-tag-name }}
 
       - name: Deploy itvr-frontend
         shell: bash {0}
@@ -85,6 +86,7 @@ jobs:
             --set namespace=${{ secrets.namespace }} \
             --set backendImageTagName=${{ inputs.image-tag-name }} \
             --set suffix=${{ inputs.suffix }} \
+            --set envName=${{ inputs.env-name }} \
             --set frontendRouteHostName=${{ inputs.frontend-route-host-name }} \
             -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-backend${{ inputs.suffix }} .
           
@@ -99,3 +101,11 @@ jobs:
             --set envName=${{ inputs.env-name }} \
             -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-task-queue${{ inputs.suffix }} .
 
+      - name: Deploy itvr-cra
+        shell: bash {0}
+        run: |
+          cd chart/itvr-apps/charts/itvr-cra
+          helm upgrade --install \
+            --set craImageTagName=${{ inputs.image-tag-name }} \
+            -n ${{ secrets.namespace }} -f ./values-${{ inputs.env-name }}.yaml itvr-cra${{ inputs.suffix }} .
+          oc -n ${{ secrets.namespace }} rollout restart deployment/itvr-cra${{ inputs.suffix }}

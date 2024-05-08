@@ -244,7 +244,31 @@ spec:
             - name: CLAMD_HOST
               value: itvr-clamav
             - name: CLAMD_PORT
-              value: '3310'            
+              value: '3310'         
+            - name: USE_CRYPTO_SERVICE
+              value: "True"
+            - name: CRYPTO_SERVICE_URL
+              value: {{ .Values.backend.cryptoServiceUrl }}
+            - name: CRA_CERTIFICATE
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: CRA_CERTIFICATE              
+            - name: CRA_CERTIFICATE_CRL_DN
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: CRA_CERTIFICATE_CRL_DN   
+            - name: EPF_FILENAME
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: EPF_FILENAME   
+            - name: EPF_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: itvr-cra-{{ .Values.envName }}
+                  key: EPF_PASSWORD
           ports:
             - containerPort: 8080
               protocol: TCP

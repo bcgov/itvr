@@ -22,19 +22,15 @@ The ITVR application consists of these main elements:
 
 ITVR system statuses and workflow can be [found documented in the flowchart](https://preview.uxpin.com/7f6104a26108508bb185e1b602677a5f91f49724#/pages/148655810/simulate/no-panels?mode=mf)
 
-## Development
+### Development
 
-Unfortunately we do not have a licence to use Docker Desktop at BC Gov. If you are on a mac [here is a blogpost](https://naomiaro.hashnode.dev/replacing-docker-desktop-with-lima-on-mac-os) about how to setup Lima as an alternative solution for development purposes.
-
-### Backend
-
-The backend and all services are setup to run via docker. To start everything up you can run in the project folder:
+All services are setup to run via docker. To start everything up you can run in the project folder:
 
 ```sh
 docker-compose up --build
 ```
 
-This will start up a [postgres](https://www.postgresql.org/) database, a [Django](https://www.djangoproject.com/) web app, and a [MinIO](https://docs.min.io/docs/minio-quickstart-guide.html) service with a private bucket `itvr`
+This will start up a [postgres](https://www.postgresql.org/) database, a [Django](https://www.djangoproject.com/) web app, a [React](https://react.dev/) frontend app, a [Spring](https://spring.io/projects/spring-boot) REST service, and a [MinIO](https://docs.min.io/docs/minio-quickstart-guide.html) service with a private bucket `itvr`
 
 Add this entry to your `/etc/hosts` file:
 
@@ -97,37 +93,15 @@ REASON : INVALID SEQUENCE NUMBER ON INPUT FILENAME
 
         THE NEXT VALID SEQUENCE NUMBER TO USE IS :   00155
 
+### Spring
+
+This is a service that uses Entrust's Java toolkit to encrypt/decrypt files.
+
 ## Frontend
 
-We've decided to run the frontend outside of docker at this time mostly because of mounted Lima volumes causing issues with npm permissions. [Track the open issue](https://github.com/lima-vm/lima/issues/693)
-
-To run the frontend you will need [node.js](https://nodejs.org/en/) installed. A good way to manage node these days is with [asdf](https://asdf-vm.com/guide/getting-started.html#_1-install-dependencies). File `.tool-versions` contains current versions of tools used in this application. After setting up asdf run this at the project root:
-
-```sh
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf install
-```
-
-The frontend is built using [Create React App](https://create-react-app.dev/). To run the frontend:
-
-```sh
-cd frontend
-npm i
-npm start
-```
+The frontend is built using [Create React App](https://create-react-app.dev/).
 
 The app is available by default at `http://localhost:3000/`
-
-### Storybook
-
-To use [Storybook](https://storybook.js.org/) for developing a component:
-
-```sh
-cd frontend
-npm run storybook
-```
-
-The storybook is available by default at `http://localhost:6006/`
 
 ## Deployment
 
@@ -174,27 +148,26 @@ python manage.py test api.services.tests.test_calculate_rebate
 
 ### Scheduled Jobs
 
-Currently, when the task-queue application starts, it creates scheduled jobs only if those jobs don't already exist in the database. This means that if some aspects of a job are changed (e.g. its arguments concerning timeout time, etc), one has to delete the job first in the admin console before deploying, or update the job manually in the admin console after deploying. This is an open issue, see: https://apps.nrs.gov.bc.ca/int/jira/browse/ZELDA-436
-        
+Currently, when the task-queue application starts, it creates scheduled jobs only if those jobs don't already exist in the database. This means that if some aspects of a job are changed (e.g. its arguments concerning timeout time, etc), one has to delete the job first in the admin console before deploying, or update the job manually in the admin console after deploying.
 
 # List of Dev Work | What to do before bringing in a new ticket into a Sprint
 
-This is a list that was created on 2023-02-01 with all Zelda Devs to provide alternative work instead of bringing in a new ticket.  
+This is a list that was created on 2023-02-01 with all Zelda Devs to provide alternative work instead of bringing in a new ticket.
 
-**Team Rule* Do not bring in ticket After Friday 
+\*_Team Rule_ Do not bring in ticket After Friday
 
-1. Help another Dev - see if other Devs need help to finish their ticket 
+1. Help another Dev - see if other Devs need help to finish their ticket
 
-2. PR Reviews – linked to the task above 
+2. PR Reviews – linked to the task above
 
-3. Writing additional tests – for both tront and back end 
+3. Writing additional tests – for both tront and back end
 
-4. Take a look at Tech Debt tickets - If we bring in tickets let's bring in Tech Debt first 
+4. Take a look at Tech Debt tickets - If we bring in tickets let's bring in Tech Debt first
 
-5. Learning time: 
+5. Learning time:
 
-- Take the opportunity to familiarize yourself with business logic, tech (anything around work we do) 
+- Take the opportunity to familiarize yourself with business logic, tech (anything around work we do)
 
-- New learning and applying it to our work 
+- New learning and applying it to our work
 
-- Innovation work 
+- Innovation work

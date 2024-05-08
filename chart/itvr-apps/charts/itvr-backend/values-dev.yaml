@@ -24,9 +24,9 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 90
 
 backend:
-  sendEmail: 'True'
+  sendEmail: "True"
   minioBucketName: itvrdv
   craEnvrionment: A
-  djangoDebug: 'False'
-  virusScanEnabled: 'True'
-
+  djangoDebug: "False"
+  virusScanEnabled: "True"
+  cryptoServiceUrl: "http://itvr-cra-dev.ac294c-dev.svc.cluster.local:8080"

@@ -1,0 +1,17 @@
+FROM --platform=linux/amd64 artifacts.developer.gov.bc.ca/docker-remote/eclipse-temurin:17-jdk-jammy
+
+WORKDIR /app
+
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+COPY libs ./libs
+RUN mkdir /.m2 && \
+    chgrp -R root /.m2 && \
+    chmod -R g+rw /.m2 && \
+    chgrp -R root /app && \
+    chmod -R g+rw /app
+RUN ./mvnw dependency:resolve
+
+COPY src ./src
+
+CMD ["./mvnw", "-Denvironment=prodution", "spring-boot:run", "-Dspring-boot.run.jvmArguments='--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED'"]
