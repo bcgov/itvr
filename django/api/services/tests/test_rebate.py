@@ -1,6 +1,5 @@
 from django.test import TestCase
 from ...models.go_electric_rebate_application import GoElectricRebateApplication
-from ...models.household_member import HouseholdMember
 from django.contrib.auth import get_user_model
 
 User = get_user_model()

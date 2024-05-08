@@ -8,7 +8,6 @@ from api.serializers.application_form import (
     ApplicationFormSerializer,
     ApplicationFormCreateSerializerDefault,
     ApplicationFormCreateSerializerBCSC,
-    ApplicationFormSpouseSerializer,
 )
 from api.models.go_electric_rebate_application import GoElectricRebateApplication
 from api.services.go_electric_rebate_application import equivalent_drivers_licence_number_found
@@ -37,31 +36,6 @@ class ApplicationFormViewset(
     def update(self, request, pk=None):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-    # currently only used for cancelling household_initiated applications; consider using a serializer if the logic becomes more complicated
-    def partial_update(self, request, pk=None):
-        if request.data.get("status") == GoElectricRebateApplication.Status.CANCELLED:
-            application = GoElectricRebateApplication.objects.get(pk=pk)
-            if (
-                application.status
-                == GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
-            ):
-                application.status = GoElectricRebateApplication.Status.CANCELLED
-                application.save(update_fields=["status"])
-                return Response(status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=["GET"], url_path="household")
-    def household(self, request, pk=None):
-        application = GoElectricRebateApplication.objects.get(pk=pk)
-        if application.status != GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED:
-            error = {"error": "application_advanced"}
-            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
-        application_user_id = application.user.id
-        household_user_id = request.user.id
-        if application_user_id == household_user_id:
-            error = {"error": "same_user"}
-            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = ApplicationFormSpouseSerializer(application)
-        return Response(serializer.data)
 
     @action(detail=False, methods=["GET"], url_path="check_status")
     def check_status(self, request, pk=None):

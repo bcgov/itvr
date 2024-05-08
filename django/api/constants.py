@@ -1,7 +1,8 @@
 from enum import Enum
 
 
-# for each income tested maximum rebate ($4000, $2000, $1000), there are different rebate levels for certain ZEV types and lease terms
+# for each income tested maximum rebate ($4000, $2000, $1000), there
+# are different rebate levels for certain ZEV types and lease terms
 class FOUR_THOUSAND_REBATE(Enum):
     ZEV_MAX = 4000
     ZEV_MID = 2688
@@ -41,17 +42,14 @@ class RebateType(Enum):
 INCOME_REBATES = {
     RebateType.C.value: {
         "individual_income": 100000,
-        "household_income": 165000,
         "rebate": 1000,
     },
     RebateType.B.value: {
         "individual_income": 90000,
-        "household_income": 145000,
         "rebate": 2000,
     },
     RebateType.A.value: {
         "individual_income": 80000,
-        "household_income": 125000,
         "rebate": 4000,
     },
 }

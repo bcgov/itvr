@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   db:
-    platform: linux/amd64
     image: postgres:14
     environment:
       - POSTGRES_DB=itvr
@@ -16,7 +15,6 @@ services:
       timeout: 5s
       retries: 5
   minio:
-    platform: linux/amd64
     image: minio/minio
     hostname: "minio"
     volumes:
@@ -28,7 +26,6 @@ services:
       - 9000:9000
       - 9001:9001
   createbuckets:
-    platform: linux/amd64
     image: minio/mc
     depends_on:
       - minio
@@ -130,5 +127,4 @@ services:
     volumes:
       - ./spring:/app
   clamav:
-    platform: linux/amd64
     image: clamav/clamav

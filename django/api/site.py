@@ -92,20 +92,6 @@ class ITVRAdminSite(AdminSite):
                 }
             )
 
-            # TODO this should be some kind of enum like the status is.
-            if rebate.application_type == "household":
-                household_member = rebate.householdmember
-                data.append(
-                    {
-                        "sin": household_member.sin,
-                        "years": [rebate.tax_year],
-                        "given_name": household_member.first_name,
-                        "family_name": household_member.last_name,
-                        "birth_date": household_member.date_of_birth.strftime("%Y%m%d"),
-                        "application_id": rebate.id,
-                    }
-                )
-
         filename = self.get_cra_filename(program_code, cra_env, cra_sequence)
         today = date.today().strftime("%Y%m%d")
         content = cra.write(

@@ -2,13 +2,9 @@ import React from 'react';
 import { BCEID_KEYCLOAK_REALM } from '../config';
 import { useKeycloak } from '@react-keycloak/web';
 import { keycloakInitOptions, keycloaks } from '../keycloak';
-const BCEIDLogin = (props) => {
-  const { type = '', householdApplicationId = '' } = props;
+const BCEIDLogin = () => {
   const { keycloak } = useKeycloak();
-  const redirectUri = householdApplicationId
-    ? `${window.location.origin}/householdForm?q=${householdApplicationId}`
-    : `${window.location.origin}/form`;
-
+  const redirectUri = `${window.location.origin}/form`;
   return (
     <div>
       <h3>Basic BCeID Account</h3>
@@ -22,8 +18,7 @@ const BCEIDLogin = (props) => {
             Basic BCeID account
           </a>
           . If you log in with BCeID you will need to upload images of your BC
-          Driver’s Licence {type === 'spouse' && ' or BC Services Card '} and a
-          secondary piece of ID.{' '}
+          Driver’s Licence and a secondary piece of ID.{' '}
           <a href="/identificationExamples">
             Learn more about ID requirements.
           </a>

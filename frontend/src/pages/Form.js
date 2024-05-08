@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Form from '../components/Form';
 import Layout from '../components/Layout';
-import RebateTable from '../components/RebateTable';
 import { Helmet } from 'react-helmet';
 
 const FormPage = () => {

@@ -122,21 +122,6 @@ class TestCalculate(TestRebate):
         )
         self.assertEqual(rebate_amount, RebateType.F.value)
 
-    def test_household_cra_responses(self):
-        cra_response = {
-            "B5t92XeH7NnFUwxc": [
-                {"sin": "123456789", "year": "2020", "income": "65687"},
-                {"sin": "302435839", "year": "2020", "income": "85687"},
-            ],
-        }
-        application = GoElectricRebateApplication.objects.filter(
-            id__in=list(cra_response.keys())
-        ).first()
-        single_cra_response = cra_response.get(application.id)
-        rebate_amount = calculate_individual_rebate_amount(
-            single_cra_response, application
-        )
-        self.assertEqual(rebate_amount, None)
 
     def test_iterate_cra(self):
         # checks cra results one by one

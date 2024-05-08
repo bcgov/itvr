@@ -36,11 +36,10 @@ class ApplicationFormCreateSerializerDefault(ApplicationFormCreateSerializer):
     def create(self, validated_data):
         request = self.context["request"]
         user = request.user
-        spouse_email = request.data.get("spouse_email")
 
         obj = GoElectricRebateApplication.objects.create(
             sin=validated_data["sin"],
-            status=self._get_status(validated_data),
+            status= GoElectricRebateApplication.Status.SUBMITTED,
             email=validated_data["email"],
             drivers_licence=validated_data["drivers_licence"],
             last_name=validated_data["last_name"],
@@ -54,20 +53,11 @@ class ApplicationFormCreateSerializerDefault(ApplicationFormCreateSerializer):
             doc2=validated_data["doc2"],
             tax_year=self._get_tax_year(),
             application_type=validated_data["application_type"],
-            spouse_email=spouse_email,
             user=user,
             consent_personal=validated_data["consent_personal"],
             consent_tax=validated_data["consent_tax"],
         )
         return obj
-
-    def _get_status(self, validated_data):
-        application_type = validated_data["application_type"]
-        # TODO use enum type here like status.
-        if application_type == "household":
-            return GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
-        return GoElectricRebateApplication.Status.SUBMITTED
-
 
 class ApplicationFormCreateSerializerBCSC(ApplicationFormCreateSerializer):
     class Meta(ApplicationFormCreateSerializer.Meta):
@@ -86,12 +76,11 @@ class ApplicationFormCreateSerializerBCSC(ApplicationFormCreateSerializer):
     def create(self, validated_data):
         request = self.context["request"]
         user = request.user
-        spouse_email = request.data.get("spouse_email")
 
         try:
             obj = GoElectricRebateApplication.objects.create(
                 sin=validated_data["sin"],
-                status=self._get_status(validated_data),
+                status=GoElectricRebateApplication.Status.VERIFIED,
                 email=validated_data["email"],
                 drivers_licence=validated_data["drivers_licence"],
                 last_name=user.last_name,
@@ -102,7 +91,6 @@ class ApplicationFormCreateSerializerBCSC(ApplicationFormCreateSerializer):
                 postal_code=user.postal_code,
                 tax_year=self._get_tax_year(),
                 application_type=validated_data["application_type"],
-                spouse_email=spouse_email,
                 user=user,
                 consent_personal=validated_data["consent_personal"],
                 consent_tax=validated_data["consent_tax"],
@@ -110,13 +98,6 @@ class ApplicationFormCreateSerializerBCSC(ApplicationFormCreateSerializer):
             return obj
         except Exception as e:
             return Response({"response": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    def _get_status(self, validated_data):
-        application_type = validated_data["application_type"]
-        # TODO use enum type here like status.
-        if application_type == "household":
-            return GoElectricRebateApplication.Status.HOUSEHOLD_INITIATED
-        return GoElectricRebateApplication.Status.VERIFIED
 
 
 class ApplicationFormSerializer(ModelSerializer):
@@ -146,9 +127,3 @@ class ApplicationFormSerializer(ModelSerializer):
             "email",
             "drivers_licence",
         )
-
-
-class ApplicationFormSpouseSerializer(ModelSerializer):
-    class Meta:
-        model = GoElectricRebateApplication
-        fields = ["address", "city", "postal_code", "status"]

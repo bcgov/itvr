@@ -118,7 +118,7 @@ def get_insert_query_string(table, cols, vals):
 
 def get_update_query_string(table, modified, dl):
     return (
-        "UPDATE %s SET status = 'cancelled', modified = '%s' WHERE drivers_licence = '%s' AND is_legacy = 'False' AND status IN ('household_initiated', 'submitted', 'verified')"
+        "UPDATE %s SET status = 'cancelled', modified = '%s' WHERE drivers_licence = '%s' AND is_legacy = 'False' AND status IN ('submitted', 'verified')"
         % (
             table,
             modified,
