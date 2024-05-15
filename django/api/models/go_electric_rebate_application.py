@@ -278,3 +278,13 @@ class DriverLicenceEditableGoElectricRebateApplication(GoElectricRebateApplicati
     @classproperty
     def admin_label(cls):
         return "Edit DL#'s"
+
+class ChangeRedeemedGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-modified"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Change Redeemed Status"
+
