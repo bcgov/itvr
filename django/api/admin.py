@@ -17,7 +17,9 @@ from django.db.models import Q
 from django.db import transaction
 from api.services.ncda import delete_rebate, update_rebate
 from django_q.tasks import async_task
-from api.services.go_electric_rebate_application import equivalent_drivers_licence_number_found
+from api.services.go_electric_rebate_application import (
+    equivalent_drivers_licence_number_found,
+)
 
 
 class ITVRModelAdmin(admin.ModelAdmin):
@@ -91,7 +93,6 @@ class GoElectricRebateAdmin(ITVRModelAdminStringent):
         "created",
         "modified",
     )
-    
 
 
 @admin.register(DriverLicenceHistory)
@@ -437,6 +438,7 @@ class DriverLicenceEditableGoElectricRebateApplicationAdmin(ITVRModelAdmin):
         dl_history_entry.save()
         return super().change_view(request, object_id, form_url, extra_context)
 
+
 @admin.register(ChangeRedeemedGoElectricRebateApplication)
 class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
@@ -478,9 +480,7 @@ class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
 
     def get_queryset(self, request):
         return GoElectricRebateApplication.objects.filter(
-            Q(status=GoElectricRebateApplication.Status.REDEEMED)
-            & Q(is_legacy=False)
-
+            Q(status=GoElectricRebateApplication.Status.REDEEMED) & Q(is_legacy=False)
         )
 
     def response_change(self, request, obj):
@@ -492,7 +492,7 @@ class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
             rebate = GoElectricRebate.objects.filter(drivers_licence=dl).first()
             if rebate:
                 ncda_id = rebate.ncda_id
-                rebate.redeemed=False
-                rebate.save()
+                rebate.redeemed = False
+                rebate.save(update_fields=["redeemed", "modified"])
                 update_rebate(ncda_id, {"Status": "Not-Redeemed"})
         return ret
