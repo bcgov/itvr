@@ -491,8 +491,9 @@ class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
             obj.save(update_fields=["status"])
             rebate = GoElectricRebate.objects.filter(drivers_licence=dl).first()
             if rebate:
-                ncda_id = rebate.ncda_id
                 rebate.redeemed = False
                 rebate.save(update_fields=["redeemed", "modified"])
-                update_rebate(ncda_id, {"Status": "Not-Redeemed"})
+                ncda_id = rebate.ncda_id
+                if ncda_id is not None:
+                    update_rebate(ncda_id, {"Status": "Not-Redeemed"})
         return ret
