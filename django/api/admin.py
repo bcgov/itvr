@@ -6,6 +6,7 @@ from .models.go_electric_rebate_application import (
     SubmittedGoElectricRebateApplication,
     CancellableGoElectricRebateApplication,
     DriverLicenceEditableGoElectricRebateApplication,
+    ChangeRedeemedGoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
@@ -16,7 +17,9 @@ from django.db.models import Q
 from django.db import transaction
 from api.services.ncda import delete_rebate, update_rebate
 from django_q.tasks import async_task
-from api.services.go_electric_rebate_application import equivalent_drivers_licence_number_found
+from api.services.go_electric_rebate_application import (
+    equivalent_drivers_licence_number_found,
+)
 
 
 class ITVRModelAdmin(admin.ModelAdmin):
@@ -434,3 +437,63 @@ class DriverLicenceEditableGoElectricRebateApplicationAdmin(ITVRModelAdmin):
         )
         dl_history_entry.save()
         return super().change_view(request, object_id, form_url, extra_context)
+
+
+@admin.register(ChangeRedeemedGoElectricRebateApplication)
+class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
+    search_fields = ["drivers_licence", "id", "status", "last_name"]
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+        "spouse_email",
+        "status",
+        "address",
+        "city",
+        "postal_code",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "consent_personal",
+        "consent_tax",
+        "reason_for_decline",
+    )
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "status",
+        "email",
+        "user_is_bcsc",
+        "drivers_licence",
+        "date_of_birth",
+        "tax_year",
+        "is_legacy",
+        "confirmation_email_success",
+        "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on",
+    )
+
+    def get_queryset(self, request):
+        return GoElectricRebateApplication.objects.filter(
+            Q(status=GoElectricRebateApplication.Status.REDEEMED) & Q(is_legacy=False)
+        )
+
+    def response_change(self, request, obj):
+        ret = super().response_change(request, obj)
+        if "change_redeemed_status_to_approved" in request.POST:
+            dl = obj.drivers_licence
+            obj.status = GoElectricRebateApplication.Status.APPROVED
+            obj.save(update_fields=["status"])
+            rebate = GoElectricRebate.objects.filter(drivers_licence=dl).first()
+            if rebate:
+                rebate.redeemed = False
+                rebate.save(update_fields=["redeemed", "modified"])
+                ncda_id = rebate.ncda_id
+                if ncda_id is not None:
+                    update_rebate(ncda_id, {"Status": "Not-Redeemed"})
+        return ret
