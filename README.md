@@ -58,6 +58,11 @@ You can view Django Restframework's browseable api here: `http://localhost:8000/
 
 Use a created superuser to login and view the api.
 
+### postgres
+To get into postgres in terminal
+docker-compose exec db psql -U postgres itvr
+
+
 #### MinIO
 
 You can view the contents of the bucket in MinIO by visiting `http://localhost:9001/login`. Use env variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` to login to the console. Default values are found in `minio.env`
