@@ -78,3 +78,15 @@ export const getISODateString = (dateObj) => {
   }
   return year + '-' + month + '-' + date;
 };
+
+export const isLicenceValid = (licence) => {
+  if (!licence || (licence.length !== 7 && licence.length !== 8 ) ||
+  (licence.length === 8 && !(licence.charAt(0) === '0' || licence.charAt(0) === '3'))) {
+    return false;
+  }
+  const regex = /^\d+$/;
+                  if (!regex.test(licence)) {
+                    return false;
+                  }
+  return true
+};

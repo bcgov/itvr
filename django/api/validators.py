@@ -3,7 +3,7 @@ from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
 from api.services.clam_av import get_clamd_scanner
 from .settings import VIRUS_SCANNING_ENABLED
-
+import re
 
 def validate_driving_age(dob):
     birthday = date(dob.year, dob.month, dob.day)
@@ -75,3 +75,15 @@ def validate_file_safe(file):
             raise ValidationError("Cannot scan file.")
         if result and result["stream"][0] == "FOUND":
             raise ValidationError("File infected.")
+
+def validate_drivers_licence(value):
+    if not isinstance(value, str):
+        raise ValidationError("Input must be a string")
+    if len(value) == 8:
+        pattern = r'^[03]'
+    elif len(value) == 7:
+        pattern = r'^\d'
+    else:
+        raise ValidationError("Input must have 7 or 8 characters.")
+    if not re.match(pattern, value):
+        raise ValidationError("Not a valid driver's license.")
