@@ -14,7 +14,7 @@ from datetime import timedelta, datetime
 from api.services.ncda import (
     notify,
     get_rebates_redeemed_since,
-    get_rebate,
+    get_rebate_by_id,
     delete_rebate,
 )
 from api.constants import (
@@ -559,8 +559,8 @@ def expire_expired_applications(max_number_of_rebates=50, days_offset=15):
     @transaction.atomic
     def expire_rebate(rebate):
         ncda_id = rebate.ncda_id
-        ncda_rebates = get_rebate(ncda_id, ["Status"])
-        if len(ncda_rebates) == 1 and ncda_rebates[0]["Status"] == "Not-Redeemed":
+        ncda_rebate = get_rebate_by_id(ncda_id, ["Status"])
+        if ncda_rebate is not None and ncda_rebate["Status"] == "Not-Redeemed":
             application = rebate.application
             if application:
                 application.status = GoElectricRebateApplication.Status.EXPIRED

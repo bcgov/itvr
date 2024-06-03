@@ -280,6 +280,7 @@ class DriverLicenceEditableGoElectricRebateApplication(GoElectricRebateApplicati
     def admin_label(cls):
         return "Edit DL#'s"
 
+
 class ChangeRedeemedGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
         proxy = True
@@ -289,3 +290,12 @@ class ChangeRedeemedGoElectricRebateApplication(GoElectricRebateApplication):
     def admin_label(cls):
         return "Change Redeemed Status"
 
+
+class ExpiredGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-modified"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Extend Expiry Dates"
