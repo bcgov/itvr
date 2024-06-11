@@ -1,0 +1,26 @@
+{% extends "admin/submit_line.html" %}
+{% load i18n admin_urls jazzmin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+{% load static %}
+{% block submit-row %}
+<!-- <script src="{% static 'edit_dl_handler.js' %}"></script> -->
+<div class="card card-primary card-outline">
+  <div class="card-header">
+    <h3 class="card-title">
+      <em class="fas fa-edit"></em>
+      {% trans 'Actions' %}
+    </h3>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <input
+        type="submit"
+        class="btn {{ jazzmin_ui.button_classes.danger }} form-control"
+        value="Extend Expiry Date By 30 Days From Today"
+        name="extend_expiry_date"
+        id="extend_expiry_date"
+      />
+    </div>
+  </div>
+</div>
+{% endblock %}

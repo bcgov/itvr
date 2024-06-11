@@ -13,7 +13,8 @@ import Box from '@mui/material/Box';
 import {
   getDateWithYearOffset,
   getISODateString,
-  isSINValid
+  isSINValid,
+  isLicenceValid
 } from '../utility';
 import LockIcon from '@mui/icons-material/Lock';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -404,18 +405,7 @@ const Form = ({ setNumberOfErrors, setErrorsExistCounter }) => {
             rules={{
               validate: {
                 dlFormat: (inputtedLicence) => {
-                  if (
-                    !inputtedLicence ||
-                    (inputtedLicence.length !== 7 &&
-                      inputtedLicence.length !== 8)
-                  ) {
-                    return false;
-                  }
-                  const regex = /^\d+$/;
-                  if (!regex.test(inputtedLicence)) {
-                    return false;
-                  }
-                  return true;
+                  return isLicenceValid(inputtedLicence)
                 },
                 backendAccessible: async () => {
                   try {

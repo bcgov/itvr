@@ -7,6 +7,7 @@ from .models.go_electric_rebate_application import (
     CancellableGoElectricRebateApplication,
     DriverLicenceEditableGoElectricRebateApplication,
     ChangeRedeemedGoElectricRebateApplication,
+    ExpiredGoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
@@ -15,11 +16,18 @@ from django.contrib import messages
 from . import messages_custom
 from django.db.models import Q
 from django.db import transaction
-from api.services.ncda import delete_rebate, update_rebate
+from api.services.ncda import (
+    delete_rebate,
+    update_rebate,
+    get_rebate_by_drivers_licence,
+    notify,
+)
 from django_q.tasks import async_task
 from api.services.go_electric_rebate_application import (
     equivalent_drivers_licence_number_found,
 )
+from api.model_forms.extend_expired_application import ExtendExpiryForm
+from datetime import date, timedelta
 
 
 class ITVRModelAdmin(admin.ModelAdmin):
@@ -440,7 +448,7 @@ class DriverLicenceEditableGoElectricRebateApplicationAdmin(ITVRModelAdmin):
 
 
 @admin.register(ChangeRedeemedGoElectricRebateApplication)
-class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
+class ChangeRedeemedGoElectricRebateApplicationAdmin(ITVRModelAdmin):
     search_fields = ["drivers_licence", "id", "status", "last_name"]
     exclude = (
         "sin",
@@ -496,4 +504,89 @@ class ChangeRedeemedGoElectricRebateApplication(ITVRModelAdmin):
                 ncda_id = rebate.ncda_id
                 if ncda_id is not None:
                     update_rebate(ncda_id, {"Status": "Not-Redeemed"})
+        return ret
+
+
+@admin.register(ExpiredGoElectricRebateApplication)
+class ExpiredGoElectricRebateApplicationAdmin(ITVRModelAdmin):
+    form = ExtendExpiryForm
+    search_fields = ["drivers_licence", "id", "last_name"]
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+        "spouse_email",
+        "status",
+        "address",
+        "city",
+        "postal_code",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "consent_personal",
+        "consent_tax",
+        "reason_for_decline",
+    )
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "status",
+        "email",
+        "user_is_bcsc",
+        "drivers_licence",
+        "date_of_birth",
+        "tax_year",
+        "is_legacy",
+        "confirmation_email_success",
+        "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on",
+    )
+
+    def get_queryset(self, request):
+        return GoElectricRebateApplication.objects.filter(
+            status=GoElectricRebateApplication.Status.EXPIRED
+        )
+
+    def response_change(self, request, obj):
+        ret = super().response_change(request, obj)
+        if "extend_expiry_date" in request.POST:
+            drivers_licence = obj.drivers_licence
+            rebate_exists = GoElectricRebate.objects.filter(
+                drivers_licence=drivers_licence
+            ).exists()
+            if rebate_exists is False:
+                ncda_rebate = get_rebate_by_drivers_licence(drivers_licence, ["Title"])
+                if ncda_rebate is None:
+                    obj.status = GoElectricRebateApplication.Status.APPROVED
+                    obj.save(update_fields=["status"])
+                    rebate_amount = request.POST.get("rebate_amount")
+                    last_name = obj.last_name
+                    expiry_date = date.today() + timedelta(days=30)
+                    ncda_data = notify(
+                        drivers_licence,
+                        last_name,
+                        expiry_date.strftime("%m/%d/%Y"),
+                        rebate_amount,
+                        obj.id,
+                    )
+                    ncda_id = ncda_data["d"]["ID"]
+                    rebate = GoElectricRebate(
+                        application=obj,
+                        drivers_licence=drivers_licence,
+                        last_name=last_name,
+                        expiry_date=expiry_date,
+                        rebate_max_amount=rebate_amount,
+                        redeemed=False,
+                        ncda_id=ncda_id,
+                    )
+                    rebate.save()
+                else:
+                    raise Exception("There exists an associated NCDA rebate!")
+            else:
+                raise Exception("There exists an associated Go Elecric Rebate!")
         return ret

@@ -26,6 +26,7 @@ from api.validators import (
     validate_consent,
     validate_file_size,
     validate_file_safe,
+    validate_drivers_licence,
 )
 from django_extensions.db.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
@@ -89,7 +90,7 @@ class GoElectricRebateApplication(TimeStampedModel):
     city = CharField(max_length=250, unique=False, null=True)
     postal_code = CharField(max_length=6, unique=False, blank=True, null=True)
     drivers_licence = CharField(
-        max_length=8, unique=False, validators=[MinLengthValidator(7)]
+        max_length=8, unique=False, validators=[MinLengthValidator(7), validate_drivers_licence]
     )
     date_of_birth = DateField(validators=[validate_driving_age], null=True)
     tax_year = IntegerField(null=True)
@@ -279,6 +280,7 @@ class DriverLicenceEditableGoElectricRebateApplication(GoElectricRebateApplicati
     def admin_label(cls):
         return "Edit DL#'s"
 
+
 class ChangeRedeemedGoElectricRebateApplication(GoElectricRebateApplication):
     class Meta:
         proxy = True
@@ -288,3 +290,12 @@ class ChangeRedeemedGoElectricRebateApplication(GoElectricRebateApplication):
     def admin_label(cls):
         return "Change Redeemed Status"
 
+
+class ExpiredGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-modified"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Extend Expiry Dates"

@@ -248,7 +248,7 @@ def delete_rebate(ncda_id):
     ncda_rs.raise_for_status()
 
 
-def get_rebate(ncda_id, fields):
+def get_rebates(filter, fields):
     api_endpoint = settings.NCDA_SHAREPOINT_URL
     access_token = get_ncda_service_token()
 
@@ -260,17 +260,34 @@ def get_rebate(ncda_id, fields):
 
     url = api_endpoint + "/lists/getbytitle('ITVREligibility')/items"
 
-    select_fields = ",".join(fields)
     payload = {
-        "$select": select_fields,
-        "$filter": "(Id eq %s)" % ncda_id,
+        "$filter": filter,
     }
+    if fields:
+        payload["$select"] = ",".join(fields)
+
     ncda_rs = requests.get(url, headers=headers, params=payload, verify=True)
     ncda_rs.raise_for_status()
     data = ncda_rs.json()
     items = data["d"]["results"]
 
     return items
+
+
+def get_rebate_by_id(ncda_id, fields=[]):
+    filter = "(Id eq %s)" % ncda_id
+    rebates = get_rebates(filter, fields)
+    if len(rebates) >= 1:
+        return rebates[0]
+    return None
+
+
+def get_rebate_by_drivers_licence(drivers_licence, fields=[]):
+    filter = "(Title eq '%s')" % drivers_licence
+    rebates = get_rebates(filter, fields)
+    if len(rebates) >= 1:
+        return rebates[0]
+    return None
 
 
 def update_rebate(ncda_id, updated_fields):
