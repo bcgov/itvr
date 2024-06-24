@@ -90,7 +90,9 @@ class GoElectricRebateApplication(TimeStampedModel):
     city = CharField(max_length=250, unique=False, null=True)
     postal_code = CharField(max_length=6, unique=False, blank=True, null=True)
     drivers_licence = CharField(
-        max_length=8, unique=False, validators=[MinLengthValidator(7), validate_drivers_licence]
+        max_length=8,
+        unique=False,
+        validators=[MinLengthValidator(7), validate_drivers_licence],
     )
     date_of_birth = DateField(validators=[validate_driving_age], null=True)
     tax_year = IntegerField(null=True)
@@ -299,3 +301,13 @@ class ExpiredGoElectricRebateApplication(GoElectricRebateApplication):
     @classproperty
     def admin_label(cls):
         return "Extend Expiry Dates"
+
+
+class LegacyGoElectricRebateApplication(GoElectricRebateApplication):
+    class Meta:
+        proxy = True
+        ordering = ["-modified"]
+
+    @classproperty
+    def admin_label(cls):
+        return "Delete Legacy Applications"
