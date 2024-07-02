@@ -8,6 +8,7 @@ from .models.go_electric_rebate_application import (
     DriverLicenceEditableGoElectricRebateApplication,
     ChangeRedeemedGoElectricRebateApplication,
     ExpiredGoElectricRebateApplication,
+    LegacyGoElectricRebateApplication,
 )
 from .models.household_member import HouseholdMember
 from .models.go_electric_rebate import GoElectricRebate
@@ -590,3 +591,81 @@ class ExpiredGoElectricRebateApplicationAdmin(ITVRModelAdmin):
             else:
                 raise Exception("There exists an associated Go Elecric Rebate!")
         return ret
+
+
+@admin.register(LegacyGoElectricRebateApplication)
+class LegacyGoElectricRebateApplicationAdmin(ITVRModelAdminStringent):
+
+    def has_delete_permission(self, request, obj=None):
+        return admin.ModelAdmin.has_delete_permission(self, request, obj)
+
+    search_fields = ["drivers_licence", "id"]
+    exclude = (
+        "sin",
+        "doc1",
+        "doc2",
+        "user",
+        "spouse_email",
+        "status",
+        "address",
+        "city",
+        "postal_code",
+        "application_type",
+        "doc1_tag",
+        "doc2_tag",
+        "consent_personal",
+        "consent_tax",
+        "reason_for_decline",
+    )
+    readonly_fields = (
+        "id",
+        "last_name",
+        "first_name",
+        "middle_names",
+        "status",
+        "email",
+        "user_is_bcsc",
+        "drivers_licence",
+        "date_of_birth",
+        "tax_year",
+        "is_legacy",
+        "confirmation_email_success",
+        "spouse_email_success",
+        "created",
+        "approved_on",
+        "not_approved_on",
+    )
+
+    def get_queryset(self, request):
+        return GoElectricRebateApplication.objects.filter(is_legacy=True)
+
+    def render_delete_form(self, request, context):
+        new_perms_lacking = set()
+        perms_lacking = context.get("perms_lacking")
+        if perms_lacking is not None:
+            for p in perms_lacking:
+                if p != "go electric rebate application":
+                    new_perms_lacking.add(p)
+            context["perms_lacking"] = new_perms_lacking
+        return super().render_delete_form(request, context)
+
+    def get_deleted_objects(self, objs, request):
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = super().get_deleted_objects(objs, request)
+
+        new_perms_needed = set()
+        if perms_needed is not None:
+            for p in perms_needed:
+                if p != "go electric rebate application":
+                    new_perms_needed.add(p)
+
+        return (
+            deleted_objects,
+            model_count,
+            new_perms_needed,
+            protected,
+        )

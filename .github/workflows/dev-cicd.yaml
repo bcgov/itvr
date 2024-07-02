@@ -1,6 +1,6 @@
 ## For each release, the value of workflow name, branches and PR_NUMBER need to be adjusted accordingly
 
-name: ITVR Dev release-1.27.0
+name: ITVR Dev release-1.28.0
 
 on:
   pull_request:
