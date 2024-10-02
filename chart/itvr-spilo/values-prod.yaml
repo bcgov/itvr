@@ -1,5 +1,4 @@
 spilo:
-
   replicaCount: 3
 
   credentials:
@@ -21,9 +20,9 @@ spilo:
 
   shipLogs:
     enabled: false
-#    s3:
-#      bucket: s3://itvrpr
-#      shipSchedule: 0 7 * * *
+  #    s3:
+  #      bucket: s3://itvrpr
+  #      shipSchedule: 0 7 * * *
 
   persistentVolume:
     size: 5Gi
@@ -31,11 +30,11 @@ spilo:
 
   resources:
     limits:
-      cpu: 120m
-      memory: 400Mi
+      cpu: 240m
+      memory: 600Mi
     requests:
-      cpu: 60m
-      memory: 200Mi  
+      cpu: 120m
+      memory: 300Mi
 
   podDisruptionBudget:
     enabled: false
@@ -44,7 +43,6 @@ spilo:
     liveness:
       enabled: false
     readiness:
-      enabled: true 
+      enabled: true
       initialDelaySeconds: 60
-      failureThreshold: 20         
-
+      failureThreshold: 20
