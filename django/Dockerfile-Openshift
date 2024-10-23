@@ -20,7 +20,7 @@ COPY . /app/
 RUN pwd && \
     ls -l
 
-RUN pip install --upgrade pip==24.0 && \ 
+RUN pip install --upgrade pip && \ 
     pip install --no-cache-dir -r requirements.txt
 
 # Expose the port the app runs on
