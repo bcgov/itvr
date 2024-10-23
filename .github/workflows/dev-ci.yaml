@@ -38,6 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     # needs: verify-pr
 
+    outputs:
+      PRE_RELEASE: ${{ steps.get-version.outputs.PRE_RELEASE }}
+
     steps:
       - id: set-pre-release
         run: |
@@ -47,6 +50,9 @@ jobs:
     name: Get the version
     runs-on: ubuntu-latest
     # needs: verify-pr
+
+    outputs:
+      VERSION: ${{ steps.get-version.outputs.VERSION }}
 
     steps:
       - id: get-version
