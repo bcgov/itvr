@@ -39,7 +39,7 @@ jobs:
     # needs: verify-pr
 
     outputs:
-      PRE_RELEASE: ${{ steps.get-version.outputs.PRE_RELEASE }}
+      PRE_RELEASE: ${{ steps.set-pre-release.outputs.PRE_RELEASE }}
 
     steps:
       - id: set-pre-release
