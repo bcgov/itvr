@@ -116,7 +116,7 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ITVR Backend
+      - name: Build ITVR Taskq
         run: |
           cd openshift/templates/task-queue
           oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
