@@ -1,0 +1,80 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: itvr-task-queue-bc
+parameters:
+  - name: NAME
+    displayName:
+    description: the module name entered when run yo bcdk:pipeline, which is itvr
+    required: true
+  - name: SUFFIX
+    displayName:
+    description: sample is -pr-0
+    required: true
+  - name: VERSION
+    displayName:
+    description:  image tag name for output
+    required: true
+  - name: GIT_URL
+    displayName:
+    description: itvr repo
+    required: true
+  - name: GIT_REF
+    displayName:
+    description: itvr branch name of the pr
+    required: true
+objects:
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      annotations:
+        description: Keeps track of changes in the backend image
+      labels:
+        shared: "true"
+      creationTimestamp: null
+      name: ${NAME}-task-queue
+    spec:
+      lookupPolicy:
+        local: false
+    status:
+      dockerImageRepository: ""
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+        description: Defines how to build the application
+      creationTimestamp: null
+      name: ${NAME}-task-queue${SUFFIX}
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${NAME}-task-queue:${VERSION}
+      postCommit: {}
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      runPolicy: SerialLatestOnly
+      source:
+        contextDir: django
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_URL}
+        type: Git
+      strategy:
+        dockerStrategy:
+          dockerfilePath: ./Dockerfile-Openshift-Taskq
+          pullSecret:
+            name: artifacts-default-pwpgbz
+        type: Docker      triggers:
+      - imageChange: {}
+        type: ImageChange
+      - type: ConfigChange
+    status:
+      lastVersion: 0
