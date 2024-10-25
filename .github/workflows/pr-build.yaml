@@ -220,7 +220,7 @@ jobs:
     needs: [get-version, build-frontend, build-cra]
 
     env:
-      VERSION: ${{ needs.get-version.outputs.output1 }}
+      VERSION: ${{ needs.get-version.outputs.VERSION }}
 
     steps:
       - name: Checkout Manifest repository
