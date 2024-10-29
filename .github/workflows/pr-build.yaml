@@ -254,7 +254,7 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Helm Deployment
+      - name: Show the values-dev-pr.yaml after replacement
         shell: bash {0}
         run: |
           pwd
