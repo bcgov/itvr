@@ -23,6 +23,8 @@ RUN pwd && \
 RUN pip install --upgrade pip && \ 
     pip install --no-cache-dir -r requirements.txt
 
+RUN cat gunicorn.cfg.py
+
 # Expose the port the app runs on
 EXPOSE 8080
 
