@@ -50,51 +50,11 @@ jobs:
             echo "VERSION=$version" >> $GITHUB_OUTPUT
           fi
 
-  build-backend:
-    if: >
-      (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
-      (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
-    name: Build ITVR Backend
-    runs-on: ubuntu-latest
-    needs: [get-version]
-    timeout-minutes: 60
-
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ github.event.pull_request.number }}
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
-
-      - name: Build ITVR Backend
-        run: |
-          cd openshift/templates/backend
-          oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-backend-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
-
-  # build-taskq:
+  # build-backend:
   #   if: >
   #     (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
   #     (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
-  #   name: Build ITVR Taskq
+  #   name: Build ITVR Backend
   #   runs-on: ubuntu-latest
   #   needs: [get-version]
   #   timeout-minutes: 60
@@ -116,25 +76,25 @@ jobs:
   #         insecure_skip_tls_verify: true
   #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-  #     - name: Build ITVR Taskq
+  #     - name: Build ITVR Backend
   #       run: |
-  #         cd openshift/templates/task-queue
-  #         oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         cd openshift/templates/backend
+  #         oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
   #         sleep 2s
-  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-task-queue-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
   #           echo "canceling $build"
   #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
   #         done
   #         sleep 2s
-  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-task-queue-${{ env.BUILD_SUFFIX }} --wait=true
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-backend-${{ env.BUILD_SUFFIX }} --wait=true
   #         sleep 2s
-  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
 
-  build-frontend:
+  build-taskq:
     if: >
       (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
       (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
-    name: Build ITVR Frontend
+    name: Build ITVR Taskq
     runs-on: ubuntu-latest
     needs: [get-version]
     timeout-minutes: 60
@@ -156,124 +116,164 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ITVR Frontend
+      - name: Build ITVR Taskq
         run: |
-          cd openshift/templates/frontend
-          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+          cd openshift/templates/task-queue
+          oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
           sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-frontend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-task-queue-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
             echo "canceling $build"
             oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
           done
           sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-frontend-${{ env.BUILD_SUFFIX }} --wait=true
+          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-task-queue-${{ env.BUILD_SUFFIX }} --wait=true
           sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
 
-  build-cra:
-    if: >
-      (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
-      (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
-    name: Build ITVR CRA
-    runs-on: ubuntu-latest
-    needs: [get-version]
-    timeout-minutes: 60
+  # build-frontend:
+  #   if: >
+  #     (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
+  #     (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
+  #   name: Build ITVR Frontend
+  #   runs-on: ubuntu-latest
+  #   needs: [get-version]
+  #   timeout-minutes: 60
 
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ github.event.pull_request.number }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ github.event.pull_request.number }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4.1.1
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ITVR CRA
-        run: |
-          cd openshift/templates/cra
-          oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-cra-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-cra-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
+  #     - name: Build ITVR Frontend
+  #       run: |
+  #         cd openshift/templates/frontend
+  #         oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         sleep 2s
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-frontend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #           echo "canceling $build"
+  #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+  #         done
+  #         sleep 2s
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-frontend-${{ env.BUILD_SUFFIX }} --wait=true
+  #         sleep 2s
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
 
-  deploy:
-    if: >
-      (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
-      (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
-    name: Deploy ITVR
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    # needs: [get-version, build-backend, build-frontend, build-cra]
-    needs: [get-version,build-backend,build-frontend,build-cra]
+  # build-cra:
+  #   if: >
+  #     (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
+  #     (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
+  #   name: Build ITVR CRA
+  #   runs-on: ubuntu-latest
+  #   needs: [get-version]
+  #   timeout-minutes: 60
 
-    env:
-      VERSION: ${{ needs.get-version.outputs.VERSION }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ github.event.pull_request.number }}
 
-    steps:
-      - name: Checkout Manifest repository
-        uses: actions/checkout@v4.1.1
-        with:
-          repository: bcgov-c/tenant-gitops-ac294c
-          ref: main
-          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4.1.1
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Replace VERSION in values-dev-pr.yaml
-        uses: jacobtomlinson/gha-find-replace@v3
-        with:
-          find: "VERSION"
-          replace: "${{ env.VERSION }}"
-          include: "itvr/values-dev-pr.yaml"
-          regex: false
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Replace PRNUMBER in values-dev-pr.yaml
-        uses: jacobtomlinson/gha-find-replace@v3
-        with:
-          find: "PRNUMBER"
-          replace: "${{ env.PR_NUMBER }}"
-          include: "itvr/values-dev-pr.yaml"
-          regex: false
+  #     - name: Build ITVR CRA
+  #       run: |
+  #         cd openshift/templates/cra
+  #         oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=${{ env.GIT_REF }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         sleep 2s
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-cra-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #           echo "canceling $build"
+  #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+  #         done
+  #         sleep 2s
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-cra-${{ env.BUILD_SUFFIX }} --wait=true
+  #         sleep 2s
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
 
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+  # deploy:
+  #   if: >
+  #     (github.event.action == 'labeled' && github.event.label.name == 'build' && github.event.pull_request.base.ref == github.event.repository.default_branch) ||
+  #     (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'build') && github.event.pull_request.base.ref == github.event.repository.default_branch)
+  #   name: Deploy ITVR
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 60
+  #   # needs: [get-version, build-backend, build-frontend, build-cra]
+  #   needs: [get-version,build-backend,build-frontend,build-cra]
 
-      - name: Show the values-dev-pr.yaml after replacement
-        shell: bash {0}
-        run: |
-          pwd
-          ls -l
-          cat itvr/values-dev-pr.yaml
+  #   env:
+  #     VERSION: ${{ needs.get-version.outputs.VERSION }}
 
-      - name: Helm Deployment
-        shell: bash {0}
-        run: |
-          cd postgres-pr
-          helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }}-postgresql oci://registry-1.docker.io/bitnamicharts/postgresql --version 15.5.17
-          cd minio-pr
-          helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }}-minio oci://registry-1.docker.io/bitnamicharts/minio --version 14.8.0
-          sleep 60s
-          cd ../itvr
-          helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }} . \
-              --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
-              --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
-              --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" 
-              # \
-              # --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E" 
+  #   steps:
+  #     - name: Checkout Manifest repository
+  #       uses: actions/checkout@v4.1.1
+  #       with:
+  #         repository: bcgov-c/tenant-gitops-ac294c
+  #         ref: main
+  #         ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+
+  #     - name: Replace VERSION in values-dev-pr.yaml
+  #       uses: jacobtomlinson/gha-find-replace@v3
+  #       with:
+  #         find: "VERSION"
+  #         replace: "${{ env.VERSION }}"
+  #         include: "itvr/values-dev-pr.yaml"
+  #         regex: false
+
+  #     - name: Replace PRNUMBER in values-dev-pr.yaml
+  #       uses: jacobtomlinson/gha-find-replace@v3
+  #       with:
+  #         find: "PRNUMBER"
+  #         replace: "${{ env.PR_NUMBER }}"
+  #         include: "itvr/values-dev-pr.yaml"
+  #         regex: false
+
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
+
+  #     - name: Show the values-dev-pr.yaml after replacement
+  #       shell: bash {0}
+  #       run: |
+  #         pwd
+  #         ls -l
+  #         cat itvr/values-dev-pr.yaml
+
+  #     - name: Helm Deployment
+  #       shell: bash {0}
+  #       run: |
+  #         cd postgres-pr
+  #         helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }}-postgresql oci://registry-1.docker.io/bitnamicharts/postgresql --version 15.5.17
+  #         cd minio-pr
+  #         helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }}-minio oci://registry-1.docker.io/bitnamicharts/minio --version 14.8.0
+  #         sleep 60s
+  #         cd ../itvr
+  #         helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }} . \
+  #             --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+  #             --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+  #             --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" 
+  #             # \
+  #             # --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E" 
