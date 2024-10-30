@@ -266,7 +266,7 @@ jobs:
         run: |
           cd postgres-pr
           helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }}-postgresql oci://registry-1.docker.io/bitnamicharts/postgresql --version 15.5.17
-          cd minio-pr
+          cd ../minio-pr
           helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev-pr.yaml upgrade --install itvr-dev-${{ env.PR_NUMBER }}-minio oci://registry-1.docker.io/bitnamicharts/minio --version 14.8.0
           sleep 60s
           cd ../itvr
