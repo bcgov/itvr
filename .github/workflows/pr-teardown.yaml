@@ -31,6 +31,7 @@ jobs:
           namespace: ${{ env.DEV_NAMESPACE }}
 
       - name: Teardown the pull request
+        shell: bash {0}
         run: |
           helm -n ${{ env.DEV_NAMESPACE }} uninstall itvr-dev-${{ env.PR_NUMBER }}
           helm -n ${{ env.DEV_NAMESPACE }} uninstall itvr-dev-${{ env.PR_NUMBER }}-minio
