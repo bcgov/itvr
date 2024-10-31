@@ -33,216 +33,217 @@ jobs:
   #           exit 1
   #         fi
 
-  set-pre-release:
-    name: Calculate pre-release number
-    runs-on: ubuntu-latest
-    # needs: verify-pr
+  # set-pre-release:
+  #   name: Calculate pre-release number
+  #   runs-on: ubuntu-latest
+  #   # needs: verify-pr
 
-    outputs:
-      PRE_RELEASE: ${{ steps.set-pre-release.outputs.PRE_RELEASE }}
+  #   outputs:
+  #     PRE_RELEASE: ${{ steps.set-pre-release.outputs.PRE_RELEASE }}
 
-    steps:
-      - id: set-pre-release
-        run: |
-          echo "PRE_RELEASE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+  #   steps:
+  #     - id: set-pre-release
+  #       run: |
+  #         echo "PRE_RELEASE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
-  get-version:
-    name: Get the version
-    runs-on: ubuntu-latest
-    # needs: verify-pr
+  # get-version:
+  #   name: Get the version
+  #   runs-on: ubuntu-latest
+  #   # needs: verify-pr
 
-    outputs:
-      VERSION: ${{ steps.get-version.outputs.VERSION }}
+  #   outputs:
+  #     VERSION: ${{ steps.get-version.outputs.VERSION }}
 
-    steps:
-      - id: get-version
-        run: |
-          echo "VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oP '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
+  #   steps:
+  #     - id: get-version
+  #       run: |
+  #         echo "VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oP '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
 
-  verify-build-suffix:
-    name: Verify-build-suffix
-    runs-on: ubuntu-latest
-    needs: [set-pre-release, get-version]
+  # verify-build-suffix:
+  #   name: Verify-build-suffix
+  #   runs-on: ubuntu-latest
+  #   needs: [set-pre-release, get-version]
 
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
 
-    steps:
-      - id: verify-build-suffix
-        run: |
-          echo "Validating ${{ env.BUILD_SUFFIX }}"
-          if [[ "${{ env.BUILD_SUFFIX }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]{14}$ ]]; then
-            echo "Build suffix ${{ env.BUILD_SUFFIX }} format is valid."
-          else
-            echo "Error: Build suffix ${{ env.BUILD_SUFFIX }} format is invalid!"
-            exit 1
-          fi
+  #   steps:
+  #     - id: verify-build-suffix
+  #       run: |
+  #         echo "Validating ${{ env.BUILD_SUFFIX }}"
+  #         if [[ "${{ env.BUILD_SUFFIX }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]{14}$ ]]; then
+  #           echo "Build suffix ${{ env.BUILD_SUFFIX }} format is valid."
+  #         else
+  #           echo "Error: Build suffix ${{ env.BUILD_SUFFIX }} format is invalid!"
+  #           exit 1
+  #         fi
 
-  build-backend:
-    name: Build ITVR Backend
-    runs-on: ubuntu-latest
-    needs: [set-pre-release, get-version, verify-build-suffix]
-    timeout-minutes: 60
+  # build-backend:
+  #   name: Build ITVR Backend
+  #   runs-on: ubuntu-latest
+  #   needs: [set-pre-release, get-version, verify-build-suffix]
+  #   timeout-minutes: 60
 
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
-      VERSION: ${{ needs.get-version.outputs.VERSION }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+  #     VERSION: ${{ needs.get-version.outputs.VERSION }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4.1.1
 
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ITVR Backend
-        run: |
-          echo ${{ env.BUILD_SUFFIX }}
-          cd openshift/templates/backend
-          # oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-backend-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
+  #     - name: Build ITVR Backend
+  #       run: |
+  #         echo ${{ env.BUILD_SUFFIX }}
+  #         cd openshift/templates/backend
+  #         # oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         sleep 2s
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #           echo "canceling $build"
+  #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+  #         done
+  #         sleep 2s
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-backend-${{ env.BUILD_SUFFIX }} --wait=true
+  #         sleep 2s
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
 
-  build-frontend:
-    name: Build ITVR Frontend
-    runs-on: ubuntu-latest
-    needs: [set-pre-release, get-version, verify-build-suffix]
-    timeout-minutes: 60
+  # build-frontend:
+  #   name: Build ITVR Frontend
+  #   runs-on: ubuntu-latest
+  #   needs: [set-pre-release, get-version, verify-build-suffix]
+  #   timeout-minutes: 60
 
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
-      VERSION: ${{ needs.get-version.outputs.VERSION }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+  #     VERSION: ${{ needs.get-version.outputs.VERSION }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4.1.1
 
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ZEVA Frontend
-        run: |
-          cd openshift/templates/frontend
-          # oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-frontend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-frontend-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
+  #     - name: Build ZEVA Frontend
+  #       run: |
+  #         cd openshift/templates/frontend
+  #         # oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         sleep 2s
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-frontend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #           echo "canceling $build"
+  #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+  #         done
+  #         sleep 2s
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-frontend-${{ env.BUILD_SUFFIX }} --wait=true
+  #         sleep 2s
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
 
-  build-cra:
-    name: Build ITVR CRA
-    runs-on: ubuntu-latest
-    needs: [set-pre-release, get-version, verify-build-suffix]
-    timeout-minutes: 60
+  # build-cra:
+  #   name: Build ITVR CRA
+  #   runs-on: ubuntu-latest
+  #   needs: [set-pre-release, get-version, verify-build-suffix]
+  #   timeout-minutes: 60
 
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
-      VERSION: ${{ needs.get-version.outputs.VERSION }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+  #     VERSION: ${{ needs.get-version.outputs.VERSION }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4.1.1
 
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ZEVA CRA
-        run: |
-          cd openshift/templates/cra
-          # oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-cra-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-cra-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
+  #     - name: Build ZEVA CRA
+  #       run: |
+  #         cd openshift/templates/cra
+  #         # oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         sleep 2s
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-cra-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #           echo "canceling $build"
+  #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+  #         done
+  #         sleep 2s
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-cra-${{ env.BUILD_SUFFIX }} --wait=true
+  #         sleep 2s
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
   
-  build-task-queue:
-    name: Build ITVR Task Queue
-    runs-on: ubuntu-latest
-    needs: [set-pre-release, get-version, verify-build-suffix]
-    timeout-minutes: 60
+  # build-task-queue:
+  #   name: Build ITVR Task Queue
+  #   runs-on: ubuntu-latest
+  #   needs: [set-pre-release, get-version, verify-build-suffix]
+  #   timeout-minutes: 60
 
-    env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
-      VERSION: ${{ needs.get-version.outputs.VERSION }}
+  #   env:
+  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+  #     VERSION: ${{ needs.get-version.outputs.VERSION }}
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v4.1.1
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Log in to Openshift
-        uses: redhat-actions/oc-login@v1.3
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ env.TOOLS_NAMESPACE }}
+  #     - name: Log in to Openshift
+  #       uses: redhat-actions/oc-login@v1.3
+  #       with:
+  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+  #         insecure_skip_tls_verify: true
+  #         namespace: ${{ env.TOOLS_NAMESPACE }}
 
-      - name: Build ITVR Taskq
-        run: |
-          cd openshift/templates/task-queue
-          # oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-task-queue-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
-          oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-task-queue-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
-          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
+  #     - name: Build ITVR Taskq
+  #       run: |
+  #         cd openshift/templates/task-queue
+  #         # oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=new-pipeline-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+  #         sleep 2s
+  #         for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-task-queue-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+  #           echo "canceling $build"
+  #           oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+  #         done
+  #         sleep 2s
+  #         oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-task-queue-${{ env.BUILD_SUFFIX }} --wait=true
+  #         sleep 2s
+  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
 
   deploy:
     name: Deploy ITVR on Dev
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [set-pre-release, get-version, build-backend, build-frontend, build-cra, build-task-queue]
+    # needs: [set-pre-release, get-version, build-backend, build-frontend, build-cra, build-task-queue]
 
     env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+      # BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+      BUILD_SUFFIX: "1.29.0-20241031221457"
 
     steps:
       - name: Checkout Manifest repository
         uses: actions/checkout@v4.1.1
         with:
-          repository: bcgov-c/tenant-gitops-e52f12
+          repository: bcgov-c/tenant-gitops-ac294c
           ref: main
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
 
