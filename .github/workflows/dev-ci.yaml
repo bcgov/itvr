@@ -228,51 +228,65 @@ jobs:
           oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-task-queue-${{ env.BUILD_SUFFIX }} --wait=true
           sleep 2s
           oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
-  # deploy:
-  #   name: Deploy ITVR on Dev
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 60
-  #   needs: [set-pre-release, get-version, build-backend, build-frontend]
 
-  #   env:
-  #     BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
+  deploy:
+    name: Deploy ITVR on Dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [set-pre-release, get-version, build-backend, build-frontend, build-cra, build-task-queue]
 
-  #   steps:
-  #     - name: Checkout Manifest repository
-  #       uses: actions/checkout@v4.1.1
-  #       with:
-  #         repository: bcgov-c/tenant-gitops-e52f12
-  #         ref: main
-  #         ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+    env:
+      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
 
-  #     - name: Update tags
-  #       uses: mikefarah/yq@v4.40.5
-  #       with:
-  #         cmd: |
-  #           yq -i '.frontend.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-dev.yaml
-  #           yq -i '.backend.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-dev.yaml
+    steps:
+      - name: Checkout Manifest repository
+        uses: actions/checkout@v4.1.1
+        with:
+          repository: bcgov-c/tenant-gitops-e52f12
+          ref: main
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
 
-  #     - name: GitHub Commit & Push
-  #       shell: bash {0}
-  #       run: |
-  #         git config --global user.email "actions@github.com"
-  #         git config --global user.name "GitHub Actions"
-  #         git add itvr/values-dev.yaml
-  #         git commit -m "Update the image tag to ${{ env.BUILD_SUFFIX }} on Dev"
-  #         git push
+      - name: Update tags
+        uses: mikefarah/yq@v4.40.5
+        with:
+          cmd: |
+            yq -i '.frontend.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-dev.yaml
+            yq -i '.backend.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-dev.yaml
+            yq -i '.cra.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-dev.yaml
+            yq -i '.task-queue.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-dev.yaml
 
-  #     - name: Log in to Openshift
-  #       uses: redhat-actions/oc-login@v1.3
-  #       with:
-  #         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-  #         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
-  #         insecure_skip_tls_verify: true
-  #         namespace: ${{ env.TOOLS_NAMESPACE }}
+      - name: GitHub Commit & Push
+        shell: bash {0}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add itvr/values-dev.yaml
+          git commit -m "Update the image tag to ${{ env.BUILD_SUFFIX }} on Dev"
+          git push
 
-  #     - name: Tag and deploy to Dev
-  #       run: |
-  #         helm -n ${{ env.DEV_NAMESPACE }} list
-  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
-  #         oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
-  #         cd itvr
-  #         helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev.yaml upgrade --install itvr-dev .
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.3
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ env.TOOLS_NAMESPACE }}
+
+      - name: Tag and deploy to Dev
+        run: |
+          helm -n ${{ env.DEV_NAMESPACE }} list
+          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
+
+      - name: Helm Deployment
+        run: |
+          cd itvr
+          helm -n ${{ env.DEV_NAMESPACE }} -f ./values-dev.yaml upgrade --install itvr-dev . \
+              --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+              --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+              --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+              --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E" 
+
+
