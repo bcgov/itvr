@@ -197,7 +197,7 @@ jobs:
     timeout-minutes: 60
 
     env:
-      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ github.event.pull_request.number }}
+      BUILD_SUFFIX: ${{ needs.get-version.outputs.VERSION }}-${{ needs.set-pre-release.outputs.PRE_RELEASE }}
       VERSION: ${{ needs.get-version.outputs.VERSION }}
 
     steps:
