@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60 
     steps:
-      - name: Ask for approval for ITVR Prod deployment
+      - name: Ask for approval for Zap Full Scan
         uses: trstringer/manual-approval@v1.6.0
         with:
           secret: ${{ github.TOKEN }}
@@ -28,5 +28,5 @@ jobs:
       - name: ZAP Full Scan on Backend
         uses: zaproxy/action-full-scan@v0.11.0
         with:
-          target: 'https://itvr-backend-test.apps.silver.devops.gov.bc.ca'
+          target: 'https://itvr-test-backend.apps.silver.devops.gov.bc.ca'
           issue_title: ZAP Test Backend Baseline Scan Report

@@ -19,5 +19,5 @@ jobs:
       - name: ZAP Baseline Scan on Backend
         uses: zaproxy/action-full-scan@v0.11.0
         with:
-          target: 'https://itvr-backend-${{ github.event.inputs.envname }}.apps.silver.devops.gov.bc.ca'
+          target: 'https://itvr-${{ github.event.inputs.envname }}-backend.apps.silver.devops.gov.bc.ca'
           issue_title: "ZAP ${{ github.event.inputs.envname }} Backend Baseline Scan Report"
