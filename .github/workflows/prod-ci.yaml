@@ -1,0 +1,104 @@
+name: ITVR new-pipeline Prod CI
+
+on:
+  workflow_dispatch:
+
+env:
+  GIT_URL: https://github.com/bcgov/itvr.git
+  TEST_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-test
+  PROD_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE_PLATE }}-prod
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  get-build-suffix:
+    name: Find Dev deployment build suffix 
+    runs-on: ubuntu-latest
+
+    outputs:
+      BUILD_SUFFIX: ${{ steps.get-build-suffix.outputs.BUILD_SUFFIX }}
+
+    steps:
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.3
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ env.TEST_NAMESPACE }}
+
+      - id: get-build-suffix
+        run: |
+          build_suffix=$(oc -n ${{ env.TEST_NAMESPACE }} describe deployment/itvr-test-frontend | grep Image | awk -F ':' '{print $NF}')
+          echo "Validating $build_suffix"
+          if [[ "$build_suffix" =~ ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]{14}$ ]]; then
+            echo "Build suffix $build_suffix format is valid."
+            echo "BUILD_SUFFIX=$build_suffix" >> $GITHUB_OUTPUT
+          else
+            echo "Error: Build suffix $build_suffix format is invalid!"
+            exit 1
+          fi
+
+  deploy:
+    name: Deploy ITVR on Prod
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [get-build-suffix]
+
+    env:
+      BUILD_SUFFIX: ${{ needs.get-build-suffix.outputs.BUILD_SUFFIX }}
+
+    steps:
+      - name: Checkout Manifest repository
+        uses: actions/checkout@v4.1.1
+        with:
+          repository: bcgov-c/tenant-gitops-ac294c
+          ref: main
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+
+      - name: Update tags
+        uses: mikefarah/yq@v4.40.5
+        with:
+          cmd: |
+            yq -i '.frontend.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-prod.yaml
+            yq -i '.backend.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-prod.yaml
+            yq -i '.cra.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-prod.yaml
+            yq -i '.task-queue.image.tag = "${{ env.BUILD_SUFFIX }}"' itvr/values-prod.yaml
+
+      - name: GitHub Commit & Push
+        shell: bash {0}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add itvr/values-prod.yaml
+          git commit -m "Update the image tag to ${{ env.BUILD_SUFFIX }} on Prod"
+          git push
+
+      - name: Log in to Openshift
+        uses: redhat-actions/oc-login@v1.3
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ env.TEST_NAMESPACE }}
+
+      - name: Tag and deploy to Prod
+        run: |
+          helm -n ${{ env.PROD_NAMESPACE }} list
+          oc tag ${{ env.TEST_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TEST_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TEST_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
+          oc tag ${{ env.TEST_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
+
+      - name: Helm Deployment
+        run: |
+          cd itvr
+          helm -n ${{ env.PROD_NAMESPACE }} -f ./values-prod.yaml upgrade --install itvr-prod . \
+              --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+              --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+              --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+              --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E" 
+
+
