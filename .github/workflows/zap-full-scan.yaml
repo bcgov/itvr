@@ -21,12 +21,12 @@ jobs:
     needs: approval-zap-full-scan
     steps:
       - name: ZAP Full Scan on Frontend
-        uses: zaproxy/action-full-scan@v0.8.0
+        uses: zaproxy/action-full-scan@v0.11.0
         with:
           target: 'https://itvr-test.apps.silver.devops.gov.bc.ca'
           issue_title: ZAP Test Frontend Baseline Scan Report
       - name: ZAP Full Scan on Backend
-        uses: zaproxy/action-full-scan@v0.8.0
+        uses: zaproxy/action-full-scan@v0.11.0
         with:
           target: 'https://itvr-backend-test.apps.silver.devops.gov.bc.ca'
           issue_title: ZAP Test Backend Baseline Scan Report
