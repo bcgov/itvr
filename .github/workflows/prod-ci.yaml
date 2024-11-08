@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   get-build-suffix:
-    name: Find Dev deployment build suffix 
+    name: Find Dev deployment build suffix
     runs-on: ubuntu-latest
 
     outputs:
@@ -41,11 +41,26 @@ jobs:
             exit 1
           fi
 
+  approval-deploy-on-prod:
+    name: Approval the deployment on Pest
+    needs: get-build-suffix
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Ask for approval for ITVR Prod deployment
+        uses: trstringer/manual-approval@v1.6.0
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: emi-hi,tim738745,kuanfandevops,JulianForeman,rogerlcleung
+          minimum-approvals: 2
+          issue-title: "ITVR ${{ needs.get-build-suffix.outputs.BUILD_SUFFIX }} Prod Deployment"
+
   deploy:
     name: Deploy ITVR on Prod
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [get-build-suffix]
+    needs: [get-build-suffix, approval-deploy-on-prod]
 
     env:
       BUILD_SUFFIX: ${{ needs.get-build-suffix.outputs.BUILD_SUFFIX }}
@@ -99,6 +114,4 @@ jobs:
               --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
               --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
               --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" \
-              --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E" 
-
-
+              --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E"
