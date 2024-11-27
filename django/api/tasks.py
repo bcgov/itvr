@@ -329,12 +329,14 @@ def send_not_approve(recipient_email, application_id, tax_year):
                 No record of your {tax_year} Notice of Assessment on file with the Canada Revenue Agency (CRA).
             </li>
             <li>
-                The identity records that you have supplied do not match CRA records.
+                The identity records that you have supplied do not match CRA records. This could be due to any spelling errors or mistakes in your application.
             </li>
             <li>
                 Your income does not qualify/exceeds the maximum eligible amount under the program.
             </li>
         </ul>
+
+        <p><b>If you think you made mistakes in your application, please <a href="https://goelectricbc.gov.bc.ca/rebates-and-programs/for-individuals/explore-personal-rebate-offers/">reapply</a>.</b></p>
 
         <p>Questions?</p>
 
