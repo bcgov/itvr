@@ -18,6 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  
   verify-pr:
     name: Verify pull request title started with Tracking
     runs-on: ubuntu-latest
