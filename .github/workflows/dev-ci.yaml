@@ -105,7 +105,7 @@ jobs:
         run: |
           echo ${{ env.BUILD_SUFFIX }}
           cd openshift/templates/backend
-          oc process -f ./backend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
+          oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
           sleep 2s
           for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
             echo "canceling $build"
