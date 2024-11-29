@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  
+
   verify-pr:
     name: Verify pull request title started with Tracking
     runs-on: ubuntu-latest
@@ -44,6 +44,7 @@ jobs:
       PRE_RELEASE: ${{ steps.set-pre-release.outputs.PRE_RELEASE }}
 
     steps:
+      
       - id: set-pre-release
         run: |
           echo "PRE_RELEASE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
