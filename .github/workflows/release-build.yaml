@@ -1,4 +1,4 @@
-name: ITVR release-1.28.0
+name: ITVR release-1.29.0
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       pull_request:
         description: "Tracking pull request number"
         required: true
-        default: 722
+        default: 730
       release_branch:
         description: "The name of the release branch"
         required: true
