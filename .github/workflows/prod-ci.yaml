@@ -18,14 +18,11 @@ jobs:
     outputs:
       cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.1.1
-
       - name: Set up cache for OpenShift CLI
         id: cache
         uses: actions/cache@v4.2.0
         with:
-          path: /usr/local/bin/oc  # Path where the `oc` binary will be installed
+          path: /usr/local/bin/oc # Path where the `oc` binary will be installed
           key: oc-cli-${{ runner.os }}
 
       - name: Install OpenShift CLI (if not cached)
@@ -80,13 +77,17 @@ jobs:
     timeout-minutes: 60
 
     steps:
+      - id: get-current-time
+        run: |
+          echo "CURRENT_TIME=$(TZ='America/Vancouver' date '+%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_OUTPUT
+
       - name: Ask for approval for ITVR Prod deployment
         uses: trstringer/manual-approval@v1.6.0
         with:
           secret: ${{ github.TOKEN }}
           approvers: emi-hi,tim738745,kuanfandevops,JulianForeman,rogerlcleung
-          minimum-approvals: 2
-          issue-title: "ITVR ${{ needs.get-build-suffix.outputs.BUILD_SUFFIX }} Prod Deployment"
+          minimum-approvals: 1
+          issue-title: "ITVR ${{ needs.get-build-suffix.outputs.BUILD_SUFFIX }} Prod Deployment at ${{ steps.get-current-time.outputs.CURRENT_TIME }}"
 
   deploy:
     name: Deploy ITVR on Prod
@@ -122,11 +123,13 @@ jobs:
           git add itvr/values-prod.yaml
           git commit -m "Update the image tag to ${{ env.BUILD_SUFFIX }} on Prod"
           git push
+
       - name: Restore oc command from Cache
         uses: actions/cache@v4.2.0
         with:
           path: /usr/local/bin/oc
           key: oc-cli-${{ runner.os }}
+
       - name: Log in to Openshift
         uses: redhat-actions/oc-login@v1.3
         with:
@@ -138,16 +141,13 @@ jobs:
       - name: Tag and deploy to Prod
         run: |
           helm -n ${{ env.PROD_NAMESPACE }} list
-          oc tag ${{ env.TEST_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
-          oc tag ${{ env.TEST_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
-          oc tag ${{ env.TEST_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
-          oc tag ${{ env.TEST_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
-
-      - name: Helm Deployment
-        run: |
-          cd itvr
-          helm -n ${{ env.PROD_NAMESPACE }} -f ./values-prod.yaml upgrade --install itvr-prod . \
-              --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
-              --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
-              --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" \
-              --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E"
+          # oc tag ${{ env.TEST_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
+          # oc tag ${{ env.TEST_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
+          # oc tag ${{ env.TEST_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
+          # oc tag ${{ env.TEST_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.PROD_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
+          # cd itvr
+          # helm -n ${{ env.PROD_NAMESPACE }} -f ./values-prod.yaml upgrade --install itvr-prod . \
+          #     --set frontend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+          #     --set backend.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+          #     --set cra.podAnnotations.rolloutTriggered="A$(date +%s)E" \
+          #     --set task-queue.podAnnotations.rolloutTriggered="A$(date +%s)E"
