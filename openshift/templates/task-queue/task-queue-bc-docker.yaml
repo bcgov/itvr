@@ -72,10 +72,8 @@ objects:
           dockerfilePath: ./Dockerfile-Openshift-Taskq
           pullSecret:
             name: artifacts-default-pwpgbz
+          forcePull: true
+          noCache: true    
         type: Docker      
-      # triggers:
-      #   - imageChange: {}
-      #     type: ImageChange
-      #   - type: ConfigChange
     status:
       lastVersion: 0
