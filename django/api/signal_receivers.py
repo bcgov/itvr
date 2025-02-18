@@ -9,6 +9,8 @@ from api.models.household_member import HouseholdMember
 from django_q.tasks import async_task
 from api.utility import addresses_match
 from .signals import household_application_saved
+from django_q.signals import pre_execute
+from django_q.brokers import get_broker
 
 
 @receiver(post_save, sender=GoElectricRebateApplication)
@@ -94,3 +96,12 @@ def after_status_change(sender, instance, created, **kwargs):
                 instance.id,
                 instance.tax_year,
             )
+
+
+@receiver(pre_execute)
+def ack(sender, task, **kwargs):
+    if task.get("ack_failure", False):
+        ack_id = task.pop("ack_id", None)
+        if ack_id:
+            broker = get_broker()
+            broker.acknowledge(ack_id)
