@@ -67,18 +67,9 @@ objects:
       strategy:
         dockerStrategy:
           dockerfilePath: ./Dockerfile-Openshift
-          env:
-            - name: ARTIFACTORY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: artifacts-default-pwpgbz
-                  key: username
-            - name: ARTIFACTORY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: artifacts-default-pwpgbz
-                  key: password
+          pullSecret:
+            name: artifacts-pull-default-pwpgbz
+          forcePull: true
+          noCache: true    
         type: Docker
-      triggers:
-        - type: ConfigChange
-        - type: ImageChange
+
