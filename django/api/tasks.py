@@ -24,7 +24,6 @@ from api.constants import (
 )
 from api.utility import get_applicant_full_name
 from django_q.tasks import async_task
-from func_timeout import func_timeout, FunctionTimedOut
 from django.db import transaction
 from django.db.models import Q
 
@@ -483,76 +482,62 @@ def send_expiry_warning(recipient_email, application_id):
 
 
 def send_rebates_to_ncda(max_number_of_rebates=100):
-    def inner():
-        rebates = GoElectricRebate.objects.filter(ncda_id__isnull=True)[
-            :max_number_of_rebates
-        ]
-        for rebate in rebates:
-            try:
-                ncda_data = notify(
-                    rebate.drivers_licence,
-                    rebate.last_name,
-                    rebate.expiry_date.strftime("%m/%d/%Y"),
-                    str(rebate.rebate_max_amount),
-                    rebate.application.id if rebate.application else None,
+    rebates = GoElectricRebate.objects.filter(ncda_id__isnull=True)[
+        :max_number_of_rebates
+    ]
+    for rebate in rebates:
+        try:
+            ncda_data = notify(
+                rebate.drivers_licence,
+                rebate.last_name,
+                rebate.expiry_date.strftime("%m/%d/%Y"),
+                str(rebate.rebate_max_amount),
+                rebate.application.id if rebate.application else None,
+            )
+            ncda_id = ncda_data["d"]["ID"]
+            GoElectricRebate.objects.filter(id=rebate.id).update(
+                ncda_id=ncda_id, modified=timezone.now()
+            )
+            application = rebate.application
+            if application and (
+                application.status == GoElectricRebateApplication.Status.APPROVED
+            ):
+                if rebate.rebate_max_amount == 4000:
+                    rebate_amounts = FOUR_THOUSAND_REBATE
+                elif rebate.rebate_max_amount == 2000:
+                    rebate_amounts = TWO_THOUSAND_REBATE
+                else:
+                    rebate_amounts = ONE_THOUSAND_REBATE
+                async_task(
+                    "api.tasks.send_approve",
+                    application.email,
+                    application.id,
+                    get_applicant_full_name(application),
+                    rebate_amounts,
                 )
-                ncda_id = ncda_data["d"]["ID"]
-                GoElectricRebate.objects.filter(id=rebate.id).update(
-                    ncda_id=ncda_id, modified=timezone.now()
-                )
-                application = rebate.application
-                if application and (
-                    application.status == GoElectricRebateApplication.Status.APPROVED
-                ):
-                    if rebate.rebate_max_amount == 4000:
-                        rebate_amounts = FOUR_THOUSAND_REBATE
-                    elif rebate.rebate_max_amount == 2000:
-                        rebate_amounts = TWO_THOUSAND_REBATE
-                    else:
-                        rebate_amounts = ONE_THOUSAND_REBATE
-                    async_task(
-                        "api.tasks.send_approve",
-                        application.email,
-                        application.id,
-                        get_applicant_full_name(application),
-                        rebate_amounts,
-                    )
-            except Exception:
-                print("error posting go_electric_rebate with id %s to ncda" % rebate.id)
-
-    try:
-        func_timeout(900, inner)
-    except FunctionTimedOut:
-        print("send_rebates_to_ncda timed out")
-        raise Exception
+        except Exception:
+            print("error posting go_electric_rebate with id %s to ncda" % rebate.id)
 
 
 # check for newly redeemed rebates
+@transaction.atomic
 def check_rebates_redeemed_since(iso_ts):
-    @transaction.atomic
-    def inner():
-        transformed_time = datetime.strptime(iso_ts, "%Y-%m-%dT%H:%M:%SZ") - timedelta(
-            days=1
-        )
-        ts = transformed_time.strftime("%Y-%m-%dT00:00:00Z")
-        print("check_rebate_status " + ts)
-        ncda_ids = []
-        get_rebates_redeemed_since(ts, ncda_ids, None)
-        print(ncda_ids)
-        redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
-        redeemed_rebates.update(redeemed=True, modified=timezone.now())
-        GoElectricRebateApplication.objects.filter(
-            pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
-        ).update(
-            status=GoElectricRebateApplication.Status.REDEEMED,
-            modified=timezone.now(),
-        )
-
-    try:
-        func_timeout(900, inner)
-    except FunctionTimedOut:
-        print("check_rebates_redeemed_since job timed out")
-        raise Exception
+    transformed_time = datetime.strptime(iso_ts, "%Y-%m-%dT%H:%M:%SZ") - timedelta(
+        days=1
+    )
+    ts = transformed_time.strftime("%Y-%m-%dT00:00:00Z")
+    print("check_rebate_status " + ts)
+    ncda_ids = []
+    get_rebates_redeemed_since(ts, ncda_ids, None)
+    print(ncda_ids)
+    redeemed_rebates = GoElectricRebate.objects.filter(ncda_id__in=ncda_ids)
+    redeemed_rebates.update(redeemed=True, modified=timezone.now())
+    GoElectricRebateApplication.objects.filter(
+        pk__in=list(redeemed_rebates.values_list("application_id", flat=True))
+    ).update(
+        status=GoElectricRebateApplication.Status.REDEEMED,
+        modified=timezone.now(),
+    )
 
 
 def expire_expired_applications(max_number_of_rebates=50, days_offset=15):
@@ -574,64 +559,50 @@ def expire_expired_applications(max_number_of_rebates=50, days_offset=15):
                 except Exception:
                     pass
 
-    def inner():
-        threshold = timezone.now().date() - timedelta(days=days_offset)
-        expired_rebates = (
-            GoElectricRebate.objects.filter(redeemed=False)
-            .filter(expiry_date__lte=threshold)
-            .filter(ncda_id__isnull=False)
-            .filter(application__status=GoElectricRebateApplication.Status.APPROVED)
-        )[:max_number_of_rebates]
+    threshold = timezone.now().date() - timedelta(days=days_offset)
+    expired_rebates = (
+        GoElectricRebate.objects.filter(redeemed=False)
+        .filter(expiry_date__lte=threshold)
+        .filter(ncda_id__isnull=False)
+        .filter(application__status=GoElectricRebateApplication.Status.APPROVED)
+    )[:max_number_of_rebates]
 
-        for rebate in expired_rebates:
-            try:
-                expire_rebate(rebate)
-            except Exception:
-                print("error expiring go_electric_rebate with id %s" % rebate.id)
+    for rebate in expired_rebates:
+        try:
+            expire_rebate(rebate)
+        except Exception:
+            print("error expiring go_electric_rebate with id %s" % rebate.id)
 
-        print("expired applications: %s" % expired_application_ids)
-
-    try:
-        func_timeout(900, inner)
-    except FunctionTimedOut:
-        print("expire applications job timed out")
-        raise Exception
+    print("expired applications: %s" % expired_application_ids)
 
 
 def send_expiry_emails(days_offset=14):
-    def inner():
-        expiry_email_application_ids = []
-        warning_email_application_ids = []
-        now_date = timezone.now().date()
-        future_date = now_date + timedelta(days=days_offset)
-        rebates = (
-            GoElectricRebate.objects.filter(redeemed=False)
-            .filter(Q(expiry_date__exact=now_date) | Q(expiry_date__exact=future_date))
-            .filter(application__status=GoElectricRebateApplication.Status.APPROVED)
-        )
-        for rebate in rebates:
-            application = rebate.application
-            expiry_date = rebate.expiry_date
-            if application:
-                if expiry_date == now_date:
-                    async_task(
-                        "api.tasks.send_expired",
-                        application.email,
-                        application.id,
-                    )
-                    expiry_email_application_ids.append(application.id)
-                elif expiry_date == future_date:
-                    async_task(
-                        "api.tasks.send_expiry_warning",
-                        application.email,
-                        application.id,
-                    )
-                    warning_email_application_ids.append(application.id)
-        print("expiry emails sent for: %s" % expiry_email_application_ids)
-        print("warning emails sent for: %s" % warning_email_application_ids)
-
-    try:
-        func_timeout(900, inner)
-    except FunctionTimedOut:
-        print("sending expiry emails job timed out")
-        raise Exception
+    expiry_email_application_ids = []
+    warning_email_application_ids = []
+    now_date = timezone.now().date()
+    future_date = now_date + timedelta(days=days_offset)
+    rebates = (
+        GoElectricRebate.objects.filter(redeemed=False)
+        .filter(Q(expiry_date__exact=now_date) | Q(expiry_date__exact=future_date))
+        .filter(application__status=GoElectricRebateApplication.Status.APPROVED)
+    )
+    for rebate in rebates:
+        application = rebate.application
+        expiry_date = rebate.expiry_date
+        if application:
+            if expiry_date == now_date:
+                async_task(
+                    "api.tasks.send_expired",
+                    application.email,
+                    application.id,
+                )
+                expiry_email_application_ids.append(application.id)
+            elif expiry_date == future_date:
+                async_task(
+                    "api.tasks.send_expiry_warning",
+                    application.email,
+                    application.id,
+                )
+                warning_email_application_ids.append(application.id)
+    print("expiry emails sent for: %s" % expiry_email_application_ids)
+    print("warning emails sent for: %s" % warning_email_application_ids)
