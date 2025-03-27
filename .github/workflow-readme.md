@@ -32,9 +32,6 @@ The "Build PR on Dev" pipeline will be triggered when it identified pull request
 - Create the release on GitHub from main branch
 - Create the new release branch from main branch (this is done automatically by pipeline create-release.yaml)
 - Change the new release branch as the default branch in the repo and update the branch protection rules https://github.com/bcgov/itvr/settings/branches
-- Update the following fields .github/workflows/release-build.yaml
-  - on -> workflow_dispatch -> inputs -> pull_request -> default
-  - on -> workflow_dispatch -> inputs -> release_branch -> default
 - Update frontend/package.json
   - version
 - Create the tracking pull request to merge the new release branch to main. Update the pull_request in .github/workflows/release-build.yaml after the tracking pull request is created
@@ -43,19 +40,15 @@ The "Build PR on Dev" pipeline will be triggered when it identified pull request
 
 ## Primary Pipelines
 
-- release-build.yaml (ITVR release-1.19.0): build release and deploy on test and prod
-- dev-cicd.yaml (ITVR Dev release-1.19.0): continuous to build the tracking pull request and deploy on dev
-- pr-dev-cicd.yaml (ITVR PR Dev CICD): build pull request if it's title ends with build-on-dev
-- create-release.yaml (Create Release after merging to main): tag and create the release after merging release branch to main. The description of the tracking pull request becomes release notes
+- dev-ci.yaml: Build the tracking pull request and delpoy on Dev
+- test-ci.yaml: Tag the running images on Dev to Test and delpoy on Test
+- prod-ci.yaml: Tag the running images on Test to Test and delpoy on Prod
 
 ## Other Pipelines
 
 - cleanup-cron-workflow-runs.yaml (Scheduled cleanup old workflow runs): cron job to cleanup the old workflows
 - cleanup-workflow-runs.yaml (Cleanup old workflow runs): cleanup the old workflows
-- pr-build-template.yaml (PR Build Template): pull request build template
-- pr-deploy-template.yaml (PR Deploy Template): pull request deploy template
-- pr-dev-database-template (ITVR PR Dev Database Template): template to setup database for pull request build
-- pr-teardown.yaml (ITVR PR DEV Teardown on Dev): tear down pull request deployment on dev
+- pr-build.yaml pull request build
 
 # Prerequisites before running the pipeline
 
@@ -78,3 +71,4 @@ All the followings are already on Openshift. The purpose of this section is for 
 - itvr-frontend
 - itvr-backend
 - itvr-task-queue
+- itvr-cra
