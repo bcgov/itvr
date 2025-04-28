@@ -271,6 +271,10 @@ def send_approve(recipient_email, application_id, applicant_full_name, rebate_am
         as a 24-month lease for the purposes of rebate amount determination).</p>
 
         <p>This rebate approval will expire one year from today’s date.</p>
+
+        <p><b>Note: The rebate program is winding-down on May 15, 2025, or earlier if funds run out. 
+        To receive your rebate, your vehicle purchase or lease must be completed and delivered before 
+        May 15, 2025, at 11:59PM PST.</b></p>
         
         <p>Next steps:</p>
         <ol>
