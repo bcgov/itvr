@@ -140,14 +140,14 @@ jobs:
           echo ${{ env.BUILD_SUFFIX }}
           cd openshift/templates/backend
           oc process -f ./backend-bc.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
+          # sleep 2s
+          # for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-backend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+          #   echo "canceling $build"
+          #   oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+          # done
+          # sleep 2s
           oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-backend-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
+          # sleep 2s
           oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-backend:${{ env.BUILD_SUFFIX }}
 
   build-frontend:
@@ -182,14 +182,14 @@ jobs:
         run: |
           cd openshift/templates/frontend
           oc process -f ./frontend-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-frontend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
+          # sleep 2s
+          # for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-frontend-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+          #   echo "canceling $build"
+          #   oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+          # done
+          # sleep 2s
           oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-frontend-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
+          # sleep 2s
           oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-frontend:${{ env.BUILD_SUFFIX }}
 
   build-cra:
@@ -222,14 +222,14 @@ jobs:
         run: |
           cd openshift/templates/cra
           oc process -f ./cra-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-cra-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
+          # sleep 2s
+          # for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-cra-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+          #   echo "canceling $build"
+          #   oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+          # done
+          # sleep 2s
           oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-cra-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
+          # sleep 2s
           oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-cra:${{ env.BUILD_SUFFIX }}
   
   build-task-queue:
@@ -264,14 +264,14 @@ jobs:
         run: |
           cd openshift/templates/task-queue
           oc process -f ./task-queue-bc-docker.yaml NAME=itvr SUFFIX=-${{ env.BUILD_SUFFIX }} VERSION=${{ env.BUILD_SUFFIX }} GIT_URL=${{ env.GIT_URL }} GIT_REF=release-${{ env.VERSION }} | oc apply --wait=true -f - -n ${{ env.TOOLS_NAMESPACE }}
-          sleep 2s
-          for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-task-queue-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
-            echo "canceling $build"
-            oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
-          done
-          sleep 2s
+          # sleep 2s
+          # for build in $(oc -n ${{ env.TOOLS_NAMESPACE }} get builds -l buildconfig=itvr-task-queue-${{ env.BUILD_SUFFIX }} -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'); do
+          #   echo "canceling $build"
+          #   oc -n ${{ env.TOOLS_NAMESPACE }} cancel-build $build
+          # done
+          # sleep 2s
           oc -n ${{ env.TOOLS_NAMESPACE }} start-build itvr-task-queue-${{ env.BUILD_SUFFIX }} --wait=true
-          sleep 2s
+          # sleep 2s
           oc tag ${{ env.TOOLS_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }} ${{ env.DEV_NAMESPACE }}/itvr-task-queue:${{ env.BUILD_SUFFIX }}
 
   deploy:
