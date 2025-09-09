@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   db:
-    platform: linux/amd64
     image: postgres:14
     environment:
       - POSTGRES_DB=itvr
@@ -16,8 +15,7 @@ services:
       timeout: 5s
       retries: 5
   minio:
-    platform: linux/amd64
-    image: minio/minio
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     hostname: "minio"
     volumes:
       - ./minio:/minio_files
@@ -28,7 +26,6 @@ services:
       - 9000:9000
       - 9001:9001
   createbuckets:
-    platform: linux/amd64
     image: minio/mc
     depends_on:
       - minio
@@ -68,12 +65,6 @@ services:
       - VIRUS_SCANNING_ENABLED=True
       - CLAMD_HOST=clamav
       - CLAMD_PORT=3310
-      - USE_CRYPTO_SERVICE
-      - CRYPTO_SERVICE_URL
-      - CRA_CERTIFICATE
-      - CRA_CERTIFICATE_CRL_DN
-      - EPF_FILENAME
-      - EPF_PASSWORD
     volumes:
       - ./django:/api
     ports:
@@ -104,6 +95,17 @@ services:
       - BCC_EMAIL
       - NCDA_CLIENT_SECRET
       - RUN_JOBS=True
+      - CRA_CERTIFICATE
+      - CRA_CERTIFICATE_CRL_DN
+      - EPF_FILENAME
+      - EPF_PASSWORD
+      - SSH_PKEY_FILENAME
+      - CRA_SFTP_HOST
+      - CRA_SFTP_PORT
+      - CRA_SFTP_USERNAME
+      - CRA_SFTP_GET_PATH
+      - CRA_SFTP_PUT_PATH
+      - CRA_PROGRAM_CODE
     volumes:
       - ./django:/api
     depends_on:
@@ -130,5 +132,4 @@ services:
     volumes:
       - ./spring:/app
   clamav:
-    platform: linux/amd64
     image: clamav/clamav
