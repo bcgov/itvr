@@ -4,7 +4,7 @@ from django.conf import settings
 
 def get_minio_client():
     return Minio(
-        settings.MINIO_ENDPOINT,
+        settings.MINIO_ENDPOINT_INTERNAL,
         settings.MINIO_ACCESS_KEY,
         settings.MINIO_SECRET_KEY,
         secure=(settings.MINIO_USE_SSL == "True"),

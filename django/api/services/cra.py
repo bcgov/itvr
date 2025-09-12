@@ -1,5 +1,6 @@
 import requests
 import json
+import io
 from unidecode import unidecode
 from django.conf import settings
 from api.services.minio import get_minio_object
@@ -44,9 +45,7 @@ def read(file):
     return results
 
 
-def write(
-    data, today="20220516", program_code="BCVR", cra_env="A", cra_sequence="00001"
-):
+def write(data, today="20220516", program_code="BCVR", cra_env="A", cra_sequence=1):
     sequence_number = (str(cra_sequence)).rjust(5, "0")
     file = ""
 
@@ -85,7 +84,7 @@ def write(
     file += today  # Request date
     file += " "  # Blank space
 
-    file += program_code + cra_env + cra_sequence
+    file += program_code + cra_env + sequence_number
 
     file += " " * 6  # Blank space
 
@@ -129,9 +128,7 @@ def encrypt(to_encrypt):
     return response.content
 
 
-def get_to_cra_filename(
-    program_code="BCVR", cra_env="A", cra_sequence="00001", directory=""
-):
+def get_to_cra_filename(program_code="BCVR", cra_env="A", cra_sequence=1, directory=""):
     filename = "{directory}/TO.{cra_env}TO#@@00.R7005.IN.{program_code}.{cra_env}{cra_sequence:05}.p7m".format(
         directory=directory,
         cra_env=cra_env,
@@ -142,7 +139,7 @@ def get_to_cra_filename(
 
 
 def get_from_cra_filename(
-    program_code="BCVR", cra_env="A", cra_sequence="00001", directory=""
+    program_code="BCVR", cra_env="A", cra_sequence=1, directory=""
 ):
     filename = "{directory}/{cra_env}{program_code}{cra_sequence:05}.p7m".format(
         directory=directory,
@@ -155,7 +152,7 @@ def get_from_cra_filename(
 
 def get_ssh_client():
     pkey_file = get_minio_object(settings.SSH_PKEY_FILENAME)
-    pkey = paramiko.PKey.from_private_key(pkey_file)
+    pkey = paramiko.RSAKey.from_private_key(io.StringIO(pkey_file.data.decode("utf-8")))
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     client.connect(
@@ -163,5 +160,6 @@ def get_ssh_client():
         port=int(settings.CRA_SFTP_PORT),
         username=settings.CRA_SFTP_USERNAME,
         pkey=pkey,
+        disabled_algorithms={"pubkeys": ["rsa-sha2-256", "rsa-sha2-512"]},
     )
     return client

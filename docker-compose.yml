@@ -95,6 +95,7 @@ services:
       - BCC_EMAIL
       - NCDA_CLIENT_SECRET
       - RUN_JOBS=True
+      - MINIO_USE_SSL=False
       - CRA_CERTIFICATE
       - CRA_CERTIFICATE_CRL_DN
       - EPF_FILENAME
