@@ -1,22 +1,32 @@
 import requests
 import json
+import traceback
 from django.utils import timezone
 
 from django.conf import settings
 from email.header import Header
 from email.utils import formataddr
 from requests.auth import HTTPBasicAuth
+from api.models.cra_file_tracker import CraFileTracker
 from api.models.go_electric_rebate import GoElectricRebate
 from api.models.go_electric_rebate_application import (
     GoElectricRebateApplication,
 )
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
+from api.services import cra
 from api.services.ncda import (
     notify,
     get_rebates_redeemed_since,
     get_rebate_by_id,
     delete_rebate,
 )
+from api.services.rebate import (
+    get_rebate_data_for_cra,
+    get_applications,
+    save_rebates,
+    update_application_statuses,
+)
+from api.services.calculate_rebate import get_cra_results_individuals_only
 from api.constants import (
     FOUR_THOUSAND_REBATE,
     ONE_THOUSAND_REBATE,
@@ -26,6 +36,7 @@ from api.utility import get_applicant_full_name
 from django_q.tasks import async_task
 from django.db import transaction
 from django.db.models import Q
+from sequences import get_next_value
 
 
 def get_email_service_token() -> str:
@@ -610,3 +621,77 @@ def send_expiry_emails(days_offset=14):
                 warning_email_application_ids.append(application.id)
     print("expiry emails sent for: %s" % expiry_email_application_ids)
     print("warning emails sent for: %s" % warning_email_application_ids)
+
+
+def send_to_cra():
+    ssh_client = cra.get_ssh_client()
+    sftp_client = ssh_client.open_sftp()
+    try:
+        file_in_progress = CraFileTracker.objects.all().exists()
+        if file_in_progress:
+            return
+        rebates = get_rebate_data_for_cra()
+        if not rebates:
+            return
+        with transaction.atomic():
+            cra_env = settings.CRA_ENVIRONMENT
+            cra_sequence = get_next_value("cra_sequence")
+            program_code = settings.CRA_PROGRAM_CODE
+            filename = cra.get_to_cra_filename(
+                program_code=program_code,
+                cra_env=cra_env,
+                cra_sequence=cra_sequence,
+                directory=settings.CRA_SFTP_PUT_PATH,
+            )
+            today = date.today().strftime("%Y%m%d")
+            content = cra.write(
+                rebates,
+                today=today,
+                program_code=program_code,
+                cra_env=cra_env,
+                cra_sequence=cra_sequence,
+            )
+            encrypted_content = cra.encrypt(content)
+            CraFileTracker(sequence_number=cra_sequence).save()
+            sftp_file = sftp_client.open(filename, mode="w")
+            sftp_file.write(encrypted_content)
+            sftp_file.close()
+    except Exception:
+        print("Error sending data to CRA")
+        traceback.print_exc()
+    finally:
+        sftp_client.close()
+        ssh_client.close()
+
+
+def retrieve_from_cra():
+    ssh_client = cra.get_ssh_client()
+    sftp_client = ssh_client.open_sftp()
+    try:
+        file_in_progress = CraFileTracker.objects.all().first()
+        if not file_in_progress:
+            return
+        with transaction.atomic():
+            sequence_number = file_in_progress.sequence_number
+            filename = cra.get_from_cra_filename(
+                program_code=settings.CRA_PROGRAM_CODE,
+                cra_env=settings.CRA_ENVIRONMENT,
+                cra_sequence=sequence_number,
+                directory=settings.CRA_SFTP_GET_PATH,
+            )
+            # will raise exception if file does not exist
+            sftp_file = sftp_client.open(filename, mode="r")
+            content = cra.decrypt_file(sftp_file)
+            data = cra.read(content)
+            rebates = get_cra_results_individuals_only(data)
+            associated_applications = get_applications(rebates)
+            save_rebates(rebates, associated_applications)
+            update_application_statuses(rebates, associated_applications)
+            file_in_progress.delete()
+            sftp_file.close()
+    except Exception:
+        print("Error retrieving data from CRA")
+        traceback.print_exc()
+    finally:
+        sftp_client.close()
+        ssh_client.close()

@@ -1,7 +1,10 @@
 import requests
 import json
+import io
 from unidecode import unidecode
 from django.conf import settings
+from api.services.minio import get_minio_object
+import paramiko
 
 
 def read(file):
@@ -42,9 +45,8 @@ def read(file):
     return results
 
 
-def write(
-    data, today="20220516", program_code="BCVR", cra_env="A", cra_sequence="00001"
-):
+def write(data, today="20220516", program_code="BCVR", cra_env="A", cra_sequence=1):
+    sequence_number = (str(cra_sequence)).rjust(5, "0")
     file = ""
 
     # Number of records to write.
@@ -58,7 +60,7 @@ def write(
     file += today  #
     file += " "  # Blank space
 
-    file += program_code + cra_env + cra_sequence
+    file += program_code + cra_env + sequence_number
 
     file += " " * 99  # Blank space
 
@@ -82,7 +84,7 @@ def write(
     file += today  # Request date
     file += " "  # Blank space
 
-    file += program_code + cra_env + cra_sequence
+    file += program_code + cra_env + sequence_number
 
     file += " " * 6  # Blank space
 
@@ -124,3 +126,40 @@ def encrypt(to_encrypt):
     )
     response.raise_for_status()
     return response.content
+
+
+def get_to_cra_filename(program_code="BCVR", cra_env="A", cra_sequence=1, directory=""):
+    filename = "{directory}/TO.{cra_env}TO#@@00.R7005.IN.{program_code}.{cra_env}{cra_sequence:05}.p7m".format(
+        directory=directory,
+        cra_env=cra_env,
+        cra_sequence=cra_sequence,
+        program_code=program_code,
+    )
+    return filename
+
+
+def get_from_cra_filename(
+    program_code="BCVR", cra_env="A", cra_sequence=1, directory=""
+):
+    filename = "{directory}/{cra_env}{program_code}{cra_sequence:05}.p7m".format(
+        directory=directory,
+        cra_env=cra_env,
+        cra_sequence=cra_sequence,
+        program_code=program_code,
+    )
+    return filename
+
+
+def get_ssh_client():
+    pkey_file = get_minio_object(settings.SSH_PKEY_FILENAME)
+    pkey = paramiko.RSAKey.from_private_key(io.StringIO(pkey_file.data.decode("utf-8")))
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+    client.connect(
+        settings.CRA_SFTP_HOST,
+        port=int(settings.CRA_SFTP_PORT),
+        username=settings.CRA_SFTP_USERNAME,
+        pkey=pkey,
+        disabled_algorithms={"pubkeys": ["rsa-sha2-256", "rsa-sha2-512"]},
+    )
+    return client

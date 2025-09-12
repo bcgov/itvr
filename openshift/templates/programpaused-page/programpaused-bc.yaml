@@ -1,0 +1,62 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: programpaused-page
+objects:
+  - kind: ImageStream
+    apiVersion: image.openshift.io/v1
+    metadata:
+      name: programpaused-page
+      creationTimestamp:
+      labels:
+        app: programpaused-page
+    spec:
+      lookupPolicy:
+        local: false
+    status:
+      dockerImageRepository: ""
+  - kind: BuildConfig
+    apiVersion: build.openshift.io/v1
+    metadata:
+      name: programpaused-page
+      creationTimestamp:
+      labels:
+        app: programpaused-page
+    spec:
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChange: {}
+      runPolicy: SerialLatestOnly
+      source:
+        type: Git
+        contextDir: "openshift/templates/programpaused-page"
+        git:
+          uri: https://github.com/bcgov/itvr.git
+          ref: release-1.32.0
+      strategy:
+        dockerStrategy:
+          env:
+            - name: ARTIFACTORY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: artifacts-default-pwpgbz
+                  key: username
+            - name: ARTIFACTORY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: artifacts-default-pwpgbz
+                  key: password
+          forcePull: true
+          noCache: true
+        type: Docker
+      output:
+        to:
+          kind: ImageStreamTag
+          name: programpaused-page:latest
+      resources: {}
+      postCommit: {}
+      nodeSelector:
+      successfulBuildsHistoryLimit: 5
+      failedBuildsHistoryLimit: 5

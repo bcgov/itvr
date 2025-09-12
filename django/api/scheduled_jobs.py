@@ -59,3 +59,29 @@ def schedule_send_expiry_emails():
         )
     except IntegrityError:
         pass
+
+
+def schedule_send_to_cra():
+    try:
+        schedule(
+            "api.tasks.send_to_cra",
+            name="send_to_cra",
+            schedule_type="C",
+            cron="00 * * * *",
+            q_options={"timeout": 900, "ack_failure": True},
+        )
+    except IntegrityError:
+        pass
+
+
+def schedule_retrieve_from_cra():
+    try:
+        schedule(
+            "api.tasks.retrieve_from_cra",
+            name="retrieve_from_cra",
+            schedule_type="C",
+            cron="30 * * * *",
+            q_options={"timeout": 900, "ack_failure": True},
+        )
+    except IntegrityError:
+        pass

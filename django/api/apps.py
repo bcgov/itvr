@@ -16,6 +16,8 @@ class ApiConfig(AppConfig):
             schedule_get_ncda_redeemed_rebates,
             schedule_expire_expired_applications,
             schedule_send_expiry_emails,
+            schedule_send_to_cra,
+            schedule_retrieve_from_cra,
         )
 
         if settings.RUN_JOBS and "qcluster" in sys.argv:
@@ -23,6 +25,8 @@ class ApiConfig(AppConfig):
             schedule_get_ncda_redeemed_rebates()
             schedule_expire_expired_applications()
             schedule_send_expiry_emails()
+            schedule_send_to_cra()
+            schedule_retrieve_from_cra()
 
 
 class ITVRAdminConfig(AdminConfig):

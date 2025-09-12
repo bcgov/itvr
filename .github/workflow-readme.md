@@ -30,7 +30,7 @@ The "Build PR on Dev" pipeline will be triggered when it identified pull request
 
 - Squash merge the tracking pull request to main
 - Create the release on GitHub from main branch
-- Create the new release branch from main branch (this is done automatically by pipeline create-release.yaml)
+- Create the new release branch from main branch
 - Change the new release branch as the default branch in the repo and update the branch protection rules https://github.com/bcgov/itvr/settings/branches
 - Update frontend/package.json
   - version
