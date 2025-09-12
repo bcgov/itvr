@@ -87,3 +87,34 @@ def update_application_statuses(rebates, applications):
                 created=False,
                 update_fields={"status"},
             )
+
+
+def get_rebate_data_for_cra():
+    result = []
+    rebates = GoElectricRebateApplication.objects.filter(
+        status=GoElectricRebateApplication.Status.VERIFIED
+    )
+    for rebate in rebates:
+        result.append(
+            {
+                "sin": rebate.sin,
+                "years": [rebate.tax_year],
+                "given_name": rebate.first_name,
+                "family_name": rebate.last_name,
+                "birth_date": rebate.date_of_birth.strftime("%Y%m%d"),
+                "application_id": rebate.id,
+            }
+        )
+        if rebate.application_type == "household":
+            household_member = rebate.householdmember
+            result.append(
+                {
+                    "sin": household_member.sin,
+                    "years": [rebate.tax_year],
+                    "given_name": household_member.first_name,
+                    "family_name": household_member.last_name,
+                    "birth_date": household_member.date_of_birth.strftime("%Y%m%d"),
+                    "application_id": rebate.id,
+                }
+            )
+    return result
