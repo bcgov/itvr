@@ -1,0 +1,57 @@
+name: Push Dependent Images to Artifactory
+
+on:
+  push:
+    branches: [devops/artifactory]
+  workflow_dispatch:
+
+env:
+  ARTIFACTORY_REGISTRY: ${{ secrets.ARTIFACTORY_REGISTRY }}
+  ARTIFACTORY_REPO: ${{ secrets.ARTIFACTORY_REPO }}
+  ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+  ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+  MINIO_IMAGE_TAG: 2024.4.6-debian-12-r0
+  CLAMAV_IMAGE_TAG: 1.4.3_base
+
+jobs:
+  push-dependent-images-to-artifactory:
+    name: Push dependent images to Artifactory
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+
+      - name: Login to Artifactory
+        run: |
+          set -euo pipefail
+          AUTH_CURL_FLAGS=(-H "X-JFrog-Art-Api: ${ARTIFACTORY_API_KEY}")
+          AUTH_PASSWORD="${ARTIFACTORY_API_KEY}"
+
+          curl -fsS "${AUTH_CURL_FLAGS[@]}" \
+            "https://${ARTIFACTORY_REGISTRY}/artifactory/api/system/ping"
+          REPO_INFO="$(curl -fsS "${AUTH_CURL_FLAGS[@]}" \
+            "https://${ARTIFACTORY_REGISTRY}/artifactory/api/repositories/${ARTIFACTORY_REPO}")"
+          echo "${REPO_INFO}" | tr -d '\n' | grep -Eq '"packageType"[[:space:]]*:[[:space:]]*"docker"' || \
+            { echo "Repo ${ARTIFACTORY_REPO} is not a Docker repo."; exit 1; }
+          echo "${REPO_INFO}" | tr -d '\n' | grep -Eq '"rclass"[[:space:]]*:[[:space:]]*"(local|virtual|federated)"' || \
+            { echo "Repo ${ARTIFACTORY_REPO} must be local or virtual or federated."; exit 1; }
+          skopeo login --authfile /tmp/artifactory-auth.json \
+            --username "${ARTIFACTORY_USERNAME}" \
+            --password "${AUTH_PASSWORD}" \
+            "${ARTIFACTORY_REGISTRY}"
+
+      - name: Copy dependent images from Docker Hub
+        run: |
+          set -euo pipefail
+          echo "Pushing Clamav image"
+          skopeo copy --src-tls-verify=true --dest-tls-verify=true \
+            --dest-authfile /tmp/artifactory-auth.json \
+            "docker://bitnamilegacy/minio:${MINIO_IMAGE_TAG}" \
+            "docker://${ARTIFACTORY_REGISTRY}/${ARTIFACTORY_REPO}/itvr/prod/bitnamilegacy/minio:${MINIO_IMAGE_TAG}"
+          echo "Pushing Clamav image"
+          skopeo copy --src-tls-verify=true --dest-tls-verify=true \
+            --dest-authfile /tmp/artifactory-auth.json \
+            "docker://clamav/clamav:${CLAMAV_IMAGE_TAG}" \
+            "docker://${ARTIFACTORY_REGISTRY}/${ARTIFACTORY_REPO}/itvr/prod/clamav/clamav:${CLAMAV_IMAGE_TAG}"
