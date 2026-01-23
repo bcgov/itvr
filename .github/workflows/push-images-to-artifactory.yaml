@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       image_stream:
-        description: Image stream name to copy (e.g. cthub-backend).
+        description: Image stream name to copy (e.g. itvr-backend).
         required: true
         type: string
       image_tag:
@@ -121,6 +121,8 @@ jobs:
         run: |
           set -euo pipefail
           REPO_REF="docker://${ARTIFACTORY_REGISTRY}/${ARTIFACTORY_REPO_KEY}/${APP_NAME}/${DEPLOY_ENV}/${IMAGE_STREAM}"
+          IMAGE_PATH="${APP_NAME}/${DEPLOY_ENV}/${IMAGE_STREAM}"
+          export IMAGE_PATH
           echo "Fetching tags for ${APP_NAME}/${DEPLOY_ENV}/${IMAGE_STREAM}..."
           if TAGS_JSON="$(skopeo list-tags --authfile /tmp/artifactory-auth.json "${REPO_REF}")"; then
             export TAGS_JSON
@@ -128,6 +130,8 @@ jobs:
           import json
           import os
           import sys
+          import urllib.request
+          from datetime import datetime
 
           raw = os.environ.get("TAGS_JSON", "")
           try:
@@ -141,13 +145,52 @@ jobs:
               print("::error::Tag list response missing Tags array.", file=sys.stderr)
               sys.exit(1)
 
-          print("\n".join(tag for tag in tags if tag))
+          tags = [tag for tag in tags if tag]
+          if len(tags) <= 1:
+              sys.exit(0)
+
+          registry = os.environ.get("ARTIFACTORY_REGISTRY", "")
+          repo_key = os.environ.get("ARTIFACTORY_REPO_KEY", "")
+          image_path = os.environ.get("IMAGE_PATH", "")
+          api_key = os.environ.get("ARTIFACTORY_API_KEY", "")
+
+          if not all([registry, repo_key, image_path, api_key]):
+              print("::warning::Missing Artifactory env vars; skipping tag cleanup.", file=sys.stderr)
+              sys.exit(0)
+
+          base_url = f"https://{registry}/artifactory/api/storage/{repo_key}/{image_path}"
+          headers = {"X-JFrog-Art-Api": api_key}
+
+          tag_times = {}
+          missing = []
+          for tag in tags:
+              url = f"{base_url}/{tag}/manifest.json"
+              try:
+                  req = urllib.request.Request(url, headers=headers)
+                  with urllib.request.urlopen(req, timeout=20) as resp:
+                      info = json.load(resp)
+                  last_modified = info.get("lastModified")
+                  if not last_modified:
+                      raise ValueError("missing lastModified")
+                  tag_times[tag] = datetime.fromisoformat(last_modified.replace("Z", "+00:00"))
+              except Exception as exc:
+                  missing.append(f"{tag} ({exc})")
+
+          if missing:
+              print("::warning::Unable to read timestamps for tags; skipping cleanup.", file=sys.stderr)
+              for item in missing:
+                  print(f"::warning::Tag metadata missing: {item}", file=sys.stderr)
+              sys.exit(0)
+
+          latest_tag = max(tag_times, key=tag_times.get)
+          filtered = [tag for tag in tags if tag != latest_tag]
+          print("\n".join(filtered))
           PY
           )"
             if [ -z "${TAGS// }" ]; then
               echo "No tags found for ${APP_NAME}/${DEPLOY_ENV}/${IMAGE_STREAM}."
             else
-              echo "Deleting tags for ${APP_NAME}/${DEPLOY_ENV}/${IMAGE_STREAM}..."
+              echo "Deleting tags for ${APP_NAME}/${DEPLOY_ENV}/${IMAGE_STREAM} (keeping newest by timestamp)..."
               echo "${TAGS}" | while IFS= read -r tag; do
                 [ -z "${tag}" ] && continue
                 skopeo delete --authfile /tmp/artifactory-auth.json "${REPO_REF}:${tag}"

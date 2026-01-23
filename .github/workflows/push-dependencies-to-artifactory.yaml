@@ -45,7 +45,7 @@ jobs:
       - name: Copy dependent images from Docker Hub
         run: |
           set -euo pipefail
-          echo "Pushing Clamav image"
+          echo "Pushing Minio image"
           skopeo copy --src-tls-verify=true --dest-tls-verify=true \
             --dest-authfile /tmp/artifactory-auth.json \
             "docker://bitnamilegacy/minio:${MINIO_IMAGE_TAG}" \

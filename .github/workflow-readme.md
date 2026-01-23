@@ -13,7 +13,7 @@ Notes: the change may take about 20 minutes to be promoted to ITVR development e
 
 The "Build PR on Dev" pipeline will be triggered when it identified pull request's title ends with "build-on-dev"
 
-# Production
+# Production release
 
 ## Pre-production release
 
