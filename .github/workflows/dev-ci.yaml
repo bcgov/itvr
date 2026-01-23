@@ -361,7 +361,7 @@ jobs:
           - itvr-backend
           - itvr-frontend
           - itvr-cra
-          - itvr-fitvr-task-queue
+          - itvr-task-queue
     uses: ./.github/workflows/push-images-to-artifactory.yaml
     with:
       env: dev
